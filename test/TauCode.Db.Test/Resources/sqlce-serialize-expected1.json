@@ -1,0 +1,23 @@
+﻿[
+  {
+    "id": 1,
+    "login": "ak",
+    "birthday": "1978-07-05T14:11:12.37",
+    "email": "ak@mail.net",
+    "password_hash": "1234"
+  },
+  {
+    "id": 2,
+    "login": "deserea",
+    "birthday": null,
+    "email": "deserea@love.org",
+    "password_hash": null
+  },
+  {
+    "id": 3,
+    "login": "olia",
+    "birthday": "1979-06-25T11:22:33.777",
+    "email": null,
+    "password_hash": "o@yahoo.com"
+  }
+]

@@ -1,0 +1,507 @@
+﻿{
+  "fragment_type": [
+    {
+      "id": "8d85066d-c1e9-4e2d-9857-225d7b64e056",
+      "code": "text",
+      "name": "Text",
+      "is_default": true
+    },
+    {
+      "id": "7677be57-0a5d-49ff-9225-6b3c902d91ae",
+      "code": "source-code",
+      "name": "Source Code",
+      "is_default": false
+    },
+    {
+      "id": "3f9c9dbf-0071-4f5b-88ca-a2828ac57211",
+      "code": "media",
+      "name": "Media",
+      "is_default": false
+    }
+  ],
+  "language": [
+    {
+      "id": "3fc48cdb-cc14-4cfa-bbee-18d5d8ee9846",
+      "code": "ua",
+      "name": "Ukrainian"
+    },
+    {
+      "id": "0da32410-f477-41db-9362-4e89944888eb",
+      "code": "es",
+      "name": "Spanish"
+    },
+    {
+      "id": "df97ba1f-7105-49d3-b70c-b212a102700f",
+      "code": "de",
+      "name": "German"
+    },
+    {
+      "id": "3c89c75c-eace-4813-ad07-dcd691ee4347",
+      "code": "it",
+      "name": "Italian"
+    },
+    {
+      "id": "c9d2e7e8-197b-4750-853e-e7d30e7a56b6",
+      "code": "en",
+      "name": "English"
+    }
+  ],
+  "note": [
+    {
+      "id": "d05a6208-d2b3-4a46-a78c-0578f5d049df",
+      "code": "mq-ready",
+      "created": "2019-02-05T14:16:17.62"
+    },
+    {
+      "id": "84f0e9b8-c9a0-42e7-84c6-2dd1aee8c954",
+      "code": "going-on-with-currency-exchange",
+      "created": "2019-03-27T09:12:22.71"
+    },
+    {
+      "id": "6632953c-27ba-485b-9f68-3cc74585d81f",
+      "code": "setting-quotes-in-currency-exchange-microservice",
+      "created": "2019-03-29T12:40:35.047"
+    },
+    {
+      "id": "26dbb93f-dea1-4d85-9b69-3d6858a9ca4e",
+      "code": "mvc-owin-project-creation-checklist",
+      "created": "2018-11-03T22:04:27.903"
+    },
+    {
+      "id": "76066e15-a627-4645-ac16-75a043dd451f",
+      "code": "todo",
+      "created": "2018-11-01T16:09:15.407"
+    },
+    {
+      "id": "380e027b-d624-4831-82c8-9873923e0677",
+      "code": "back-to-econera-money",
+      "created": "2019-03-21T07:44:39.62"
+    },
+    {
+      "id": "69821d2e-d94a-48cf-8b71-a722246eaaf8",
+      "code": "mvc-book",
+      "created": "2018-10-19T07:16:06.55"
+    },
+    {
+      "id": "8a268dc1-a9ad-458e-bcf9-b2979bc3c9b3",
+      "code": "ocean-parsing",
+      "created": "2018-11-21T09:00:35.983"
+    },
+    {
+      "id": "46aae4c2-3568-40ad-8ace-bdf8709592a0",
+      "code": "econera-diet-usermanagement-refactor",
+      "created": "2019-02-18T10:55:58.42"
+    },
+    {
+      "id": "c3108000-7451-4500-a887-cc36d3a2a764",
+      "code": "english",
+      "created": "2018-11-01T15:59:00.627"
+    },
+    {
+      "id": "bd8d95fb-89c5-449b-b0b9-cc3c3571569a",
+      "code": "books-to-read",
+      "created": "2018-11-01T15:53:26.693"
+    },
+    {
+      "id": "8baf0dc6-b4a7-405f-b312-d383a12cf3c3",
+      "code": "service-client",
+      "created": "2018-12-19T14:50:24.487"
+    },
+    {
+      "id": "d71d9425-0723-4561-bd0e-d8e47821bfcc",
+      "code": "questions-1",
+      "created": "2018-10-19T12:48:51.163"
+    },
+    {
+      "id": "f8784a90-910a-4e0d-a570-f423f7528551",
+      "code": "service-client-created",
+      "created": "2019-01-16T07:44:26.147"
+    },
+    {
+      "id": "977b2d5b-a868-4691-bd58-f87f765177a4",
+      "code": "people",
+      "created": "2018-11-01T15:47:05.96"
+    }
+  ],
+  "tag": [
+    {
+      "id": "715e59c3-7d8c-42c5-8b14-13c3c2270b71",
+      "code": "mvc",
+      "name": "MVC"
+    },
+    {
+      "id": "acb97c87-c906-4081-b767-15debe247c1c",
+      "code": "ror",
+      "name": "Ruby On Rails"
+    },
+    {
+      "id": "c9b0b058-cf3b-4ade-adf6-a21a99d9574d",
+      "code": "book",
+      "name": "Book"
+    },
+    {
+      "id": "d4765bc0-e9fc-4b99-a87d-e1ebaea339df",
+      "code": "dotnet",
+      "name": ".NET"
+    }
+  ],
+  "user": [
+    {
+      "id": "370dd529-b900-44ec-b0a2-caec1d3313c8",
+      "login": "admin",
+      "email": "ak@taucode.com",
+      "password_hash": "AJDIdbVff4oUwZ8VXwRgEiqbEpl0wI4UtXi1buOfMzW30/10W8OidrV4pcpoSBhK3Q=="
+    }
+  ],
+  "VersionInfo": [
+    {
+      "Version": 0,
+      "AppliedOn": "2018-11-01T15:00:05",
+      "Description": "M0_Baseline"
+    }
+  ],
+  "fragment_sub_type": [
+    {
+      "id": "4ae65a36-9e4f-445f-85ae-03f2eeaae29c",
+      "type_id": "8d85066d-c1e9-4e2d-9857-225d7b64e056",
+      "code": "normal",
+      "name": "Normal",
+      "is_default": true
+    },
+    {
+      "id": "9fb09ae1-2f1f-492e-8ef0-7194182e4140",
+      "type_id": "7677be57-0a5d-49ff-9225-6b3c902d91ae",
+      "code": "sql",
+      "name": "SQL",
+      "is_default": false
+    },
+    {
+      "id": "f11c7b69-0d97-43bd-9c59-c2cb5804c3eb",
+      "type_id": "7677be57-0a5d-49ff-9225-6b3c902d91ae",
+      "code": "ruby",
+      "name": "Ruby",
+      "is_default": false
+    },
+    {
+      "id": "baa60e75-f0d1-4a56-86cd-ce5d0caa95eb",
+      "type_id": "3f9c9dbf-0071-4f5b-88ca-a2828ac57211",
+      "code": "video",
+      "name": "Video",
+      "is_default": true
+    },
+    {
+      "id": "48c203b0-2e19-4166-be89-d7da318e4b3c",
+      "type_id": "8d85066d-c1e9-4e2d-9857-225d7b64e056",
+      "code": "citation",
+      "name": "Citation",
+      "is_default": false
+    },
+    {
+      "id": "d6020fbd-8037-4fab-90df-e8440db830dc",
+      "type_id": "7677be57-0a5d-49ff-9225-6b3c902d91ae",
+      "code": "csharp",
+      "name": "C#",
+      "is_default": true
+    }
+  ],
+  "note_tag": [],
+  "note_translation": [
+    {
+      "id": "88b53a0b-d7b8-4116-b4ef-02e0ab437267",
+      "note_id": "977b2d5b-a868-4691-bd58-f87f765177a4",
+      "language_id": "c9d2e7e8-197b-4750-853e-e7d30e7a56b6",
+      "is_default": false,
+      "is_published": false,
+      "title": "People",
+      "last_updated": "2018-11-01T15:47:19.313"
+    },
+    {
+      "id": "014bc24c-d613-426b-b907-041185acee45",
+      "note_id": "76066e15-a627-4645-ac16-75a043dd451f",
+      "language_id": "c9d2e7e8-197b-4750-853e-e7d30e7a56b6",
+      "is_default": false,
+      "is_published": false,
+      "title": "To-Do",
+      "last_updated": "2018-11-01T16:09:30.557"
+    },
+    {
+      "id": "d17c351d-de69-4d71-8d2d-3b390ac82f24",
+      "note_id": "84f0e9b8-c9a0-42e7-84c6-2dd1aee8c954",
+      "language_id": "c9d2e7e8-197b-4750-853e-e7d30e7a56b6",
+      "is_default": true,
+      "is_published": true,
+      "title": "Going on with currency exchange",
+      "last_updated": "2019-03-27T09:12:44.083"
+    },
+    {
+      "id": "02a10a2a-06f0-48ca-9824-495dfbe807dc",
+      "note_id": "f8784a90-910a-4e0d-a570-f423f7528551",
+      "language_id": "c9d2e7e8-197b-4750-853e-e7d30e7a56b6",
+      "is_default": true,
+      "is_published": true,
+      "title": "Service Client created",
+      "last_updated": "2019-01-16T07:48:08.93"
+    },
+    {
+      "id": "888e22a6-c900-4145-ba5b-553a8d425eca",
+      "note_id": "46aae4c2-3568-40ad-8ace-bdf8709592a0",
+      "language_id": "c9d2e7e8-197b-4750-853e-e7d30e7a56b6",
+      "is_default": true,
+      "is_published": true,
+      "title": "Econera.Diet user management refactoring",
+      "last_updated": "2019-02-18T10:56:21.07"
+    },
+    {
+      "id": "85ac3036-b29b-4e8e-bfcf-616fb727fbef",
+      "note_id": "d71d9425-0723-4561-bd0e-d8e47821bfcc",
+      "language_id": "c9d2e7e8-197b-4750-853e-e7d30e7a56b6",
+      "is_default": false,
+      "is_published": false,
+      "title": "Questions 1",
+      "last_updated": "2018-10-19T16:13:34.073"
+    },
+    {
+      "id": "8ac54a19-8edf-4f97-acc4-770c6cee1748",
+      "note_id": "380e027b-d624-4831-82c8-9873923e0677",
+      "language_id": "c9d2e7e8-197b-4750-853e-e7d30e7a56b6",
+      "is_default": true,
+      "is_published": true,
+      "title": "Back to Econera.Money",
+      "last_updated": "2019-03-21T07:45:07.403"
+    },
+    {
+      "id": "3c4c9fd1-9bd0-4fba-91b6-850eb6de4a10",
+      "note_id": "bd8d95fb-89c5-449b-b0b9-cc3c3571569a",
+      "language_id": "c9d2e7e8-197b-4750-853e-e7d30e7a56b6",
+      "is_default": false,
+      "is_published": false,
+      "title": "Books To Read",
+      "last_updated": "2018-11-01T15:53:38.283"
+    },
+    {
+      "id": "d4aae56c-b1ec-47b1-a52e-98c81db0cef0",
+      "note_id": "8a268dc1-a9ad-458e-bcf9-b2979bc3c9b3",
+      "language_id": "c9d2e7e8-197b-4750-853e-e7d30e7a56b6",
+      "is_default": true,
+      "is_published": true,
+      "title": "Ocean Parsing",
+      "last_updated": "2018-11-21T09:00:50.977"
+    },
+    {
+      "id": "a99ea41f-4267-4cf1-87ce-b0c6526700bb",
+      "note_id": "c3108000-7451-4500-a887-cc36d3a2a764",
+      "language_id": "c9d2e7e8-197b-4750-853e-e7d30e7a56b6",
+      "is_default": false,
+      "is_published": false,
+      "title": "English",
+      "last_updated": "2018-11-01T15:59:10.61"
+    },
+    {
+      "id": "a5877358-dc5b-4b5c-b2ec-bfd082f17a0d",
+      "note_id": "26dbb93f-dea1-4d85-9b69-3d6858a9ca4e",
+      "language_id": "c9d2e7e8-197b-4750-853e-e7d30e7a56b6",
+      "is_default": false,
+      "is_published": false,
+      "title": "MVC OWIN project creation list",
+      "last_updated": "2018-11-03T22:04:50.96"
+    },
+    {
+      "id": "7a7cb347-6432-4130-8ae2-c7d42caab7ea",
+      "note_id": "69821d2e-d94a-48cf-8b71-a722246eaaf8",
+      "language_id": "c9d2e7e8-197b-4750-853e-e7d30e7a56b6",
+      "is_default": true,
+      "is_published": true,
+      "title": "Pro ASP.NET MVC 5",
+      "last_updated": "2018-11-01T11:01:36.523"
+    },
+    {
+      "id": "b9094bf6-a569-4a7e-88b0-cc34471dfde4",
+      "note_id": "6632953c-27ba-485b-9f68-3cc74585d81f",
+      "language_id": "c9d2e7e8-197b-4750-853e-e7d30e7a56b6",
+      "is_default": true,
+      "is_published": true,
+      "title": "Setting quotes in Currency Exchange microservice",
+      "last_updated": "2019-03-29T12:41:09.993"
+    },
+    {
+      "id": "27b1f008-57c1-4d85-96de-d85f01df70be",
+      "note_id": "d05a6208-d2b3-4a46-a78c-0578f5d049df",
+      "language_id": "c9d2e7e8-197b-4750-853e-e7d30e7a56b6",
+      "is_default": true,
+      "is_published": true,
+      "title": "Messaging is ready",
+      "last_updated": "2019-02-05T14:16:39.96"
+    },
+    {
+      "id": "beedbd40-e3fd-4c92-99cd-ed1fa19dc71f",
+      "note_id": "8baf0dc6-b4a7-405f-b312-d383a12cf3c3",
+      "language_id": "c9d2e7e8-197b-4750-853e-e7d30e7a56b6",
+      "is_default": true,
+      "is_published": true,
+      "title": "Service Client",
+      "last_updated": "2018-12-19T14:50:42.783"
+    }
+  ],
+  "fragment": [
+    {
+      "id": "1bce39e1-b9c1-49f0-a89c-2fad45ac1cd8",
+      "note_translation_id": "888e22a6-c900-4145-ba5b-553a8d425eca",
+      "sub_type_id": "4ae65a36-9e4f-445f-85ae-03f2eeaae29c",
+      "code": "fragment2",
+      "order": 2,
+      "content": "[upd]2019-02-20 Done.\nYet another thing I've forgot of: Administration microservice. Switching to it right away.\n[upd]2019-02-21 Administration Unit Tests are all green, but lack some easy ones (e.g. it is impossible to delete the \"admin\" Admin)."
+    },
+    {
+      "id": "fe0c5413-f396-4dec-8078-36d6012dda7d",
+      "note_translation_id": "d17c351d-de69-4d71-8d2d-3b390ac82f24",
+      "sub_type_id": "4ae65a36-9e4f-445f-85ae-03f2eeaae29c",
+      "code": "fragment1",
+      "order": 1,
+      "content": "I am continuing work on Currency Exchange microservice. It appears that developing fully-functional service is unavoidable, thus I am repeating (and improving) that functionality of old Econera. I am planning to add support of three quotes services: currencylayer, fixer.io, and Open Exchange Rates."
+    },
+    {
+      "id": "ae7d66b8-cc97-4d56-ade7-3a2461a6bfbd",
+      "note_translation_id": "888e22a6-c900-4145-ba5b-553a8d425eca",
+      "sub_type_id": "4ae65a36-9e4f-445f-85ae-03f2eeaae29c",
+      "code": "fragment1",
+      "order": 1,
+      "content": "Today I am starting to refactor Econera.Diet.Services.UserManagement microservice. Suppose it will take less than 11 days as it was for Tracking microservice, since the path has been walked through once."
+    },
+    {
+      "id": "1cbcac0c-bde4-4a5b-9365-4ec6c7e2d253",
+      "note_translation_id": "02a10a2a-06f0-48ca-9824-495dfbe807dc",
+      "sub_type_id": "4ae65a36-9e4f-445f-85ae-03f2eeaae29c",
+      "code": "fragment1",
+      "order": 1,
+      "content": "Yesterday, I've finished the Service Client library. It took me a bit less than one month to cope. Now, I am going to take advantage of RabbitMQ for publishing domain events. And then will finally deploy the 0th version of Econera.Money.\nThings that are still bothering me since I am not good at:\n1) OWIN/OAuth;\n1.1) JWT;\n2) Logging;\n3) MQ services (namely, RabbitMQ) mentioned before."
+    },
+    {
+      "id": "abc68962-6248-43fa-99fc-4ee0b57a84b7",
+      "note_translation_id": "a5877358-dc5b-4b5c-b2ec-bfd082f17a0d",
+      "sub_type_id": "4ae65a36-9e4f-445f-85ae-03f2eeaae29c",
+      "code": "fragment3",
+      "order": 3,
+      "content": "Add\nApp_Start\\Startup.cs\n"
+    },
+    {
+      "id": "6d879789-88d4-402b-84f6-55afbc93b985",
+      "note_translation_id": "8ac54a19-8edf-4f97-acc4-770c6cee1748",
+      "sub_type_id": "4ae65a36-9e4f-445f-85ae-03f2eeaae29c",
+      "code": "fragment1",
+      "order": 1,
+      "content": "Now, with the TauCode things having been refactored (not completely, heh), I am switching back to Econera.Money, and I do have the intention to not re-re-refactor anything until I get the working piece in production with minimal functionality:\n1) Currencies and currency rates\n2) (Money) accounts"
+    },
+    {
+      "id": "957b924c-c488-4e98-8a08-5ce05a48c64b",
+      "note_translation_id": "3c4c9fd1-9bd0-4fba-91b6-850eb6de4a10",
+      "sub_type_id": "4ae65a36-9e4f-445f-85ae-03f2eeaae29c",
+      "code": "fragment1",
+      "order": 1,
+      "content": "Rx.NET in Action\nC# in Depth\nAsync in C# 5.0\nNHibernate book (don't remember the title, check out)\nCLR via C#\nPractical Common Lisp\nANSI Common Lisp\n[everything lisp]\nPro ASP.NET Core MVC 2, 7th Edition\n[gof]\nPro AngularJS\nPro jQuery 2.0\nPro JavaScript for Web Apps\nThe Definitive Guide to HTML5.\n[CouchDB]\n[Mongo]\nPro ASP.NET MVC 5 Client\nPro LINQ in C#;\nPro .Net\nParallel Programming in C#."
+    },
+    {
+      "id": "a41c71af-dfae-4d21-96e1-60b5b28966b6",
+      "note_translation_id": "b9094bf6-a569-4a7e-88b0-cc34471dfde4",
+      "sub_type_id": "4ae65a36-9e4f-445f-85ae-03f2eeaae29c",
+      "code": "fragment1",
+      "order": 1,
+      "content": "Now, I am switching to the \"Set Quote For User\" feature. It is the most complex one, along with \"Change User Basic Currency\" feature. A quote can be a \"real\" quote with rate value, and can be a \"reference\" to a system user."
+    },
+    {
+      "id": "0d6b79a5-9a79-4098-b51e-61d628a9bf74",
+      "note_translation_id": "a5877358-dc5b-4b5c-b2ec-bfd082f17a0d",
+      "sub_type_id": "4ae65a36-9e4f-445f-85ae-03f2eeaae29c",
+      "code": "fragment1",
+      "order": 1,
+      "content": "1. Reference the TauCode.App.Mvc package\n1a. Reference Microsoft.Owin.Host.SystemWeb\n2. Add classes in corresponding projects:\nDomainBeacon\nPersistenceBeacon\nCoreBeacon\n3. Add classes \nYourAppSignInManager\nYourAppUser\nYourAppUserManager\nYourAppUserStore\n\nAdd\nApp_Start\\FilterConfig.cs"
+    },
+    {
+      "id": "aca35ce2-dbc7-486f-9479-683a3e4680c7",
+      "note_translation_id": "d4aae56c-b1ec-47b1-a52e-98c81db0cef0",
+      "sub_type_id": "4ae65a36-9e4f-445f-85ae-03f2eeaae29c",
+      "code": "fragment1",
+      "order": 1,
+      "content": "It seems now unavoidable. Starting working on Ocean.Parsing."
+    },
+    {
+      "id": "9940b5f7-91aa-40bc-b999-80d06244cd37",
+      "note_translation_id": "7a7cb347-6432-4130-8ae2-c7d42caab7ea",
+      "sub_type_id": "4ae65a36-9e4f-445f-85ae-03f2eeaae29c",
+      "code": "fragment1",
+      "order": 1,
+      "content": "Finally, I got to the book Pro ASP.NET MVC 5 written by Adam Freeman. I was trying to start this several times before, with no success though. After I was catching principal ideas, I was started to feel bored and returned to coding itself. This time I am planning to go through the entire thing, and commit everything I learn meanwhile.\n\n<h4>Things that are most interesting to me:</h4>\n\n<ul>\n<li>Routing system;</li>\n<li>Unit testing of MVC controllers (and views);</li>\n<li>Security issues.</li>\n</ul>\n\n<div>\n[2018-11-02]\n</div>\n\n<div>\nHow do I protect js & css related to the management functionality of the site, from unauthorized users? I don't want them to see the structure of the back-end app, even in sense of client (JavaScript) code.\n</div>\n\n<div>\n[update 2018-11-03]\n</div>\n<div>\nIt has appeared turned out [предсказуемо] that developing SportsStore app described in the book is too boring for me, hence I am going to create something valuable during my course. I choose the movie app I was thinking about for a long time.\n</div>"
+    },
+    {
+      "id": "2b13047f-97c2-4a98-8fd8-9626eeef4b65",
+      "note_translation_id": "27b1f008-57c1-4d85-96de-d85f01df70be",
+      "sub_type_id": "4ae65a36-9e4f-445f-85ae-03f2eeaae29c",
+      "code": "fragment1",
+      "order": 1,
+      "content": "Today, a ready-for-using versions of TauCode.Messaging, TauCode.Messaging.RabbitMQ and TauCode.TestUtils.Messaging have been deployed. I am going to plug them for Econera.Diet first because of its relative simplicity, and then for Econera.Money.\nMessage queuing basics turned out to be not that complex as I used to imagine before, but have taken me quite an amount of time though (approx. three weeks)."
+    },
+    {
+      "id": "77bd03dd-5e76-4817-abde-9ff95b8055aa",
+      "note_translation_id": "a5877358-dc5b-4b5c-b2ec-bfd082f17a0d",
+      "sub_type_id": "d6020fbd-8037-4fab-90df-e8440db830dc",
+      "code": "fragment2",
+      "order": 2,
+      "content": "using System.Web.Mvc;\n\nnamespace YourApp.WebMvc\n{\n    public class FilterConfig\n    {\n        public static void RegisterGlobalFilters(GlobalFilterCollection filters)\n        {\n            filters.Add(new HandleErrorAttribute());\n        }\n    }\n}"
+    },
+    {
+      "id": "4c4868a4-2765-4db8-ac2d-afc2e6ec2cec",
+      "note_translation_id": "a99ea41f-4267-4cf1-87ce-b0c6526700bb",
+      "sub_type_id": "4ae65a36-9e4f-445f-85ae-03f2eeaae29c",
+      "code": "fragment3",
+      "order": 3,
+      "content": "you will start to see how the [investment in the basic plumbing] pays off\n\n...and easily and, [along the way], you will see\n\nBut [for variety] I am going to use\n\nDo not [let that put you off] writing the unit tests."
+    },
+    {
+      "id": "2c06d866-b14a-41b9-9067-cc66968ea3dd",
+      "note_translation_id": "014bc24c-d613-426b-b907-041185acee45",
+      "sub_type_id": "4ae65a36-9e4f-445f-85ae-03f2eeaae29c",
+      "code": "fragment1",
+      "order": 1,
+      "content": "Pendulum in HTML 5, RIP Flash :)\nMagic of IQueryable/Expression Trees/Lambdas/etc\nhttps://www.goodreads.com/book/show/18333875-multitenancy-with-rails\nPro ASP.NET MVC 5 Platform (Identity!)\n\nIn Chapter 10, I use a feature of the Bootstrap CSS library called Glyphicons Halflings, which are a set of icons that are\nnot usually available for free, but for which the creator has given an open license for their inclusion in Bootstrap. The\nonly request is that the creator’s URL be quoted when it is possible to do so, which seems like a fair and reasonable\nthing to do. Here is it: http://glyphicons.com.\n\nHow to correctly consume and return JSON in MVC? Or, better use Web API instead?\n\nControllerBase.ViewBag and stuff (dynamic objects)\n\nuse a library like jQuery or LESS to map between your custom classes and the Bootstrap ones\n\nNHibernate: delete items from child collection by criteria."
+    },
+    {
+      "id": "de68af05-553a-49e9-aedf-d2a280086438",
+      "note_translation_id": "a99ea41f-4267-4cf1-87ce-b0c6526700bb",
+      "sub_type_id": "4ae65a36-9e4f-445f-85ae-03f2eeaae29c",
+      "code": "fragment1",
+      "order": 1,
+      "content": "This data can reach hundreds of kilobytes in even [modest] Web applications\n\nAs you try to\nimplement custom behaviors, you frequently fall out of the abstraction, which forces you to\nreverse-engineer the postback event mechanism or perform [obtuse] acts to make it generate\nthe desired HTML.\n\nI touch on HTML5, jQuery, and its cousins in this book, but I don’t go into depth because these are topics [in\ntheir own right].\n\n\nTraditional ASP.NET Web Forms is not [amenable] to these tools and\ntechniques because of its monolithic design, and so Web Forms gets little respect from these projects.\n\nIn 2004, Ruby on Rails was a quiet, open source contribution from an unknown player. [Suddenly fame hit],\ntransforming the rules of Web development.\n\nIt’s not that Ruby on Rails contained revolutionary technology [but that]\nthe concept took existing ingredients and blended them in such [a compelling and appealing] way [as to put] existing\nplatforms to shame.\n\nBy applying MVC and working [in tune] with the HTTP protocol\n\nIt was [as if this was how] Web development [should have been all along].\n\nNode.js [has been around since] 2009 and gained acceptance quickly\n\nNode.js remains a niche technology. Its biggest contribution to web app development has, [rather oddly], been\nto provide a consistent JavaScript engine on which development tools can be written.\n\nNode.js [adoption] for deploying web apps has been slower.\n\nThe ASP.NET MVC Framework implements the MVC pattern and, [in doing so], provides greatly improved\nseparation of concerns.\n\nASP.NET MVC has, in many ways, pushed [forward beyond what even] Rails can offer.\n\nUse the default implementation of the component [as it stands]\n\nDerive a subclass of the default implementation to [tweak] its behavior.\n\nInstead of generating out [swathes] of HTML [over which you have] little control, the MVC Framework encourages you to [craft] simple, elegant markup styled with CSS.\n\nOf course, if you [do want] to throw in some [ready-made] widgets for complex UI elements such as date pickers or\ncascading menus, ASP.NET MVC’s [“no special requirements” approach] to markup makes it easy to use [best-of-breed]\nUI libraries such as jQuery UI or the Bootstrap CSS library.\n\nI describe Knockout in Chapter 27 and I use Bootstrap ([albeit] without a detailed introduction) throughout the book.\n\nASP.NET MVC [works in tune] with HTTP.\n\nso you can [fine-tune] your user experience as much as you like\n\n[Yet] the ASP.NET MVC designers didn’t stop there.\n\nEven if you have never written a unit test before, [you will be off] to a great start.\n\nSecond, many Web users are now [savvy] enough to understand a URL, and [appreciate the option] of navigating\n\nsee my [forthcoming] Pro ASP.NET MVC 5 Platform\n\nTo get [the most] from this book,\n\nDon’t worry if you are a little [hazy] on the client-side details.\n\nIn the next chapter you will [dive right in] and create a simple web application\n\nthrough which I show you a realistic development process [from inception to deployment], [touching on] the major features of the ASP.NET MVC Framework.\n\n[That said], I don’t want you to have to buy a second book to learn about something as important as user security\n\nand [my hope is] that the delay won’t be too long.\n\nI added a chapter that shows how one of the open source libraries that Microsoft [has embraced] — Knockout — can be combined with the Web API feature to create Single-Page Applications (SPAs).\n\nThe best way [to appreciate a software development framework] is [to jump right in] and use it.\n\nbut I recommend that you do — [not least because] it will help you make sense of the examples in this book.\n\nYou will [almost certainly] see a different port\n\nthis is a [cut-down version] of the full IIS application server\n\nThis is a good [example of benefiting from] following MVC conventions.\n\nwithout having to define classes [ahead of time]\n\nI am going to [pick up the pace] in this section.\n\nThis is another [skeletal] HTML file,"
+    },
+    {
+      "id": "cddef008-c859-4cd5-b020-d2d37fe39808",
+      "note_translation_id": "88b53a0b-d7b8-4116-b4ef-02e0ab437267",
+      "sub_type_id": "4ae65a36-9e4f-445f-85ae-03f2eeaae29c",
+      "code": "fragment1",
+      "order": 1,
+      "content": "[from the book Pro ASP.NET MVC 5]\n\nFabio Claudio Ferracchiati is a senior consultant and a senior analyst/developer using Microsoft technologies.\nHe works for Brain Force (http://www.brainforce.com) in its Italian branch (http://www.brainforce.it). He is a\nMicrosoft Certified Solution Developer for .NET, a Microsoft Certified Application Developer for .NET, a Microsoft\nCertified Professional, and a prolific author and technical reviewer. Over the past 10 years, he’s written articles for\nItalian and international magazines and coauthored more than 10 books on a variety of computer topics."
+    },
+    {
+      "id": "5ef07a3e-5ed8-43d1-8ffd-d83194979272",
+      "note_translation_id": "a5877358-dc5b-4b5c-b2ec-bfd082f17a0d",
+      "sub_type_id": "4ae65a36-9e4f-445f-85ae-03f2eeaae29c",
+      "code": "fragment4",
+      "order": 4,
+      "content": "using YourApp.Core;\nusing YourApp.Domain;\nusing YourApp.Persistence;\nusing YourApp.WebMvc.Identity;\nusing NHibernate.Cfg;\nusing TauCode.App.Mvc.Bootstrapping;\n\nnamespace YourApp.WebMvc\n{\n    public class Startup : SimpleMvcStartup<\n        DomainBeacon,\n        PersistenceBeacon,\n        CoreBeacon,\n        Startup,\n        YourAppUser,\n        YourAppUserStore,\n        YourAppUserManager,\n        YourAppSignInManager>\n    {\n        public Startup()\n            : this(new Configuration().Configure())\n        {\n        }\n\n        public Startup(Configuration configuration)\n            : base(configuration, \"/account/login\")\n        {\n        }\n    }\n}"
+    },
+    {
+      "id": "bda84167-ea6d-447e-97f9-f6f730e99258",
+      "note_translation_id": "beedbd40-e3fd-4c92-99cd-ed1fa19dc71f",
+      "sub_type_id": "4ae65a36-9e4f-445f-85ae-03f2eeaae29c",
+      "code": "fragment1",
+      "order": 1,
+      "content": "Started developing service client for TauCode, for the pet project Econera.Diet. Hoping it won't consume too much time, though. We'll see."
+    },
+    {
+      "id": "964470fa-b780-473a-9049-f72a1ee8e661",
+      "note_translation_id": "a99ea41f-4267-4cf1-87ce-b0c6526700bb",
+      "sub_type_id": "4ae65a36-9e4f-445f-85ae-03f2eeaae29c",
+      "code": "fragment2",
+      "order": 2,
+      "content": "A [neat] trick is to wrap this in a C# using statement, like this:\n\nVisual Studio will, [in an effort to be] helpful, make the browser request a URL\n\nThis is a [hit-and-miss] feature because it doesn’t work when you are editing\n\nI have not [yet] told MVC what I want to do\n\nHanding GET and POST requests in separate C# methods helps to keep my controller code [tidy]\n\nModel binding is a powerful and customizable feature that eliminates the [grind and toil] of dealing with HTTP requests\n\nI am now [in a position] to add validation to my application.\n\n[As noted earlier], I used a nullable bool for the WillAttend property\n\nThis is a nice example of how the MVC Framework elegantly [blends] C# features with HTML and HTTP.\n\n[The user won’t be shown] the Thanks view until\n\nThe basic functionality of the application [is in place]\n\nA fonts folder is also created–this is a [quirk] of the Bootstrap typography features\n\nThe reason that I am showing you Bootstrap in this chapter is to illustrate how [readily] the HTML generated by the MVC Framework can be used with popular CSS and JavaScript libraries.\n\nI was [excused] from art lessons on the basis that I had absolutely no talent [whatsoever]\n\nbut it does let me complete this example without getting [mired] in the details of setting up other means of sending e-mail.\n\ngiving you a first [glimpse] of the MVC Framework architecture and approach.\n\nwhere it was [conceived] as a way to organize\n\nThis fits nicely with the HTTP requests and responses that [underpin] a Web application.\n\nsuch as accounts, the general [ledger], and credit limits for customers\n\nclient doesn’t withdraw more money than he is [entitled to]\n\nThey have no [direct awareness of the] model\n\nsyntax. MVC 3 introduced the Razor view engine, which was [refined] in MVC 4\n\nI am [a proponent] of picking the best approach to solve the problem [at hand].\n\nI encourage you to make an informed and deliberate choice\n\nyou already have a [certain commitment] to the\n\n[is always helpful to maintain the widest possible perspective] :)\n\nanti-pattern: something that should be avoided [at all costs].\n\nit is [overly] [simplistic]\n\nit is a mistake to reject the Smart UI pattern [out of hand].\n\nand [there are positive aspects to this approach.]\n\nmaking changes or adding features becomes a [fraught] process\n\nsuch applications [end up] as [thinly disguised] Smart UI applications\n\nunmaintainable application that is [excessively] complex.\n\nThis is a [worthwhile] attempt to get the best aspects of the Smart UI pattern\n\nyou might wonder what the fuss is about, but [bear with me] — this is an important concept\n\nIt is a [crude] but simple configuration system\n\n[In broad terms,]\n\nBeing able to perform unit testing is one of the benefits of working with the MVC Framework, but it isn’t for everyone and [I have no intention of pretending otherwise].\n\n[fixture]\n\nAnd integration tests can be [brittle].\n\nIntegration testing is [every bit as] useful as unit testing\n\nQuery collections of objects [as though] there were a database\n\nAnother [tiresome] programming task\n\nit is an extension method defined by a different class [altogether]\n\nwhich is a [concise] format for expressing a method body\n\n[It is not that] myVariable does not have a type\n\nAll of the features I have described so far are [put to good use] in LINQ.\n\nIf you have never used LINQ, you have been [missing out].\n\nThe [wrinkle] in this query is that it returns one anonymously typed object\n\nHowever, if you are willing to [forgo] the simplicity of the query syntax,\n\ndevelopers who are not used to parallel programming often [get bogged] down by the unusual syntax\n\nI am skipping [over a lot] of detail\n\nThe part that most programmers [get bogged down with] is the continuation\n\nThis is the part that [makes heads hurt].\n\n[you are not alone in your confusion]\n\nand if you are already familiar with the syntax from earlier versions you can [skip ahead].\n\nsmall amount of duplication made this [worthwhile].\n\nbut it becomes [second nature] pretty quickly.\n\n[Equally useful] is that Visual Studio will flag errors\n\nwhich is ideal – not only [does it let me] work with simpler markup\n\nwhich will be an [error-prone process]\n\nyou must [remain aware] of the effect\n\nbut as a [rule of thumb], I recommend [erring on the side of caution] and pushing anything but the most simple\n\nbut the example serves to [reinforce the way] in which\n\nI can [tailor] the output\n\ntools that [underpin] the MVC Framework\n\nI suggest that you at least have a quick [skim] through this chapter\n\nand, [in doing so], learn more\n\neverything in an MVC Framework application [revolves around] it.\n\nam going to [switch tracks] and start using the MVC Framework [in earnest].\n\nand then the basic features of the application [snap together] quickly\n\nso this technique is most useful when you are [tweaking the fit and finish] of the HTML that your application generates.\n\nNot only [are there] different relational databases available\n\n[runs counter to the idea] of separating out unrelated functionality that [pervades] MVC"
+    }
+  ]
+}
