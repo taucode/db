@@ -18,9 +18,24 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuget", "nuget", "{4EE5C30C
 		nuget\TauCode.Db.nuspec = nuget\TauCode.Db.nuspec
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TauCode.Db", "src\TauCode.Db\TauCode.Db.csproj", "{202DC44E-5880-4A3E-A265-CA5CEFD5E085}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{202DC44E-5880-4A3E-A265-CA5CEFD5E085}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{202DC44E-5880-4A3E-A265-CA5CEFD5E085}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{202DC44E-5880-4A3E-A265-CA5CEFD5E085}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{202DC44E-5880-4A3E-A265-CA5CEFD5E085}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{202DC44E-5880-4A3E-A265-CA5CEFD5E085} = {89412E0C-9F93-4FB0-ACB6-DC95174759A0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E033216E-1151-4D66-A416-3EBD14511CA8}
