@@ -1,0 +1,69 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\build-sqlite.sql" />
+    <None Remove="Resources\parse-ansi.sql" />
+    <None Remove="Resources\parse-sqlite.sql" />
+    <None Remove="Resources\rho-create-db.sql" />
+    <None Remove="Resources\rho-data.json" />
+    <None Remove="Resources\sqlce-clear-db-expected-1.sql" />
+    <None Remove="Resources\sqlce-clear-db-expected-2.sql" />
+    <None Remove="Resources\sqlce-clear-db-expected-3.sql" />
+    <None Remove="Resources\sqlce-create-db-expected.sql" />
+    <None Remove="Resources\sqlce-create-db.sql" />
+    <None Remove="Resources\sqlce-cruder-test.sql" />
+    <None Remove="Resources\sqlce-fill-db-all.sql" />
+    <None Remove="Resources\sqlce-fill-db-expected-1.sql" />
+    <None Remove="Resources\sqlce-fill-db-expected-2.sql" />
+    <None Remove="Resources\sqlce-fill-db-expected-3.sql" />
+    <None Remove="Resources\sqlce-serialize-data.sql" />
+    <None Remove="Resources\sqlce-serialize-expected1.json" />
+    <None Remove="Resources\sqlce-serialize-expected2.json" />
+    <None Remove="Resources\sqlce-serialize-schema.sql" />
+    <None Remove="Resources\sqlite-create-db-expected.sql" />
+    <None Remove="Resources\sqlite-create-db-lab.sql" />
+    <None Remove="Resources\sqlite-create-db.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\build-sqlite.sql" />
+    <EmbeddedResource Include="Resources\parse-ansi.sql" />
+    <EmbeddedResource Include="Resources\parse-sqlite.sql" />
+    <EmbeddedResource Include="Resources\rho-create-db.sql" />
+    <EmbeddedResource Include="Resources\rho-data.json" />
+    <EmbeddedResource Include="Resources\sqlce-clear-db-expected-1.sql" />
+    <EmbeddedResource Include="Resources\sqlce-clear-db-expected-2.sql" />
+    <EmbeddedResource Include="Resources\sqlce-clear-db-expected-3.sql" />
+    <EmbeddedResource Include="Resources\sqlce-create-db-expected.sql" />
+    <EmbeddedResource Include="Resources\sqlce-create-db.sql" />
+    <EmbeddedResource Include="Resources\sqlce-cruder-test.sql" />
+    <EmbeddedResource Include="Resources\sqlce-fill-db-all.sql" />
+    <EmbeddedResource Include="Resources\sqlce-fill-db-expected-1.sql" />
+    <EmbeddedResource Include="Resources\sqlce-fill-db-expected-2.sql" />
+    <EmbeddedResource Include="Resources\sqlce-fill-db-expected-3.sql" />
+    <EmbeddedResource Include="Resources\sqlce-serialize-data.sql" />
+    <EmbeddedResource Include="Resources\sqlce-serialize-expected1.json" />
+    <EmbeddedResource Include="Resources\sqlce-serialize-expected2.json" />
+    <EmbeddedResource Include="Resources\sqlce-serialize-schema.sql" />
+    <EmbeddedResource Include="Resources\sqlite-create-db-expected.sql" />
+    <EmbeddedResource Include="Resources\sqlite-create-db-lab.sql" />
+    <EmbeddedResource Include="Resources\sqlite-create-db.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="nunit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.13.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\TauCode.Db\TauCode.Db.csproj" />
+  </ItemGroup>
+
+</Project>
