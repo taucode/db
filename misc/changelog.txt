@@ -1,0 +1,3 @@
+2019-07-06
+==========
+    1. Ported to .NET Standard
