@@ -1,0 +1,44 @@
+﻿uniqueidentifier    SingleWord      Uniqueidentifier
+
+bigint              SingleWord      Integer
+int                 SingleWord      Integer
+tinyint             SingleWord      Integer
+smallint            SingleWord      Integer
+
+bit                 SingleWord      Boolean
+
+cursor              SingleWord      Custom
+hierarchyid         SingleWord      Custom
+rowversion          SingleWord      Custom
+xml                 SingleWord      Custom
+sql_variant         SingleWord      Custom
+
+date                SingleWord      DateTime
+datetime            SingleWord      DateTime
+datetime2           SingleWord      DateTime
+datetimeoffset      SingleWord      DateTime
+smalldatetime       SingleWord      DateTime
+time                SingleWord      Time
+
+money               SingleWord      PreciseNumber
+smallmoney          SingleWord      PreciseNumber
+
+float               SingleWord      FloatingPointNumber
+real                SingleWord      FloatingPointNumber
+
+image               SingleWord      Binary
+
+text                SingleWord      AnsiText
+
+ntext               SingleWord      UnicodeText
+
+binary              Sized           Binary
+varbinary           Sized           Binary
+char                Sized           AnsiText
+varchar             Sized           AnsiText
+nchar               Sized           UnicodeText
+nvarchar            Sized           UnicodeText
+
+dec                 PreciseNumber   PreciseNumber
+decimal             PreciseNumber   PreciseNumber
+numeric             PreciseNumber   PreciseNumber

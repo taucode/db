@@ -1,0 +1,5 @@
+﻿integer         SingleWord      Integer
+text            SingleWord      UnicodeText
+blob            SingleWord      Binary
+real            SingleWord      FloatingPointNumber
+numeric         SingleWord      PreciseNumber
