@@ -24,7 +24,7 @@ namespace TauCode.Db.Utils.Parsing.Core.Fluent
 
         INodeSyntax UseNumber(Action<Token, ParsingContext> action, string nodeName = null);
 
-        //INodeSyntax UseString(Action<Token, ParsingContext> action, string nodeName = null);
+        INodeSyntax UseString(Action<Token, ParsingContext> action, string nodeName = null);
 
         INodeSyntax SkipWord(string word, bool caseSensitive = false, string nodeName = null);
 

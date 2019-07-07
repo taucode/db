@@ -1,4 +1,5 @@
 ﻿using System;
+using TauCode.Db.Utils.Parsing.Core.Fluent;
 using TauCode.Db.Utils.Parsing.Core.Tokens;
 using TauCode.Utils.Extensions;
 
@@ -84,6 +85,16 @@ namespace TauCode.Db.Utils.Parsing.Core
             {
                 throw new ArgumentException("'NumberToken' was expected.", nameof(token));
             }
+        }
+
+        public static INodeSyntax SkipNumber(this INodeSyntax nodeSyntax)
+        {
+            return nodeSyntax.UseNumber(ParsingNode.IdleAction);
+        }
+
+        public static INodeSyntax SkipString(this INodeSyntax nodeSyntax)
+        {
+            return nodeSyntax.UseString(ParsingNode.IdleAction);
         }
     }
 }

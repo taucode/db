@@ -102,6 +102,11 @@ namespace TauCode.Db.Utils.Parsing
             return _identifierDelimiters.ContainsKey(c);
         }
 
+        protected virtual bool IsStringOpeningDelimiter(char c)
+        {
+            return c == '\'';
+        }
+
         protected virtual WordToken ExtractWordToken()
         {
             var begin = this.GetCurrentPosition();
@@ -248,6 +253,11 @@ namespace TauCode.Db.Utils.Parsing
 
             while (true)
             {
+                if (this.IsEndOfInput())
+                {
+                    break; // no problem, end of number and end of input
+                }
+
                 var c = this.GetCurrentChar();
 
                 if (this.IsDigitSymbol(c))
@@ -277,6 +287,42 @@ namespace TauCode.Db.Utils.Parsing
             var number = _input.Substring(begin, end - begin);
             var numberToken = new NumberToken(number);
             return numberToken;
+        }
+
+        protected virtual StringToken ExtractStringToken()
+        {
+            this.Advance(); // skip opening delimiter
+
+            var begin = this.GetCurrentPosition();
+
+            while (true)
+            {
+                if (this.IsEndOfInput())
+                {
+                    throw new TokenizerException("Expected string, but end of input encountered.");
+                }
+
+                var c = this.GetCurrentChar();
+
+                if (c == CR || c == LF)
+                {
+                    throw new TokenizerException("Newline in string.");
+                }
+                else if (c == '\'')
+                {
+                    break;
+                }
+
+                this.Advance();
+            }
+
+            var end = this.GetCurrentPosition();
+            var str = _input.Substring(begin, end - begin);
+            var token = new StringToken(str);
+
+            this.Advance(); // skip closing '
+
+            return token;
         }
 
         #endregion
@@ -327,17 +373,22 @@ namespace TauCode.Db.Utils.Parsing
                 else if (this.IsSymbolChar(c))
                 {
                     var token = this.ExtractSymbolToken();
-                    _tokens.Add(token, default(TokenCollection.TokenPosition));
+                    _tokens.Add(token, default);
                 }
                 else if (this.IsDigitSymbol(c))
                 {
                     var token = this.ExtractNumberToken();
-                    _tokens.Add(token, default(TokenCollection.TokenPosition));
+                    _tokens.Add(token, default);
                 }
                 else if (this.IsIdentifierOpeningDelimiter(c))
                 {
                     var token = this.ExtractIdentifierToken(_identifierDelimiters[c]);
-                    _tokens.Add(token, default(TokenCollection.TokenPosition));
+                    _tokens.Add(token, default);
+                }
+                else if (this.IsStringOpeningDelimiter(c))
+                {
+                    var token = this.ExtractStringToken();
+                    _tokens.Add(token, default);
                 }
                 else
                 {

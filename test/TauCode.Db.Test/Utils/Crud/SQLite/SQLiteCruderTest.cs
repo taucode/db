@@ -1,18 +1,18 @@
 ﻿using NUnit.Framework;
 using System.Linq;
 using TauCode.Db.Utils.Crud;
-using TauCode.Db.Utils.Crud.SqlServerCe;
+using TauCode.Db.Utils.Crud.SQLite;
 
-namespace TauCode.Db.Test.Utils.Crud.SqlServerCe
+namespace TauCode.Db.Test.Utils.Crud.SQLite
 {
     [TestFixture]
-    public class SqlServerCeCruderTest : SqlServerCeTestBase
+    public class SQLiteCruderTest : SQLiteTestBase
     {
         [Test]
         public void InsertRow_RowWithOmitedOptionalColumnValues_Inserts()
         {
             // Arrange
-            ICruder cruder = new SqlServerCeCruder();
+            ICruder cruder = new SQLiteCruder();
 
             var row = new
             {
@@ -27,7 +27,7 @@ namespace TauCode.Db.Test.Utils.Crud.SqlServerCe
 
             // Normally, it is not a good idea to test some functionality with use of this very functionality.
             // But I am pretty sure ICruder.GetRows() works pretty fine since it is also covered by UTs.
-            ICruder assertCruder = new SqlServerCeCruder();
+            ICruder assertCruder = new SQLiteCruder();
 
             var rows = assertCruder.GetRows(this.Connection, "user");
 
@@ -45,7 +45,7 @@ namespace TauCode.Db.Test.Utils.Crud.SqlServerCe
             // Arrange
             // Normally, it is not a good idea to test some functionality with use of this very functionality.
             // But I am pretty sure ICruder.InsertRow() works pretty fine since it is also covered by UTs.
-            ICruder setupCruder = new SqlServerCeCruder();
+            ICruder setupCruder = new SQLiteCruder();
 
             var row = new
             {
@@ -56,7 +56,7 @@ namespace TauCode.Db.Test.Utils.Crud.SqlServerCe
             setupCruder.InsertRow(this.Connection, "user", row);
 
             // Act
-            ICruder testCruder = new SqlServerCeCruder();
+            ICruder testCruder = new SQLiteCruder();
             var existingRow = testCruder.GetRow(this.Connection, "user", 1);
 
             // Assert
@@ -72,7 +72,7 @@ namespace TauCode.Db.Test.Utils.Crud.SqlServerCe
             // Arrange
             // Normally, it is not a good idea to test some functionality with use of this very functionality.
             // But I am pretty sure ICruder.InsertRow() works pretty fine since it is also covered by UTs.
-            var setupCruder = new SqlServerCeCruder();
+            var setupCruder = new SQLiteCruder();
 
             var row = new
             {
@@ -83,7 +83,7 @@ namespace TauCode.Db.Test.Utils.Crud.SqlServerCe
             setupCruder.InsertRow(this.Connection, "user", row);
 
             // Act
-            var testCruder = new SqlServerCeCruder();
+            var testCruder = new SQLiteCruder();
             var nonExistingRow = testCruder.GetRow(this.Connection, "user", 1488);
 
             // Assert
@@ -99,12 +99,12 @@ namespace TauCode.Db.Test.Utils.Crud.SqlServerCe
             this.AddSetupRow(4, "marina");
 
             // Act
-            ICruder testCruder = new SqlServerCeCruder();
+            ICruder testCruder = new SQLiteCruder();
             var deleted = testCruder.DeleteRow(this.Connection, "user", 3);
 
             // Assert
             Assert.That(deleted, Is.True);
-            ICruder assertCruder = new SqlServerCeCruder();
+            ICruder assertCruder = new SQLiteCruder();
             var remaining = assertCruder.GetRows(this.Connection, "user");
             var remainingIds = remaining.Select(x => (int)x.id);
             CollectionAssert.AreEquivalent(
@@ -121,12 +121,12 @@ namespace TauCode.Db.Test.Utils.Crud.SqlServerCe
             this.AddSetupRow(4, "marina");
 
             // Act
-            ICruder testCruder = new SqlServerCeCruder();
+            ICruder testCruder = new SQLiteCruder();
             var deleted = testCruder.DeleteRow(this.Connection, "user", 1488);
 
             // Assert
             Assert.That(deleted, Is.False);
-            ICruder assertCruder = new SqlServerCeCruder();
+            ICruder assertCruder = new SQLiteCruder();
             var remaining = assertCruder.GetRows(this.Connection, "user");
             var remainingIds = remaining.Select(x => (int)x.id);
             CollectionAssert.AreEquivalent(
@@ -143,7 +143,7 @@ namespace TauCode.Db.Test.Utils.Crud.SqlServerCe
             this.AddSetupRow(4, "marina");
 
             // Act
-            ICruder testCruder = new SqlServerCeCruder();
+            ICruder testCruder = new SQLiteCruder();
             var updated = testCruder.UpdateRow(
                 this.Connection,
                 "user",
@@ -157,7 +157,7 @@ namespace TauCode.Db.Test.Utils.Crud.SqlServerCe
 
             // Assert
             Assert.That(updated, Is.True);
-            ICruder assertCruder = new SqlServerCeCruder();
+            ICruder assertCruder = new SQLiteCruder();
             var updatedOlia = assertCruder.GetRow(this.Connection, "user", 2);
             Assert.That(updatedOlia.login, Is.EqualTo("olga"));
             Assert.That(updatedOlia.email, Is.EqualTo("night_miracle@yahoo.com"));
@@ -173,7 +173,7 @@ namespace TauCode.Db.Test.Utils.Crud.SqlServerCe
             var u4 = assertCruder.GetRow(this.Connection, "user", 4);
             Assert.That(u4.login, Is.EqualTo("marina"));
 
-            var users = new []{u1, u3, u4};
+            var users = new[] { u1, u3, u4 };
             foreach (var user in users)
             {
                 Assert.That(user.email, Is.EqualTo("ak@deserea.net"));
@@ -190,7 +190,7 @@ namespace TauCode.Db.Test.Utils.Crud.SqlServerCe
             this.AddSetupRow(4, "marina");
 
             // Act
-            ICruder testCruder = new SqlServerCeCruder();
+            ICruder testCruder = new SQLiteCruder();
             var updated = testCruder.UpdateRow(
                 this.Connection,
                 "user",
@@ -204,7 +204,7 @@ namespace TauCode.Db.Test.Utils.Crud.SqlServerCe
 
             // Assert
             Assert.That(updated, Is.False);
-            ICruder assertCruder = new SqlServerCeCruder();
+            ICruder assertCruder = new SQLiteCruder();
 
             // other not changed
             var u1 = assertCruder.GetRow(this.Connection, "user", 1);
@@ -227,11 +227,11 @@ namespace TauCode.Db.Test.Utils.Crud.SqlServerCe
             }
         }
 
-        protected override string ResourceName => "sqlce-cruder-test.sql";
+        protected override string ResourceName => "sqlite-cruder-test.sql";
 
         private void AddSetupRow(int id, string login)
         {
-            ICruder cruder = new SqlServerCeCruder();
+            ICruder cruder = new SQLiteCruder();
 
             var row = new
             {

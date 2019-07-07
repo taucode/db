@@ -28,8 +28,8 @@ namespace TauCode.Db.Utils.Parsing.Core.Gallery
             var sizedTypeBlock = this.CreateSizedTypeBlock();
             var preciseNumberTypeBlock = this.CreatePreciseNumberTypeBlock();
             var primaryKeyBlock = this.CreatePrimaryKeyBlock();
-            //var identityBlock = this.CreateIdentityBlock();
             var nullabilityBlock = this.CreateNullabilityBlock();
+            var defaultBlock = this.CreateDefaultBlock();
 
             syntax
                 .UseIdentifier(AddColumn, "column_name")
@@ -57,6 +57,10 @@ namespace TauCode.Db.Utils.Parsing.Core.Gallery
                             .LinkTo("before_finish_column")
                         .GetSplitter("after_primary_key")
                             .LinkTo("before_finish_column")
+                    .GetSplitter("after_nullability")
+                        .Attach(defaultBlock.InputNode)
+                        .Use(defaultBlock.OutputNodes.Single())
+                        .LinkTo("before_finish_column")
                     .GetSplitter("after_nullability")
                         .LinkTo("before_finish_column")
                 .Separate("before_finish_column")
@@ -90,6 +94,30 @@ namespace TauCode.Db.Utils.Parsing.Core.Gallery
                 new[]
                 {
                     syntax.GetNode("end_nullability").Node
+                });
+        }
+
+        protected virtual ParsingBlock CreateDefaultBlock()
+        {
+            var syntax = new NodeSyntax();
+
+            syntax
+                .SkipWord("DEFAULT")
+                .Split("possible_values")
+                    .SkipWord("NULL")
+                    .Milestone(ParsingNode.IdleAction, "end_default")
+                .GetSplitter("possible_values")
+                    .SkipNumber()
+                    .LinkTo("end_default")
+                .GetSplitter("possible_values")
+                    .SkipString()
+                    .LinkTo("end_default");
+
+            return new ParsingBlock(
+                syntax.Root,
+                new[]
+                {
+                    syntax.GetNode("end_default").Node
                 });
         }
 

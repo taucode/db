@@ -208,7 +208,7 @@ WITHOUT";
             var identifierDelimiters = _dialect.IdentifierDelimiters;
 
             // Assert
-            Assert.That(identifierDelimiters.Count, Is.EqualTo(4));
+            Assert.That(identifierDelimiters.Count, Is.EqualTo(3));
 
             var tuple = identifierDelimiters[0];
             Assert.That(tuple.Item1, Is.EqualTo('"'));
@@ -221,10 +221,6 @@ WITHOUT";
             tuple = identifierDelimiters[2];
             Assert.That(tuple.Item1, Is.EqualTo('`'));
             Assert.That(tuple.Item2, Is.EqualTo('`'));
-
-            tuple = identifierDelimiters[3];
-            Assert.That(tuple.Item1, Is.EqualTo('\''));
-            Assert.That(tuple.Item2, Is.EqualTo('\''));
         }
 
         [Test]
@@ -396,13 +392,11 @@ WITHOUT";
             var decoratedTable = _dialect.DecorateIdentifier(DbIdentifierType.Table, "the_table", '"');
             var decoratedColumn = _dialect.DecorateIdentifier(DbIdentifierType.Column, "the_column", '[');
             var decoratedIndex = _dialect.DecorateIdentifier(DbIdentifierType.Index, "the_index", '`');
-            var decoratedView = _dialect.DecorateIdentifier(DbIdentifierType.View, "the_view", '\'');
-
+            
             // Assert
             Assert.That(decoratedTable, Is.EqualTo("\"the_table\""));
             Assert.That(decoratedColumn, Is.EqualTo("[the_column]"));
             Assert.That(decoratedIndex, Is.EqualTo("`the_index`"));
-            Assert.That(decoratedView, Is.EqualTo("'the_view'"));
         }
 
         [Test]

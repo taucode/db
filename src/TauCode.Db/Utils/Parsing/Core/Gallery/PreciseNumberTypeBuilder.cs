@@ -27,15 +27,6 @@ namespace TauCode.Db.Utils.Parsing.Core.Gallery
                 .Custom(
                     (token, context) => context.GetColumn().Name = token.GetTokenIdentifier(),
                     this.IsPreciseNumberTypeNameToken,
-                    //token =>
-                    //    (
-                    //        token is WordToken wordToken &&
-                    //        this.Dialect.IsDialectPreciseNumberTypeName(wordToken.Word)
-                    //    ) ||
-                    //    (
-                    //        token is IdentifierToken identifierToken &&
-                    //        this.Dialect.IsDialectPreciseNumberTypeName(identifierToken.Identifier)
-                    //    ),
                     "precisenumber_type_name")
                 .Split("after_name")
                     .Milestone(ParsingNode.IdleAction, "end")

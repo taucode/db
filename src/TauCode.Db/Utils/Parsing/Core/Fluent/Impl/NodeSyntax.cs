@@ -148,7 +148,7 @@ namespace TauCode.Db.Utils.Parsing.Core.Fluent.Impl
                     }
 
                     var index = -1;
-                    for (var i = 0; i < split.Ways.Count; i++) // todo1[ak] where the fuck is my "linq". IndexOf?
+                    for (var i = 0; i < split.Ways.Count; i++) // todo1[ak] where is my "linq". IndexOf?
                     {
                         if (split.Ways[i] == unresolvedLinkNode)
                         {
@@ -297,6 +297,14 @@ namespace TauCode.Db.Utils.Parsing.Core.Fluent.Impl
             this.CheckNotResolved();
 
             var node = new UseNumberNode(action) { Name = nodeName };
+            return this.AttachOrAddSplitWay(node, nodeName);
+        }
+
+        public INodeSyntax UseString(Action<Token, ParsingContext> action, string nodeName = null)
+        {
+            this.CheckNotResolved();
+
+            var node = new UseStringNode(action) { Name = nodeName };
             return this.AttachOrAddSplitWay(node, nodeName);
         }
 
