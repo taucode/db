@@ -1,0 +1,29 @@
+﻿int         SingleWord      Integer
+integer     SingleWord      Integer
+bigint      SingleWord      Integer
+smallint    SingleWord      Integer
+
+boolean     SingleWord      Boolean
+
+double      SingleWord      FloatingPointNumber
+float       SingleWord      FloatingPointNumber
+real        SingleWord      FloatingPointNumber
+
+date        SingleWord      DateTime
+timestamp   SingleWord      DateTime
+time        SingleWord      Time
+
+array       SingleWord      Custom
+xml         SingleWord      Custom
+interval    SingleWord      Custom
+multiset    SingleWord      Custom
+
+binary      Sized           Binary
+
+char        Sized           AnsiText
+character   Sized           AnsiText
+varbinary   Sized           Binary
+varchar     Sized           AnsiText
+
+decimal     PreciseNumber   PreciseNumber
+numeric     PreciseNumber   PreciseNumber

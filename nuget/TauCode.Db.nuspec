@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>TauCode.Db</id>
+    <version>2.19.1</version>
+    <authors>TauCode</authors>
+    <owners>TauCode</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>https://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <projectUrl>http://taucode.com/</projectUrl>
+    <description>Basic functionality for database support</description>
+    <releaseNotes>
+      Updated NuGet refs.
+    </releaseNotes>
+    <tags>taucode db database</tags>
+    <dependencies>
+      <dependency id="Microsoft.CSharp" version="4.5.0" />
+      <dependency id="Newtonsoft.Json" version="12.0.2" />
+      <dependency id="TauCode.Algorithms" version="2.19.1" />
+      <dependency id="TauCode.Data" version="2.19.1" />
+      <dependency id="TauCode.Utils" version="2.19.1" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\src\TauCode.Db\bin\Release\netstandard2.0\TauCode.Db.dll" target="lib\netstandard2.0" />
+    <file src="..\src\TauCode.Db\bin\Release\netstandard2.0\TauCode.Db.pdb" target="lib\netstandard2.0" />
+  </files>
+</package>
