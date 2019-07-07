@@ -29,9 +29,9 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
-    <PackageReference Include="TauCode.Algorithms" Version="1.19.1" />
+    <PackageReference Include="TauCode.Algorithms" Version="2.19.1" />
     <PackageReference Include="TauCode.Data" Version="2.19.1" />
-    <PackageReference Include="TauCode.Utils" Version="1.19.1" />
+    <PackageReference Include="TauCode.Utils" Version="2.19.1" />
   </ItemGroup>
 
 </Project>

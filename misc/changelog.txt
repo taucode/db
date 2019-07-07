@@ -1,3 +1,8 @@
 2019-07-06
 ==========
-    1. Ported to .NET Standard
+    1. Ported to .NET Standard.
+
+2019-07-08
+==========
+    Version: 2.19.1
+    1. Updated NuGet refs.
