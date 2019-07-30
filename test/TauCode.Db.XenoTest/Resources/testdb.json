@@ -1,0 +1,119 @@
+﻿{
+  "app": [
+    {
+      "id": "597968a9-2c09-41a9-9e8e-692a0d9444a9",
+      "code": "econera_diet",
+      "name": "Econera.Diet",
+      "description": "Service for diet"
+    },
+    {
+      "id": "2817b658-6a82-4f99-ad28-ea3fd9fd8e6c",
+      "code": "econera_money",
+      "name": "Econera.Money",
+      "description": "Service for money saving"
+    },
+    {
+      "id": "ad1814d9-5c75-4e98-8201-c6041b6f4c56",
+      "code": "econera_time",
+      "name": "Econera.Time",
+      "description": "Service for time saving"
+    }
+  ],
+  "role": [
+    {
+      "id": "e203a2d7-6086-4d09-9d58-e40105184bc5",
+      "app_id": "597968a9-2c09-41a9-9e8e-692a0d9444a9",
+      "code": "sys_admin",
+      "name": "System Administrator",
+      "description": "System administrator of the Econera.Diet application"
+    },
+    {
+      "id": "84600d4d-59cf-49d2-a401-ff8190844752",
+      "app_id": "597968a9-2c09-41a9-9e8e-692a0d9444a9",
+      "code": "app_user",
+      "name": "Application User",
+      "description": "Econera.Diet application user"
+    },
+    {
+      "id": "4aeb1351-46fa-43d7-94df-e6c519350ff5",
+      "app_id": "2817b658-6a82-4f99-ad28-ea3fd9fd8e6c",
+      "code": "sys_admin",
+      "name": "System Administrator",
+      "description": "System administrator of the Econera.Money application"
+    },
+    {
+      "id": "ba8f16ca-3a0b-4b90-a159-ffb8cfe30720",
+      "app_id": "2817b658-6a82-4f99-ad28-ea3fd9fd8e6c",
+      "code": "app_user",
+      "name": "Application User",
+      "description": "Econera.Money application user"
+    }
+  ],
+  "user": [
+    {
+      "id": "56c39bf4-14a5-4335-8d0f-372605b3d71d",
+      "username": "ak",
+      "full_name": "Andrey",
+      "email": "ak@mail.net",
+      "password_hash": "_123_"
+    },
+    {
+      "id": "ac9b17fc-6eef-4dd9-a81c-6a585304327a",
+      "username": "olia",
+      "full_name": "Olga",
+      "email": "olia@mail.net",
+      "password_hash": "_456_"
+    },
+    {
+      "id": "3ddcbf3b-2d7d-4357-bfe2-d956b54a9988",
+      "username": "ira",
+      "full_name": "Irina",
+      "email": "triad@mail.net",
+      "password_hash": "_789_"
+    }
+  ],
+  "user_role": [
+    {
+      "id": "60bf84dd-59f7-4c9f-ada5-ba0c7c46ec64",
+      "user_id": "56c39bf4-14a5-4335-8d0f-372605b3d71d", // ak
+      "role_id": "e203a2d7-6086-4d09-9d58-e40105184bc5" // diet sys_admin
+    },
+    {
+      "id": "81476864-55e8-4593-ac01-96b8baf0f991",
+      "user_id": "56c39bf4-14a5-4335-8d0f-372605b3d71d", // ak
+      "role_id": "84600d4d-59cf-49d2-a401-ff8190844752" // diet app_user
+    },
+    {
+      "id": "133760d6-6bf0-40a8-9ed1-9bea83f83029",
+      "user_id": "56c39bf4-14a5-4335-8d0f-372605b3d71d", // ak
+      "role_id": "4aeb1351-46fa-43d7-94df-e6c519350ff5" // money sys_admin
+    },
+    {
+      "id": "544b4fcc-a2c1-4907-9189-b0d2d20dc7ae",
+      "user_id": "56c39bf4-14a5-4335-8d0f-372605b3d71d", // ak
+      "role_id": "ba8f16ca-3a0b-4b90-a159-ffb8cfe30720" // money app_user
+    },
+
+    {
+      "id": "f8496eda-7ce4-4ea9-8ca1-68e26dca2360",
+      "user_id": "ac9b17fc-6eef-4dd9-a81c-6a585304327a", // olia
+      "role_id": "84600d4d-59cf-49d2-a401-ff8190844752" // diet app_user
+    },
+    {
+      "id": "cd6ba999-2b62-439c-9b86-aa44fd6be3e7",
+      "user_id": "ac9b17fc-6eef-4dd9-a81c-6a585304327a", // olia
+      "role_id": "ba8f16ca-3a0b-4b90-a159-ffb8cfe30720" // money app_user
+    },
+
+    {
+      "id": "1227241f-ae5e-4d79-b783-4c19994bf05e",
+      "user_id": "3ddcbf3b-2d7d-4357-bfe2-d956b54a9988", // ira
+      "role_id": "e203a2d7-6086-4d09-9d58-e40105184bc5" // diet sys_admin
+    },
+    {
+      "id": "f8e01e8a-a100-474f-b1e5-5bcdb37cc759",
+      "user_id": "3ddcbf3b-2d7d-4357-bfe2-d956b54a9988", // ira
+      "role_id": "4aeb1351-46fa-43d7-94df-e6c519350ff5" // money sys_admin
+    }
+  ]
+}

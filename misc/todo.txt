@@ -1,0 +1,4 @@
+2019-07-30
+==========
+    1. Fix issue with SqlCommand.Prepare for all DB types
+    2. Remove TauCode.Db.XenoTest project when done.
