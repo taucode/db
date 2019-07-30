@@ -6,3 +6,8 @@
 ==========
     Version: 2.19.1
     1. Updated NuGet refs.
+
+2019-07-30
+==========
+    Version: 2.19.2-dev-0730-1345
+    1. Fixed issue with SqlCommand.Prepare for main DB types (uniqueidentifier, varchar, nvarchar).
