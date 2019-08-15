@@ -122,7 +122,7 @@ namespace TauCode.Db.Utils.Serialization
 
                 if (parameterInfo == null)
                 {
-                    throw new InvalidOperationException($"'{nameof(GetParameterInfo)}' return null. Table name: '{tableMold.Name}', column name: '{columnName}'");
+                    throw new InvalidOperationException($"'{nameof(GetParameterInfo)}' returned null. Table name: '{tableMold.Name}', column name: '{columnName}'");
                 }
 
                 parameter.DbType = parameterInfo.DbType;
