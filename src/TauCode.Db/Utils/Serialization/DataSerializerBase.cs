@@ -103,6 +103,30 @@ namespace TauCode.Db.Utils.Serialization
 
                 var parameter = command.CreateParameter();
                 parameter.ParameterName = parameterName;
+
+                ParameterInfo parameterInfo = this.GetParameterInfo(tableMold, columnName);
+
+                if (parameterInfo == null)
+                {
+                    throw new InvalidOperationException($"'{nameof(GetParameterInfo)}' returned null. Table name: '{tableMold.Name}', column name: '{columnName}'");
+                }
+
+                parameter.DbType = parameterInfo.DbType;
+                if (parameterInfo.Size.HasValue)
+                {
+                    parameter.Size = parameterInfo.Size.Value;
+                }
+
+                if (parameterInfo.Precision.HasValue)
+                {
+                    parameter.Precision = (byte)parameterInfo.Precision.Value;
+                }
+
+                if (parameterInfo.Scale.HasValue)
+                {
+                    parameter.Scale = (byte)parameterInfo.Scale.Value;
+                }
+
                 command.Parameters.Add(parameter);
 
                 parametersByColumnName.Add(columnName, parameter);
