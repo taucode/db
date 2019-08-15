@@ -15,6 +15,20 @@ namespace TauCode.Db.Utils.Serialization
 {
     public abstract class DataSerializerBase : IDataSerializer
     {
+        #region Nested
+
+        protected class ParameterInfo
+        {
+            public DbType DbType { get; set; }
+            public int? Size { get; set; }
+
+            public int? Precision { get; set; }
+
+            public int? Scale { get; set; }
+        }
+
+        #endregion
+
         #region Fields
 
         private ICruder _cruder;
@@ -181,7 +195,14 @@ namespace TauCode.Db.Utils.Serialization
             switch (token.Type)
             {
                 case JTokenType.String:
-                    return (string)((JValue)token).Value;
+                    if (column.Type.Name.ToLower() == "uniqueidentifier")
+                    {
+                        return new Guid((string)((JValue)token).Value);
+                    }
+                    else
+                    {
+                        return (string)((JValue)token).Value;
+                    }
 
                 case JTokenType.Float:
                     return (double)((JValue)token).Value;
@@ -213,6 +234,44 @@ namespace TauCode.Db.Utils.Serialization
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        protected virtual ParameterInfo GetParameterInfo(TableMold tableMold, string columnName)
+        {
+            ParameterInfo parameterInfo;
+
+            var column = tableMold.GetColumn(columnName);
+            var typeName = column.Type.Name.ToLower();
+
+            if (typeName == "uniqueidentifier")
+            {
+                parameterInfo = new ParameterInfo
+                {
+                    DbType = DbType.Guid,
+                };
+            }
+            else if (typeName == "varchar")
+            {
+                parameterInfo = new ParameterInfo
+                {
+                    DbType = DbType.AnsiString,
+                    Size = column.Type.Size,
+                };
+            }
+            else if (typeName == "nvarchar")
+            {
+                parameterInfo = new ParameterInfo
+                {
+                    DbType = DbType.String,
+                    Size = column.Type.Size,
+                };
+            }
+            else
+            {
+                parameterInfo = null;
+            }
+
+            return parameterInfo;
         }
 
         #endregion
