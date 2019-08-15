@@ -11,3 +11,8 @@
 ==========
     Version: 2.19.2-dev-0730-1345
     1. Fixed issue with SqlCommand.Prepare for main DB types (uniqueidentifier, varchar, nvarchar).
+
+2019-08-15
+==========
+    Version: 2.19.2-dev-0815-1101
+    1. Added supported SQL parameter types.
