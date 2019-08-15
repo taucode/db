@@ -118,7 +118,7 @@ namespace TauCode.Db.Utils.Serialization
                 var parameter = command.CreateParameter();
                 parameter.ParameterName = parameterName;
 
-                ParameterInfo parameterInfo = this.GetParameterInfo(tableMold, columnName);
+                var parameterInfo = this.GetParameterInfo(tableMold, columnName);
 
                 if (parameterInfo == null)
                 {
@@ -243,33 +243,59 @@ namespace TauCode.Db.Utils.Serialization
             var column = tableMold.GetColumn(columnName);
             var typeName = column.Type.Name.ToLower();
 
-            if (typeName == "uniqueidentifier")
+            switch (typeName)
             {
-                parameterInfo = new ParameterInfo
-                {
-                    DbType = DbType.Guid,
-                };
+                case "uniqueidentifier":
+                    parameterInfo = new ParameterInfo
+                    {
+                        DbType = DbType.Guid,
+                    };
+                    break;
+
+                case "varchar":
+                    parameterInfo = new ParameterInfo
+                    {
+                        DbType = DbType.AnsiString,
+                        Size = column.Type.Size,
+                    };
+                    break;
+
+                case "nvarchar":
+                    parameterInfo = new ParameterInfo
+                    {
+                        DbType = DbType.String,
+                        Size = column.Type.Size,
+                    };
+                    break;
+
+                case "datetime":
+                    parameterInfo = new ParameterInfo
+                    {
+                        DbType = DbType.DateTime,
+                    };
+                    break;
+
+                case "bit":
+                    parameterInfo = new ParameterInfo
+                    {
+                        DbType = DbType.Boolean,
+                    };
+                    break;
+
+                case "decimal":
+                    parameterInfo = new ParameterInfo
+                    {
+                        DbType = DbType.Decimal,
+                        Precision = column.Type.Precision,
+                        Scale = column.Type.Scale,
+                    };
+                    break;
+
+                default:
+                    parameterInfo = null;
+                    break;
             }
-            else if (typeName == "varchar")
-            {
-                parameterInfo = new ParameterInfo
-                {
-                    DbType = DbType.AnsiString,
-                    Size = column.Type.Size,
-                };
-            }
-            else if (typeName == "nvarchar")
-            {
-                parameterInfo = new ParameterInfo
-                {
-                    DbType = DbType.String,
-                    Size = column.Type.Size,
-                };
-            }
-            else
-            {
-                parameterInfo = null;
-            }
+
 
             return parameterInfo;
         }
