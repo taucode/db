@@ -275,6 +275,13 @@ namespace TauCode.Db.Utils.Serialization
                     };
                     break;
 
+                case "date":
+                    parameterInfo = new ParameterInfo
+                    {
+                        DbType = DbType.Date,
+                    };
+                    break;
+
                 case "bit":
                     parameterInfo = new ParameterInfo
                     {
