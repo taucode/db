@@ -21,3 +21,8 @@
 ==========
     Version: 2.19.2-dev-0817-1400
     1. Added SQL parameter type: 'date'.
+
+2019-09-17
+==========
+    Version: 2.19.2-dev-0917-1305
+    1. Added SQL parameter type: 'int'.

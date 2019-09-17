@@ -298,6 +298,13 @@ namespace TauCode.Db.Utils.Serialization
                     };
                     break;
 
+                case "int":
+                    parameterInfo = new ParameterInfo
+                    {
+                        DbType = DbType.Int32,
+                    };
+                    break;
+
                 default:
                     parameterInfo = null;
                     break;
