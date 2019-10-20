@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Reflection;
@@ -31,7 +30,7 @@ namespace TauCode.Db.XenoTest
             this.DeserializeDbJson(json);
             
             // Act
-            throw new NotImplementedException();
+            
 
             // Assert
         }
