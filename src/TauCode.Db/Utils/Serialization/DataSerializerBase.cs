@@ -468,4 +468,3 @@ namespace TauCode.Db.Utils.Serialization
         #endregion
     }
 }
-
