@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>TauCode.Db</id>
-    <version>2.19.3</version>
+    <version>3.0</version>
     <authors>TauCode</authors>
     <owners>TauCode</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -10,15 +10,15 @@
     <projectUrl>http://taucode.com/</projectUrl>
     <description>Basic functionality for database support</description>
     <releaseNotes>
-      Release 2.19.3
+      Release v3.0
     </releaseNotes>
     <tags>taucode db database</tags>
     <dependencies>
       <dependency id="Microsoft.CSharp" version="4.6.0" />
       <dependency id="Newtonsoft.Json" version="12.0.2" />
-      <dependency id="TauCode.Algorithms" version="2.19.1" />
-      <dependency id="TauCode.Data" version="2.19.1" />
-      <dependency id="TauCode.Utils" version="2.19.2" />
+      <dependency id="TauCode.Algorithms" version="3.0" />
+      <dependency id="TauCode.Data" version="3.0" />
+      <dependency id="TauCode.Utils" version="3.0" />
     </dependencies>
   </metadata>
   <files>
