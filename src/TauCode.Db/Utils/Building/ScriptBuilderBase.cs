@@ -68,7 +68,8 @@ namespace TauCode.Db.Utils.Building
                 if (addComments)
                 {
                     var uniqueWord = index.IsUnique ? "unique " : string.Empty;
-                    sb.AppendLine($@"/* create {uniqueWord}index {index.Name}: {table.Name}({string.Join(", ", index.ColumnNames)}) */");
+                    throw new NotImplementedException();
+                    //sb.AppendLine($@"/* create {uniqueWord}index {index.Name}: {table.Name}({string.Join(", ", index.ColumnNames)}) */");
                 }
 
                 var indexSql = this.BuildIndexSql(table.Name, index);
@@ -397,17 +398,18 @@ namespace TauCode.Db.Utils.Building
                 index.Name,
                 this.CurrentOpeningIdentifierDelimiter);
 
-            var decoratedColumnNames = this.DecorateColumnsOverComma(
-                index.ColumnNames,
-                this.CurrentOpeningIdentifierDelimiter);
+            throw new NotImplementedException();
+            //var decoratedColumnNames = this.DecorateColumnsOverComma(
+            //    index.ColumnNames,
+            //    this.CurrentOpeningIdentifierDelimiter);
 
-            sb.AppendFormat(
-                "INDEX {0} ON {1}({2})",
-                decoratedIndexName,
-                decoratedTableName,
-                decoratedColumnNames);
+            //sb.AppendFormat(
+            //    "INDEX {0} ON {1}({2})",
+            //    decoratedIndexName,
+            //    decoratedTableName,
+            //    decoratedColumnNames);
 
-            return sb.ToString();
+            //return sb.ToString();
         }
 
         public virtual string BuildCreateTableSql(TableMold table, bool inline)

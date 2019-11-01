@@ -8,7 +8,7 @@ namespace TauCode.Db.Model
     {
         public string Name { get; set; }
         public string TableName { get; set; }
-        public List<string> ColumnNames { get; set; } = new List<string>();
+        public List<IndexColumnMold> Columns { get; set; } = new List<IndexColumnMold>();
         public bool IsUnique { get; set; }
     }
 }

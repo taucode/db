@@ -3,3 +3,4 @@ text            SingleWord      UnicodeText
 blob            SingleWord      Binary
 real            SingleWord      FloatingPointNumber
 numeric         SingleWord      PreciseNumber
+datetime        SingleWord      DateTime

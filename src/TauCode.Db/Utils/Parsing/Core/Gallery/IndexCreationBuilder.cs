@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using TauCode.Db.Model;
 using TauCode.Db.Utils.Parsing.Core.Fluent;
 using TauCode.Db.Utils.Parsing.Core.Fluent.Impl;
@@ -10,7 +11,9 @@ namespace TauCode.Db.Utils.Parsing.Core.Gallery
         protected override INodeSyntax BuildSyntaxImpl()
         {
             var syntax = new NodeSyntax();
-            var columnsInBrackets = new NamesInBracketsBuilder(context => context.GetIndex().ColumnNames).Build();
+            throw new NotImplementedException();
+            var columnsInBrackets = new NamesInBracketsBuilder(context => /*context.GetIndex().ColumnNames*/ throw new NotImplementedException()).Build();
+            //var columnsInBrackets = new NamesInBracketsBuilder(context => context.GetIndex().ColumnNames).Build();
 
             syntax
                 .UseWord(@"CREATE", (token, context) => context.AddProperty("index", new IndexMold()))

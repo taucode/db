@@ -125,8 +125,10 @@ namespace TauCode.Db.Utils.Building.MySql
 
             sb.Append($"    {uniqueWord}KEY ");
             sb.Append(decoratedIndexName);
-            var columnNames = this.DecorateColumnsOverComma(index.ColumnNames, this.CurrentOpeningIdentifierDelimiter);
-            sb.Append($"({columnNames})");
+
+            throw new NotImplementedException();
+            //var columnNames = this.DecorateColumnsOverComma(index.ColumnNames, this.CurrentOpeningIdentifierDelimiter);
+            //sb.Append($"({columnNames})");
 
             return sb.ToString();
         }

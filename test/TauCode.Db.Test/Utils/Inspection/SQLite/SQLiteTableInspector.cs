@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TauCode.Db.Model;
@@ -98,12 +99,14 @@ namespace TauCode.Db.Test.Utils.Inspection.SQLite
             var index = indexMolds.Single(x => x.Name == "IX_secret_name");
             Assert.That(index.IsUnique, Is.False);
             Assert.That(index.TableName, Is.EqualTo("secret"));
-            CollectionAssert.AreEqual(index.ColumnNames, new[] { "name" });
+            throw new NotImplementedException();
+            //CollectionAssert.AreEqual(index.ColumnNames, new[] { "name" });
 
             index = indexMolds.Single(x => x.Name == "UX_secret_keyStart_keyEnd");
             Assert.That(index.IsUnique, Is.True);
             Assert.That(index.TableName, Is.EqualTo("secret"));
-            CollectionAssert.AreEqual(index.ColumnNames, new[] { "key_start", "key_end" });
+            throw new NotImplementedException();
+            //CollectionAssert.AreEqual(index.ColumnNames, new[] { "key_start", "key_end" });
         }
 
         [Test]

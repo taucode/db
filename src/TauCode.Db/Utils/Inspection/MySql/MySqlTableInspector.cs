@@ -142,10 +142,11 @@ WHERE
         public override PrimaryKeyMold GetPrimaryKeyMold()
         {
             var pkIndex = this.GetIndexMolds().Single(x => x.Name == "PRIMARY");
+            throw new NotImplementedException();
             return new PrimaryKeyMold
             {
                 Name = pkIndex.Name,
-                ColumnNames = pkIndex.ColumnNames.ToList(),
+                //ColumnNames = pkIndex.ColumnNames.ToList(),
             };
         }
 
@@ -211,12 +212,14 @@ WHERE
                     {
                         Name = (string)g.Key,
                         IsUnique = (int)g.First().non_unique == 0,
-                        ColumnNames = g
-                            .OrderBy(x => (uint)x.seq_in_index)
-                            .Select(x => (string)x.column_name)
-                            .ToList(),
+                        //ColumnNames = g
+                        //    .OrderBy(x => (uint)x.seq_in_index)
+                        //    .Select(x => (string)x.column_name)
+                        //    .ToList(),
                     })
                     .ToList();
+
+                throw new NotImplementedException();
 
                 return indexMolds;
             }

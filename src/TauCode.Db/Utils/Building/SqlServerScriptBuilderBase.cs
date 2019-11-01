@@ -60,7 +60,8 @@ namespace TauCode.Db.Utils.Building
                 if (addComments)
                 {
                     var uniqueWord = index.IsUnique ? "unique " : string.Empty;
-                    sb.AppendLine($@"/* create {uniqueWord}index {index.Name}: {table.Name}({string.Join(", ", index.ColumnNames)}) */");
+                    throw new NotImplementedException();
+                    //sb.AppendLine($@"/* create {uniqueWord}index {index.Name}: {table.Name}({string.Join(", ", index.ColumnNames)}) */");
                 }
 
                 var indexSql = this.BuildIndexSql(table.Name, index);

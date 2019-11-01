@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using TauCode.Db.Model;
@@ -182,6 +183,8 @@ WHERE
 ";
                 command.AddParameterWithValue("p_tableName", this.TableName);
 
+                throw new NotImplementedException();
+
                 return this.Cruder
                     .GetRows(command)
                     .GroupBy(x => (int)x.IndexId)
@@ -189,10 +192,10 @@ WHERE
                     {
                         Name = (string)g.First().IndexName,
                         IsUnique = (bool)g.First().IndexIsUnique,
-                        ColumnNames = g
-                            .OrderBy(x => (int)x.ColumnId)
-                            .Select(x => (string)x.ColumnName)
-                            .ToList(),
+                        //ColumnNames = g
+                        //    .OrderBy(x => (int)x.ColumnId)
+                        //    .Select(x => (string)x.ColumnName)
+                        //    .ToList(),
                     })
                     .OrderBy(x => x.Name)
                     .ToList();
