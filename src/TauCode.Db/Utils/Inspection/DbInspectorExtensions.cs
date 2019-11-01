@@ -73,5 +73,31 @@ namespace TauCode.Db.Utils.Inspection
                 }
             }
         }
+
+        public static void PurgeDb(this IDbInspector dbInspector)
+        {
+            dbInspector.ClearDb();
+            var tables = dbInspector.GetOrderedTableMolds(false);
+            var scriptBuilder = dbInspector.CreateScriptBuilder();
+
+            using (var command = dbInspector.Connection.CreateCommand())
+            {
+                foreach (var table in tables)
+                {
+                    var sql = scriptBuilder.BuildDropTableSql(table.Name);
+                    command.CommandText = sql;
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static void ExecuteSql(this IDbInspector dbInspector, string sql)
+        {
+            using (var command = dbInspector.Connection.CreateCommand())
+            {
+                command.CommandText = sql;
+                command.ExecuteNonQuery();
+            }
+        }
     }
 }

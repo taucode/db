@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using TauCode.Db.Model;
@@ -155,11 +154,12 @@ WHERE
                 command.CommandText =
 @"
 SELECT
-    I.[index_id]	IndexId,
-    I.[name]		IndexName,
-    I.[is_unique]	IndexIsUnique,
-    IC.[column_id]	ColumnId,
-    C.[name]		ColumnName	
+    I.[index_id]            IndexId,
+    I.[name]                IndexName,
+    I.[is_unique]           IndexIsUnique,
+    IC.[column_id]          ColumnId,
+    C.[name]                ColumnName,
+    IC.[is_descending_key]  IsDescendingKey
 FROM
     sys.indexes I
 INNER JOIN
@@ -182,9 +182,7 @@ WHERE
     T.[name] = @p_tableName
 ";
                 command.AddParameterWithValue("p_tableName", this.TableName);
-
-                throw new NotImplementedException();
-
+                
                 return this.Cruder
                     .GetRows(command)
                     .GroupBy(x => (int)x.IndexId)
@@ -192,10 +190,14 @@ WHERE
                     {
                         Name = (string)g.First().IndexName,
                         IsUnique = (bool)g.First().IndexIsUnique,
-                        //ColumnNames = g
-                        //    .OrderBy(x => (int)x.ColumnId)
-                        //    .Select(x => (string)x.ColumnName)
-                        //    .ToList(),
+                        Columns = g
+                            .OrderBy(x => (int)x.ColumnId)
+                            .Select(x => new IndexColumnMold
+                            {
+                                Name = (string)x.ColumnName,
+                                SortDirection = (bool)x.IsDescendingKey ? SortDirection.Descending : SortDirection.Ascending,
+                            })
+                            .ToList(),
                     })
                     .OrderBy(x => x.Name)
                     .ToList();
