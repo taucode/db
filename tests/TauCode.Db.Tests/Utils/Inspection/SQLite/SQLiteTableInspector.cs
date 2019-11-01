@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using TauCode.Db.Model;
@@ -99,14 +98,22 @@ namespace TauCode.Db.Tests.Utils.Inspection.SQLite
             var index = indexMolds.Single(x => x.Name == "IX_secret_name");
             Assert.That(index.IsUnique, Is.False);
             Assert.That(index.TableName, Is.EqualTo("secret"));
-            throw new NotImplementedException();
-            //CollectionAssert.AreEqual(index.ColumnNames, new[] { "name" });
+            var indexColumn = index.Columns.Single();
+            Assert.That(indexColumn.Name, Is.EqualTo("name"));
+            Assert.That(indexColumn.SortDirection, Is.EqualTo(SortDirection.Ascending));
 
             index = indexMolds.Single(x => x.Name == "UX_secret_keyStart_keyEnd");
             Assert.That(index.IsUnique, Is.True);
             Assert.That(index.TableName, Is.EqualTo("secret"));
-            throw new NotImplementedException();
-            //CollectionAssert.AreEqual(index.ColumnNames, new[] { "key_start", "key_end" });
+            Assert.That(index.Columns, Has.Count.EqualTo(2));
+
+            indexColumn = index.Columns[0];
+            Assert.That(indexColumn.Name, Is.EqualTo("key_start"));
+            Assert.That(indexColumn.SortDirection, Is.EqualTo(SortDirection.Ascending));
+
+            indexColumn = index.Columns[1];
+            Assert.That(indexColumn.Name, Is.EqualTo("key_end"));
+            Assert.That(indexColumn.SortDirection, Is.EqualTo(SortDirection.Descending));
         }
 
         [Test]

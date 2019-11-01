@@ -140,7 +140,7 @@ CREATE TABLE [secret](
 CREATE INDEX [IX_secret_name] ON [secret] ([name])
 
 /* secret - unique index on key_start, key_end */
-CREATE UNIQUE INDEX UX_secret_keyStart_keyEnd ON [secret] ([key_start], [key_end])
+CREATE UNIQUE INDEX UX_secret_keyStart_keyEnd ON [secret] ([key_start], [key_end] DESC)
 
 /* color - create table */
 CREATE TABLE [color](

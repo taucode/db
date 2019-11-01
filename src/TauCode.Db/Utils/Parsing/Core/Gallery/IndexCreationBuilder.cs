@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using TauCode.Db.Model;
 using TauCode.Db.Utils.Parsing.Core.Fluent;
 using TauCode.Db.Utils.Parsing.Core.Fluent.Impl;
@@ -11,9 +10,9 @@ namespace TauCode.Db.Utils.Parsing.Core.Gallery
         protected override INodeSyntax BuildSyntaxImpl()
         {
             var syntax = new NodeSyntax();
-            throw new NotImplementedException();
-            var columnsInBrackets = new NamesInBracketsBuilder(context => /*context.GetIndex().ColumnNames*/ throw new NotImplementedException()).Build();
-            //var columnsInBrackets = new NamesInBracketsBuilder(context => context.GetIndex().ColumnNames).Build();
+
+            var indexColumnsInBrackets =
+                new IndexColumnsInBracketsBuilder(context => context.GetIndex().Columns).Build();
 
             syntax
                 .UseWord(@"CREATE", (token, context) => context.AddProperty("index", new IndexMold()))
@@ -23,8 +22,8 @@ namespace TauCode.Db.Utils.Parsing.Core.Gallery
                     .UseIdentifier((token, context) => context.GetIndex().Name = token.GetTokenIdentifier())
                     .SkipWord(@"ON")
                     .UseIdentifier((token, context) => context.GetIndex().TableName = token.GetTokenIdentifier())
-                    .Attach(columnsInBrackets.InputNode)
-                    .Use(columnsInBrackets.OutputNodes.Single())
+                    .Attach(indexColumnsInBrackets.InputNode)
+                    .Use(indexColumnsInBrackets.OutputNodes.Single())
                     .Split("after_table_closed")
                         .End(DeliverIndexToResult, "end")
                     .GetSplitter("after_table_closed")

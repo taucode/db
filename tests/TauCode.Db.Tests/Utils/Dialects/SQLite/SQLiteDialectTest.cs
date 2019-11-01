@@ -464,6 +464,7 @@ WITHOUT";
             #region SQLite data type names
 
 @"
+datetime
 integer
 numeric
 real

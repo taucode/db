@@ -38,7 +38,7 @@ CREATE TABLE [fragment_type](
     CONSTRAINT [PK_fragmentType] PRIMARY KEY([id]))
 
 /* create unique index UX_fragmentType_code: fragment_type(code) */
-CREATE UNIQUE INDEX [UX_fragmentType_code] ON [fragment_type]([code])
+CREATE UNIQUE INDEX [UX_fragmentType_code] ON [fragment_type]([code] ASC)
 
 /* create table: language */
 CREATE TABLE [language](
@@ -48,7 +48,7 @@ CREATE TABLE [language](
     CONSTRAINT [PK_language] PRIMARY KEY([id]))
 
 /* create unique index UX_language_code: language(code) */
-CREATE UNIQUE INDEX [UX_language_code] ON [language]([code])
+CREATE UNIQUE INDEX [UX_language_code] ON [language]([code] ASC)
 
 /* create table: note */
 CREATE TABLE [note](
@@ -58,7 +58,7 @@ CREATE TABLE [note](
     CONSTRAINT [PK_note] PRIMARY KEY([id]))
 
 /* create unique index UX_note_code: note(code) */
-CREATE UNIQUE INDEX [UX_note_code] ON [note]([code])
+CREATE UNIQUE INDEX [UX_note_code] ON [note]([code] ASC)
 
 /* create table: tag */
 CREATE TABLE [tag](
@@ -68,7 +68,7 @@ CREATE TABLE [tag](
     CONSTRAINT [PK_tag] PRIMARY KEY([id]))
 
 /* create unique index UX_tag_code: tag(code) */
-CREATE UNIQUE INDEX [UX_tag_code] ON [tag]([code])
+CREATE UNIQUE INDEX [UX_tag_code] ON [tag]([code] ASC)
 
 /* create table: user */
 CREATE TABLE [user](
@@ -79,10 +79,10 @@ CREATE TABLE [user](
     CONSTRAINT [PK_user] PRIMARY KEY([id]))
 
 /* create unique index UX_user_email: user(email) */
-CREATE UNIQUE INDEX [UX_user_email] ON [user]([email])
+CREATE UNIQUE INDEX [UX_user_email] ON [user]([email] ASC)
 
 /* create unique index UX_user_login: user(login) */
-CREATE UNIQUE INDEX [UX_user_login] ON [user]([login])
+CREATE UNIQUE INDEX [UX_user_login] ON [user]([login] ASC)
 
 /* create table: fragment_sub_type */
 CREATE TABLE [fragment_sub_type](
@@ -94,7 +94,7 @@ CREATE TABLE [fragment_sub_type](
     CONSTRAINT [FK_fragmentSubType_fragmentType] FOREIGN KEY([type_id]) REFERENCES [fragment_type]([id]))
 
 /* create unique index UX_fragmentSubType_typeId_code: fragment_sub_type(type_id, code) */
-CREATE UNIQUE INDEX [UX_fragmentSubType_typeId_code] ON [fragment_sub_type]([type_id], [code])
+CREATE UNIQUE INDEX [UX_fragmentSubType_typeId_code] ON [fragment_sub_type]([type_id] ASC, [code] ASC)
 
 /* create table: note_tag */
 CREATE TABLE [note_tag](
@@ -130,10 +130,10 @@ CREATE TABLE [secret](
     FOREIGN KEY([client_id]) REFERENCES [client]([id]))
 
 /* create index IX_secret_name: secret(name) */
-CREATE INDEX [IX_secret_name] ON [secret]([name])
+CREATE INDEX [IX_secret_name] ON [secret]([name] ASC)
 
 /* create unique index UX_secret_keyStart_keyEnd: secret(key_start, key_end) */
-CREATE UNIQUE INDEX [UX_secret_keyStart_keyEnd] ON [secret]([key_start], [key_end])
+CREATE UNIQUE INDEX [UX_secret_keyStart_keyEnd] ON [secret]([key_start] ASC, [key_end] DESC)
 
 /* create table: fragment */
 CREATE TABLE [fragment](
@@ -159,4 +159,4 @@ CREATE TABLE [secret_detail](
     CONSTRAINT [FK_secretDetail_color] FOREIGN KEY([color_id]) REFERENCES [color]([id]))
 
 /* create index IX_secretDetail_secretIdBase_secretIdValue: secret_detail(secret_id_base, secret_id_value) */
-CREATE INDEX [IX_secretDetail_secretIdBase_secretIdValue] ON [secret_detail]([secret_id_base], [secret_id_value])
+CREATE INDEX [IX_secretDetail_secretIdBase_secretIdValue] ON [secret_detail]([secret_id_base] ASC, [secret_id_value] ASC)

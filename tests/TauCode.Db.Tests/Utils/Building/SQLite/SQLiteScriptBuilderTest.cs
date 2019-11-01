@@ -92,8 +92,8 @@ REFERENCES [secret]([id_base], [id_value])")]
         }
 
         [Test]
-        [TestCase("IX_secret_name", "CREATE INDEX [IX_secret_name] ON [secret]([name])")]
-        [TestCase("UX_secret_keyStart_keyEnd", "CREATE UNIQUE INDEX [UX_secret_keyStart_keyEnd] ON [secret]([key_start], [key_end])")]
+        [TestCase("IX_secret_name", "CREATE INDEX [IX_secret_name] ON [secret]([name] ASC)")]
+        [TestCase("UX_secret_keyStart_keyEnd", "CREATE UNIQUE INDEX [UX_secret_keyStart_keyEnd] ON [secret]([key_start] ASC, [key_end] DESC)")]
         public void BuildIndexSql_ValidArguments_BuildsSql(string indexName, string expectedSql)
         {
             // Arrange
