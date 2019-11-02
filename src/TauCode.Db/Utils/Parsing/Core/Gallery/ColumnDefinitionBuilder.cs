@@ -129,9 +129,12 @@ namespace TauCode.Db.Utils.Parsing.Core.Gallery
             var primaryKey = new PrimaryKeyMold
             {
                 Name = $"PK_{table.Name}",
-                ColumnNames = new List<string>
+                Columns = new List<IndexColumnMold>
                 {
-                    column.Name
+                    new IndexColumnMold
+                    {
+                        Name = column.Name,
+                    },
                 },
             };
 

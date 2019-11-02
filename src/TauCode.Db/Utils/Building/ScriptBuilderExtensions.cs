@@ -21,12 +21,12 @@ namespace TauCode.Db.Utils.Building
             }
 
             var pk = tableMold.PrimaryKey;
-            if ((pk?.ColumnNames?.Count ?? -1) != 1)
+            if ((pk?.Columns?.Count ?? -1) != 1)
             {
                 throw new InvalidOperationException("Only tables having single-column primary key are supported.");
             }
 
-            return pk.ColumnNames.Single();
+            return pk.Columns.Single().Name;
         }
     }
 }

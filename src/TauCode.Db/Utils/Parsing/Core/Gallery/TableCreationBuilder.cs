@@ -104,7 +104,7 @@ namespace TauCode.Db.Utils.Parsing.Core.Gallery
         protected virtual ParsingBlock CreatePrimaryKeyConstraintBlock()
         {
             var syntax = new NodeSyntax();
-            var namesInBrackets = new NamesInBracketsBuilder(context => context.GetTable().PrimaryKey.ColumnNames).Build();
+            var namesInBrackets = new IndexColumnsInBracketsBuilder(context => context.GetTable().PrimaryKey.Columns).Build();
 
             syntax
                 .Split("root")

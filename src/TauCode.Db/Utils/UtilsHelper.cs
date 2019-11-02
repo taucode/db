@@ -12,7 +12,10 @@ namespace TauCode.Db.Utils
 {
     internal static class UtilsHelper
     {
-        internal static void AddParameterWithValue(this IDbCommand command, string parameterName, object parameterValue)
+        internal static void AddParameterWithValue(
+            this IDbCommand command,
+            string parameterName,
+            object parameterValue)
         {
             var parameter = command.CreateParameter();
             parameter.ParameterName = parameterName;
@@ -40,13 +43,17 @@ namespace TauCode.Db.Utils
             return (T)dbValue;
         }
 
-        internal static string DecorateColumnsOverComma(this ScriptBuilderBase scriptBuilder, List<string> columnNames, char? delimiter)
+        internal static string DecorateColumnsOverComma(
+            this ScriptBuilderBase scriptBuilder,
+            List<string> columnNames,
+            char? delimiter)
         {
             var sb = new StringBuilder();
 
             for (var i = 0; i < columnNames.Count; i++)
             {
-                var decoratedColumnName = scriptBuilder.Dialect.DecorateIdentifier(DbIdentifierType.Column, columnNames[i], delimiter);
+                var decoratedColumnName =
+                    scriptBuilder.Dialect.DecorateIdentifier(DbIdentifierType.Column, columnNames[i], delimiter);
                 sb.Append(decoratedColumnName);
 
                 if (i < columnNames.Count - 1)
@@ -56,6 +63,47 @@ namespace TauCode.Db.Utils
             }
 
             return sb.ToString();
+        }
+
+        internal static string DecorateIndexColumnsOverComma(
+            this ScriptBuilderBase scriptBuilder,
+            List<IndexColumnMold> columns,
+            char? delimiter)
+        {
+            var sbIndexColumns = new StringBuilder();
+            for (var i = 0; i < columns.Count; i++)
+            {
+                var column = columns[i];
+                sbIndexColumns.Append(scriptBuilder.Dialect.DecorateIdentifier(
+                    DbIdentifierType.Column,
+                    column.Name,
+                    delimiter));
+
+                string sortDirection;
+                switch (column.SortDirection)
+                {
+                    case SortDirection.Ascending:
+                        sortDirection = "ASC";
+                        break;
+
+                    case SortDirection.Descending:
+                        sortDirection = "DESC";
+                        break;
+
+                    default:
+                        throw new ScriptBuildingException($"Invalid sort direction: '{column.SortDirection}'.");
+                }
+
+                sbIndexColumns.Append(" ");
+                sbIndexColumns.Append(sortDirection);
+
+                if (i < columns.Count - 1)
+                {
+                    sbIndexColumns.Append(", ");
+                }
+            }
+
+            return sbIndexColumns.ToString();
         }
 
         internal static string ByteArrayToHex(byte[] bytes)
@@ -73,7 +121,8 @@ namespace TauCode.Db.Utils
 
         internal static ColumnMold GetColumn(this TableMold table, string columnName)
         {
-            return table.Columns.Single(x => string.Equals(x.Name, columnName, StringComparison.InvariantCultureIgnoreCase));
+            return table.Columns.Single(x =>
+                string.Equals(x.Name, columnName, StringComparison.InvariantCultureIgnoreCase));
         }
 
         internal static SyntaxAnalyzerException CreateInternalSyntaxAnalyzerErrorException()

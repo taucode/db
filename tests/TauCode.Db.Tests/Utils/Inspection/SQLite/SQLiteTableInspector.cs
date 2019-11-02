@@ -55,9 +55,10 @@ namespace TauCode.Db.Tests.Utils.Inspection.SQLite
             // Assert
             Assert.That(primaryKeyMold, Is.Not.Null);
             Assert.That(primaryKeyMold.Name, Is.EqualTo("PK_secret"));
-            Assert.That(primaryKeyMold.ColumnNames, Has.Count.EqualTo(2));
-            Assert.That(primaryKeyMold.ColumnNames[0], Is.EqualTo("id_base"));
-            Assert.That(primaryKeyMold.ColumnNames[1], Is.EqualTo("id_value"));
+
+            Assert.That(primaryKeyMold.Columns, Has.Count.EqualTo(2));
+            Assert.That(primaryKeyMold.Columns[0].Name, Is.EqualTo("id_base"));
+            Assert.That(primaryKeyMold.Columns[1].Name, Is.EqualTo("id_value"));
         }
 
         [Test]
@@ -129,7 +130,8 @@ namespace TauCode.Db.Tests.Utils.Inspection.SQLite
 
             Assert.That(table.PrimaryKey, Is.Not.Null);
             Assert.That(table.PrimaryKey.Name, Is.EqualTo("PK_client"));
-            Assert.That(table.PrimaryKey.ColumnNames, Has.Count.EqualTo(1));
+
+            Assert.That(table.PrimaryKey.Columns, Has.Count.EqualTo(1));
 
             this.AssertClientTableColumns(table.Columns);
         }

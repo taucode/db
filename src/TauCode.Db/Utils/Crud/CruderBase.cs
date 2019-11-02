@@ -225,15 +225,15 @@ namespace TauCode.Db.Utils.Crud
                 tableMold.Name,
                 pkColumnName,
                 dictionary.Keys.ToArray(),
-                out var paramterMapping);
+                out var parameterMapping);
 
             using (var command = connection.CreateCommand())
             {
                 command.CommandText = script;
 
-                foreach (var columnName in paramterMapping.Keys)
+                foreach (var columnName in parameterMapping.Keys)
                 {
-                    var paramName = paramterMapping[columnName];
+                    var paramName = parameterMapping[columnName];
                     object paramValue;
 
                     if (columnName == pkColumnName)

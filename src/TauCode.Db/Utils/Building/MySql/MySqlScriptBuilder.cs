@@ -36,18 +36,19 @@ namespace TauCode.Db.Utils.Building.MySql
 
         public override string BuildPrimaryKeySql(string tableName, PrimaryKeyMold primaryKey)
         {
-            if (tableName == null)
-            {
-                var decoratedColumnNames = this.DecorateColumnsOverComma(
-                    primaryKey.ColumnNames,
-                    this.CurrentOpeningIdentifierDelimiter);
+            throw new NotImplementedException();
+            //if (tableName == null)
+            //{
+            //    var decoratedColumnNames = this.DecorateColumnsOverComma(
+            //        primaryKey.ColumnNames,
+            //        this.CurrentOpeningIdentifierDelimiter);
 
-                return $"PRIMARY KEY({decoratedColumnNames})";
-            }
-            else
-            {
-                throw new NotSupportedException();
-            }
+            //    return $"PRIMARY KEY({decoratedColumnNames})";
+            //}
+            //else
+            //{
+            //    throw new NotSupportedException();
+            //}
         }
 
         protected override string BuildColumnPropertiesSubSql(ColumnMold column)

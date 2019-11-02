@@ -57,8 +57,8 @@ namespace TauCode.Db.Tests.Utils.Building.SQLite
         }
 
         [Test]
-        [TestCase("secret", "ALTER TABLE [secret] ADD CONSTRAINT [PK_secret] PRIMARY KEY([id_base], [id_value])")]
-        [TestCase(null, "CONSTRAINT [PK_secret] PRIMARY KEY([id_base], [id_value])")]
+        [TestCase("secret", "ALTER TABLE [secret] ADD CONSTRAINT [PK_secret] PRIMARY KEY([id_base] ASC, [id_value] ASC)")]
+        [TestCase(null, "CONSTRAINT [PK_secret] PRIMARY KEY([id_base] ASC, [id_value] ASC)")]
         public void BuildPrimaryKeySql_ValidArguments_BuildsSql(string tableName, string expectedSql)
         {
             // Arrange

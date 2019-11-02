@@ -324,8 +324,8 @@ namespace TauCode.Db.Utils.Building
                 primaryKey.Name,
                 this.CurrentOpeningIdentifierDelimiter);
 
-            var decoratedColumnNames = this.DecorateColumnsOverComma(
-                primaryKey.ColumnNames,
+            var decoratedColumnNames = this.DecorateIndexColumnsOverComma(
+                primaryKey.Columns,
                 this.CurrentOpeningIdentifierDelimiter);
 
             sb.AppendFormat("CONSTRAINT {0} PRIMARY KEY({1})", decoratedPrimaryKeyName, decoratedColumnNames);
@@ -405,44 +405,49 @@ namespace TauCode.Db.Utils.Building
                 index.Name,
                 this.CurrentOpeningIdentifierDelimiter);
 
-            var sbIndexColumns = new StringBuilder();
-            for (var i = 0; i < index.Columns.Count; i++)
-            {
-                var column = index.Columns[i];
-                sbIndexColumns.Append(this.Dialect.DecorateIdentifier(
-                    DbIdentifierType.Column,
-                    column.Name,
-                    this.CurrentOpeningIdentifierDelimiter));
+            //var sbIndexColumns = new StringBuilder();
+            //for (var i = 0; i < index.Columns.Count; i++)
+            //{
+            //    var column = index.Columns[i];
+            //    sbIndexColumns.Append(this.Dialect.DecorateIdentifier(
+            //        DbIdentifierType.Column,
+            //        column.Name,
+            //        this.CurrentOpeningIdentifierDelimiter));
 
-                string sortDirection;
-                switch (column.SortDirection)
-                {
-                    case SortDirection.Ascending:
-                        sortDirection = "ASC";
-                        break;
+            //    string sortDirection;
+            //    switch (column.SortDirection)
+            //    {
+            //        case SortDirection.Ascending:
+            //            sortDirection = "ASC";
+            //            break;
 
-                    case SortDirection.Descending:
-                        sortDirection = "DESC";
-                        break;
+            //        case SortDirection.Descending:
+            //            sortDirection = "DESC";
+            //            break;
 
-                    default:
-                        throw new ScriptBuildingException($"Invalid sort direction: '{column.SortDirection}'.");
-                }
+            //        default:
+            //            throw new ScriptBuildingException($"Invalid sort direction: '{column.SortDirection}'.");
+            //    }
 
-                sbIndexColumns.Append(" ");
-                sbIndexColumns.Append(sortDirection);
+            //    sbIndexColumns.Append(" ");
+            //    sbIndexColumns.Append(sortDirection);
 
-                if (i < index.Columns.Count - 1)
-                {
-                    sbIndexColumns.Append(", ");
-                }
-            }
+            //    if (i < index.Columns.Count - 1)
+            //    {
+            //        sbIndexColumns.Append(", ");
+            //    }
+            //}
+            // todo: remove above comment
+
+            var indexColumnsSql = this.DecorateIndexColumnsOverComma(
+                index.Columns,
+                this.CurrentOpeningIdentifierDelimiter);
 
             sb.AppendFormat(
                 "INDEX {0} ON {1}({2})",
                 decoratedIndexName,
                 decoratedTableName,
-                sbIndexColumns);
+                indexColumnsSql);
 
             return sb.ToString();
         }

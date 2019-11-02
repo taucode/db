@@ -157,7 +157,7 @@ SELECT
     I.[index_id]            IndexId,
     I.[name]                IndexName,
     I.[is_unique]           IndexIsUnique,
-    IC.[column_id]          ColumnId,
+    IC.[key_ordinal]        KeyOrdinal,
     C.[name]                ColumnName,
     IC.[is_descending_key]  IsDescendingKey
 FROM
@@ -191,7 +191,7 @@ WHERE
                         Name = (string)g.First().IndexName,
                         IsUnique = (bool)g.First().IndexIsUnique,
                         Columns = g
-                            .OrderBy(x => (int)x.ColumnId)
+                            .OrderBy(x => (int)x.KeyOrdinal)
                             .Select(x => new IndexColumnMold
                             {
                                 Name = (string)x.ColumnName,
