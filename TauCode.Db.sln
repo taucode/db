@@ -22,6 +22,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.Db", "src\TauCode.D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.Db.Tests", "tests\TauCode.Db.Tests\TauCode.Db.Tests.csproj", "{3C7A113E-A2C5-4698-9D71-A5E84BA762C5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TauCode.Db.Tests.SqlServer", "tests\TauCode.Db.Tests.SqlServer\TauCode.Db.Tests.SqlServer.csproj", "{0D125DFF-6E0F-4306-9C79-A6E6126C50B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TauCode.Db.Tests.MySql", "tests\TauCode.Db.Tests.MySql\TauCode.Db.Tests.MySql.csproj", "{DBDEE0E8-9875-49AE-BB49-F8FC12C09C57}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +40,14 @@ Global
 		{3C7A113E-A2C5-4698-9D71-A5E84BA762C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C7A113E-A2C5-4698-9D71-A5E84BA762C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C7A113E-A2C5-4698-9D71-A5E84BA762C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D125DFF-6E0F-4306-9C79-A6E6126C50B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D125DFF-6E0F-4306-9C79-A6E6126C50B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D125DFF-6E0F-4306-9C79-A6E6126C50B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D125DFF-6E0F-4306-9C79-A6E6126C50B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBDEE0E8-9875-49AE-BB49-F8FC12C09C57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBDEE0E8-9875-49AE-BB49-F8FC12C09C57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBDEE0E8-9875-49AE-BB49-F8FC12C09C57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBDEE0E8-9875-49AE-BB49-F8FC12C09C57}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -43,6 +55,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{202DC44E-5880-4A3E-A265-CA5CEFD5E085} = {89412E0C-9F93-4FB0-ACB6-DC95174759A0}
 		{3C7A113E-A2C5-4698-9D71-A5E84BA762C5} = {EE8B33C7-90A5-4CCF-99D9-BC9CF029F312}
+		{0D125DFF-6E0F-4306-9C79-A6E6126C50B7} = {EE8B33C7-90A5-4CCF-99D9-BC9CF029F312}
+		{DBDEE0E8-9875-49AE-BB49-F8FC12C09C57} = {EE8B33C7-90A5-4CCF-99D9-BC9CF029F312}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E033216E-1151-4D66-A416-3EBD14511CA8}

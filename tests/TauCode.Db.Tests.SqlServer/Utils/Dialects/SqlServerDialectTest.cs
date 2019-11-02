@@ -1,12 +1,12 @@
-﻿using NUnit.Framework;
-using System;
+﻿using System;
 using System.Linq;
+using NUnit.Framework;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
 using TauCode.Db.Utils.Dialects;
 using TauCode.Db.Utils.Dialects.SqlServer;
 
-namespace TauCode.Db.Tests.Utils.Dialects.SqlServer
+namespace TauCode.Db.Tests.SqlServer.Utils.Dialects
 {
     [TestFixture]
     public class SqlServerDialectTest
