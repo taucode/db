@@ -38,4 +38,3 @@ namespace TauCode.Db.Utils.Parsing.Core
         public ParsingNode[] OutputNodes { get; protected set; }
     }
 }
-

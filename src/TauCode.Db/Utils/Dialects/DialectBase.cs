@@ -194,7 +194,7 @@ namespace TauCode.Db.Utils.Dialects
                 throw new ArgumentNullException(nameof(identifier));
             }
 
-            if (identifierType == DbIdentifierType.Type && !this.CanDecorateTypeIdentifier) // todo0[ak] ut this for MySql!
+            if (identifierType == DbIdentifierType.Type && !this.CanDecorateTypeIdentifier)
             {
                 return identifier;
             }
@@ -321,7 +321,7 @@ namespace TauCode.Db.Utils.Dialects
                 case DbTypeFamily.Integer:
                     if (value is IConvertible convertible)
                     {
-                        var longValue = convertible.ToInt64(CultureInfo.InvariantCulture); // todo: try/catch as well
+                        var longValue = convertible.ToInt64(CultureInfo.InvariantCulture);
                         literal = longValue.ToString(CultureInfo.InvariantCulture);
                     }
                     else
@@ -333,7 +333,7 @@ namespace TauCode.Db.Utils.Dialects
                 case DbTypeFamily.PreciseNumber:
                     if (value is IConvertible convertible3)
                     {
-                        var decimalValue = convertible3.ToDecimal(CultureInfo.InvariantCulture); // todo: try/catch as well
+                        var decimalValue = convertible3.ToDecimal(CultureInfo.InvariantCulture);
                         literal = decimalValue.ToString(CultureInfo.InvariantCulture);
                     }
                     else

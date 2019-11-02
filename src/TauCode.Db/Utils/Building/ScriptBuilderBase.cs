@@ -68,7 +68,7 @@ namespace TauCode.Db.Utils.Building
                 if (addComments)
                 {
                     var uniqueWord = index.IsUnique ? "unique " : string.Empty;
-                    sb.AppendLine($@"/* create {uniqueWord}index {index.Name}: {table.Name}({string.Join(", ", index.ColumnNames)}) */");
+                    sb.AppendLine($@"/* create {uniqueWord}index {index.Name}: {table.Name}({string.Join(", ", index.Columns.Select(x => x.Name))}) */");
                 }
 
                 var indexSql = this.BuildIndexSql(table.Name, index);
@@ -263,7 +263,11 @@ namespace TauCode.Db.Utils.Building
             var sb = new StringBuilder();
 
             // name
-            var decoratedColumnName = this.Dialect.DecorateIdentifier(DbIdentifierType.Column, column.Name, this.CurrentOpeningIdentifierDelimiter);
+            var decoratedColumnName = this.Dialect.DecorateIdentifier(
+                DbIdentifierType.Column,
+                column.Name,
+                this.CurrentOpeningIdentifierDelimiter);
+
             sb.Append(decoratedColumnName);
 
             // type definition
@@ -307,7 +311,10 @@ namespace TauCode.Db.Utils.Building
             var sb = new StringBuilder();
             if (tableName != null)
             {
-                var decoratedTableName = this.Dialect.DecorateIdentifier(DbIdentifierType.Table, tableName, this.CurrentOpeningIdentifierDelimiter);
+                var decoratedTableName = this.Dialect.DecorateIdentifier(
+                    DbIdentifierType.Table,
+                    tableName,
+                    this.CurrentOpeningIdentifierDelimiter);
                 sb.AppendFormat("ALTER TABLE {0} ADD ", decoratedTableName);
             }
 
@@ -316,8 +323,8 @@ namespace TauCode.Db.Utils.Building
                 primaryKey.Name,
                 this.CurrentOpeningIdentifierDelimiter);
 
-            var decoratedColumnNames = this.DecorateColumnsOverComma(
-                primaryKey.ColumnNames,
+            var decoratedColumnNames = this.DecorateIndexColumnsOverComma(
+                primaryKey.Columns,
                 this.CurrentOpeningIdentifierDelimiter);
 
             sb.AppendFormat("CONSTRAINT {0} PRIMARY KEY({1})", decoratedPrimaryKeyName, decoratedColumnNames);
@@ -397,15 +404,15 @@ namespace TauCode.Db.Utils.Building
                 index.Name,
                 this.CurrentOpeningIdentifierDelimiter);
 
-            var decoratedColumnNames = this.DecorateColumnsOverComma(
-                index.ColumnNames,
+            var indexColumnsSql = this.DecorateIndexColumnsOverComma(
+                index.Columns,
                 this.CurrentOpeningIdentifierDelimiter);
 
             sb.AppendFormat(
                 "INDEX {0} ON {1}({2})",
                 decoratedIndexName,
                 decoratedTableName,
-                decoratedColumnNames);
+                indexColumnsSql);
 
             return sb.ToString();
         }
@@ -434,7 +441,8 @@ namespace TauCode.Db.Utils.Building
             }
 
             // primary key
-            if (table.PrimaryKey != null && !table.Columns.Any(x => x.Properties.GetOrDefault("force-inline-primary-key")?.ToLower() == "true"))
+            if (table.PrimaryKey != null && !table.Columns.Any(x =>
+                    x.Properties.GetOrDefault("force-inline-primary-key")?.ToLower() == "true"))
             {
                 sb.AppendLine(",");
 
@@ -487,6 +495,7 @@ namespace TauCode.Db.Utils.Building
                 {
                     sb.AppendLine($@"/* create table: {table.Name} */");
                 }
+
                 var createTableSql = this.BuildCreateTableSqlForCreateDbSql(table);
                 sb.Append(createTableSql);
 
@@ -661,7 +670,8 @@ namespace TauCode.Db.Utils.Building
 
             if (columnsToInclude != null && columnsToExclude != null)
             {
-                throw new ArgumentException($"Both '{nameof(columnsToInclude)}' and '{nameof(columnsToExclude)}' cannot be provided.");
+                throw new ArgumentException(
+                    $"Both '{nameof(columnsToInclude)}' and '{nameof(columnsToExclude)}' cannot be provided.");
             }
 
             var wantedColumnNames = new List<string>();
@@ -675,7 +685,8 @@ namespace TauCode.Db.Utils.Building
 
                     if (tableColumn == null)
                     {
-                        throw new ArgumentException($"'{nameof(columnsToInclude)}' contains '{columnName}', but table doesn't have it.");
+                        throw new ArgumentException(
+                            $"'{nameof(columnsToInclude)}' contains '{columnName}', but table doesn't have it.");
                     }
 
                     wantedColumnNames.Add(tableColumn.Name);
@@ -693,7 +704,8 @@ namespace TauCode.Db.Utils.Building
 
                     if (tableColumn == null)
                     {
-                        throw new ArgumentException($"'{nameof(columnsToExclude)}' contains '{columnName}', but table doesn't have it.");
+                        throw new ArgumentException(
+                            $"'{nameof(columnsToExclude)}' contains '{columnName}', but table doesn't have it.");
                     }
 
                     copiedColumns.Remove(tableColumn);
@@ -885,6 +897,7 @@ namespace TauCode.Db.Utils.Building
                             {
                                 value = null;
                             }
+
                             values.Add(name, value);
                         }
 
@@ -916,7 +929,9 @@ namespace TauCode.Db.Utils.Building
             {
                 if (tableNamesToInclude.Contains(null))
                 {
-                    throw new ArgumentException($"'tableNamesToInclude' must not contain nulls", nameof(tableNamesToInclude));
+                    throw new ArgumentException(
+                        $"'tableNamesToInclude' must not contain nulls",
+                        nameof(tableNamesToInclude));
                 }
 
                 tableNamesToIncludeLowerCase = new HashSet<string>(tableNamesToInclude.Select(x => x.ToLower()));
@@ -928,7 +943,9 @@ namespace TauCode.Db.Utils.Building
             {
                 if (tableNamesToExclude.Contains(null))
                 {
-                    throw new ArgumentException($"'tableNamesToExclude' must not contain nulls", nameof(tableNamesToExclude));
+                    throw new ArgumentException(
+                        $"'tableNamesToExclude' must not contain nulls",
+                        nameof(tableNamesToExclude));
                 }
 
                 tableNamesToExcludeLowerCase = new HashSet<string>(tableNamesToExclude.Select(x => x.ToLower()));
@@ -1018,7 +1035,9 @@ namespace TauCode.Db.Utils.Building
             {
                 if (tableNamesToInclude.Contains(null))
                 {
-                    throw new ArgumentException($"'tableNamesToInclude' must not contain nulls", nameof(tableNamesToInclude));
+                    throw new ArgumentException(
+                        $"'tableNamesToInclude' must not contain nulls",
+                        nameof(tableNamesToInclude));
                 }
 
                 tableNamesToIncludeLowerCase = new HashSet<string>(tableNamesToInclude.Select(x => x.ToLower()));
@@ -1030,7 +1049,9 @@ namespace TauCode.Db.Utils.Building
             {
                 if (tableNamesToExclude.Contains(null))
                 {
-                    throw new ArgumentException($"'tableNamesToExclude' must not contain nulls", nameof(tableNamesToExclude));
+                    throw new ArgumentException(
+                        $"'tableNamesToExclude' must not contain nulls",
+                        nameof(tableNamesToExclude));
                 }
 
                 tableNamesToExcludeLowerCase = new HashSet<string>(tableNamesToExclude.Select(x => x.ToLower()));

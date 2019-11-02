@@ -38,8 +38,8 @@ namespace TauCode.Db.Utils.Building.MySql
         {
             if (tableName == null)
             {
-                var decoratedColumnNames = this.DecorateColumnsOverComma(
-                    primaryKey.ColumnNames,
+                var decoratedColumnNames = this.DecorateIndexColumnsOverComma(
+                    primaryKey.Columns,
                     this.CurrentOpeningIdentifierDelimiter);
 
                 return $"PRIMARY KEY({decoratedColumnNames})";
@@ -125,7 +125,8 @@ namespace TauCode.Db.Utils.Building.MySql
 
             sb.Append($"    {uniqueWord}KEY ");
             sb.Append(decoratedIndexName);
-            var columnNames = this.DecorateColumnsOverComma(index.ColumnNames, this.CurrentOpeningIdentifierDelimiter);
+
+            var columnNames = this.DecorateIndexColumnsOverComma(index.Columns, this.CurrentOpeningIdentifierDelimiter);
             sb.Append($"({columnNames})");
 
             return sb.ToString();

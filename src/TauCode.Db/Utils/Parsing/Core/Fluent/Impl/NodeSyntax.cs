@@ -148,7 +148,7 @@ namespace TauCode.Db.Utils.Parsing.Core.Fluent.Impl
                     }
 
                     var index = -1;
-                    for (var i = 0; i < split.Ways.Count; i++) // todo1[ak] where is my "linq". IndexOf?
+                    for (var i = 0; i < split.Ways.Count; i++)
                     {
                         if (split.Ways[i] == unresolvedLinkNode)
                         {

@@ -39,7 +39,7 @@ namespace TauCode.Db.Utils.Parsing.Core
         {
             if (string.IsNullOrEmpty(propertyName))
             {
-                throw new ArgumentException(); // todo2[ak]
+                throw new ArgumentException($"'{nameof(propertyName)}' cannot be empty.", nameof(propertyName));
             }
 
             if (propertyValue == null)
