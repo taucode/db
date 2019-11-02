@@ -1,9 +1,6 @@
 ﻿using NUnit.Framework;
-using System.Data.SQLite;
 using System.Linq;
 using TauCode.Db.Utils.Crud.SQLite;
-using TauCode.Db.Utils.Inspection;
-using TauCode.Db.Utils.Inspection.SQLite;
 
 namespace TauCode.Db.Tests
 {
@@ -69,15 +66,5 @@ FROM
         }
 
         protected override string ResourceName => "sqlite-create-db-lab.sql";
-
-        [Test]
-        public void Wat()
-        {
-            var filePath = @"C:\temp\good.sqlite";
-            var con = new SQLiteConnection($@"Data Source={filePath};Version=3;");
-            con.Open();
-            var dbIns = new SQLiteInspector(con);
-            dbIns.ClearDb();
-        }
     }
 }
