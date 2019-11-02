@@ -68,8 +68,7 @@ namespace TauCode.Db.Utils.Building
                 if (addComments)
                 {
                     var uniqueWord = index.IsUnique ? "unique " : string.Empty;
-                    throw new NotImplementedException();
-                    //sb.AppendLine($@"/* create {uniqueWord}index {index.Name}: {table.Name}({string.Join(", ", index.ColumnNames)}) */");
+                    sb.AppendLine($@"/* create {uniqueWord}index {index.Name}: {table.Name}({string.Join(", ", index.Columns.Select(x => x.Name))}) */");
                 }
 
                 var indexSql = this.BuildIndexSql(table.Name, index);
@@ -405,40 +404,6 @@ namespace TauCode.Db.Utils.Building
                 index.Name,
                 this.CurrentOpeningIdentifierDelimiter);
 
-            //var sbIndexColumns = new StringBuilder();
-            //for (var i = 0; i < index.Columns.Count; i++)
-            //{
-            //    var column = index.Columns[i];
-            //    sbIndexColumns.Append(this.Dialect.DecorateIdentifier(
-            //        DbIdentifierType.Column,
-            //        column.Name,
-            //        this.CurrentOpeningIdentifierDelimiter));
-
-            //    string sortDirection;
-            //    switch (column.SortDirection)
-            //    {
-            //        case SortDirection.Ascending:
-            //            sortDirection = "ASC";
-            //            break;
-
-            //        case SortDirection.Descending:
-            //            sortDirection = "DESC";
-            //            break;
-
-            //        default:
-            //            throw new ScriptBuildingException($"Invalid sort direction: '{column.SortDirection}'.");
-            //    }
-
-            //    sbIndexColumns.Append(" ");
-            //    sbIndexColumns.Append(sortDirection);
-
-            //    if (i < index.Columns.Count - 1)
-            //    {
-            //        sbIndexColumns.Append(", ");
-            //    }
-            //}
-            // todo: remove above comment
-
             var indexColumnsSql = this.DecorateIndexColumnsOverComma(
                 index.Columns,
                 this.CurrentOpeningIdentifierDelimiter);
@@ -530,7 +495,7 @@ namespace TauCode.Db.Utils.Building
                 {
                     sb.AppendLine($@"/* create table: {table.Name} */");
                 }
-                
+
                 var createTableSql = this.BuildCreateTableSqlForCreateDbSql(table);
                 sb.Append(createTableSql);
 
