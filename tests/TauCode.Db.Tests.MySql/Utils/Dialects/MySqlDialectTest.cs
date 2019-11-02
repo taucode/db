@@ -6,7 +6,7 @@ using TauCode.Db.Model;
 using TauCode.Db.Utils.Dialects;
 using TauCode.Db.Utils.Dialects.MySql;
 
-namespace TauCode.Db.Tests.Utils.Dialects.MySql
+namespace TauCode.Db.Tests.MySql.Utils.Dialects
 {
     [TestFixture]
     public class MySqlDialectTest

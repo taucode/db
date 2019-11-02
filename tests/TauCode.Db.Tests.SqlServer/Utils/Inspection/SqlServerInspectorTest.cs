@@ -1,26 +1,26 @@
-﻿using MySql.Data.MySqlClient;
-using NUnit.Framework;
-using System.Data;
+﻿using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
+using NUnit.Framework;
 using TauCode.Db.Model;
 using TauCode.Db.Utils.Building;
 using TauCode.Db.Utils.Inspection;
-using TauCode.Db.Utils.Inspection.MySql;
+using TauCode.Db.Utils.Inspection.SqlServer;
 using TauCode.Utils.Extensions;
 
-namespace TauCode.Db.Tests.Utils.Inspection.MySql
+namespace TauCode.Db.Tests.SqlServer.Utils.Inspection
 {
     [TestFixture]
-    public class MySqlInspectorTest
+    public class SqlServerInspectorTest
     {
-        private const string CONNECTION_STRING = @"Server=localhost;Database=taucode.db.test;Uid=root;Pwd=1234;";
+        private const string CONNECTION_STRING = @"Server=.\mssqltest;Database=taucode.db.test;User Id=testadmin;Password=1234;";
 
         private IDbConnection _connection;
 
         [SetUp]
         public void SetUp()
         {
-            _connection = new MySqlConnection(CONNECTION_STRING);
+            _connection = new SqlConnection(CONNECTION_STRING);
             _connection.Open();
         }
 
@@ -36,10 +36,10 @@ namespace TauCode.Db.Tests.Utils.Inspection.MySql
         {
             // Arrange
 
-            IDbInspector dbInspector = new MySqlInspector(_connection);
+            IDbInspector dbInspector = new SqlServerInspector(_connection);
             dbInspector.PurgeDb();
 
-            var entireSql = this.GetType().Assembly.GetResourceText("mysql-create-db.sql", true);
+            var entireSql = this.GetType().Assembly.GetResourceText("sqlserver-create-db.sql", true);
             var sqls = ScriptBuilderBase.SplitSqlByComments(entireSql);
             foreach (var sql in sqls)
             {
