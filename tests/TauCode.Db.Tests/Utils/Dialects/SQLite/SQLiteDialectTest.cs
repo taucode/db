@@ -470,6 +470,7 @@ numeric
 real
 text
 blob
+uniqueidentifier
 ";
 
             #endregion
