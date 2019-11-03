@@ -162,11 +162,11 @@ namespace TauCode.Db.Utils.Parsing.Core.Gallery
                     token =>
                         (
                             token is WordToken wordToken &&
-                            this.Dialect.IsDialectSizedTypeName(wordToken.Word)
+                            this.Dialect.IsSizedTypeName(wordToken.Word)
                         ) ||
                         (
                             token is IdentifierToken identifierToken &&
-                            this.Dialect.IsDialectSizedTypeName(identifierToken.Identifier)
+                            this.Dialect.IsSizedTypeName(identifierToken.Identifier)
                         ),
                     "sized_type_name")
                 .Split("after_name")
@@ -217,11 +217,11 @@ namespace TauCode.Db.Utils.Parsing.Core.Gallery
                     token =>
                         (
                             token is WordToken wordToken &&
-                            this.Dialect.IsDialectSingleWordTypeName(wordToken.Word)
+                            this.Dialect.IsSingleWordTypeName(wordToken.Word)
                         ) ||
                         (
                             token is IdentifierToken identifierToken &&
-                            this.Dialect.IsDialectSingleWordTypeName(identifierToken.Identifier)
+                            this.Dialect.IsSingleWordTypeName(identifierToken.Identifier)
                         ),
                     "singleword_type_name")
                 .Milestone(ParsingNode.IdleAction, "finish_type");

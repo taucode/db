@@ -5,6 +5,7 @@ using TauCode.Db.Utils.Building;
 using TauCode.Db.Utils.Building.SQLite;
 using TauCode.Db.Utils.Inspection;
 using TauCode.Db.Utils.Inspection.SQLite;
+using TauCode.Db.Utils.Parsing.SQLite;
 using TauCode.Utils.Extensions;
 
 namespace TauCode.Db.Tests.Utils.Building.SQLite
@@ -23,6 +24,40 @@ namespace TauCode.Db.Tests.Utils.Building.SQLite
             {
                 CurrentOpeningIdentifierDelimiter = '[',
             };
+        }
+
+        [Test]
+        public void Wat()
+        {
+            var sql = @"
+CREATE TABLE [client](
+    [id] integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+    [login] text NOT NULL,
+    [email] text NOT NULL,
+    [password_hash] text NOT NULL,
+    [picture] blob NULL,
+    [birthday] integer NULL,
+    [gender] integer NOT NULL,
+    [rating] numeric NULL,
+    [fortune] numeric NOT NULL,
+    [signature] blob NOT NULL,
+    [visual_age] integer NULL,
+    [alternate_rate] numeric NULL,
+    [iq_index] real NOT NULL,
+    [index16] integer NULL,
+    [index32] integer NOT NULL,
+    [index64] integer NULL,
+    [the_real] real NOT NULL,
+    [guid] blob NOT NULL,
+    [ansi_char] text NULL,
+    [ansi_varchar] text NULL,
+    [ansi_text] text NULL,
+    [unicode_text] text NULL,
+    [fingerprint] blob NULL)
+";
+            var parser = new SQLiteScriptParser();
+            var objs = parser.Parse(sql);
+            var k = 3;
         }
 
         [Test]

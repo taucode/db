@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace TauCode.Db.Utils.Parsing.Core.Nodes
@@ -53,6 +54,12 @@ namespace TauCode.Db.Utils.Parsing.Core.Nodes
             var competitors = Enumerable
                 .Range(0, this.Ways.Count)
                 .ToDictionary(x => x, x => new ConcurrentPath(this.Ways[x], forwardShift));
+
+            Trace.TraceInformation($"Competitors: {this.Ways.Count}");
+            foreach (var parsingNode in this.Ways)
+            {
+                Trace.TraceInformation($"{parsingNode.DebugName}, {parsingNode.GetType().Name}");
+            }
 
             var outsiderIndexes = new List<int>();
 

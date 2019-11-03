@@ -16,7 +16,7 @@ namespace TauCode.Db.Utils.Parsing.Core.Gallery
         protected virtual bool IsPreciseNumberTypeNameToken(Token token)
         {
             var identifier = token.GetTokenIdentifier();
-            return this.Dialect.IsDialectPreciseNumberTypeName(identifier);
+            return this.Dialect.IsPreciseNumberTypeName(identifier);
         }
 
         protected override INodeSyntax BuildSyntaxImpl()
