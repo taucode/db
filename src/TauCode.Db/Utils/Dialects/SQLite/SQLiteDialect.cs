@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using TauCode.Db.Model;
 
 namespace TauCode.Db.Utils.Dialects.SQLite
 {
@@ -13,6 +13,7 @@ namespace TauCode.Db.Utils.Dialects.SQLite
         #region Static
 
         public static readonly SQLiteDialect Instance = new SQLiteDialect();
+        private static readonly string[] EmptyStrings = { };
 
         #endregion
 
@@ -29,7 +30,7 @@ namespace TauCode.Db.Utils.Dialects.SQLite
 
         public override bool CanDecorateTypeIdentifier => false;
 
-        public override IReadOnlyList<string> DataTypeNames => throw new NotSupportedException("In SQLite, almost any word can designate type name.");
+        public override IReadOnlyList<string> DataTypeNames => EmptyStrings;
 
         public override bool IsSingleWordTypeName(string typeName)
         {
@@ -38,7 +39,7 @@ namespace TauCode.Db.Utils.Dialects.SQLite
                 throw new ArgumentNullException(nameof(typeName));
             }
 
-            return !string.IsNullOrEmpty(typeName) && !this.ReservedWords.Contains(typeName.ToUpper());
+            return false;
         }
 
         public override bool IsSizedTypeName(string typeName)
@@ -48,7 +49,7 @@ namespace TauCode.Db.Utils.Dialects.SQLite
                 throw new ArgumentNullException(nameof(typeName));
             }
 
-            return !string.IsNullOrEmpty(typeName) && !this.ReservedWords.Contains(typeName.ToUpper());
+            return false;
         }
 
         public override bool IsPreciseNumberTypeName(string typeName)
@@ -58,7 +59,27 @@ namespace TauCode.Db.Utils.Dialects.SQLite
                 throw new ArgumentNullException(nameof(typeName));
             }
 
-            return !string.IsNullOrEmpty(typeName) && !this.ReservedWords.Contains(typeName.ToUpper());
+            return false;
+        }
+
+        public override DbTypeFamily GetTypeFamily(string typeName)
+        {
+            if (typeName == null)
+            {
+                throw new ArgumentNullException(nameof(typeName));
+            }
+
+            return DbTypeFamily.Unknown;
+        }
+
+        public override DbTypeNameCategory GetTypeNameCategory(string typeName)
+        {
+            if (typeName == null)
+            {
+                throw new ArgumentNullException(nameof(typeName));
+            }
+
+            return DbTypeNameCategory.Unknown;
         }
 
         #endregion

@@ -1,8 +1,6 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Linq;
-using TauCode.Db.Exceptions;
-using TauCode.Db.Model;
 using TauCode.Db.Utils.Dialects;
 using TauCode.Db.Utils.Dialects.SQLite;
 
@@ -451,73 +449,6 @@ WITHOUT";
         }
 
         [Test]
-        public void DataTypeNames_NoArguments_ReturnsValidValues()
-        {
-            // Arrange
-
-            // Act
-            var dataTypeNames = _dialect.DataTypeNames;
-
-            // Assert
-            var expectedDataTypeNamesString =
-
-            #region SQLite data type names
-
-@"
-datetime
-integer
-numeric
-real
-text
-blob
-uniqueidentifier
-";
-
-            #endregion
-
-            var expectedDataTypeNames = expectedDataTypeNamesString
-                .Split(
-                    new string[] { Environment.NewLine },
-                    StringSplitOptions.RemoveEmptyEntries);
-
-            CollectionAssert.AreEqual(
-                dataTypeNames,
-                expectedDataTypeNames
-                    .Where(x => x == x.Trim())
-                    .OrderBy(x => x)
-                    .Distinct()
-                    .ToArray());
-        }
-
-        [Test]
-        [TestCase("integer", DbTypeFamily.Integer)]
-        [TestCase("real", DbTypeFamily.FloatingPointNumber)]
-        [TestCase("numeric", DbTypeFamily.PreciseNumber)]
-        [TestCase("blob", DbTypeFamily.Binary)]
-        [TestCase("text", DbTypeFamily.UnicodeText)]
-        public void GetTypeFamily_ValidTypeName_ReturnsTypeFamily(string typeName, DbTypeFamily expectedTypeFamily)
-        {
-            // Arrange
-
-            // Act
-            var typeFamily = _dialect.GetTypeFamily(typeName);
-
-            // Assert
-            Assert.That(typeFamily, Is.EqualTo(expectedTypeFamily));
-        }
-
-        [Test]
-        public void GetTypeFamily_InvalidTypeName_ThrowArgumentException()
-        {
-            // Arrange
-
-            // Act & Assert
-            var ex = Assert.Throws<UnknownDataTypeNameException>(() => _dialect.GetTypeFamily("wrong_type"));
-
-            Assert.That(ex.Message, Does.StartWith("Unknown data type name: 'wrong_type'"));
-        }
-
-        [Test]
         public void GetTypeFamily_TypeNameIsNull_ArgumentNullException()
         {
             // Arrange
@@ -526,34 +457,6 @@ uniqueidentifier
             var ex = Assert.Throws<ArgumentNullException>(() => _dialect.GetTypeFamily(null));
 
             Assert.That(ex.ParamName, Is.EqualTo("typeName"));
-        }
-
-        [Test]
-        [TestCase("integer", DbTypeNameCategory.SingleWord)]
-        [TestCase("real", DbTypeNameCategory.SingleWord)]
-        [TestCase("numeric", DbTypeNameCategory.SingleWord)]
-        [TestCase("blob", DbTypeNameCategory.SingleWord)]
-        [TestCase("text", DbTypeNameCategory.SingleWord)]
-        public void GetTypeNameCategory_ValidTypeName_ReturnsTypeNameCategory(string typeName, DbTypeNameCategory expectedTypeNameCategory)
-        {
-            // Arrange
-
-            // Act
-            var category = _dialect.GetTypeNameCategory(typeName);
-
-            // Assert
-            Assert.That(category, Is.EqualTo(expectedTypeNameCategory));
-        }
-
-        [Test]
-        public void GetTypeNameCategory_InvalidTypeName_ThrowArgumentException()
-        {
-            // Arrange
-
-            // Act & Assert
-            var ex = Assert.Throws<UnknownDataTypeNameException>(() => _dialect.GetTypeNameCategory("wrong_type"));
-
-            Assert.That(ex.Message, Does.StartWith("Unknown data type name: 'wrong_type'"));
         }
 
         [Test]

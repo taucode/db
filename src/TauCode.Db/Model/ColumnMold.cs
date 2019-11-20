@@ -12,6 +12,7 @@ namespace TauCode.Db.Model
         public bool IsNullable { get; set; } = true;
         public ColumnIdentityMold Identity { get; set; }
         public Dictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
+        public string Default { get; set; }
 
         public string GetDefaultCaption()
         {
