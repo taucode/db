@@ -7,7 +7,6 @@ using TauCode.Db.Utils.Crud;
 using TauCode.Db.Utils.Crud.SQLite;
 using TauCode.Db.Utils.Dialects;
 using TauCode.Db.Utils.Dialects.SQLite;
-using TauCode.Db.Utils.Parsing.SQLite;
 
 namespace TauCode.Db.Utils.Inspection.SQLite
 {
@@ -106,25 +105,27 @@ WHERE
                 command.AddParameterWithValue("p_tableName", this.TableName);
                 command.AddParameterWithValue("p_antiPattern", "sqlite_autoindex_%");
 
-                var parser = new SQLiteScriptParser();
-                var indexes = _cruder
-                    .GetRows(command)
-                    .Select(x => (IndexMold)parser.Parse((string)x.Sql).Single())
-                    .ToList();
+                throw new NotImplementedException();
+                //var parser = new SQLiteScriptParser();
+                //var indexes = _cruder
+                //    .GetRows(command)
+                //    .Select(x => (IndexMold)parser.Parse((string)x.Sql).Single())
+                //    .ToList();
 
-                return indexes;
+                //return indexes;
             }
         }
 
         public TableMold GetTableMold()
         {
             var sql = this.GetTableCreationSqlFromDb();
-            var parser = new SQLiteScriptParser();
-            var table = (TableMold)parser.Parse(sql).Single();
+            throw new NotImplementedException();
+            //var parser = new SQLiteScriptParser();
+            //var table = (TableMold)parser.Parse(sql).Single();
 
-            table.Indexes = this.GetIndexMolds();
+            //table.Indexes = this.GetIndexMolds();
 
-            return table;
+            //return table;
         }
 
         #endregion

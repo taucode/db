@@ -5,7 +5,6 @@ using TauCode.Db.Utils.Building;
 using TauCode.Db.Utils.Building.SQLite;
 using TauCode.Db.Utils.Inspection;
 using TauCode.Db.Utils.Inspection.SQLite;
-using TauCode.Db.Utils.Parsing.SQLite;
 using TauCode.Utils.Extensions;
 
 namespace TauCode.Db.Tests.Utils.Building.SQLite
@@ -27,7 +26,7 @@ namespace TauCode.Db.Tests.Utils.Building.SQLite
         }
 
         [Test]
-        public void Wat()
+        public void WatTodo()
         {
             var sql = @"
 CREATE TABLE [client](
@@ -55,9 +54,11 @@ CREATE TABLE [client](
     [unicode_text] text NULL,
     [fingerprint] blob NULL)
 ";
-            var parser = new SQLiteScriptParser();
-            var objs = parser.Parse(sql);
-            var k = 3;
+
+            throw new NotImplementedException();
+            //var parser = new SQLiteScriptParser();
+            //var objs = parser.Parse(sql);
+            //var k = 3;
         }
 
         [Test]
