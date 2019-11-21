@@ -32,6 +32,7 @@ CREATE
 <scale_and_precision>[ \( <precision>\Integer [ \, <scale>\Integer ] \) ]
 <nullability>[ { <null>NULL | NOT <not_null>NULL } ]
 [ PRIMARY <inline_primary_key>KEY ]
+[ <autoincrement>AUTOINCREMENT ]
 [ DEFAULT { <default_null>NULL | <default_integer>\Integer | <default_string>\String } ]
 
 \EndBlockDefinition

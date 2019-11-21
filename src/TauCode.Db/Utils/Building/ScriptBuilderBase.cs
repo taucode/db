@@ -290,11 +290,12 @@ namespace TauCode.Db.Utils.Building
             var nullability = column.IsNullable ? "NULL" : "NOT NULL";
             sb.Append(nullability);
 
+            // todo
             // force inline primary key
-            if (column.Properties.GetOrDefault("force-inline-primary-key")?.ToLower() == "true")
-            {
-                sb.Append(" PRIMARY KEY");
-            }
+            //if (column.Properties.GetOrDefault("force-inline-primary-key")?.ToLower() == "true")
+            //{
+            //    sb.Append(" PRIMARY KEY");
+            //}
 
             if (column.Identity != null)
             {
@@ -441,14 +442,14 @@ namespace TauCode.Db.Utils.Building
             }
 
             // primary key
-            if (table.PrimaryKey != null && !table.Columns.Any(x =>
-                    x.Properties.GetOrDefault("force-inline-primary-key")?.ToLower() == "true"))
-            {
-                sb.AppendLine(",");
+            //if (table.PrimaryKey != null && !table.Columns.Any(x =>
+            //        x.Properties.GetOrDefault("force-inline-primary-key")?.ToLower() == "true"))
+            //{
+            //    sb.AppendLine(",");
 
-                var primaryKeySql = this.BuildPrimaryKeySql(null, table.PrimaryKey);
-                sb.AppendFormat("    {0}", primaryKeySql);
-            }
+            //    var primaryKeySql = this.BuildPrimaryKeySql(null, table.PrimaryKey);
+            //    sb.AppendFormat("    {0}", primaryKeySql);
+            //}
 
             if (inline)
             {

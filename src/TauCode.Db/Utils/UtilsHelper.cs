@@ -129,5 +129,10 @@ namespace TauCode.Db.Utils
         {
             return new SyntaxAnalyzerException("Syntax analyzer error.");
         }
+
+        internal static HashSet<T> ToMyHashSet<T>(this IEnumerable<T> collection)
+        {
+            return new HashSet<T>(collection);
+        }
     }
 }

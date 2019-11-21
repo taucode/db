@@ -134,7 +134,7 @@ CREATE TABLE [secret](
     [client_id] integer NULL,
 
     CONSTRAINT [PK_secret] PRIMARY KEY ([id_base], [id_value]),
-    FOREIGN KEY ([client_id]) REFERENCES [client] ([id]));
+    CONSTRAINT [FK_client_id] FOREIGN KEY ([client_id]) REFERENCES [client] ([id]));
 
 /* secret - index on name */
 CREATE INDEX [IX_secret_name] ON [secret] ([name])

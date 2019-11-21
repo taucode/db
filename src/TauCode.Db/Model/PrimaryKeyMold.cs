@@ -10,6 +10,7 @@ namespace TauCode.Db.Model
     {
         public string Name { get; set; }
         public List<IndexColumnMold> Columns { get; set; } = new List<IndexColumnMold>();
+        public IDictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
 
         public string GetDefaultCaption()
         {

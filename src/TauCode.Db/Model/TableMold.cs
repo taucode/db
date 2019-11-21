@@ -11,5 +11,6 @@ namespace TauCode.Db.Model
         public PrimaryKeyMold PrimaryKey { get; set; }
         public List<ForeignKeyMold> ForeignKeys { get; set; } = new List<ForeignKeyMold>();
         public List<IndexMold> Indexes { get; set; } = new List<IndexMold>();
+        public IDictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
     }
 }

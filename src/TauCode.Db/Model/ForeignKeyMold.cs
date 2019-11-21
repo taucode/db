@@ -11,6 +11,7 @@ namespace TauCode.Db.Model
         public List<string> ColumnNames { get; set; } = new List<string>();
         public string ReferencedTableName { get; set; }
         public List<string> ReferencedColumnNames { get; set; } = new List<string>();
+        public IDictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
 
         public string GetDefaultCaption()
         {
