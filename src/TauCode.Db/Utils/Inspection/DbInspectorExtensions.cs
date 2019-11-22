@@ -99,5 +99,19 @@ namespace TauCode.Db.Utils.Inspection
                 command.ExecuteNonQuery();
             }
         }
+
+        public static void ExecuteScript(this IDbInspector dbInspector, string script)
+        {
+            var sqls = ScriptBuilderBase.SplitSqlByComments(script);
+
+            foreach (var sql in sqls)
+            {
+                using (var command = dbInspector.Connection.CreateCommand())
+                {
+                    command.CommandText = sql;
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
     }
 }
