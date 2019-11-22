@@ -6,3 +6,4 @@
 2019-11-2
 ==========
     1. Deal with DEFAULT    
+    2. Parsing of sized columns will fail with (SQLite) parser. E.g. VARCHAR(20) will produce column mold with Size == 0 (!), Precision = 20 and Scale = 0.
