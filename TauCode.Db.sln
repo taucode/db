@@ -22,9 +22,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.Db", "src\TauCode.D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.Db.Tests", "tests\TauCode.Db.Tests\TauCode.Db.Tests.csproj", "{3C7A113E-A2C5-4698-9D71-A5E84BA762C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TauCode.Db.Tests.SqlServer", "tests\TauCode.Db.Tests.SqlServer\TauCode.Db.Tests.SqlServer.csproj", "{0D125DFF-6E0F-4306-9C79-A6E6126C50B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.Db.Tests.SqlServer", "tests\TauCode.Db.Tests.SqlServer\TauCode.Db.Tests.SqlServer.csproj", "{0D125DFF-6E0F-4306-9C79-A6E6126C50B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TauCode.Db.Tests.MySql", "tests\TauCode.Db.Tests.MySql\TauCode.Db.Tests.MySql.csproj", "{DBDEE0E8-9875-49AE-BB49-F8FC12C09C57}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.Db.Tests.MySql", "tests\TauCode.Db.Tests.MySql\TauCode.Db.Tests.MySql.csproj", "{DBDEE0E8-9875-49AE-BB49-F8FC12C09C57}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

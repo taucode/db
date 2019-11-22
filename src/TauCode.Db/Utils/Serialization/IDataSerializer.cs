@@ -5,7 +5,6 @@ namespace TauCode.Db.Utils.Serialization
 {
     public interface IDataSerializer
     {
-//todo: public ScriptBuilder, DbInspector, Cruder.
         string SerializeCommandResult(IDbCommand command);
         string SerializeTable(IDbConnection connection, string tableName);
         string SerializeDb(IDbConnection connection);

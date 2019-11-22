@@ -456,17 +456,6 @@ namespace TauCode.Db.Utils.Inspection.SQLite
             var tokens = lexer.Lexize(sql);
 
             var results = _parser.Parse(_root, tokens);
-
-            foreach (var result in results)
-            {
-                if (result is TableMold tableMold)
-                {
-                    // todo
-                    //throw new NotImplementedException();
-                    //tableMold.InitPrimaryKey();
-                }
-            }
-
             return results;
         }
     }
