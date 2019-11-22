@@ -2,7 +2,7 @@
 
 namespace TauCode.Db.Model
 {
-    public class IndexColumnMold
+    public class IndexColumnMold : IDbMold
     {
         public string Name { get; set; }
         public SortDirection SortDirection { get; set; } = SortDirection.Ascending;

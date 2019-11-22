@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Linq;
+using TauCode.Db.Model;
 using TauCode.Db.Utils.Building;
 using TauCode.Db.Utils.Building.SQLite;
 using TauCode.Db.Utils.Inspection;
@@ -26,10 +27,11 @@ namespace TauCode.Db.Tests.Utils.Building.SQLite
         }
 
         [Test]
-        public void WatTodo()
+        public void Build_ParsedSql_BuildsCorrectly()
         {
-            var sql = @"
-CREATE TABLE [client](
+            // Arrange
+            var sql =
+@"CREATE TABLE [client](
     [id] integer NOT NULL PRIMARY KEY AUTOINCREMENT,
     [login] text NOT NULL,
     [email] text NOT NULL,
@@ -52,13 +54,18 @@ CREATE TABLE [client](
     [ansi_varchar] text NULL,
     [ansi_text] text NULL,
     [unicode_text] text NULL,
-    [fingerprint] blob NULL)
-";
+    [fingerprint] blob NULL)";
 
-            throw new NotImplementedException();
-            //var parser = new SQLiteScriptParser();
-            //var objs = parser.Parse(sql);
-            //var k = 3;
+            // Act
+            var tableMold = SQLiteParser.Instance.Parse(sql).Cast<TableMold>().Single();
+            var scriptBuilder = new SQLiteScriptBuilder
+            {
+                CurrentOpeningIdentifierDelimiter = '['
+            };
+            var builtSql = scriptBuilder.BuildCreateTableSql(tableMold, true);
+
+            // Assert
+            Assert.That(builtSql, Is.EqualTo(sql));
         }
 
         [Test]
@@ -157,7 +164,6 @@ REFERENCES [secret]([id_base], [id_value])")]
 
             // Assert
             var expectedSql = this.GetType().Assembly.GetResourceText("sqlite-create-db-expected.sql", true);
-
             Assert.That(sql, Is.EqualTo(expectedSql));
         }
     }

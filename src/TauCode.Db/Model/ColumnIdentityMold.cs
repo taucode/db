@@ -2,7 +2,7 @@
 
 namespace TauCode.Db.Model
 {
-    public class ColumnIdentityMold
+    public class ColumnIdentityMold : IDbMold
     {
         public string Seed { get; set; }
         public string Increment { get; set; }

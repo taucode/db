@@ -4,7 +4,7 @@ using System.Diagnostics;
 namespace TauCode.Db.Model
 {
     [DebuggerDisplay("{" + nameof(Name) + "}")]
-    public class TableMold
+    public class TableMold : IDbMold
     {
         public string Name { get; set; }
         public List<ColumnMold> Columns { get; set; } = new List<ColumnMold>();

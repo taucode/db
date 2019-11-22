@@ -157,7 +157,7 @@ namespace TauCode.Db.Utils.Inspection.SQLite
             {
                 var tableMold = accumulator.GetLastResult<TableMold>();
                 var columnMold = tableMold.Columns.Last();
-                columnMold.SetIsPrimaryKey(true);
+                columnMold.MarkAsExplicitPrimaryKey();
             };
 
             var autoincrement = (ActionNode)allSqlNodes.Single(x => x.Name == "autoincrement");
@@ -165,7 +165,7 @@ namespace TauCode.Db.Utils.Inspection.SQLite
             {
                 var tableMold = accumulator.GetLastResult<TableMold>();
                 var columnMold = tableMold.Columns.Last();
-                columnMold.SetIsAutoIncrement(true);
+                columnMold.Identity = new ColumnIdentityMold();
             };
 
             var defaultNull = (ActionNode)allSqlNodes.Single(x => x.Name == "default_null");
@@ -461,7 +461,9 @@ namespace TauCode.Db.Utils.Inspection.SQLite
             {
                 if (result is TableMold tableMold)
                 {
-                    tableMold.InitPrimaryKey();
+                    // todo
+                    //throw new NotImplementedException();
+                    //tableMold.InitPrimaryKey();
                 }
             }
 

@@ -2,3 +2,7 @@
 ==========
     1. Fix issue with SqlCommand.Prepare for all DB types
     2. Remove TauCode.Db.XenoTest project when done.
+
+2019-11-2
+==========
+    1. Deal with DEFAULT    

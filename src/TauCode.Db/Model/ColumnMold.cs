@@ -5,7 +5,7 @@ using System.Text;
 namespace TauCode.Db.Model
 {
     [DebuggerDisplay("{" + nameof(GetDefaultCaption) + "()}")]
-    public class ColumnMold
+    public class ColumnMold : IDbMold
     {
         public string Name { get; set; }
         public DbTypeMold Type { get; set; } = new DbTypeMold();

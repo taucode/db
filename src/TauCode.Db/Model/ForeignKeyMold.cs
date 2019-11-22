@@ -5,7 +5,7 @@ using System.Text;
 namespace TauCode.Db.Model
 {
     [DebuggerDisplay("{" + nameof(GetDefaultCaption) + "()}")]
-    public class ForeignKeyMold
+    public class ForeignKeyMold : IDbMold
     {
         public string Name { get; set; }
         public List<string> ColumnNames { get; set; } = new List<string>();

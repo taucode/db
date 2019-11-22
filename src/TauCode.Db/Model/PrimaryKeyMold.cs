@@ -6,7 +6,7 @@ using System.Text;
 namespace TauCode.Db.Model
 {
     [DebuggerDisplay("{" + nameof(GetDefaultCaption) + "()}")]
-    public class PrimaryKeyMold
+    public class PrimaryKeyMold : IDbMold
     {
         public string Name { get; set; }
         public List<IndexColumnMold> Columns { get; set; } = new List<IndexColumnMold>();

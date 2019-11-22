@@ -125,14 +125,49 @@ namespace TauCode.Db.Utils
                 string.Equals(x.Name, columnName, StringComparison.InvariantCultureIgnoreCase));
         }
 
-        internal static SyntaxAnalyzerException CreateInternalSyntaxAnalyzerErrorException()
-        {
-            return new SyntaxAnalyzerException("Syntax analyzer error.");
-        }
-
+        /// <summary>
+        /// (Justified TODO). Get rid of this method when migrated to .NET Standard 2.1 which has 'ToHashSet'
+        /// </summary>
+        /// <typeparam name="T">Collection element type.</typeparam>
+        /// <param name="collection">Collection to convert to has table.</param>
+        /// <returns>Hash set built from collection.</returns>
         internal static HashSet<T> ToMyHashSet<T>(this IEnumerable<T> collection)
         {
             return new HashSet<T>(collection);
+        }
+
+        internal static void MarkAsExplicitPrimaryKey(this ColumnMold columnMold)
+        {
+            columnMold.SetBoolProperty("is-explicit-primary-key", true);
+        }
+
+        internal static bool IsExplicitPrimaryKey(this ColumnMold columnMold)
+        {
+            return columnMold.GetBoolProperty("is-explicit-primary-key");
+        }
+
+        internal static void SetBoolProperty(this IDbMold mold, string propertyName, bool value)
+        {
+            mold.Properties[propertyName] = value.ToString();
+        }
+
+        internal static bool GetBoolProperty(this IDbMold mold, string propertyName, bool? resultOnNotFound = false)
+        {
+            var gotProperty = mold.Properties.TryGetValue(propertyName, out var stringValue);
+            if (gotProperty)
+            {
+                return bool.Parse(stringValue);
+            }
+
+            // no such property, let's decide what to do
+            if (resultOnNotFound.HasValue)
+            {
+                return resultOnNotFound.Value;
+            }
+            else
+            {
+                throw new KeyNotFoundException($"Property '{propertyName}' not found.");
+            }
         }
     }
 }
