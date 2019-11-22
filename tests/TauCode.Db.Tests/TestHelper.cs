@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
+using System.Text;
 
 namespace TauCode.Db.Tests
 {
@@ -35,6 +37,18 @@ namespace TauCode.Db.Tests
             parameter.ParameterName = parameterName;
             parameter.Value = parameterValue;
             command.Parameters.Add(parameter);
+        }
+
+        internal static void WriteDiff(string actual, string expected, string directory, string fileExtension)
+        {
+            var actualFileName = $"0-actual.{fileExtension}";
+            var expectedFileName = $"1-expected.{fileExtension}";
+
+            var actualFilePath = Path.Combine(directory, actualFileName);
+            var expectedFilePath = Path.Combine(directory, expectedFileName);
+
+            File.WriteAllText(actualFilePath, actual, Encoding.UTF8);
+            File.WriteAllText(expectedFilePath, expected, Encoding.UTF8);
         }
     }
 }

@@ -1,0 +1,130 @@
+﻿/****** Create ******/
+
+\BeginBlockDefinition(:top, :create)
+
+CREATE
+{ <create_table>\BlockReference | <create_index>\BlockReference } \End
+
+\EndBlockDefinition
+
+
+/****** Create Table ******/
+
+\BeginBlockDefinition(:inner, :create_table)
+
+<do_create_table>TABLE
+{ <table_name>\Identifier | <table_name_word>\Word }
+\(
+<column_definition>\BlockReference(:table_closing, :next)
+<comma>\,(:column_definition, :next)
+<constraint_definitions>\BlockReference
+<table_closing>\)
+
+\EndBlockDefinition
+
+
+/****** Column Definition ******/
+
+\BeginBlockDefinition(:inner, :column_definition)
+
+{ <column_name>\Identifier | <column_name_word>\Word }
+{ <type_name>\Identifier | <type_name_word>\Word }
+<scale_and_precision>[ \( <precision>\Integer [ \, <scale>\Integer ] \) ]
+<nullability>[ { <null>NULL | NOT <not_null>NULL } ]
+[ PRIMARY <inline_primary_key>KEY ]
+[ <autoincrement>AUTOINCREMENT ]
+[ DEFAULT { <default_null>NULL | <default_integer>\Integer | <default_string>\String } ]
+
+\EndBlockDefinition
+
+
+/****** Constraint Definitions ******/
+
+\BeginBlockDefinition(:inner, :constraint_definitions)
+
+<constraint>CONSTRAINT
+{ <constraint_name>\Identifier | <constraint_name_word>\Word }
+{ <primary_key>\BlockReference | <foreign_key>\BlockReference }
+{ \,(:constraint) | \Idle }
+
+\EndBlockDefinition
+
+
+/****** Primary Key ******/
+
+\BeginBlockDefinition(:inner, :primary_key)
+
+<do_primary_key>PRIMARY
+KEY
+<pk_columns>\BlockReference
+
+\EndBlockDefinition
+
+
+/****** Primary Key Columns ******/
+
+\BeginBlockDefinition(:inner, :pk_columns)
+
+\(
+<pk_column_name_alternatives>{ <pk_column_name>\Identifier | <pk_column_name_word>\Word }
+[ { <asc>ASC | <desc>DESC } ]
+{ \,(:pk_column_name_alternatives) | \Idle }
+\)
+
+\EndBlockDefinition
+
+
+/****** Foreign Key ******/
+
+\BeginBlockDefinition(:inner, :foreign_key)
+
+<do_foreign_key>FOREIGN
+KEY
+<fk_columns>\BlockReference
+REFERENCES
+{ <fk_referenced_table_name>\Identifier | <fk_referenced_table_name_word>\Word }
+<fk_referenced_columns>\BlockReference
+
+\EndBlockDefinition
+
+
+/****** Foreign Key Columns ******/
+
+\BeginBlockDefinition(:inner, :fk_columns)
+
+\(
+<fk_column_name_alternatives>{ <fk_column_name>\Identifier | <fk_column_name_word>\Word }
+{ \,(:fk_column_name_alternatives) | \Idle }
+\)
+
+\EndBlockDefinition
+
+
+/****** Foreign Key Referenced Columns ******/
+
+\BeginBlockDefinition(:inner, :fk_referenced_columns)
+
+\(
+<fk_referenced_column_name_alternatives>{ <fk_referenced_column_name>\Identifier | <fk_referenced_column_name_word>\Word }
+{ \,(:fk_referenced_column_name_alternatives) | \Idle }
+\)
+
+\EndBlockDefinition
+
+
+/****** Create Index ******/
+
+\BeginBlockDefinition(:inner, :create_index)
+
+[<do_create_unique_index>UNIQUE]
+<do_create_index>INDEX
+{ <index_name>\Identifier | <index_name_word>\Word }
+ON
+{ <index_table_name>\Identifier | <index_table_name_word>\Word }
+\(
+<index_column_name_alternatives>{ <index_column_name>\Identifier | <index_column_name_word>\Word }
+[ { <index_column_asc>ASC | <index_column_desc>DESC } ]
+{ \,(:index_column_name_alternatives) | \Idle }
+\)
+
+\EndBlockDefinition

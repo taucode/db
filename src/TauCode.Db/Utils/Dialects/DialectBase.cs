@@ -133,6 +133,42 @@ namespace TauCode.Db.Utils.Dialects
 
         public virtual IReadOnlyList<string> DataTypeNames => _dataTypeNames ?? (_dataTypeNames = this.BuildDataTypeNames());
 
+        public virtual bool IsSingleWordTypeName(string typeName)
+        {
+            if (typeName == null)
+            {
+                throw new ArgumentNullException(nameof(typeName));
+            }
+
+            return
+                this.DataTypeNames.Contains(typeName) &&
+                this.GetTypeNameCategory(typeName) == DbTypeNameCategory.SingleWord;
+        }
+
+        public virtual bool IsSizedTypeName(string typeName)
+        {
+            if (typeName == null)
+            {
+                throw new ArgumentNullException(nameof(typeName));
+            }
+
+            return
+                this.DataTypeNames.Contains(typeName) &&
+                this.GetTypeNameCategory(typeName) == DbTypeNameCategory.Sized;
+        }
+
+        public virtual bool IsPreciseNumberTypeName(string typeName)
+        {
+            if (typeName == null)
+            {
+                throw new ArgumentNullException(nameof(typeName));
+            }
+
+            return
+                this.DataTypeNames.Contains(typeName) &&
+                this.GetTypeNameCategory(typeName) == DbTypeNameCategory.PreciseNumber;
+        }
+
         public virtual string ClauseTerminator => ";";
 
         public virtual string UnicodeTextLiteralPrefix => string.Empty;

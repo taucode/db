@@ -291,7 +291,7 @@ namespace TauCode.Db.Utils.Building
             sb.Append(nullability);
 
             // force inline primary key
-            if (column.Properties.GetOrDefault("force-inline-primary-key")?.ToLower() == "true")
+            if (column.IsExplicitPrimaryKey())
             {
                 sb.Append(" PRIMARY KEY");
             }

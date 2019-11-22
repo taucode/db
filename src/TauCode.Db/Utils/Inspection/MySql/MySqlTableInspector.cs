@@ -94,8 +94,9 @@ ORDER BY
                 Type = this.Dialect.ResolveType(columnInfo.TypeName, columnInfo.Size, columnInfo.Precision, columnInfo.Scale),
                 IsNullable = columnInfo.IsNullable,
 
-                Properties = columnInfo.AdditionalProperties
-                    .ToDictionary(x => x.Key, x => x.Value),
+                // Deferred TODO: resurrect MySql when get time.
+                //Properties = columnInfo.AdditionalProperties
+                //    .ToDictionary(x => x.Key, x => x.Value),
             };
 
             return columnMold;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
 
 namespace TauCode.Db.Utils.Building
@@ -20,10 +21,23 @@ namespace TauCode.Db.Utils.Building
                 throw new ArgumentNullException(nameof(tableMold));
             }
 
+            try
+            {
+                var pkColumn = tableMold.Columns.SingleOrDefault(x => x.IsExplicitPrimaryKey());
+                if (pkColumn != null)
+                {
+                    return pkColumn.Name;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ScriptBuildingException("An exception occured when tried to retrieve single-or-default explicit PRIMARY KEY column.", ex);
+            }
+
             var pk = tableMold.PrimaryKey;
             if ((pk?.Columns?.Count ?? -1) != 1)
             {
-                throw new InvalidOperationException("Only tables having single-column primary key are supported.");
+                throw new ScriptBuildingException("Only tables having single-column primary key are supported.");
             }
 
             return pk.Columns.Single().Name;

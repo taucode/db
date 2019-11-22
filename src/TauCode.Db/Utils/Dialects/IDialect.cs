@@ -12,6 +12,12 @@ namespace TauCode.Db.Utils.Dialects
 
         IReadOnlyList<string> DataTypeNames { get; }
 
+        bool IsSingleWordTypeName(string typeName);
+
+        bool IsSizedTypeName(string typeName);
+
+        bool IsPreciseNumberTypeName(string typeName);
+
         string ClauseTerminator { get; }
 
         string UnicodeTextLiteralPrefix { get; }
