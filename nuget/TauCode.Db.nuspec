@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>TauCode.Db</id>
-    <version>3.1-dev-2019-11-22-17-41</version>
+    <version>3.1</version>
     <authors>TauCode</authors>
     <owners>TauCode</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -10,7 +10,7 @@
     <projectUrl>http://taucode.com/</projectUrl>
     <description>Basic functionality for database support</description>
     <releaseNotes>
-      TODO: Release v3.0
+      1. Took advantage of TauCode.Parsing for SQLite.
     </releaseNotes>
     <tags>taucode db database</tags>
     <dependencies>
