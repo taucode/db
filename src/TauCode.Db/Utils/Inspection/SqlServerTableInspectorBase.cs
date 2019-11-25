@@ -108,29 +108,53 @@ WHERE
                 command.Parameters.Clear();
                 command.CommandText =
 @"
+
 SELECT
-    KCU.column_name ColumnName
+    I.[index_id]            IndexId,
+    I.[name]                IndexName,
+    IC.[key_ordinal]        KeyOrdinal,
+    C.[name]                ColumnName,
+    IC.[is_descending_key]  IsDescendingKey
 FROM
-    information_schema.key_column_usage KCU
-WHERE
-    KCU.constraint_name = @p_constraintName
+    sys.indexes I
+INNER JOIN
+    sys.index_columns IC
+ON
+    IC.[index_id] = I.[index_id]
     AND
-    KCU.table_name = @p_tableName
+    IC.[object_id] = i.[object_id]
+INNER JOIN
+    sys.columns C
+ON
+    C.[column_id] = IC.[column_id]
+    AND
+    C.[object_id] = IC.[object_id]
+INNER JOIN
+    sys.tables T
+ON
+    T.[object_id] = c.[object_id]
+WHERE
+    I.[name] = @p_constraintName AND
+    T.[name] = @p_tableName
 ORDER BY
-    KCU.ordinal_position
+    IC.[key_ordinal]
 ";
                 command.AddParameterWithValue("p_constraintName", constraintName);
                 command.AddParameterWithValue("p_tableName", this.TableName);
 
-                var columnNames = this.Cruder
+                var columns = this.Cruder
                     .GetRows(command)
-                    .Select(x => (string)x.ColumnName)
+                    .Select(x => new IndexColumnMold
+                    {
+                        Name = (string)x.ColumnName,
+                        SortDirection = (bool)x.IsDescendingKey ? SortDirection.Descending : SortDirection.Ascending,
+                    })
                     .ToList();
 
                 var primaryKeyMold = new PrimaryKeyMold
                 {
                     Name = constraintName,
-                    ColumnNames = columnNames,
+                    Columns = columns,
                 };
 
                 return primaryKeyMold;

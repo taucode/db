@@ -1,4 +1,8 @@
-﻿namespace TauCode.Db.Utils.Dialects.SQLite
+﻿using System;
+using System.Collections.Generic;
+using TauCode.Db.Model;
+
+namespace TauCode.Db.Utils.Dialects.SQLite
 {
     [Dialect(
         "sql-sqlite-reserved-words.txt",
@@ -9,6 +13,7 @@
         #region Static
 
         public static readonly SQLiteDialect Instance = new SQLiteDialect();
+        private static readonly string[] EmptyStrings = { };
 
         #endregion
 
@@ -24,6 +29,58 @@
         #region Overridden
 
         public override bool CanDecorateTypeIdentifier => false;
+
+        public override IReadOnlyList<string> DataTypeNames => EmptyStrings;
+
+        public override bool IsSingleWordTypeName(string typeName)
+        {
+            if (typeName == null)
+            {
+                throw new ArgumentNullException(nameof(typeName));
+            }
+
+            return false;
+        }
+
+        public override bool IsSizedTypeName(string typeName)
+        {
+            if (typeName == null)
+            {
+                throw new ArgumentNullException(nameof(typeName));
+            }
+
+            return false;
+        }
+
+        public override bool IsPreciseNumberTypeName(string typeName)
+        {
+            if (typeName == null)
+            {
+                throw new ArgumentNullException(nameof(typeName));
+            }
+
+            return false;
+        }
+
+        public override DbTypeFamily GetTypeFamily(string typeName)
+        {
+            if (typeName == null)
+            {
+                throw new ArgumentNullException(nameof(typeName));
+            }
+
+            return DbTypeFamily.Unknown;
+        }
+
+        public override DbTypeNameCategory GetTypeNameCategory(string typeName)
+        {
+            if (typeName == null)
+            {
+                throw new ArgumentNullException(nameof(typeName));
+            }
+
+            return DbTypeNameCategory.Unknown;
+        }
 
         #endregion
     }

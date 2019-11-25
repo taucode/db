@@ -133,6 +133,42 @@ namespace TauCode.Db.Utils.Dialects
 
         public virtual IReadOnlyList<string> DataTypeNames => _dataTypeNames ?? (_dataTypeNames = this.BuildDataTypeNames());
 
+        public virtual bool IsSingleWordTypeName(string typeName)
+        {
+            if (typeName == null)
+            {
+                throw new ArgumentNullException(nameof(typeName));
+            }
+
+            return
+                this.DataTypeNames.Contains(typeName) &&
+                this.GetTypeNameCategory(typeName) == DbTypeNameCategory.SingleWord;
+        }
+
+        public virtual bool IsSizedTypeName(string typeName)
+        {
+            if (typeName == null)
+            {
+                throw new ArgumentNullException(nameof(typeName));
+            }
+
+            return
+                this.DataTypeNames.Contains(typeName) &&
+                this.GetTypeNameCategory(typeName) == DbTypeNameCategory.Sized;
+        }
+
+        public virtual bool IsPreciseNumberTypeName(string typeName)
+        {
+            if (typeName == null)
+            {
+                throw new ArgumentNullException(nameof(typeName));
+            }
+
+            return
+                this.DataTypeNames.Contains(typeName) &&
+                this.GetTypeNameCategory(typeName) == DbTypeNameCategory.PreciseNumber;
+        }
+
         public virtual string ClauseTerminator => ";";
 
         public virtual string UnicodeTextLiteralPrefix => string.Empty;
@@ -194,7 +230,7 @@ namespace TauCode.Db.Utils.Dialects
                 throw new ArgumentNullException(nameof(identifier));
             }
 
-            if (identifierType == DbIdentifierType.Type && !this.CanDecorateTypeIdentifier) // todo0[ak] ut this for MySql!
+            if (identifierType == DbIdentifierType.Type && !this.CanDecorateTypeIdentifier)
             {
                 return identifier;
             }
@@ -321,7 +357,7 @@ namespace TauCode.Db.Utils.Dialects
                 case DbTypeFamily.Integer:
                     if (value is IConvertible convertible)
                     {
-                        var longValue = convertible.ToInt64(CultureInfo.InvariantCulture); // todo: try/catch as well
+                        var longValue = convertible.ToInt64(CultureInfo.InvariantCulture);
                         literal = longValue.ToString(CultureInfo.InvariantCulture);
                     }
                     else
@@ -333,7 +369,7 @@ namespace TauCode.Db.Utils.Dialects
                 case DbTypeFamily.PreciseNumber:
                     if (value is IConvertible convertible3)
                     {
-                        var decimalValue = convertible3.ToDecimal(CultureInfo.InvariantCulture); // todo: try/catch as well
+                        var decimalValue = convertible3.ToDecimal(CultureInfo.InvariantCulture);
                         literal = decimalValue.ToString(CultureInfo.InvariantCulture);
                     }
                     else

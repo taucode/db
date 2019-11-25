@@ -1,10 +1,11 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace TauCode.Db.Model
 {
     [DebuggerDisplay("{" + nameof(GetDefaultDefinition) + "()}")]
-    public class DbTypeMold
+    public class DbTypeMold : IDbMold
     {
         public string Name { get; set; }
 
@@ -13,6 +14,8 @@ namespace TauCode.Db.Model
         public int? Precision { get; set; }
 
         public int? Scale { get; set; }
+
+        public IDictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
 
         public string GetDefaultDefinition()
         {

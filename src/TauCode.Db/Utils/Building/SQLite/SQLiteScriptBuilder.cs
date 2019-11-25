@@ -65,7 +65,7 @@ namespace TauCode.Db.Utils.Building.SQLite
                 if (addComments)
                 {
                     var uniqueWord = index.IsUnique ? "unique " : string.Empty;
-                    sb.AppendLine($@"/* create {uniqueWord}index {index.Name}: {table.Name}({string.Join(", ", index.ColumnNames)}) */");
+                    sb.AppendLine($@"/* create {uniqueWord}index {index.Name}: {table.Name}({string.Join(", ", index.Columns.Select(x => x.Name))}) */");
                 }
 
                 var indexSql = this.BuildIndexSql(table.Name, index);

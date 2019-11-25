@@ -94,8 +94,9 @@ ORDER BY
                 Type = this.Dialect.ResolveType(columnInfo.TypeName, columnInfo.Size, columnInfo.Precision, columnInfo.Scale),
                 IsNullable = columnInfo.IsNullable,
 
-                Properties = columnInfo.AdditionalProperties
-                    .ToDictionary(x => x.Key, x => x.Value),
+                // Deferred TODO: resurrect MySql when get time.
+                //Properties = columnInfo.AdditionalProperties
+                //    .ToDictionary(x => x.Key, x => x.Value),
             };
 
             return columnMold;
@@ -141,11 +142,17 @@ WHERE
 
         public override PrimaryKeyMold GetPrimaryKeyMold()
         {
-            var pkIndex = this.GetIndexMolds().Single(x => x.Name == "PRIMARY");
+            var pkIndex = this.GetIndexMolds().SingleOrDefault(x => x.Name == "PRIMARY");
+
+            if (pkIndex == null)
+            {
+                return null;
+            }
+
             return new PrimaryKeyMold
             {
                 Name = pkIndex.Name,
-                ColumnNames = pkIndex.ColumnNames.ToList(),
+                Columns = pkIndex.Columns.ToList(),
             };
         }
 
@@ -211,9 +218,13 @@ WHERE
                     {
                         Name = (string)g.Key,
                         IsUnique = (int)g.First().non_unique == 0,
-                        ColumnNames = g
+                        Columns = g
                             .OrderBy(x => (uint)x.seq_in_index)
-                            .Select(x => (string)x.column_name)
+                            .Select(x => new IndexColumnMold
+                            {
+                                Name = (string)x.column_name,
+                                SortDirection = (string)x.collation == "D" ? SortDirection.Descending : SortDirection.Ascending,
+                            })
                             .ToList(),
                     })
                     .ToList();

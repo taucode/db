@@ -13,6 +13,9 @@ namespace TauCode.Db.Utils.Serialization.SqlServer
 {
     public class SqlServerDataSerializer : DataSerializerBase
     {
+        private const int MONEY_TYPE_PRECISION = 19;
+        private const int MONEY_TYPE_SCALE = 4;
+
         public SqlServerDataSerializer()
         {
         }
@@ -52,8 +55,8 @@ namespace TauCode.Db.Utils.Serialization.SqlServer
                         parameterInfo = new ParameterInfo
                         {
                             DbType = DbType.Decimal,
-                            Precision = 19,
-                            Scale = 4, // todo: constants?
+                            Precision = MONEY_TYPE_PRECISION,
+                            Scale = MONEY_TYPE_SCALE,
                         };
                         break;
 
