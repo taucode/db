@@ -46,9 +46,22 @@ namespace TauCode.Db.Utils.Serialization.SQLite
                     };
 
                 case "varchar":
+                case "text":
                     return new ParameterInfo
                     {
                         DbType = DbType.String,
+                    };
+
+                case "datetime":
+                    return new ParameterInfo
+                    {
+                        DbType = DbType.DateTime,
+                    };
+
+                case "numeric":
+                    return new ParameterInfo
+                    {
+                        DbType = DbType.Decimal,
                     };
 
                 default:
