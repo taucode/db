@@ -23,7 +23,7 @@ namespace TauCode.Db.Tests.Data
                     .NotNullable()
                 .WithColumn("picture")
                     .AsBinary(10000)
-                    .NotNullable();
+                    .Nullable();
 
             this.Create.Table("user_info")
                 .WithColumn("id")

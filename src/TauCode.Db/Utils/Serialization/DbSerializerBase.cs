@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using System;
@@ -471,19 +472,27 @@ namespace TauCode.Db.Utils.Serialization
             var tables = this.Cruder.DbInspector.GetOrderedTableMolds(true);
             var metadata = new DbMetadata
             {
-                Tables = tables,
+                Tables = tables
+                    .Select(x => (TableMold)x.Clone(false))
+                    .ToList(),
             };
 
             var contractResolver = new DefaultContractResolver
             {
-                NamingStrategy = new CamelCaseNamingStrategy()
+                NamingStrategy = new CamelCaseNamingStrategy(),
             };
-
-            var json = JsonConvert.SerializeObject(metadata, new JsonSerializerSettings
-            {
-                ContractResolver = contractResolver,
-                Formatting = Formatting.Indented
-            });
+            
+            var json = JsonConvert.SerializeObject(
+                metadata,
+                new JsonSerializerSettings
+                {
+                    ContractResolver = contractResolver,
+                    Formatting = Formatting.Indented,
+                    Converters = new List<JsonConverter>
+                    {
+                        new StringEnumConverter(new CamelCaseNamingStrategy())
+                    }
+                });
 
             return json;
         }

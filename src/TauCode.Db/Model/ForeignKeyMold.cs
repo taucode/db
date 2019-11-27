@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 
 namespace TauCode.Db.Model
@@ -12,6 +13,17 @@ namespace TauCode.Db.Model
         public string ReferencedTableName { get; set; }
         public List<string> ReferencedColumnNames { get; set; } = new List<string>();
         public IDictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
+        public IDbMold Clone(bool includeProperties = false)
+        {
+            return new ForeignKeyMold
+            {
+                Name = this.Name,
+                ColumnNames = this.ColumnNames.ToList(),
+                ReferencedTableName = this.ReferencedTableName,
+                ReferencedColumnNames = this.ReferencedColumnNames.ToList(),
+                Properties = this.ClonePropertiesIfNeeded(includeProperties),
+            };
+        }
 
         public string GetDefaultCaption()
         {

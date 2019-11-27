@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace TauCode.Db.Model
 {
@@ -11,5 +12,17 @@ namespace TauCode.Db.Model
         public List<IndexColumnMold> Columns { get; set; } = new List<IndexColumnMold>();
         public bool IsUnique { get; set; }
         public IDictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
+
+        public IDbMold Clone(bool includeProperties = false)
+        {
+            return new IndexMold
+            {
+                Name = this.Name,
+                TableName = this.TableName,
+                Columns = this.Columns
+                    .Select(x => (IndexColumnMold) x.Clone(includeProperties))
+                    .ToList(),
+            };
+        }
     }
 }

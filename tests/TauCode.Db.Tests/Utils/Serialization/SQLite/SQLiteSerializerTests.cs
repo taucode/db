@@ -59,6 +59,12 @@ namespace TauCode.Db.Tests.Utils.Serialization.SQLite
 
             // Assert
             var expectedJson = this.GetType().Assembly.GetResourceText("expected-db-metadata.json", true);
+
+            if (json != expectedJson)
+            {
+                TestHelper.WriteDiff(json, expectedJson, "c:/temp/0-meta", "json");
+            }
+
             Assert.That(json, Is.EqualTo(expectedJson));
         }
     }

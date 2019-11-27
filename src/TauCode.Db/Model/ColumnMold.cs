@@ -14,6 +14,19 @@ namespace TauCode.Db.Model
         public string Default { get; set; }
         public IDictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
 
+        public IDbMold Clone(bool includeProperties = false)
+        {
+            return new ColumnMold
+            {
+                Name = this.Name,
+                Type = (DbTypeMold)this.Type.Clone(includeProperties),
+                IsNullable = this.IsNullable,
+                Identity = (ColumnIdentityMold)this.Identity?.Clone(includeProperties),
+                Default = this.Default,
+                Properties = this.ClonePropertiesIfNeeded(includeProperties),
+            };
+        }
+
         public string GetDefaultCaption()
         {
             var sb = new StringBuilder();

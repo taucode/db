@@ -1,10 +1,95 @@
 ﻿{
   "tables": [
     {
-      "name": "user"
+      "name": "user",
+      "columns": [
+        {
+          "name": "id",
+          "type": {
+            "name": "UNIQUEIDENTIFIER",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "name",
+          "type": {
+            "name": "TEXT",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "birthday",
+          "type": {
+            "name": "DATETIME",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "gender",
+          "type": {
+            "name": "INTEGER",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "picture",
+          "type": {
+            "name": "BLOB",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": true,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        }
+      ],
+      "primaryKey": {
+        "name": "wat",
+        "columns": "wat" 
+      },
+      "foreignKeys": [],
+      "indexes": []
     },
     {
-      "name": "user_info"
+      "name": "user_info",
+      "columns": [
+      ],
+      "primaryKey": {
+
+      },
+      "foreignKeys": [],
+      "indexes": []
     }
   ]
 }
