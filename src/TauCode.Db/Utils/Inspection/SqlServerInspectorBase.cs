@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Data;
+using System.Linq;
+using TauCode.Db.Exceptions;
 using TauCode.Db.Utils.Building;
 
 namespace TauCode.Db.Utils.Inspection
@@ -60,14 +62,12 @@ WHERE
 
                 command.CommandText = sql;
 
-                throw new NotImplementedException();
+                var tableNames = UtilsHelper
+                    .GetCommandRows(command)
+                    .Select(x => (string)x.TableName)
+                    .ToArray();
 
-               // var tableNames = this.Cruder
-               //     .GetRows(command)
-               //     .Select(x => (string)x.TableName)
-               //     .ToArray();
-
-               //return tableNames;
+                return tableNames;
             }
         }
 
@@ -96,20 +96,18 @@ WHERE
                 command.AddParameterWithValue("p_tableType", this.TableTypeForTable);
                 command.AddParameterWithValue("p_name", tableName);
 
-                throw new NotImplementedException();
+                var row = UtilsHelper
+                    .GetCommandRows(command)
+                    .SingleOrDefault();
 
-                //var row = this.Cruder
-                //    .GetRows(command)
-                //    .SingleOrDefault();
+                if (row == null)
+                {
+                    throw new ObjectNotFoundException($"Table not found: '{tableName}'", tableName);
+                }
 
-                //if (row == null)
-                //{
-                //    throw new ObjectNotFoundException($"Table not found: '{tableName}'", tableName);
-                //}
-
-                //var realTableName = (string)row.TableName;
-                //var tableInspector = this.CreateTableInspectorImpl(realTableName);
-                //return tableInspector;
+                var realTableName = (string)row.TableName;
+                var tableInspector = this.CreateTableInspectorImpl(realTableName);
+                return tableInspector;
             }
         }
 

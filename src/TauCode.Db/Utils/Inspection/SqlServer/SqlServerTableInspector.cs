@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using TauCode.Db.Model;
 using TauCode.Db.Utils.Dialects.SqlServer;
 
@@ -62,17 +62,15 @@ WHERE
 ";
                 command.AddParameterWithValue("p_objectId", objectId);
 
-                throw new NotImplementedException();
-
-                //return this.Cruder
-                //    .GetRows(command)
-                //    .ToDictionary(
-                //        x => (string)x.Name,
-                //        x => new ColumnIdentityMold
-                //        {
-                //            Seed = ((object)x.SeedValue).ToString(),
-                //            Increment = ((object)x.IncrementValue).ToString(),
-                //        });
+                return UtilsHelper
+                    .GetCommandRows(command)
+                    .ToDictionary(
+                        x => (string)x.Name,
+                        x => new ColumnIdentityMold
+                        {
+                            Seed = ((object)x.SeedValue).ToString(),
+                            Increment = ((object)x.IncrementValue).ToString(),
+                        });
             }
         }
 
@@ -126,25 +124,24 @@ WHERE
                 command.AddParameterWithValue("p_tableName", this.TableName);
 
 
-                throw new NotImplementedException();
-                //return this.Cruder
-                //    .GetRows(command)
-                //    .GroupBy(x => (string)x.ForeignKeyName)
-                //    .Select(g => new ForeignKeyMold
-                //    {
-                //        Name = (string)g.First().ForeignKeyName,
-                //        ReferencedTableName = (string)g.First().ReferencedTableName,
-                //        ColumnNames = g
-                //            .OrderBy(x => (int)x.ColumnOrder)
-                //            .Select(x => (string)x.ColumnName)
-                //            .ToList(),
-                //        ReferencedColumnNames = g
-                //            .OrderBy(x => (int)x.ColumnOrder)
-                //            .Select(x => (string)x.ReferencedColumnName)
-                //            .ToList(),
-                //    })
-                //    .OrderBy(x => x.Name)
-                //    .ToList();
+                return UtilsHelper
+                    .GetCommandRows(command)
+                    .GroupBy(x => (string)x.ForeignKeyName)
+                    .Select(g => new ForeignKeyMold
+                    {
+                        Name = (string)g.First().ForeignKeyName,
+                        ReferencedTableName = (string)g.First().ReferencedTableName,
+                        ColumnNames = g
+                            .OrderBy(x => (int)x.ColumnOrder)
+                            .Select(x => (string)x.ColumnName)
+                            .ToList(),
+                        ReferencedColumnNames = g
+                            .OrderBy(x => (int)x.ColumnOrder)
+                            .Select(x => (string)x.ReferencedColumnName)
+                            .ToList(),
+                    })
+                    .OrderBy(x => x.Name)
+                    .ToList();
             }
         }
 
@@ -184,26 +181,25 @@ WHERE
     T.[name] = @p_tableName
 ";
                 command.AddParameterWithValue("p_tableName", this.TableName);
-                
-                throw new NotImplementedException();
-                //return this.Cruder
-                //    .GetRows(command)
-                //    .GroupBy(x => (int)x.IndexId)
-                //    .Select(g => new IndexMold
-                //    {
-                //        Name = (string)g.First().IndexName,
-                //        IsUnique = (bool)g.First().IndexIsUnique,
-                //        Columns = g
-                //            .OrderBy(x => (int)x.KeyOrdinal)
-                //            .Select(x => new IndexColumnMold
-                //            {
-                //                Name = (string)x.ColumnName,
-                //                SortDirection = (bool)x.IsDescendingKey ? SortDirection.Descending : SortDirection.Ascending,
-                //            })
-                //            .ToList(),
-                //    })
-                //    .OrderBy(x => x.Name)
-                //    .ToList();
+
+                return UtilsHelper
+                    .GetCommandRows(command)
+                    .GroupBy(x => (int)x.IndexId)
+                    .Select(g => new IndexMold
+                    {
+                        Name = (string)g.First().IndexName,
+                        IsUnique = (bool)g.First().IndexIsUnique,
+                        Columns = g
+                            .OrderBy(x => (int)x.KeyOrdinal)
+                            .Select(x => new IndexColumnMold
+                            {
+                                Name = (string)x.ColumnName,
+                                SortDirection = (bool)x.IsDescendingKey ? SortDirection.Descending : SortDirection.Ascending,
+                            })
+                            .ToList(),
+                    })
+                    .OrderBy(x => x.Name)
+                    .ToList();
             }
         }
 
