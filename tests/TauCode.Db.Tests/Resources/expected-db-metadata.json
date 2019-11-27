@@ -318,9 +318,45 @@
         }
       ],
       "primaryKey": {
+        "name": "pk_userInfo",
+        "columns": [
+          {
+            "name": "id",
+            "sortDirection": "ascending",
+            "properties": {}
+          }
+        ],
+        "properties": {}
       },
-      "foreignKeys": [],
-      "indexes": []
+      "foreignKeys": [
+        {
+          "name": "fk_userInfo_user",
+          "columnNames": [
+            "user_id"
+          ],
+          "referencedTableName": "user",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "properties": {}
+        }
+      ],
+      "indexes": [
+        {
+          "name": "UX_userInfo_taxNumber",
+          "tableName": "user_info",
+          "columns": [
+            {
+              "name": "tax_number",
+              "sortDirection": "ascending",
+              "properties": {}
+            }
+          ],
+          "isUnique": true,
+          "properties": {}
+        }
+      ],
+      "properties": {}
     }
   ]
 }

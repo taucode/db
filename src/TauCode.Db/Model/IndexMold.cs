@@ -22,6 +22,8 @@ namespace TauCode.Db.Model
                 Columns = this.Columns
                     .Select(x => x.CloneIndexColumn(includeProperties))
                     .ToList(),
+                IsUnique = this.IsUnique,
+                Properties = this.ClonePropertiesIfNeeded(includeProperties),
             };
         }
     }
