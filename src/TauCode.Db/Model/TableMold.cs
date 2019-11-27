@@ -19,14 +19,14 @@ namespace TauCode.Db.Model
             {
                 Name = this.Name,
                 Columns = this.Columns
-                    .Select(x => (ColumnMold)x.Clone(includeProperties))
+                    .Select(x => x.CloneColumn(includeProperties))
                     .ToList(),
-                PrimaryKey = (PrimaryKeyMold)this.PrimaryKey?.Clone(includeProperties),
+                PrimaryKey = this.PrimaryKey?.ClonePrimaryKey(includeProperties),
                 ForeignKeys = this.ForeignKeys
-                    .Select(x => (ForeignKeyMold)x.Clone())
+                    .Select(x => x.CloneForeignKey(includeProperties))
                     .ToList(),
                 Indexes = this.Indexes
-                    .Select(x => (IndexMold)x.Clone(includeProperties))
+                    .Select(x => x.CloneIndex(includeProperties))
                     .ToList(),
                 Properties = this.ClonePropertiesIfNeeded(includeProperties)
             };

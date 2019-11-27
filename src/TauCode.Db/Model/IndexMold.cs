@@ -20,7 +20,7 @@ namespace TauCode.Db.Model
                 Name = this.Name,
                 TableName = this.TableName,
                 Columns = this.Columns
-                    .Select(x => (IndexColumnMold) x.Clone(includeProperties))
+                    .Select(x => x.CloneIndexColumn(includeProperties))
                     .ToList(),
             };
         }

@@ -19,9 +19,9 @@ namespace TauCode.Db.Model
             return new ColumnMold
             {
                 Name = this.Name,
-                Type = (DbTypeMold)this.Type.Clone(includeProperties),
+                Type = this.Type.CloneType(includeProperties),
                 IsNullable = this.IsNullable,
-                Identity = (ColumnIdentityMold)this.Identity?.Clone(includeProperties),
+                Identity = this.Identity?.CloneColumnIdentity(includeProperties),
                 Default = this.Default,
                 Properties = this.ClonePropertiesIfNeeded(includeProperties),
             };

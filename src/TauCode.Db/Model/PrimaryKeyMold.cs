@@ -17,7 +17,7 @@ namespace TauCode.Db.Model
             {
                 Name = this.Name,
                 Columns = this.Columns
-                    .Select(x => (IndexColumnMold)x.Clone())
+                    .Select(x => x.CloneIndexColumn(includeProperties))
                     .ToList(),
                 Properties = this.ClonePropertiesIfNeeded(includeProperties),
             };

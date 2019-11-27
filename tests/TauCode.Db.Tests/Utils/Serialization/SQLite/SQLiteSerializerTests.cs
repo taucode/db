@@ -13,7 +13,6 @@ namespace TauCode.Db.Tests.Utils.Serialization.SQLite
     [TestFixture]
     public class SQLiteSerializerTests
     {
-        //private IDbInspector _dbInspector;
         private IDbSerializer _dbSerializer;
         private IDbConnection _connection;
         private string _dbFilePath;
