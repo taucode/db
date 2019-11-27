@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -26,6 +27,11 @@ namespace TauCode.Db.Utils.Serialization
             public int? Precision { get; set; }
 
             public int? Scale { get; set; }
+        }
+
+        private class DbMetadata
+        {
+            public IList<TableMold> Tables { get; set; }
         }
 
         #endregion
@@ -350,22 +356,6 @@ namespace TauCode.Db.Utils.Serialization
 
         public ICruder Cruder => _cruder ?? (_cruder = this.CreateCruder());
 
-        //public string SerializeCommandResult(IDbCommand command)
-        //{
-        //    if (command == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(command));
-        //    }
-
-        //    if (command.Connection != this.GetDbConnection())
-        //    {
-        //        throw new NotImplementedException();
-        //    }
-
-        //    var json = this.SerializeCommandResultImpl(command);
-        //    return json;
-        //}
-
         public string SerializeTableData(string tableName)
         {
 
@@ -478,7 +468,24 @@ namespace TauCode.Db.Utils.Serialization
 
         public string SerializeDbMetadata()
         {
-            throw new NotImplementedException();
+            var tables = this.Cruder.DbInspector.GetOrderedTableMolds(true);
+            var metadata = new DbMetadata
+            {
+                Tables = tables,
+            };
+
+            var contractResolver = new DefaultContractResolver
+            {
+                NamingStrategy = new CamelCaseNamingStrategy()
+            };
+
+            var json = JsonConvert.SerializeObject(metadata, new JsonSerializerSettings
+            {
+                ContractResolver = contractResolver,
+                Formatting = Formatting.Indented
+            });
+
+            return json;
         }
 
         public void DeserializeTableMetadata(string tableName, string json)

@@ -1,0 +1,10 @@
+﻿{
+  "tables": [
+    {
+      "name": "user"
+    },
+    {
+      "name": "user_info"
+    }
+  ]
+}

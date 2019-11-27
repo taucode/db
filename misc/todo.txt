@@ -15,3 +15,4 @@
     3. DB schema serialization/deserialization.
     4. Get rid of SqlServer...Base classes. No more SQL Server CE :(
     5. IDbInspector should check type (actually, type full name) of IDbConnection, not ICruder or whoever else.
+    6. TauCode.Db.SQLite.

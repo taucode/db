@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <None Remove="Resources\build-sqlite.sql" />
+    <None Remove="Resources\expected-db-metadata.json" />
     <None Remove="Resources\mysql-create-db.sql" />
     <None Remove="Resources\parse-ansi.sql" />
     <None Remove="Resources\parse-sqlite.sql" />
@@ -22,6 +23,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Resources\build-sqlite.sql" />
+    <EmbeddedResource Include="Resources\expected-db-metadata.json" />
     <EmbeddedResource Include="Resources\parse-ansi.sql" />
     <EmbeddedResource Include="Resources\parse-sqlite.sql" />
     <EmbeddedResource Include="Resources\rho-create-db.sql" />
@@ -42,7 +44,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\TauCode.Db.Migrations\TauCode.Db.Migrations.csproj" />
     <ProjectReference Include="..\..\src\TauCode.Db\TauCode.Db.csproj" />
+    <ProjectReference Include="..\TauCode.Db.Tests.Data\TauCode.Db.Tests.Data.csproj" />
   </ItemGroup>
 
 </Project>
