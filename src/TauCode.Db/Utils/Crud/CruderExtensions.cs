@@ -3,9 +3,10 @@ using System.Collections.Generic;
 
 namespace TauCode.Db.Utils.Crud
 {
+    // todo clean up
     public static class CruderExtensions
     {
-        public static List<dynamic> GetRows(this ICruder cruder, string tableName)
+        public static IList<dynamic> GetRows(this ICruder cruder, string tableName)
         {
             // todo check args
             var connection = cruder.DbInspector.Connection;
@@ -20,8 +21,8 @@ namespace TauCode.Db.Utils.Crud
                 var sql = cruder.ScriptBuilder.BuildSelectSql(tableMold);
                 command.CommandText = sql;
 
-                throw new NotImplementedException();
                 //return cruder.GetRows(command);
+                return UtilsHelper.GetCommandRows(command);
             }
         }
     }

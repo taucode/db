@@ -205,10 +205,9 @@ namespace TauCode.Db.Utils.Crud
                 command.CommandText = this.ScriptBuilder.BuildSelectRowByIdSql(tableMold, out var paramName);
                 command.AddParameterWithValue(paramName, id);
 
-                throw new NotImplementedException();
-
                 //var rows = this.GetRows(command);
-                //return rows.SingleOrDefault();
+                var rows = UtilsHelper.GetCommandRows(command);
+                return rows.SingleOrDefault();
             }
         }
 

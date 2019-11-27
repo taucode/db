@@ -53,7 +53,9 @@ WHERE
                 command.AddParameterWithValue("p_type", "table");
                 command.AddParameterWithValue("p_tableName", this.TableName);
 
-                throw new NotImplementedException();
+                return UtilsHelper.GetCommandRows(command).Single().Sql;
+
+                //throw new NotImplementedException();
                 //return _cruder
                 //    .GetRows(command)
                 //    .Single().Sql;
@@ -107,14 +109,12 @@ WHERE
 
                 var parser = SQLiteParser.Instance;
 
-                throw new NotImplementedException();
+                var indexes = UtilsHelper
+                    .GetCommandRows(command)
+                    .Select(x => (IndexMold)parser.Parse((string)x.Sql).Single())
+                    .ToList();
 
-                //var indexes = _cruder
-                //    .GetRows(command)
-                //    .Select(x => (IndexMold)parser.Parse((string)x.Sql).Single())
-                //    .ToList();
-
-                //return indexes;
+                return indexes;
             }
         }
 

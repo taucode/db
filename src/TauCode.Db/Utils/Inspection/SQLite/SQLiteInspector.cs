@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Linq;
 using TauCode.Db.Utils.Building;
 using TauCode.Db.Utils.Building.SQLite;
 using TauCode.Db.Utils.Crud;
@@ -51,12 +52,16 @@ WHERE
                 command.AddParameterWithValue("p_type", "table");
                 command.AddParameterWithValue("p_sequenceName", "sqlite_sequence");
 
-                throw new NotImplementedException();
 
                 //return _cruder
                 //    .GetRows(command)
                 //    .Select(x => (string)x.TableName)
                 //    .ToArray();
+
+                return UtilsHelper
+                    .GetCommandRows(command)
+                    .Select(x => (string)x.TableName)
+                    .ToArray();
             }
         }
 

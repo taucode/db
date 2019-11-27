@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Linq;
+using TauCode.Db.Utils;
 using TauCode.Db.Utils.Crud;
 using TauCode.Db.Utils.Crud.SQLite;
 
@@ -31,15 +32,15 @@ namespace TauCode.Db.Tests.Utils.Crud.SQLite
             // But I am pretty sure ICruder.GetRows() works pretty fine since it is also covered by UTs.
             ICruder assertCruder = new SQLiteCruder(this.Connection);
 
-            throw new NotImplementedException();
-            //var rows = assertCruder.GetRows(this.Connection, "user");
+            var rows = assertCruder.GetRows("user");
+            //var rows = UtilsHelper.GetCommandRows()
 
-            //Assert.That(rows, Has.Count.EqualTo(1));
-            //var assertRow = rows.Single();
-            //Assert.That(assertRow.id, Is.EqualTo(1));
-            //Assert.That(assertRow.login, Is.EqualTo("ak"));
-            //Assert.That(assertRow.email, Is.EqualTo("ak@deserea.net"));
-            //Assert.That(assertRow.password_hash, Is.EqualTo("nohash"));
+            Assert.That(rows, Has.Count.EqualTo(1));
+            var assertRow = rows.Single();
+            Assert.That(assertRow.id, Is.EqualTo(1));
+            Assert.That(assertRow.login, Is.EqualTo("ak"));
+            Assert.That(assertRow.email, Is.EqualTo("ak@deserea.net"));
+            Assert.That(assertRow.password_hash, Is.EqualTo("nohash"));
         }
 
         [Test]
