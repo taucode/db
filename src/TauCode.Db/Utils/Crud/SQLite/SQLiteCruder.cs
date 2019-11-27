@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using TauCode.Db.Utils.Building;
 using TauCode.Db.Utils.Building.SQLite;
 using TauCode.Db.Utils.Inspection;
 using TauCode.Db.Utils.Inspection.SQLite;
@@ -7,16 +8,15 @@ namespace TauCode.Db.Utils.Crud.SQLite
 {
     public class SQLiteCruder : CruderBase
     {
-        public SQLiteCruder()
-            : base(new SQLiteScriptBuilder())
+        public SQLiteCruder(IDbConnection connection)
+            : base(connection)
         {
         }
 
-        protected override ITableInspector GetTableInspectorImpl(IDbConnection connection, string tableName)
-        {
-            var dbInspector = new SQLiteInspector(connection);
-            var tableInspector = dbInspector.GetTableInspector(tableName);
-            return tableInspector;
-        }
+        protected override string ExpectedDbConnectionTypeFullName => "System.Data.SQLite.SQLiteConnection";
+
+        protected override IScriptBuilder CreateScriptBuilder() => new SQLiteScriptBuilder();
+
+        protected override IDbInspector CreateDbInspector() => new SQLiteInspector(this.GetSafeConnection());
     }
 }

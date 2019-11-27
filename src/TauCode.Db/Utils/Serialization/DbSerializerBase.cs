@@ -354,7 +354,7 @@ namespace TauCode.Db.Utils.Serialization
             return json;
         }
 
-        public string SerializeTable(IDbConnection connection, string tableName)
+        public string SerializeTable(string tableName)
         {
             if (connection == null)
             {
@@ -378,7 +378,7 @@ namespace TauCode.Db.Utils.Serialization
             }
         }
 
-        public string SerializeDb(IDbConnection connection)
+        public string SerializeDb()
         {
             if (connection == null)
             {
@@ -405,7 +405,7 @@ namespace TauCode.Db.Utils.Serialization
             return json;
         }
 
-        public void DeserializeTable(IDbConnection connection, string tableName, string json)
+        public void DeserializeTable(string tableName, string json)
         {
             if (connection == null)
             {
@@ -436,7 +436,7 @@ namespace TauCode.Db.Utils.Serialization
             this.DeserializeTableData(connection, tableMold, tableData);
         }
 
-        public void DeserializeDb(IDbConnection connection, string json)
+        public void DeserializeDb(string json)
         {
             var dbData = JsonConvert.DeserializeObject(json) as JObject;
             if (dbData == null)

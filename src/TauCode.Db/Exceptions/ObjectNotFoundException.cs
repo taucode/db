@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Data.Common;
 
 namespace TauCode.Db.Exceptions
 {
     [Serializable]
-    public class ObjectNotFoundException : Exception
+    public class ObjectNotFoundException : DbException
     {
         public ObjectNotFoundException()
             : base("Object not found.")

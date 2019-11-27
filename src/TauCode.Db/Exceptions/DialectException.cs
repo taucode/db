@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Data.Common;
 
 namespace TauCode.Db.Exceptions
 {
     [Serializable]
-    public class DialectException : Exception
+    public class DialectException : DbException
     {
         public DialectException()
         {

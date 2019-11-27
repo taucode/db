@@ -9,12 +9,10 @@ namespace TauCode.Db.Utils.Crud
     {
         IDbInspector DbInspector { get; }
         IScriptBuilder ScriptBuilder { get; }
-        ITableInspector GetTableInspector(IDbConnection connection, string tableName);
-
-        void InsertRow(IDbConnection connection, string tableName, object row);
-        bool DeleteRow(IDbConnection connection, string tableName, object id);
+        void InsertRow(string tableName, object row);
+        bool DeleteRow(string tableName, object id);
         List<dynamic> GetRows(IDbCommand command);
-        dynamic GetRow(IDbConnection connection, string tableName, object id);
-        bool UpdateRow(IDbConnection connection, string tableName, object rowUpdate, object id);
+        dynamic GetRow(string tableName, object id);
+        bool UpdateRow(string tableName, object rowUpdate, object id);
     }
 }

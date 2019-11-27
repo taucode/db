@@ -8,11 +8,14 @@ namespace TauCode.Db.Utils.Serialization
     {
         ICruder Cruder { get; }
         string SerializeCommandResult(IDbCommand command);
-        string SerializeTable(IDbConnection connection, string tableName);
-        string SerializeDb(IDbConnection connection);
-
-        void DeserializeTable(IDbConnection connection, string tableName, string json);
-        void DeserializeDb(IDbConnection connection, string json);
+        string SerializeTableData(string tableName);
+        string SerializeDbData();
+        void DeserializeTableData(string tableName, string json);
+        void DeserializeDbData(string json);
+        string SerializeTableMetadata(string tableName);
+        string SerializeDbMetadata();
+        void DeserializeTableMetadata(string tableName, string json);
+        void DeserializeDbMetadata(string json);
 
         /// <summary>
         /// Callback event for row deserialization.
