@@ -6,24 +6,23 @@ using TauCode.Db.Utils.Building;
 using TauCode.Db.Utils.Building.SqlServer;
 using TauCode.Db.Utils.Crud;
 using TauCode.Db.Utils.Crud.SqlServer;
-using TauCode.Db.Utils.Inspection;
-using TauCode.Db.Utils.Inspection.SqlServer;
 
 namespace TauCode.Db.Utils.Serialization.SqlServer
 {
+    // todo clean up
     public class SqlServerSerializer : DbSerializerBase
     {
         private const int MONEY_TYPE_PRECISION = 19;
         private const int MONEY_TYPE_SCALE = 4;
 
-        public SqlServerSerializer()
+        private readonly IDbConnection _connection;
+
+        public SqlServerSerializer(IDbConnection connection)
         {
+            _connection = connection ?? throw new ArgumentNullException(nameof(connection));
         }
 
-        protected override ICruder CreateCruder()
-        {
-            return new SqlServerCruder();
-        }
+        protected override ICruder CreateCruder() => new SqlServerCruder(_connection);
 
         protected override IScriptBuilder CreateScriptBuilder()
         {
@@ -33,10 +32,10 @@ namespace TauCode.Db.Utils.Serialization.SqlServer
             };
         }
 
-        protected override IDbInspector GetDbInspector(IDbConnection connection)
-        {
-            return new SqlServerInspector(connection);
-        }
+        //protected override IDbInspector GetDbInspector(IDbConnection connection)
+        //{
+        //    return new SqlServerInspector(connection);
+        //}
 
         protected override ParameterInfo GetParameterInfo(TableMold tableMold, string columnName)
         {
