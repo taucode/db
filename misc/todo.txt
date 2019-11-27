@@ -10,7 +10,7 @@
 
 2019-11-27
 ==========
-    1. ICruder, IDbSerializer - get rid of IDbConnection parameters, they should have own IDbConnection
++   1. ICruder, IDbSerializer - get rid of IDbConnection parameters, they should have own IDbConnection
     2. IParameterInfo.
     3. DB schema serialization/deserialization.
     4. Get rid of SqlServer...Base classes. No more SQL Server CE :(

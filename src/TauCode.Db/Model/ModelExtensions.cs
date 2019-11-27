@@ -46,5 +46,10 @@ namespace TauCode.Db.Model
         {
             return (DbTypeMold)type.Clone(includeProperties);
         }
+
+        internal static TableMold CloneTable(this TableMold table, bool includeProperties)
+        {
+            return (TableMold)table.Clone(includeProperties);
+        }
     }
 }

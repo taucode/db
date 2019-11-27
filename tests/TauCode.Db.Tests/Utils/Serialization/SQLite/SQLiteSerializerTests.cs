@@ -1,8 +1,10 @@
 ﻿using NUnit.Framework;
 using System.Data;
 using System.IO;
+using System.Text;
 using TauCode.Db.Migrations;
 using TauCode.Db.Tests.Data;
+using TauCode.Db.Tests.Data.Rho;
 using TauCode.Db.Utils.Inspection;
 using TauCode.Db.Utils.Serialization;
 using TauCode.Db.Utils.Serialization.SQLite;
@@ -65,6 +67,19 @@ namespace TauCode.Db.Tests.Utils.Serialization.SQLite
             }
 
             Assert.That(json, Is.EqualTo(expectedJson));
+        }
+
+        [Test]
+        public void TodoWat()
+        {
+            var con = TestHelper.CreateTempSQLiteDatabase();
+            IMigrator migrator = new Migrator(con.ConnectionString, Rdbms.SQLite, typeof(Rho_M0_Baseline).Assembly);
+            migrator.Migrate();
+
+            IDbSerializer ser = new SQLiteSerializer(con);
+            var json = ser.SerializeDbMetadata(x => x.ToLower() != "versioninfo");
+
+            File.WriteAllText("c:/temp/00za-gocha.json", json, Encoding.UTF8);
         }
     }
 }

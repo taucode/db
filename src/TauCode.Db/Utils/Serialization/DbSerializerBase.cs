@@ -481,7 +481,7 @@ namespace TauCode.Db.Utils.Serialization
             var metadata = new DbMetadata
             {
                 Tables = tables
-                    .Select(x => (TableMold)x.Clone(false))
+                    .Select(x => x.CloneTable(false))
                     .ToList(),
             };
 

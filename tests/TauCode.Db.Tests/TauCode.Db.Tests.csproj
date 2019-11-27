@@ -46,6 +46,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\TauCode.Db.Migrations\TauCode.Db.Migrations.csproj" />
     <ProjectReference Include="..\..\src\TauCode.Db\TauCode.Db.csproj" />
+    <ProjectReference Include="..\TauCode.Db.Tests.Data.Rho\TauCode.Db.Tests.Data.Rho.csproj" />
     <ProjectReference Include="..\TauCode.Db.Tests.Data\TauCode.Db.Tests.Data.csproj" />
   </ItemGroup>
 
