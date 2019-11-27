@@ -10,9 +10,9 @@ using TauCode.Db.Utils.Inspection.SQLite;
 
 namespace TauCode.Db.Utils.Serialization.SQLite
 {
-    public class SQLiteDataSerializer : DataSerializerBase
+    public class SQLiteSerializer : DbSerializerBase
     {
-        public SQLiteDataSerializer()
+        public SQLiteSerializer()
         {
         }
 

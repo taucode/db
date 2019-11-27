@@ -13,7 +13,7 @@ using TauCode.Db.Utils.Inspection;
 
 namespace TauCode.Db.Utils.Serialization
 {
-    public abstract class DataSerializerBase : IDataSerializer
+    public abstract class DbSerializerBase : IDbSerializer
     {
         #region Nested
 
@@ -38,7 +38,7 @@ namespace TauCode.Db.Utils.Serialization
 
         #region Constructor
 
-        protected DataSerializerBase()
+        protected DbSerializerBase()
         {
         }
 
@@ -318,8 +318,6 @@ namespace TauCode.Db.Utils.Serialization
 
         #region Protected
 
-        protected ICruder Cruder => _cruder ?? (_cruder = this.CreateCruder());
-
         protected IScriptBuilder ScriptBuilder => _scriptBuilder ?? (_scriptBuilder = this.CreateScriptBuilder());
 
         #endregion
@@ -341,7 +339,9 @@ namespace TauCode.Db.Utils.Serialization
 
         #endregion
 
-        #region IDataSerializer Members
+        #region IDbSerializer Members
+
+        public ICruder Cruder => _cruder ?? (_cruder = this.CreateCruder());
 
         public string SerializeCommandResult(IDbCommand command)
         {

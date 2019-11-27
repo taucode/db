@@ -11,12 +11,12 @@ using TauCode.Db.Utils.Inspection.SqlServer;
 
 namespace TauCode.Db.Utils.Serialization.SqlServer
 {
-    public class SqlServerDataSerializer : DataSerializerBase
+    public class SqlServerSerializer : DbSerializerBase
     {
         private const int MONEY_TYPE_PRECISION = 19;
         private const int MONEY_TYPE_SCALE = 4;
 
-        public SqlServerDataSerializer()
+        public SqlServerSerializer()
         {
         }
 

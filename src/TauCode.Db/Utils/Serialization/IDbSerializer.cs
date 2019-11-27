@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Data;
+using TauCode.Db.Utils.Crud;
 
 namespace TauCode.Db.Utils.Serialization
 {
-    public interface IDataSerializer
+    public interface IDbSerializer
     {
+        ICruder Cruder { get; }
         string SerializeCommandResult(IDbCommand command);
         string SerializeTable(IDbConnection connection, string tableName);
         string SerializeDb(IDbConnection connection);

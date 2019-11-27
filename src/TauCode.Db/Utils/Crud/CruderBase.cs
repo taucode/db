@@ -28,6 +28,8 @@ namespace TauCode.Db.Utils.Crud
 
         #region ICruder Members
 
+        public IDbInspector DbInspector => throw new NotImplementedException();
+
         public IScriptBuilder ScriptBuilder { get; }
 
         public ITableInspector GetTableInspector(IDbConnection connection, string tableName)

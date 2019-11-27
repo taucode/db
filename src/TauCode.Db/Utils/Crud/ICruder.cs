@@ -7,6 +7,7 @@ namespace TauCode.Db.Utils.Crud
 {
     public interface ICruder
     {
+        IDbInspector DbInspector { get; }
         IScriptBuilder ScriptBuilder { get; }
         ITableInspector GetTableInspector(IDbConnection connection, string tableName);
 
