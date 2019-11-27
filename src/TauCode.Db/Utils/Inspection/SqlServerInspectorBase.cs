@@ -8,12 +8,6 @@ namespace TauCode.Db.Utils.Inspection
 {
     public abstract class SqlServerInspectorBase : IDbInspector
     {
-        #region Fields
-
-        //private ICruder _cruder;
-
-        #endregion
-
         #region Constructor
 
         protected SqlServerInspectorBase(IDbConnection connection)
@@ -28,14 +22,6 @@ namespace TauCode.Db.Utils.Inspection
         protected abstract string TableTypeForTable { get; }
 
         protected abstract SqlServerTableInspectorBase CreateTableInspectorImpl(string tableName);
-
-        //protected abstract ICruder CreateCruder();
-
-        #endregion
-
-        #region Protected
-
-        //protected ICruder Cruder => _cruder ?? (_cruder = this.CreateCruder());
 
         #endregion
 

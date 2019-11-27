@@ -9,7 +9,6 @@ using TauCode.Db.Utils.Crud.SQLite;
 
 namespace TauCode.Db.Utils.Serialization.SQLite
 {
-    // todo clean up
     public class SQLiteSerializer : DbSerializerBase
     {
         private readonly IDbConnection _connection;
@@ -28,11 +27,6 @@ namespace TauCode.Db.Utils.Serialization.SQLite
                 CurrentOpeningIdentifierDelimiter = '[',
             };
         }
-
-        //protected override IDbInspector GetDbInspector(IDbConnection connection)
-        //{
-        //    return new SQLiteInspector(connection);
-        //}
 
         protected override ParameterInfo GetParameterInfo(TableMold tableMold, string columnName)
         {

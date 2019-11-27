@@ -10,7 +10,6 @@ using TauCode.Db.Utils.Inspection;
 
 namespace TauCode.Db.Utils.Crud
 {
-    // todo clean up
     public abstract class CruderBase : ICruder
     {
         #region Fields
@@ -22,11 +21,6 @@ namespace TauCode.Db.Utils.Crud
         #endregion
 
         #region Constructor
-
-        //protected CruderBase(IScriptBuilder scriptBuilder)
-        //{
-        //    this.ScriptBuilder = scriptBuilder ?? throw new ArgumentNullException(nameof(scriptBuilder));
-        //}
 
         protected CruderBase(IDbConnection connection)
         {
@@ -43,8 +37,6 @@ namespace TauCode.Db.Utils.Crud
 
         protected abstract IDbInspector CreateDbInspector();
 
-        //protected abstract ITableInspector GetTableInspectorImpl(IDbConnection connection, string tableName);
-
         #endregion
 
         #region Protected
@@ -59,8 +51,6 @@ namespace TauCode.Db.Utils.Crud
             throw new TypeMismatchException(
                 $"Expected DB connection type is '{this.ExpectedDbConnectionTypeFullName}', but an instance of '{_connection.GetType().FullName}' was provided.");
         }
-
-
 
         #endregion
 
@@ -96,8 +86,6 @@ namespace TauCode.Db.Utils.Crud
             {
                 dictionary = new ValueDictionary(row);
             }
-
-            //var tableInspector = this.GetTableInspector(connection, tableName);
 
             var connection = this.GetSafeConnection();
 
@@ -138,7 +126,6 @@ namespace TauCode.Db.Utils.Crud
                 throw new ArgumentNullException(nameof(id));
             }
 
-            //var tableMold = this.GetTableInspector(connection, tableName).GetTableMold();
             var tableInspector = this.DbInspector.GetTableInspector(tableName);
             var tableMold = tableInspector.GetTableMold();
             var connection = this.GetSafeConnection();
@@ -154,35 +141,6 @@ namespace TauCode.Db.Utils.Crud
             }
         }
 
-        //public List<dynamic> GetRows(IDbCommand command)
-        //{
-        //    if (command == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(command));
-        //    }
-
-        //    using (var reader = command.ExecuteReader())
-        //    {
-        //        var rows = new List<dynamic>();
-
-        //        while (reader.Read())
-        //        {
-        //            var row = new DynamicRow(true);
-
-        //            for (var i = 0; i < reader.FieldCount; i++)
-        //            {
-        //                var name = reader.GetName(i);
-        //                var value = reader[i];
-        //                row.SetValue(name, value);
-        //            }
-
-        //            rows.Add(row);
-        //        }
-
-        //        return rows;
-        //    }
-        //}
-
         public dynamic GetRow(string tableName, object id)
         {
             if (tableName == null)
@@ -195,7 +153,6 @@ namespace TauCode.Db.Utils.Crud
                 throw new ArgumentNullException(nameof(id));
             }
 
-            //var tableMold = this.GetTableInspector(connection, tableName).GetTableMold();
             var tableInspector = this.DbInspector.GetTableInspector(tableName);
             var tableMold = tableInspector.GetTableMold();
             var connection = this.GetSafeConnection();
@@ -205,7 +162,6 @@ namespace TauCode.Db.Utils.Crud
                 command.CommandText = this.ScriptBuilder.BuildSelectRowByIdSql(tableMold, out var paramName);
                 command.AddParameterWithValue(paramName, id);
 
-                //var rows = this.GetRows(command);
                 var rows = UtilsHelper.GetCommandRows(command);
                 return rows.SingleOrDefault();
             }
@@ -243,13 +199,9 @@ namespace TauCode.Db.Utils.Crud
                 dictionary = new ValueDictionary(rowUpdate);
             }
 
-            //var tableInspector = this.GetTableInspector(connection, tableName);
-            //var tableMold = tableInspector.GetTableMold();
-
             var tableInspector = this.DbInspector.GetTableInspector(tableName);
             var tableMold = tableInspector.GetTableMold();
             var connection = this.GetSafeConnection();
-
 
             var pkColumnName = tableMold.GetSinglePrimaryKeyColumnName();
 

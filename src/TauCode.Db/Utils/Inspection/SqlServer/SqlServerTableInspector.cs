@@ -6,7 +6,6 @@ using TauCode.Db.Utils.Dialects.SqlServer;
 
 namespace TauCode.Db.Utils.Inspection.SqlServer
 {
-    // todo clean up
     public class SqlServerTableInspector : SqlServerTableInspectorBase
     {
         #region Constructor
@@ -73,11 +72,6 @@ WHERE
                         });
             }
         }
-
-        //protected override ICruder CreateCruder()
-        //{
-        //    return new SqlServerCruder();
-        //}
 
         public override List<ForeignKeyMold> GetForeignKeyMolds()
         {

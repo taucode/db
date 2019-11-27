@@ -8,13 +8,11 @@ using TauCode.Db.Utils.Dialects.SQLite;
 
 namespace TauCode.Db.Utils.Inspection.SQLite
 {
-    // todo clean up
     public sealed class SQLiteTableInspector : ITableInspector
     {
         #region Fields
 
         private readonly IDbConnection _connection;
-        //private readonly ICruder _cruder;
 
         #endregion
 
@@ -26,7 +24,6 @@ namespace TauCode.Db.Utils.Inspection.SQLite
         {
             _connection = connection ?? throw new ArgumentNullException(nameof(connection));
             this.TableName = tableName ?? throw new ArgumentNullException(nameof(tableName));
-            //_cruder = new SQLiteCruder();
         }
 
         #endregion
@@ -53,12 +50,10 @@ WHERE
                 command.AddParameterWithValue("p_type", "table");
                 command.AddParameterWithValue("p_tableName", this.TableName);
 
-                return UtilsHelper.GetCommandRows(command).Single().Sql;
-
-                //throw new NotImplementedException();
-                //return _cruder
-                //    .GetRows(command)
-                //    .Single().Sql;
+                return UtilsHelper
+                    .GetCommandRows(command)
+                    .Single()
+                    .Sql;
             }
         }
 

@@ -6,19 +6,12 @@ using TauCode.Db.Utils.Inspection.SqlServer;
 
 namespace TauCode.Db.Utils.Crud.SqlServer
 {
-    // todo clean up
-    public class SqlServerCruder : /*SqlServerCruderBase*/ CruderBase
+    public class SqlServerCruder : CruderBase
     {
         public SqlServerCruder(IDbConnection connection)
             : base(connection)
         {
         }
-
-        //protected override ITableInspector GetTableInspectorImpl(IDbConnection connection, string tableName)
-        //{
-        //    var dbInspector = new SqlServerInspector(connection);
-        //    return dbInspector.GetTableInspector(tableName);
-        //}
 
         protected override string ExpectedDbConnectionTypeFullName => "System.Data.SqlClient.SqlConnection";
 

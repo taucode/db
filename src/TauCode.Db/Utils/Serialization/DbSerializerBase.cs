@@ -51,14 +51,13 @@ namespace TauCode.Db.Utils.Serialization
 
         protected abstract IScriptBuilder CreateScriptBuilder();
 
-        //protected abstract IDbInspector GetDbInspector(IDbConnection connection);
-
         protected virtual string SerializeCommandResultImpl(IDbCommand command)
         {
-            throw new NotImplementedException();
-            //var rows = this.Cruder.GetRows(command);
-            //var json = JsonConvert.SerializeObject(rows, Formatting.Indented);
-            //return json;
+            var rows = UtilsHelper
+                .GetCommandRows(command);
+
+            var json = JsonConvert.SerializeObject(rows, Formatting.Indented);
+            return json;
         }
 
         protected virtual void DeserializeTableData(IDbConnection connection, TableMold tableMold, JArray tableData)
@@ -301,6 +300,7 @@ namespace TauCode.Db.Utils.Serialization
                     break;
 
                 case "int":
+                case "integer":
                     parameterInfo = new ParameterInfo
                     {
                         DbType = DbType.Int32,
@@ -350,21 +350,21 @@ namespace TauCode.Db.Utils.Serialization
 
         public ICruder Cruder => _cruder ?? (_cruder = this.CreateCruder());
 
-        public string SerializeCommandResult(IDbCommand command)
-        {
-            if (command == null)
-            {
-                throw new ArgumentNullException(nameof(command));
-            }
+        //public string SerializeCommandResult(IDbCommand command)
+        //{
+        //    if (command == null)
+        //    {
+        //        throw new ArgumentNullException(nameof(command));
+        //    }
 
-            if (command.Connection != this.GetDbConnection())
-            {
-                throw new NotImplementedException();
-            }
+        //    if (command.Connection != this.GetDbConnection())
+        //    {
+        //        throw new NotImplementedException();
+        //    }
 
-            var json = this.SerializeCommandResultImpl(command);
-            return json;
-        }
+        //    var json = this.SerializeCommandResultImpl(command);
+        //    return json;
+        //}
 
         public string SerializeTableData(string tableName)
         {
@@ -375,7 +375,6 @@ namespace TauCode.Db.Utils.Serialization
                 throw new ArgumentNullException(nameof(tableName));
             }
 
-            //var dbInspector = this.GetDbInspector(connection);
             var dbInspector = this.Cruder.DbInspector;
             var connection = dbInspector.Connection;
 
@@ -392,7 +391,6 @@ namespace TauCode.Db.Utils.Serialization
 
         public string SerializeDbData()
         {
-            //var dbInspector = this.GetDbInspector(connection);
             var dbInspector = this.Cruder.DbInspector;
             var connection = dbInspector.Connection;
             var tableMolds = dbInspector.GetOrderedTableMolds(true);
@@ -406,9 +404,10 @@ namespace TauCode.Db.Utils.Serialization
                     var sql = this.ScriptBuilder.BuildSelectSql(tableMold);
                     command.CommandText = sql;
 
-                    throw new NotImplementedException();
-                    //var rows = this.Cruder.GetRows(command);
-                    //dbData.SetValue(tableMold.Name, rows);
+                    var rows = UtilsHelper
+                        .GetCommandRows(command);
+
+                    dbData.SetValue(tableMold.Name, rows);
                 }
             }
 
@@ -435,7 +434,6 @@ namespace TauCode.Db.Utils.Serialization
                 throw new ArgumentException("Could not deserialize table data as array.", nameof(json));
             }
 
-            //var dbInspector = this.GetDbInspector(connection);
             var dbInspector = this.Cruder.DbInspector;
             var connection = dbInspector.Connection;
 
@@ -453,7 +451,6 @@ namespace TauCode.Db.Utils.Serialization
                 throw new ArgumentException("Could not deserialize DB data.", nameof(json));
             }
 
-            //var dbInspector = this.GetDbInspector(connection);
             var dbInspector = this.Cruder.DbInspector;
             var connection = dbInspector.Connection;
 

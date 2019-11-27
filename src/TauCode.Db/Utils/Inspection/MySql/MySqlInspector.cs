@@ -6,21 +6,13 @@ using TauCode.Db.Utils.Building.MySql;
 
 namespace TauCode.Db.Utils.Inspection.MySql
 {
-    // todo clean up
     public class MySqlInspector : IDbInspector
     {
-        #region Field
-
-        //private readonly ICruder _cruder;
-
-        #endregion
-
         #region Constructor
 
         public MySqlInspector(IDbConnection connection)
         {
             this.Connection = connection ?? throw new ArgumentNullException(nameof(connection));
-            //_cruder = new MySqlCruder();
         }
 
         #endregion
@@ -29,10 +21,7 @@ namespace TauCode.Db.Utils.Inspection.MySql
 
         public IDbConnection Connection { get; }
 
-        public IScriptBuilder CreateScriptBuilder()
-        {
-            return new MySqlScriptBuilder();
-        }
+        public IScriptBuilder CreateScriptBuilder() => new MySqlScriptBuilder();
 
         public string[] GetTableNames()
         {
@@ -50,12 +39,10 @@ WHERE
                 command.CommandText = sql;
                 command.AddParameterWithValue("p_schemaName", this.Connection.Database);
 
-                throw new NotImplementedException();
-
-                //return _cruder
-                //    .GetRows(command)
-                //    .Select(x => (string)x.TableName)
-                //    .ToArray();
+                return UtilsHelper
+                    .GetCommandRows(command)
+                    .Select(x => (string)x.TableName)
+                    .ToArray();
             }
         }
 

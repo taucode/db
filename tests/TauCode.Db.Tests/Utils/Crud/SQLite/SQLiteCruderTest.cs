@@ -1,13 +1,10 @@
 ﻿using NUnit.Framework;
-using System;
 using System.Linq;
-using TauCode.Db.Utils;
 using TauCode.Db.Utils.Crud;
 using TauCode.Db.Utils.Crud.SQLite;
 
 namespace TauCode.Db.Tests.Utils.Crud.SQLite
 {
-    // todo clean up
     [TestFixture]
     public class SQLiteCruderTest : SQLiteTestBase
     {
@@ -33,7 +30,6 @@ namespace TauCode.Db.Tests.Utils.Crud.SQLite
             ICruder assertCruder = new SQLiteCruder(this.Connection);
 
             var rows = assertCruder.GetRows("user");
-            //var rows = UtilsHelper.GetCommandRows()
 
             Assert.That(rows, Has.Count.EqualTo(1));
             var assertRow = rows.Single();

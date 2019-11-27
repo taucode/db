@@ -7,7 +7,7 @@ namespace TauCode.Db.Utils.Serialization
     public interface IDbSerializer
     {
         ICruder Cruder { get; }
-        string SerializeCommandResult(IDbCommand command);
+        //string SerializeCommandResult(IDbCommand command);
         string SerializeTableData(string tableName);
         string SerializeDbData();
         void DeserializeTableData(string tableName, string json);
