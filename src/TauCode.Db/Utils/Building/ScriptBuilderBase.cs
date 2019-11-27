@@ -919,7 +919,7 @@ namespace TauCode.Db.Utils.Building
             if (tableNamesToInclude != null && tableNamesToExclude != null)
             {
                 throw new ArgumentException(
-                    "Provide either 'tableNamesToInclude', or 'tableNamesToExclude', or neither of them, but not both",
+                    "Provide either 'tableNamesToInclude', or 'tableNamesToExclude', or neither of them, but not both.",
                     "tableNamesToInclude/tableNamesToExclude");
             }
 
@@ -930,7 +930,7 @@ namespace TauCode.Db.Utils.Building
                 if (tableNamesToInclude.Contains(null))
                 {
                     throw new ArgumentException(
-                        $"'tableNamesToInclude' must not contain nulls",
+                        $"'tableNamesToInclude' must not contain nulls.",
                         nameof(tableNamesToInclude));
                 }
 
@@ -944,7 +944,7 @@ namespace TauCode.Db.Utils.Building
                 if (tableNamesToExclude.Contains(null))
                 {
                     throw new ArgumentException(
-                        $"'tableNamesToExclude' must not contain nulls",
+                        $"'tableNamesToExclude' must not contain nulls.",
                         nameof(tableNamesToExclude));
                 }
 

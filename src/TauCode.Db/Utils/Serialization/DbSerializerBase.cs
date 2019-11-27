@@ -351,6 +351,8 @@ namespace TauCode.Db.Utils.Serialization
             return sb.ToString();
         }
 
+        private static bool TrueTableNamePredicate(string tableName) => true;
+
         #endregion
 
         #region IDbSerializer Members
@@ -467,9 +469,15 @@ namespace TauCode.Db.Utils.Serialization
             throw new NotImplementedException();
         }
 
-        public string SerializeDbMetadata()
+        public string SerializeDbMetadata(Func<string, bool> tableNamePredicate = null)
         {
-            var tables = this.Cruder.DbInspector.GetOrderedTableMolds(true);
+            tableNamePredicate = tableNamePredicate ?? TrueTableNamePredicate;
+
+            var tables = this.Cruder.DbInspector
+                .GetOrderedTableMolds(true)
+                .Where(x => tableNamePredicate(x.Name))
+                .ToList();
+
             var metadata = new DbMetadata
             {
                 Tables = tables

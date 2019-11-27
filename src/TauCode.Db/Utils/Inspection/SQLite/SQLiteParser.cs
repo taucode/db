@@ -54,7 +54,7 @@ namespace TauCode.Db.Utils.Inspection.SQLite
                 .ToMyHashSet();
 
             var identifiersAsWords = allSqlNodes
-                .Where(x => x is WordNode wordNode && x.Name.EndsWith("_name_word"))
+                .Where(x => x is WordNode && x.Name.EndsWith("_name_word"))
                 .Cast<WordNode>()
                 .ToList();
 

@@ -75,18 +75,249 @@
         }
       ],
       "primaryKey": {
-        "name": "wat",
-        "columns": "wat" 
+        "name": "pk_user",
+        "columns": [
+          {
+            "name": "id",
+            "sortDirection": "ascending",
+            "properties": {}
+          }
+        ],
+        "properties": {}
       },
       "foreignKeys": [],
-      "indexes": []
+      "indexes": [],
+      "properties": {}
     },
     {
       "name": "user_info",
       "columns": [
+        {
+          "name": "id",
+          "type": {
+            "name": "UNIQUEIDENTIFIER",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "user_id",
+          "type": {
+            "name": "UNIQUEIDENTIFIER",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "tax_number",
+          "type": {
+            "name": "TEXT",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "code",
+          "type": {
+            "name": "TEXT",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "ansi_name",
+          "type": {
+            "name": "TEXT",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": true,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "ansi_description",
+          "type": {
+            "name": "TEXT",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "unicode_description",
+          "type": {
+            "name": "TEXT",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "height",
+          "type": {
+            "name": "NUMERIC",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "weight",
+          "type": {
+            "name": "NUMERIC",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "salary",
+          "type": {
+            "name": "NUMERIC",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "rating",
+          "type": {
+            "name": "NUMERIC",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "num8",
+          "type": {
+            "name": "INTEGER",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "num16",
+          "type": {
+            "name": "INTEGER",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "num32",
+          "type": {
+            "name": "INTEGER",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "num64",
+          "type": {
+            "name": "INTEGER",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "preferred_time",
+          "type": {
+            "name": "DATETIME",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        }
       ],
       "primaryKey": {
-
       },
       "foreignKeys": [],
       "indexes": []

@@ -54,7 +54,7 @@ namespace TauCode.Db.Tests.Utils.Serialization.SQLite
             // Arrange
 
             // Act
-            var json = _dbSerializer.SerializeDbMetadata();
+            var json = _dbSerializer.SerializeDbMetadata(x => x.ToLower() != "versioninfo");
 
             // Assert
             var expectedJson = this.GetType().Assembly.GetResourceText("expected-db-metadata.json", true);

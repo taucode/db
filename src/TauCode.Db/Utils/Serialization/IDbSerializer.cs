@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data;
 using TauCode.Db.Utils.Crud;
 
 namespace TauCode.Db.Utils.Serialization
@@ -7,13 +6,12 @@ namespace TauCode.Db.Utils.Serialization
     public interface IDbSerializer
     {
         ICruder Cruder { get; }
-        //string SerializeCommandResult(IDbCommand command);
         string SerializeTableData(string tableName);
         string SerializeDbData();
         void DeserializeTableData(string tableName, string json);
         void DeserializeDbData(string json);
         string SerializeTableMetadata(string tableName);
-        string SerializeDbMetadata();
+        string SerializeDbMetadata(Func<string, bool> tableNamePredicate = null);
         void DeserializeTableMetadata(string tableName, string json);
         void DeserializeDbMetadata(string json);
 
