@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using TauCode.Db.Model;
 using TauCode.Db.Utils.Dialects;
 
@@ -43,20 +42,22 @@ ORDER BY
 
                 command.AddParameterWithValue("p_tableName", this.TableName);
 
-                var columnInfos = this.Cruder
-                    .GetRows(command)
-                    .Select(x => new ColumnInfo
-                    {
-                        Name = x.ColumnName,
-                        TypeName = x.DataType,
-                        IsNullable = this.ParseBoolean(x.IsNullable),
-                        Size = UtilsHelper.GetDbValueAsInt(x.MaxLen),
-                        Precision = UtilsHelper.GetDbValueAsInt(x.NumericPrecision),
-                        Scale = UtilsHelper.GetDbValueAsInt(x.NumericScale),
-                    })
-                    .ToList();
+                throw new NotImplementedException();
 
-                return columnInfos;
+                //var columnInfos = this.Cruder
+                //    .GetRows(command)
+                //    .Select(x => new ColumnInfo
+                //    {
+                //        Name = x.ColumnName,
+                //        TypeName = x.DataType,
+                //        IsNullable = this.ParseBoolean(x.IsNullable),
+                //        Size = UtilsHelper.GetDbValueAsInt(x.MaxLen),
+                //        Precision = UtilsHelper.GetDbValueAsInt(x.NumericPrecision),
+                //        Scale = UtilsHelper.GetDbValueAsInt(x.NumericScale),
+                //    })
+                //    .ToList();
+
+                //return columnInfos;
             }
         }
 
@@ -142,22 +143,24 @@ ORDER BY
                 command.AddParameterWithValue("p_constraintName", constraintName);
                 command.AddParameterWithValue("p_tableName", this.TableName);
 
-                var columns = this.Cruder
-                    .GetRows(command)
-                    .Select(x => new IndexColumnMold
-                    {
-                        Name = (string)x.ColumnName,
-                        SortDirection = (bool)x.IsDescendingKey ? SortDirection.Descending : SortDirection.Ascending,
-                    })
-                    .ToList();
+                throw new NotImplementedException();
 
-                var primaryKeyMold = new PrimaryKeyMold
-                {
-                    Name = constraintName,
-                    Columns = columns,
-                };
+                //var columns = this.Cruder
+                //    .GetRows(command)
+                //    .Select(x => new IndexColumnMold
+                //    {
+                //        Name = (string)x.ColumnName,
+                //        SortDirection = (bool)x.IsDescendingKey ? SortDirection.Descending : SortDirection.Ascending,
+                //    })
+                //    .ToList();
 
-                return primaryKeyMold;
+                //var primaryKeyMold = new PrimaryKeyMold
+                //{
+                //    Name = constraintName,
+                //    Columns = columns,
+                //};
+
+                //return primaryKeyMold;
             }
         }
 

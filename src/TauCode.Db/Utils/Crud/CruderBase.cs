@@ -154,34 +154,34 @@ namespace TauCode.Db.Utils.Crud
             }
         }
 
-        public List<dynamic> GetRows(IDbCommand command)
-        {
-            if (command == null)
-            {
-                throw new ArgumentNullException(nameof(command));
-            }
+        //public List<dynamic> GetRows(IDbCommand command)
+        //{
+        //    if (command == null)
+        //    {
+        //        throw new ArgumentNullException(nameof(command));
+        //    }
 
-            using (var reader = command.ExecuteReader())
-            {
-                var rows = new List<dynamic>();
+        //    using (var reader = command.ExecuteReader())
+        //    {
+        //        var rows = new List<dynamic>();
 
-                while (reader.Read())
-                {
-                    var row = new DynamicRow(true);
+        //        while (reader.Read())
+        //        {
+        //            var row = new DynamicRow(true);
 
-                    for (var i = 0; i < reader.FieldCount; i++)
-                    {
-                        var name = reader.GetName(i);
-                        var value = reader[i];
-                        row.SetValue(name, value);
-                    }
+        //            for (var i = 0; i < reader.FieldCount; i++)
+        //            {
+        //                var name = reader.GetName(i);
+        //                var value = reader[i];
+        //                row.SetValue(name, value);
+        //            }
 
-                    rows.Add(row);
-                }
+        //            rows.Add(row);
+        //        }
 
-                return rows;
-            }
-        }
+        //        return rows;
+        //    }
+        //}
 
         public dynamic GetRow(string tableName, object id)
         {
@@ -205,8 +205,10 @@ namespace TauCode.Db.Utils.Crud
                 command.CommandText = this.ScriptBuilder.BuildSelectRowByIdSql(tableMold, out var paramName);
                 command.AddParameterWithValue(paramName, id);
 
-                var rows = this.GetRows(command);
-                return rows.SingleOrDefault();
+                throw new NotImplementedException();
+
+                //var rows = this.GetRows(command);
+                //return rows.SingleOrDefault();
             }
         }
 

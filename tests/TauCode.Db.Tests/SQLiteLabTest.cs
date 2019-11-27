@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using System.Linq;
+using System;
 using TauCode.Db.Utils.Crud.SQLite;
 
 namespace TauCode.Db.Tests
@@ -54,14 +54,17 @@ SELECT
 FROM
     [user] U
 ";
-                var cruder = new SQLiteCruder();
-                var row = cruder.GetRows(command).Single();
+                var cruder = new SQLiteCruder(this.Connection);
 
-                Assert.That(row.id, Is.TypeOf<long>());
-                Assert.That(row.login, Is.TypeOf<string>());
-                Assert.That(row.age, Is.TypeOf<decimal>());
-                Assert.That(row.hash, Is.TypeOf<byte[]>());
-                Assert.That(row.amount, Is.TypeOf<double>());
+                throw new NotImplementedException();
+
+                //var row = cruder.GetRows(command).Single();
+
+                //Assert.That(row.id, Is.TypeOf<long>());
+                //Assert.That(row.login, Is.TypeOf<string>());
+                //Assert.That(row.age, Is.TypeOf<decimal>());
+                //Assert.That(row.hash, Is.TypeOf<byte[]>());
+                //Assert.That(row.amount, Is.TypeOf<double>());
             }
         }
 

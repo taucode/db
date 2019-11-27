@@ -3,16 +3,15 @@ using System.Data;
 using System.Linq;
 using TauCode.Db.Utils.Building;
 using TauCode.Db.Utils.Building.MySql;
-using TauCode.Db.Utils.Crud;
-using TauCode.Db.Utils.Crud.MySql;
 
 namespace TauCode.Db.Utils.Inspection.MySql
 {
+    // todo clean up
     public class MySqlInspector : IDbInspector
     {
         #region Field
 
-        private readonly ICruder _cruder;
+        //private readonly ICruder _cruder;
 
         #endregion
 
@@ -21,7 +20,7 @@ namespace TauCode.Db.Utils.Inspection.MySql
         public MySqlInspector(IDbConnection connection)
         {
             this.Connection = connection ?? throw new ArgumentNullException(nameof(connection));
-            _cruder = new MySqlCruder();
+            //_cruder = new MySqlCruder();
         }
 
         #endregion
@@ -51,10 +50,12 @@ WHERE
                 command.CommandText = sql;
                 command.AddParameterWithValue("p_schemaName", this.Connection.Database);
 
-                return _cruder
-                    .GetRows(command)
-                    .Select(x => (string)x.TableName)
-                    .ToArray();
+                throw new NotImplementedException();
+
+                //return _cruder
+                //    .GetRows(command)
+                //    .Select(x => (string)x.TableName)
+                //    .ToArray();
             }
         }
 

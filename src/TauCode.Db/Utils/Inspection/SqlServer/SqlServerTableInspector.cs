@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using TauCode.Db.Model;
-using TauCode.Db.Utils.Crud;
-using TauCode.Db.Utils.Crud.SqlServer;
 using TauCode.Db.Utils.Dialects.SqlServer;
 
 namespace TauCode.Db.Utils.Inspection.SqlServer
 {
+    // todo clean up
     public class SqlServerTableInspector : SqlServerTableInspectorBase
     {
         #region Constructor
@@ -63,22 +62,24 @@ WHERE
 ";
                 command.AddParameterWithValue("p_objectId", objectId);
 
-                return this.Cruder
-                    .GetRows(command)
-                    .ToDictionary(
-                        x => (string)x.Name,
-                        x => new ColumnIdentityMold
-                        {
-                            Seed = ((object)x.SeedValue).ToString(),
-                            Increment = ((object)x.IncrementValue).ToString(),
-                        });
+                throw new NotImplementedException();
+
+                //return this.Cruder
+                //    .GetRows(command)
+                //    .ToDictionary(
+                //        x => (string)x.Name,
+                //        x => new ColumnIdentityMold
+                //        {
+                //            Seed = ((object)x.SeedValue).ToString(),
+                //            Increment = ((object)x.IncrementValue).ToString(),
+                //        });
             }
         }
 
-        protected override ICruder CreateCruder()
-        {
-            return new SqlServerCruder();
-        }
+        //protected override ICruder CreateCruder()
+        //{
+        //    return new SqlServerCruder();
+        //}
 
         public override List<ForeignKeyMold> GetForeignKeyMolds()
         {
@@ -125,24 +126,25 @@ WHERE
                 command.AddParameterWithValue("p_tableName", this.TableName);
 
 
-                return this.Cruder
-                    .GetRows(command)
-                    .GroupBy(x => (string)x.ForeignKeyName)
-                    .Select(g => new ForeignKeyMold
-                    {
-                        Name = (string)g.First().ForeignKeyName,
-                        ReferencedTableName = (string)g.First().ReferencedTableName,
-                        ColumnNames = g
-                            .OrderBy(x => (int)x.ColumnOrder)
-                            .Select(x => (string)x.ColumnName)
-                            .ToList(),
-                        ReferencedColumnNames = g
-                            .OrderBy(x => (int)x.ColumnOrder)
-                            .Select(x => (string)x.ReferencedColumnName)
-                            .ToList(),
-                    })
-                    .OrderBy(x => x.Name)
-                    .ToList();
+                throw new NotImplementedException();
+                //return this.Cruder
+                //    .GetRows(command)
+                //    .GroupBy(x => (string)x.ForeignKeyName)
+                //    .Select(g => new ForeignKeyMold
+                //    {
+                //        Name = (string)g.First().ForeignKeyName,
+                //        ReferencedTableName = (string)g.First().ReferencedTableName,
+                //        ColumnNames = g
+                //            .OrderBy(x => (int)x.ColumnOrder)
+                //            .Select(x => (string)x.ColumnName)
+                //            .ToList(),
+                //        ReferencedColumnNames = g
+                //            .OrderBy(x => (int)x.ColumnOrder)
+                //            .Select(x => (string)x.ReferencedColumnName)
+                //            .ToList(),
+                //    })
+                //    .OrderBy(x => x.Name)
+                //    .ToList();
             }
         }
 
@@ -183,24 +185,25 @@ WHERE
 ";
                 command.AddParameterWithValue("p_tableName", this.TableName);
                 
-                return this.Cruder
-                    .GetRows(command)
-                    .GroupBy(x => (int)x.IndexId)
-                    .Select(g => new IndexMold
-                    {
-                        Name = (string)g.First().IndexName,
-                        IsUnique = (bool)g.First().IndexIsUnique,
-                        Columns = g
-                            .OrderBy(x => (int)x.KeyOrdinal)
-                            .Select(x => new IndexColumnMold
-                            {
-                                Name = (string)x.ColumnName,
-                                SortDirection = (bool)x.IsDescendingKey ? SortDirection.Descending : SortDirection.Ascending,
-                            })
-                            .ToList(),
-                    })
-                    .OrderBy(x => x.Name)
-                    .ToList();
+                throw new NotImplementedException();
+                //return this.Cruder
+                //    .GetRows(command)
+                //    .GroupBy(x => (int)x.IndexId)
+                //    .Select(g => new IndexMold
+                //    {
+                //        Name = (string)g.First().IndexName,
+                //        IsUnique = (bool)g.First().IndexIsUnique,
+                //        Columns = g
+                //            .OrderBy(x => (int)x.KeyOrdinal)
+                //            .Select(x => new IndexColumnMold
+                //            {
+                //                Name = (string)x.ColumnName,
+                //                SortDirection = (bool)x.IsDescendingKey ? SortDirection.Descending : SortDirection.Ascending,
+                //            })
+                //            .ToList(),
+                //    })
+                //    .OrderBy(x => x.Name)
+                //    .ToList();
             }
         }
 

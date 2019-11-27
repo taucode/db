@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Data;
-using System.Linq;
-using TauCode.Db.Exceptions;
 using TauCode.Db.Utils.Building;
-using TauCode.Db.Utils.Crud;
 
 namespace TauCode.Db.Utils.Inspection
 {
@@ -11,7 +8,7 @@ namespace TauCode.Db.Utils.Inspection
     {
         #region Fields
 
-        private ICruder _cruder;
+        //private ICruder _cruder;
 
         #endregion
 
@@ -30,13 +27,13 @@ namespace TauCode.Db.Utils.Inspection
 
         protected abstract SqlServerTableInspectorBase CreateTableInspectorImpl(string tableName);
 
-        protected abstract ICruder CreateCruder();
+        //protected abstract ICruder CreateCruder();
 
         #endregion
 
         #region Protected
 
-        protected ICruder Cruder => _cruder ?? (_cruder = this.CreateCruder());
+        //protected ICruder Cruder => _cruder ?? (_cruder = this.CreateCruder());
 
         #endregion
 
@@ -63,12 +60,14 @@ WHERE
 
                 command.CommandText = sql;
 
-                var tableNames = this.Cruder
-                    .GetRows(command)
-                    .Select(x => (string)x.TableName)
-                    .ToArray();
+                throw new NotImplementedException();
 
-               return tableNames;
+               // var tableNames = this.Cruder
+               //     .GetRows(command)
+               //     .Select(x => (string)x.TableName)
+               //     .ToArray();
+
+               //return tableNames;
             }
         }
 
@@ -97,18 +96,20 @@ WHERE
                 command.AddParameterWithValue("p_tableType", this.TableTypeForTable);
                 command.AddParameterWithValue("p_name", tableName);
 
-                var row = this.Cruder
-                    .GetRows(command)
-                    .SingleOrDefault();
+                throw new NotImplementedException();
 
-                if (row == null)
-                {
-                    throw new ObjectNotFoundException($"Table not found: '{tableName}'", tableName);
-                }
+                //var row = this.Cruder
+                //    .GetRows(command)
+                //    .SingleOrDefault();
 
-                var realTableName = (string)row.TableName;
-                var tableInspector = this.CreateTableInspectorImpl(realTableName);
-                return tableInspector;
+                //if (row == null)
+                //{
+                //    throw new ObjectNotFoundException($"Table not found: '{tableName}'", tableName);
+                //}
+
+                //var realTableName = (string)row.TableName;
+                //var tableInspector = this.CreateTableInspectorImpl(realTableName);
+                //return tableInspector;
             }
         }
 

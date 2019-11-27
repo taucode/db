@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Data;
-using System.Linq;
 using TauCode.Db.Utils.Building;
 using TauCode.Db.Utils.Building.SQLite;
 using TauCode.Db.Utils.Crud;
@@ -21,7 +20,7 @@ namespace TauCode.Db.Utils.Inspection.SQLite
         public SQLiteInspector(IDbConnection connection)
         {
             this.Connection = connection ?? throw new ArgumentNullException(nameof(connection));
-            _cruder = new SQLiteCruder();
+            _cruder = new SQLiteCruder(this.Connection);
         }
 
         #endregion
@@ -52,10 +51,12 @@ WHERE
                 command.AddParameterWithValue("p_type", "table");
                 command.AddParameterWithValue("p_sequenceName", "sqlite_sequence");
 
-                return _cruder
-                    .GetRows(command)
-                    .Select(x => (string)x.TableName)
-                    .ToArray();
+                throw new NotImplementedException();
+
+                //return _cruder
+                //    .GetRows(command)
+                //    .Select(x => (string)x.TableName)
+                //    .ToArray();
             }
         }
 

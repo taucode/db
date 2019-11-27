@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using TauCode.Db.Model;
-using TauCode.Db.Utils.Crud;
-using TauCode.Db.Utils.Crud.MySql;
 using TauCode.Db.Utils.Dialects.MySql;
 using TauCode.Utils.Extensions;
 
@@ -51,19 +49,21 @@ ORDER BY
                 command.AddParameterWithValue("p_tableName", this.TableName);
                 command.AddParameterWithValue("p_tableSchema", this.Connection.Database);
 
-                return this.Cruder
-                    .GetRows(command)
-                    .Select(x => new ColumnInfo
-                    {
-                        Name = x.ColumnName,
-                        TypeName = x.DataType,
-                        IsNullable = this.ParseBoolean(x.IsNullable),
-                        Size = UtilsHelper.GetDbValueAsInt(x.MaxLen),
-                        Precision = UtilsHelper.GetDbValueAsInt(x.NumericPrecision),
-                        Scale = UtilsHelper.GetDbValueAsInt(x.NumericScale),
-                        AdditionalProperties = this.GetAdditionalProperties(x),
-                    })
-                    .ToList();
+                throw new NotImplementedException();
+
+                //return this.Cruder
+                //    .GetRows(command)
+                //    .Select(x => new ColumnInfo
+                //    {
+                //        Name = x.ColumnName,
+                //        TypeName = x.DataType,
+                //        IsNullable = this.ParseBoolean(x.IsNullable),
+                //        Size = UtilsHelper.GetDbValueAsInt(x.MaxLen),
+                //        Precision = UtilsHelper.GetDbValueAsInt(x.NumericPrecision),
+                //        Scale = UtilsHelper.GetDbValueAsInt(x.NumericScale),
+                //        AdditionalProperties = this.GetAdditionalProperties(x),
+                //    })
+                //    .ToList();
             }
         }
 
@@ -123,22 +123,23 @@ WHERE
                 command.AddParameterWithValue("p_tableSchema", this.Connection.Database);
                 command.AddParameterWithValue("p_pattern", "%auto_increment%");
 
-                return this.Cruder
-                    .GetRows(command)
-                    .ToDictionary(
-                        x => (string)x.ColumnName,
-                        x => new ColumnIdentityMold
-                        {
-                            Seed = (1).ToString(),
-                            Increment = (1).ToString(),
-                        });
+                throw new NotImplementedException();
+                //return this.Cruder
+                //    .GetRows(command)
+                //    .ToDictionary(
+                //        x => (string)x.ColumnName,
+                //        x => new ColumnIdentityMold
+                //        {
+                //            Seed = (1).ToString(),
+                //            Increment = (1).ToString(),
+                //        });
             }
         }
 
-        protected override ICruder CreateCruder()
-        {
-            return new MySqlCruder();
-        }
+        //protected override ICruder CreateCruder()
+        //{
+        //    return new MySqlCruder();
+        //}
 
         public override PrimaryKeyMold GetPrimaryKeyMold()
         {
@@ -182,26 +183,28 @@ WHERE
                 command.AddParameterWithValue("p_schemaName", this.Connection.Database);
                 command.AddParameterWithValue("p_tableName", this.TableName);
 
-                var foreignKeys = this.Cruder
-                    .GetRows(command)
-                    .GroupBy(x => (string)x.ConstraintName)
-                    .Where(g => g.Key != "PRIMARY")
-                    .Select(g => new ForeignKeyMold
-                    {
-                        Name = g.Key,
-                        ReferencedTableName = (string)g.First().ReferencedTableName,
-                        ColumnNames = g
-                            .OrderBy(x => (uint)x.OrdinalPosition)
-                            .Select(x => (string)x.ColumnName)
-                            .ToList(),
-                        ReferencedColumnNames = g
-                            .OrderBy(x => (uint)x.PositionInUniqueConstraint)
-                            .Select(x => (string)x.ReferencedColumnName)
-                            .ToList(),
-                    })
-                    .ToList();
+                throw new NotImplementedException();
 
-                return foreignKeys;
+                //var foreignKeys = this.Cruder
+                //    .GetRows(command)
+                //    .GroupBy(x => (string)x.ConstraintName)
+                //    .Where(g => g.Key != "PRIMARY")
+                //    .Select(g => new ForeignKeyMold
+                //    {
+                //        Name = g.Key,
+                //        ReferencedTableName = (string)g.First().ReferencedTableName,
+                //        ColumnNames = g
+                //            .OrderBy(x => (uint)x.OrdinalPosition)
+                //            .Select(x => (string)x.ColumnName)
+                //            .ToList(),
+                //        ReferencedColumnNames = g
+                //            .OrderBy(x => (uint)x.PositionInUniqueConstraint)
+                //            .Select(x => (string)x.ReferencedColumnName)
+                //            .ToList(),
+                //    })
+                //    .ToList();
+
+                //return foreignKeys;
             }
         }
 
@@ -211,25 +214,27 @@ WHERE
             {
                 command.CommandText = $@"SHOW INDEX FROM `{this.TableName}`";
 
-                var indexMolds = this.Cruder
-                    .GetRows(command)
-                    .GroupBy(x => (string)x.key_name)
-                    .Select(g => new IndexMold
-                    {
-                        Name = (string)g.Key,
-                        IsUnique = (int)g.First().non_unique == 0,
-                        Columns = g
-                            .OrderBy(x => (uint)x.seq_in_index)
-                            .Select(x => new IndexColumnMold
-                            {
-                                Name = (string)x.column_name,
-                                SortDirection = (string)x.collation == "D" ? SortDirection.Descending : SortDirection.Ascending,
-                            })
-                            .ToList(),
-                    })
-                    .ToList();
+                throw new NotImplementedException();
 
-                return indexMolds;
+                //var indexMolds = this.Cruder
+                //    .GetRows(command)
+                //    .GroupBy(x => (string)x.key_name)
+                //    .Select(g => new IndexMold
+                //    {
+                //        Name = (string)g.Key,
+                //        IsUnique = (int)g.First().non_unique == 0,
+                //        Columns = g
+                //            .OrderBy(x => (uint)x.seq_in_index)
+                //            .Select(x => new IndexColumnMold
+                //            {
+                //                Name = (string)x.column_name,
+                //                SortDirection = (string)x.collation == "D" ? SortDirection.Descending : SortDirection.Ascending,
+                //            })
+                //            .ToList(),
+                //    })
+                //    .ToList();
+
+                //return indexMolds;
             }
         }
 

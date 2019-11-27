@@ -55,9 +55,10 @@ namespace TauCode.Db.Utils.Serialization
 
         protected virtual string SerializeCommandResultImpl(IDbCommand command)
         {
-            var rows = this.Cruder.GetRows(command);
-            var json = JsonConvert.SerializeObject(rows, Formatting.Indented);
-            return json;
+            throw new NotImplementedException();
+            //var rows = this.Cruder.GetRows(command);
+            //var json = JsonConvert.SerializeObject(rows, Formatting.Indented);
+            //return json;
         }
 
         protected virtual void DeserializeTableData(IDbConnection connection, TableMold tableMold, JArray tableData)
@@ -404,8 +405,10 @@ namespace TauCode.Db.Utils.Serialization
                 {
                     var sql = this.ScriptBuilder.BuildSelectSql(tableMold);
                     command.CommandText = sql;
-                    var rows = this.Cruder.GetRows(command);
-                    dbData.SetValue(tableMold.Name, rows);
+
+                    throw new NotImplementedException();
+                    //var rows = this.Cruder.GetRows(command);
+                    //dbData.SetValue(tableMold.Name, rows);
                 }
             }
 

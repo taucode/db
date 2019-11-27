@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using TauCode.Db.Model;
-using TauCode.Db.Utils.Crud;
 using TauCode.Db.Utils.Dialects;
 
 namespace TauCode.Db.Utils.Inspection
@@ -27,7 +26,7 @@ namespace TauCode.Db.Utils.Inspection
 
         #region Fields
 
-        private ICruder _cruder;
+        //private ICruder _cruder;
 
         #endregion
 
@@ -53,7 +52,7 @@ namespace TauCode.Db.Utils.Inspection
         
         protected abstract Dictionary<string, ColumnIdentityMold> GetIdentities();
 
-        protected abstract ICruder CreateCruder();
+        //protected abstract ICruder CreateCruder();
 
         #endregion
 
@@ -61,7 +60,7 @@ namespace TauCode.Db.Utils.Inspection
 
         protected IDbConnection Connection { get; }
 
-        protected ICruder Cruder => _cruder ?? (_cruder = this.CreateCruder());
+        //protected ICruder Cruder => _cruder ?? (_cruder = this.CreateCruder());
 
         #endregion
 
