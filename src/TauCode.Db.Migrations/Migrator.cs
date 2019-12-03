@@ -20,10 +20,10 @@ namespace TauCode.Db.Migrations
         {   
         }
 
-        public Migrator(string connectionString, Rdbms rdbms, Assembly migrationsAssembly)
+        public Migrator(string connectionString, DbProviderName providerName, Assembly migrationsAssembly)
         {
             this.ConnectionString = connectionString;
-            this.Rdbms = rdbms;
+            this.ProviderName = providerName;
             this.MigrationsAssembly = migrationsAssembly;
             _singletons = new Dictionary<Type, object>();
         }
@@ -38,7 +38,7 @@ namespace TauCode.Db.Migrations
         #region IMigrator Members
 
         public string ConnectionString { get; set; }
-        public Rdbms Rdbms { get; set; }
+        public DbProviderName ProviderName { get; set; }
         public Assembly MigrationsAssembly { get; set; }
 
 
@@ -86,18 +86,18 @@ namespace TauCode.Db.Migrations
             var serviceProvider = serviceCollection
                 .ConfigureRunner(rb =>
                 {
-                    switch (this.Rdbms)
+                    switch (this.ProviderName)
                     {
-                        case Rdbms.SQLite:
+                        case DbProviderName.SQLite:
                             rb.AddSQLite();
                             break;
 
-                        case Rdbms.SqlServer:
+                        case DbProviderName.SqlServer:
                             rb.AddSqlServer();
                             break;
 
                         default:
-                            throw new ArgumentOutOfRangeException(nameof(this.Rdbms), $"'{this.Rdbms}' not supported.");
+                            throw new ArgumentOutOfRangeException(nameof(this.ProviderName), $"'{this.ProviderName}' not supported.");
                     }
 
                     rb

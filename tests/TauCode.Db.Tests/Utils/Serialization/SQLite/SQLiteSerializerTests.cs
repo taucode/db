@@ -46,7 +46,7 @@ namespace TauCode.Db.Tests.Utils.Serialization.SQLite
         public void SetUp()
         {
             _dbSerializer.Cruder.DbInspector.PurgeDb();
-            IMigrator migrator = new Migrator(_connection.ConnectionString, Rdbms.SQLite, typeof(M0_Baseline).Assembly);
+            IMigrator migrator = new Migrator(_connection.ConnectionString, DbProviderName.SQLite, typeof(M0_Baseline).Assembly);
             migrator.Migrate();
         }
 
@@ -73,7 +73,7 @@ namespace TauCode.Db.Tests.Utils.Serialization.SQLite
         public void TodoWat()
         {
             var con = TestHelper.CreateTempSQLiteDatabase();
-            IMigrator migrator = new Migrator(con.ConnectionString, Rdbms.SQLite, typeof(Rho_M0_Baseline).Assembly);
+            IMigrator migrator = new Migrator(con.ConnectionString, DbProviderName.SQLite, typeof(Rho_M0_Baseline).Assembly);
             migrator.Migrate();
 
             IDbSerializer ser = new SQLiteSerializer(con);

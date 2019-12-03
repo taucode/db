@@ -1,6 +1,6 @@
 ﻿namespace TauCode.Db.Migrations
 {
-    public enum  Rdbms
+    public enum DbProviderName
     {
         Unknown = 0,
         SqlServer,
