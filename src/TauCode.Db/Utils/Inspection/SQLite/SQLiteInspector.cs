@@ -52,12 +52,6 @@ WHERE
                 command.AddParameterWithValue("p_type", "table");
                 command.AddParameterWithValue("p_sequenceName", "sqlite_sequence");
 
-
-                //return _cruder
-                //    .GetRows(command)
-                //    .Select(x => (string)x.TableName)
-                //    .ToArray();
-
                 return UtilsHelper
                     .GetCommandRows(command)
                     .Select(x => (string)x.TableName)

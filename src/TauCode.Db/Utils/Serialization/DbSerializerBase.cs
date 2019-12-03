@@ -60,8 +60,7 @@ namespace TauCode.Db.Utils.Serialization
 
         protected virtual string SerializeCommandResultImpl(IDbCommand command)
         {
-            var rows = UtilsHelper
-                .GetCommandRows(command);
+            var rows = UtilsHelper.GetCommandRows(command);
 
             var json = JsonConvert.SerializeObject(rows, Formatting.Indented);
             return json;
@@ -466,7 +465,29 @@ namespace TauCode.Db.Utils.Serialization
 
         public string SerializeTableMetadata(string tableName)
         {
-            throw new NotImplementedException();
+            // null-check will be performed by 'GetTableInspector'
+
+            var tableInspector = this.Cruder.DbInspector.GetTableInspector(tableName);
+            var tableMold = tableInspector.GetTableMold();
+
+            var contractResolver = new DefaultContractResolver
+            {
+                NamingStrategy = new CamelCaseNamingStrategy(),
+            };
+
+            var json = JsonConvert.SerializeObject(
+                tableMold,
+                new JsonSerializerSettings
+                {
+                    ContractResolver = contractResolver,
+                    Formatting = Formatting.Indented,
+                    Converters = new List<JsonConverter>
+                    {
+                        new StringEnumConverter(new CamelCaseNamingStrategy())
+                    }
+                });
+
+            return json;
         }
 
         public string SerializeDbMetadata(Func<string, bool> tableNamePredicate = null)

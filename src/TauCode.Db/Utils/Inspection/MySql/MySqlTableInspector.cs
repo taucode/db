@@ -49,8 +49,6 @@ ORDER BY
                 command.AddParameterWithValue("p_tableName", this.TableName);
                 command.AddParameterWithValue("p_tableSchema", this.Connection.Database);
 
-                //throw new NotImplementedException();
-
                 return UtilsHelper
                     .GetCommandRows(command)
                     .Select(x => new ColumnInfo
@@ -123,7 +121,6 @@ WHERE
                 command.AddParameterWithValue("p_tableSchema", this.Connection.Database);
                 command.AddParameterWithValue("p_pattern", "%auto_increment%");
 
-                //throw new NotImplementedException();
                 return UtilsHelper
                     .GetCommandRows(command)
                     .ToDictionary(
@@ -184,8 +181,6 @@ WHERE
                 command.AddParameterWithValue("p_schemaName", this.Connection.Database);
                 command.AddParameterWithValue("p_tableName", this.TableName);
 
-                //throw new NotImplementedException();
-
                 var foreignKeys = UtilsHelper
                     .GetCommandRows(command)
                     .GroupBy(x => (string)x.ConstraintName)
@@ -214,8 +209,6 @@ WHERE
             using (var command = this.Connection.CreateCommand())
             {
                 command.CommandText = $@"SHOW INDEX FROM `{this.TableName}`";
-
-                //throw new NotImplementedException();
 
                 var indexMolds = UtilsHelper
                     .GetCommandRows(command)
