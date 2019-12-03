@@ -12,7 +12,11 @@ namespace TauCode.Db.Utils.Serialization
         void DeserializeDbData(string json);
         string SerializeTableMetadata(string tableName);
         string SerializeDbMetadata(Func<string, bool> tableNamePredicate = null);
+
+        // todo: sweep out. not needed. use IScriptBuilder.
         void DeserializeTableMetadata(string tableName, string json);
+
+        // todo: sweep out. not needed. use IScriptBuilder.
         void DeserializeDbMetadata(string json);
 
         /// <summary>
