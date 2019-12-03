@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using TauCode.Db.Model;
-using TauCode.Db.Utils.Crud;
-using TauCode.Db.Utils.Crud.SQLite;
 using TauCode.Db.Utils.Dialects;
 using TauCode.Db.Utils.Dialects.SQLite;
 
@@ -15,7 +13,6 @@ namespace TauCode.Db.Utils.Inspection.SQLite
         #region Fields
 
         private readonly IDbConnection _connection;
-        private readonly ICruder _cruder;
 
         #endregion
 
@@ -27,7 +24,6 @@ namespace TauCode.Db.Utils.Inspection.SQLite
         {
             _connection = connection ?? throw new ArgumentNullException(nameof(connection));
             this.TableName = tableName ?? throw new ArgumentNullException(nameof(tableName));
-            _cruder = new SQLiteCruder();
         }
 
         #endregion
@@ -54,9 +50,10 @@ WHERE
                 command.AddParameterWithValue("p_type", "table");
                 command.AddParameterWithValue("p_tableName", this.TableName);
 
-                return _cruder
-                    .GetRows(command)
-                    .Single().Sql;
+                return UtilsHelper
+                    .GetCommandRows(command)
+                    .Single()
+                    .Sql;
             }
         }
 
@@ -106,8 +103,9 @@ WHERE
                 command.AddParameterWithValue("p_antiPattern", "sqlite_autoindex_%");
 
                 var parser = SQLiteParser.Instance;
-                var indexes = _cruder
-                    .GetRows(command)
+
+                var indexes = UtilsHelper
+                    .GetCommandRows(command)
                     .Select(x => (IndexMold)parser.Parse((string)x.Sql).Single())
                     .ToList();
 

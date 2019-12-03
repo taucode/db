@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace TauCode.Db.Model
 {
@@ -12,5 +13,23 @@ namespace TauCode.Db.Model
         public List<ForeignKeyMold> ForeignKeys { get; set; } = new List<ForeignKeyMold>();
         public List<IndexMold> Indexes { get; set; } = new List<IndexMold>();
         public IDictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
+        public IDbMold Clone(bool includeProperties = false)
+        {
+            return new TableMold
+            {
+                Name = this.Name,
+                Columns = this.Columns
+                    .Select(x => x.CloneColumn(includeProperties))
+                    .ToList(),
+                PrimaryKey = this.PrimaryKey?.ClonePrimaryKey(includeProperties),
+                ForeignKeys = this.ForeignKeys
+                    .Select(x => x.CloneForeignKey(includeProperties))
+                    .ToList(),
+                Indexes = this.Indexes
+                    .Select(x => x.CloneIndex(includeProperties))
+                    .ToList(),
+                Properties = this.ClonePropertiesIfNeeded(includeProperties)
+            };
+        }
     }
 }

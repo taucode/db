@@ -43,8 +43,8 @@ ORDER BY
 
                 command.AddParameterWithValue("p_tableName", this.TableName);
 
-                var columnInfos = this.Cruder
-                    .GetRows(command)
+                var columnInfos = UtilsHelper
+                    .GetCommandRows(command)
                     .Select(x => new ColumnInfo
                     {
                         Name = x.ColumnName,
@@ -142,8 +142,9 @@ ORDER BY
                 command.AddParameterWithValue("p_constraintName", constraintName);
                 command.AddParameterWithValue("p_tableName", this.TableName);
 
-                var columns = this.Cruder
-                    .GetRows(command)
+
+                var columns = UtilsHelper
+                    .GetCommandRows(command)
                     .Select(x => new IndexColumnMold
                     {
                         Name = (string)x.ColumnName,

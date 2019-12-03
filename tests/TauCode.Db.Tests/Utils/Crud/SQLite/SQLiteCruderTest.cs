@@ -12,7 +12,7 @@ namespace TauCode.Db.Tests.Utils.Crud.SQLite
         public void InsertRow_RowWithOmitedOptionalColumnValues_Inserts()
         {
             // Arrange
-            ICruder cruder = new SQLiteCruder();
+            ICruder cruder = new SQLiteCruder(this.Connection);
 
             var row = new
             {
@@ -21,15 +21,15 @@ namespace TauCode.Db.Tests.Utils.Crud.SQLite
             };
 
             // Act
-            cruder.InsertRow(this.Connection, "user", row);
+            cruder.InsertRow("user", row);
 
             // Assert
 
             // Normally, it is not a good idea to test some functionality with use of this very functionality.
             // But I am pretty sure ICruder.GetRows() works pretty fine since it is also covered by UTs.
-            ICruder assertCruder = new SQLiteCruder();
+            ICruder assertCruder = new SQLiteCruder(this.Connection);
 
-            var rows = assertCruder.GetRows(this.Connection, "user");
+            var rows = assertCruder.GetRows("user");
 
             Assert.That(rows, Has.Count.EqualTo(1));
             var assertRow = rows.Single();
@@ -45,7 +45,7 @@ namespace TauCode.Db.Tests.Utils.Crud.SQLite
             // Arrange
             // Normally, it is not a good idea to test some functionality with use of this very functionality.
             // But I am pretty sure ICruder.InsertRow() works pretty fine since it is also covered by UTs.
-            ICruder setupCruder = new SQLiteCruder();
+            ICruder setupCruder = new SQLiteCruder(this.Connection);
 
             var row = new
             {
@@ -53,11 +53,11 @@ namespace TauCode.Db.Tests.Utils.Crud.SQLite
                 login = "ak",
             };
 
-            setupCruder.InsertRow(this.Connection, "user", row);
+            setupCruder.InsertRow("user", row);
 
             // Act
-            ICruder testCruder = new SQLiteCruder();
-            var existingRow = testCruder.GetRow(this.Connection, "user", 1);
+            ICruder testCruder = new SQLiteCruder(this.Connection);
+            var existingRow = testCruder.GetRow("user", 1);
 
             // Assert
             Assert.That(existingRow.id, Is.EqualTo(1));
@@ -72,7 +72,7 @@ namespace TauCode.Db.Tests.Utils.Crud.SQLite
             // Arrange
             // Normally, it is not a good idea to test some functionality with use of this very functionality.
             // But I am pretty sure ICruder.InsertRow() works pretty fine since it is also covered by UTs.
-            var setupCruder = new SQLiteCruder();
+            var setupCruder = new SQLiteCruder(this.Connection);
 
             var row = new
             {
@@ -80,11 +80,11 @@ namespace TauCode.Db.Tests.Utils.Crud.SQLite
                 login = "ak",
             };
 
-            setupCruder.InsertRow(this.Connection, "user", row);
+            setupCruder.InsertRow("user", row);
 
             // Act
-            var testCruder = new SQLiteCruder();
-            var nonExistingRow = testCruder.GetRow(this.Connection, "user", 1488);
+            var testCruder = new SQLiteCruder(this.Connection);
+            var nonExistingRow = testCruder.GetRow("user", 1488);
 
             // Assert
             Assert.That(nonExistingRow, Is.Null);
@@ -99,13 +99,13 @@ namespace TauCode.Db.Tests.Utils.Crud.SQLite
             this.AddSetupRow(4, "marina");
 
             // Act
-            ICruder testCruder = new SQLiteCruder();
-            var deleted = testCruder.DeleteRow(this.Connection, "user", 3);
+            ICruder testCruder = new SQLiteCruder(this.Connection);
+            var deleted = testCruder.DeleteRow("user", 3);
 
             // Assert
             Assert.That(deleted, Is.True);
-            ICruder assertCruder = new SQLiteCruder();
-            var remaining = assertCruder.GetRows(this.Connection, "user");
+            ICruder assertCruder = new SQLiteCruder(this.Connection);
+            var remaining = assertCruder.GetRows("user");
             var remainingIds = remaining.Select(x => (int)x.id);
             CollectionAssert.AreEquivalent(
                 new[] { 1, 2, 4 },
@@ -121,13 +121,13 @@ namespace TauCode.Db.Tests.Utils.Crud.SQLite
             this.AddSetupRow(4, "marina");
 
             // Act
-            ICruder testCruder = new SQLiteCruder();
-            var deleted = testCruder.DeleteRow(this.Connection, "user", 1488);
+            ICruder testCruder = new SQLiteCruder(this.Connection);
+            var deleted = testCruder.DeleteRow("user", 1488);
 
             // Assert
             Assert.That(deleted, Is.False);
-            ICruder assertCruder = new SQLiteCruder();
-            var remaining = assertCruder.GetRows(this.Connection, "user");
+            ICruder assertCruder = new SQLiteCruder(this.Connection);
+            var remaining = assertCruder.GetRows("user");
             var remainingIds = remaining.Select(x => (int)x.id);
             CollectionAssert.AreEquivalent(
                 new[] { 1, 2, 3, 4 },
@@ -143,9 +143,8 @@ namespace TauCode.Db.Tests.Utils.Crud.SQLite
             this.AddSetupRow(4, "marina");
 
             // Act
-            ICruder testCruder = new SQLiteCruder();
+            ICruder testCruder = new SQLiteCruder(this.Connection);
             var updated = testCruder.UpdateRow(
-                this.Connection,
                 "user",
                 new
                 {
@@ -157,20 +156,20 @@ namespace TauCode.Db.Tests.Utils.Crud.SQLite
 
             // Assert
             Assert.That(updated, Is.True);
-            ICruder assertCruder = new SQLiteCruder();
-            var updatedOlia = assertCruder.GetRow(this.Connection, "user", 2);
+            ICruder assertCruder = new SQLiteCruder(this.Connection);
+            var updatedOlia = assertCruder.GetRow("user", 2);
             Assert.That(updatedOlia.login, Is.EqualTo("olga"));
             Assert.That(updatedOlia.email, Is.EqualTo("night_miracle@yahoo.com"));
             Assert.That(updatedOlia.password_hash, Is.EqualTo("love"));
 
             // other not changed
-            var u1 = assertCruder.GetRow(this.Connection, "user", 1);
+            var u1 = assertCruder.GetRow("user", 1);
             Assert.That(u1.login, Is.EqualTo("ak"));
 
-            var u3 = assertCruder.GetRow(this.Connection, "user", 3);
+            var u3 = assertCruder.GetRow("user", 3);
             Assert.That(u3.login, Is.EqualTo("ira"));
 
-            var u4 = assertCruder.GetRow(this.Connection, "user", 4);
+            var u4 = assertCruder.GetRow("user", 4);
             Assert.That(u4.login, Is.EqualTo("marina"));
 
             var users = new[] { u1, u3, u4 };
@@ -190,9 +189,8 @@ namespace TauCode.Db.Tests.Utils.Crud.SQLite
             this.AddSetupRow(4, "marina");
 
             // Act
-            ICruder testCruder = new SQLiteCruder();
+            ICruder testCruder = new SQLiteCruder(this.Connection);
             var updated = testCruder.UpdateRow(
-                this.Connection,
                 "user",
                 new
                 {
@@ -204,19 +202,19 @@ namespace TauCode.Db.Tests.Utils.Crud.SQLite
 
             // Assert
             Assert.That(updated, Is.False);
-            ICruder assertCruder = new SQLiteCruder();
+            ICruder assertCruder = new SQLiteCruder(this.Connection);
 
             // other not changed
-            var u1 = assertCruder.GetRow(this.Connection, "user", 1);
+            var u1 = assertCruder.GetRow("user", 1);
             Assert.That(u1.login, Is.EqualTo("ak"));
 
-            var u2 = assertCruder.GetRow(this.Connection, "user", 2);
+            var u2 = assertCruder.GetRow("user", 2);
             Assert.That(u2.login, Is.EqualTo("olia"));
 
-            var u3 = assertCruder.GetRow(this.Connection, "user", 3);
+            var u3 = assertCruder.GetRow("user", 3);
             Assert.That(u3.login, Is.EqualTo("ira"));
 
-            var u4 = assertCruder.GetRow(this.Connection, "user", 4);
+            var u4 = assertCruder.GetRow("user", 4);
             Assert.That(u4.login, Is.EqualTo("marina"));
 
             var users = new[] { u1, u3, u4 };
@@ -231,7 +229,7 @@ namespace TauCode.Db.Tests.Utils.Crud.SQLite
 
         private void AddSetupRow(int id, string login)
         {
-            ICruder cruder = new SQLiteCruder();
+            ICruder cruder = new SQLiteCruder(this.Connection);
 
             var row = new
             {
@@ -240,7 +238,7 @@ namespace TauCode.Db.Tests.Utils.Crud.SQLite
             };
 
             // Act
-            cruder.InsertRow(this.Connection, "user", row);
+            cruder.InsertRow("user", row);
         }
     }
 }

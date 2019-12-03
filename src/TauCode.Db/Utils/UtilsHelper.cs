@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using TauCode.Db.Data;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
 using TauCode.Db.Utils.Building;
@@ -10,7 +11,7 @@ using TauCode.Db.Utils.Dialects;
 
 namespace TauCode.Db.Utils
 {
-    internal static class UtilsHelper
+    public static class UtilsHelper
     {
         internal static void AddParameterWithValue(
             this IDbCommand command,
@@ -167,6 +168,40 @@ namespace TauCode.Db.Utils
             else
             {
                 throw new KeyNotFoundException($"Property '{propertyName}' not found.");
+            }
+        }
+
+        public static IList<dynamic> GetCommandRows(IDbCommand command)
+        {
+            if (command == null)
+            {
+                throw new ArgumentNullException(nameof(command));
+            }
+
+            if (command == null)
+            {
+                throw new ArgumentNullException(nameof(command));
+            }
+
+            using (var reader = command.ExecuteReader())
+            {
+                var rows = new List<dynamic>();
+
+                while (reader.Read())
+                {
+                    var row = new DynamicRow(true);
+
+                    for (var i = 0; i < reader.FieldCount; i++)
+                    {
+                        var name = reader.GetName(i);
+                        var value = reader[i];
+                        row.SetValue(name, value);
+                    }
+
+                    rows.Add(row);
+                }
+
+                return rows;
             }
         }
     }

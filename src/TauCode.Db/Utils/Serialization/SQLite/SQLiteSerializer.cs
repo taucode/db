@@ -1,25 +1,24 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Linq;
 using TauCode.Db.Model;
 using TauCode.Db.Utils.Building;
 using TauCode.Db.Utils.Building.SQLite;
 using TauCode.Db.Utils.Crud;
 using TauCode.Db.Utils.Crud.SQLite;
-using TauCode.Db.Utils.Inspection;
-using TauCode.Db.Utils.Inspection.SQLite;
 
 namespace TauCode.Db.Utils.Serialization.SQLite
 {
-    public class SQLiteDataSerializer : DataSerializerBase
+    public class SQLiteSerializer : DbSerializerBase
     {
-        public SQLiteDataSerializer()
+        private readonly IDbConnection _connection;
+
+        public SQLiteSerializer(IDbConnection connection)
         {
+            _connection = connection ?? throw new ArgumentNullException(nameof(connection));
         }
 
-        protected override ICruder CreateCruder()
-        {
-            return new SQLiteCruder();
-        }
+        protected override ICruder CreateCruder() => new SQLiteCruder(_connection);
 
         protected override IScriptBuilder CreateScriptBuilder()
         {
@@ -27,11 +26,6 @@ namespace TauCode.Db.Utils.Serialization.SQLite
             {
                 CurrentOpeningIdentifierDelimiter = '[',
             };
-        }
-
-        protected override IDbInspector GetDbInspector(IDbConnection connection)
-        {
-            return new SQLiteInspector(connection);
         }
 
         protected override ParameterInfo GetParameterInfo(TableMold tableMold, string columnName)

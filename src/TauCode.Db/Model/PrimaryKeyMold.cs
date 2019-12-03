@@ -11,6 +11,17 @@ namespace TauCode.Db.Model
         public string Name { get; set; }
         public List<IndexColumnMold> Columns { get; set; } = new List<IndexColumnMold>();
         public IDictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
+        public IDbMold Clone(bool includeProperties = false)
+        {
+            return new PrimaryKeyMold
+            {
+                Name = this.Name,
+                Columns = this.Columns
+                    .Select(x => x.CloneIndexColumn(includeProperties))
+                    .ToList(),
+                Properties = this.ClonePropertiesIfNeeded(includeProperties),
+            };
+        }
 
         public string GetDefaultCaption()
         {

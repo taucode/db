@@ -1,9 +1,18 @@
 2019-07-30
 ==========
     1. Fix issue with SqlCommand.Prepare for all DB types
-    2. Remove TauCode.Db.XenoTest project when done.
++   2. Remove TauCode.Db.XenoTest project when done.
 
-2019-11-2
+2019-11-20
 ==========
-    1. Deal with DEFAULT    
+    1. Deal with DEFAULT
     2. Parsing of sized columns will fail with (SQLite) parser. E.g. VARCHAR(20) will produce column mold with Size == 0 (!), Precision = 20 and Scale = 0.
+
+2019-11-27
+==========
++   1. ICruder, IDbSerializer - get rid of IDbConnection parameters, they should have own IDbConnection
+    2. IParameterInfo.
+    3. DB schema serialization/deserialization.
+    4. Get rid of SqlServer...Base classes. No more SQL Server CE :(
+    5. IDbInspector should check type (actually, type full name) of IDbConnection, not ICruder or whoever else.
+    6. TauCode.Db.SQLite.

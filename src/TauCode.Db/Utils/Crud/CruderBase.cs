@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using TauCode.Data;
 using TauCode.Db.Data;
+using TauCode.Db.Exceptions;
 using TauCode.Db.Utils.Building;
 using TauCode.Db.Utils.Inspection;
 
@@ -11,37 +12,56 @@ namespace TauCode.Db.Utils.Crud
 {
     public abstract class CruderBase : ICruder
     {
+        #region Fields
+
+        private readonly IDbConnection _connection;
+        private IScriptBuilder _scriptBuilder;
+        private IDbInspector _dbInspector;
+
+        #endregion
+
         #region Constructor
 
-        protected CruderBase(IScriptBuilder scriptBuilder)
+        protected CruderBase(IDbConnection connection)
         {
-            this.ScriptBuilder = scriptBuilder ?? throw new ArgumentNullException(nameof(scriptBuilder));
+            _connection = connection ?? throw new ArgumentNullException(nameof(connection));
         }
 
         #endregion
 
         #region Polymorph
 
-        protected abstract ITableInspector GetTableInspectorImpl(IDbConnection connection, string tableName);
+        protected abstract string ExpectedDbConnectionTypeFullName { get; }
+
+        protected abstract IScriptBuilder CreateScriptBuilder();
+
+        protected abstract IDbInspector CreateDbInspector();
+
+        #endregion
+
+        #region Protected
+
+        protected IDbConnection GetSafeConnection()
+        {
+            if (_connection.GetType().FullName == this.ExpectedDbConnectionTypeFullName)
+            {
+                return _connection;
+            }
+
+            throw new TypeMismatchException(
+                $"Expected DB connection type is '{this.ExpectedDbConnectionTypeFullName}', but an instance of '{_connection.GetType().FullName}' was provided.");
+        }
 
         #endregion
 
         #region ICruder Members
 
-        public IScriptBuilder ScriptBuilder { get; }
+        public IDbInspector DbInspector => _dbInspector ?? (_dbInspector = this.CreateDbInspector());
 
-        public ITableInspector GetTableInspector(IDbConnection connection, string tableName)
+        public IScriptBuilder ScriptBuilder => _scriptBuilder ?? (_scriptBuilder = this.CreateScriptBuilder());
+
+        public void InsertRow(string tableName, object row)
         {
-            return this.GetTableInspectorImpl(connection, tableName);
-        }
-
-        public void InsertRow(IDbConnection connection, string tableName, object row)
-        {
-            if (connection == null)
-            {
-                throw new ArgumentNullException(nameof(connection));
-            }
-
             if (tableName == null)
             {
                 throw new ArgumentNullException(nameof(tableName));
@@ -67,7 +87,9 @@ namespace TauCode.Db.Utils.Crud
                 dictionary = new ValueDictionary(row);
             }
 
-            var tableInspector = this.GetTableInspector(connection, tableName);
+            var connection = this.GetSafeConnection();
+
+            var tableInspector = this.DbInspector.GetTableInspector(tableName);
             var tableMold = tableInspector.GetTableMold();
 
             var script = this.ScriptBuilder.BuildParameterizedInsertSql(
@@ -92,13 +114,8 @@ namespace TauCode.Db.Utils.Crud
             }
         }
 
-        public bool DeleteRow(IDbConnection connection, string tableName, object id)
+        public bool DeleteRow(string tableName, object id)
         {
-            if (connection == null)
-            {
-                throw new ArgumentNullException(nameof(connection));
-            }
-
             if (tableName == null)
             {
                 throw new ArgumentNullException(nameof(tableName));
@@ -109,7 +126,10 @@ namespace TauCode.Db.Utils.Crud
                 throw new ArgumentNullException(nameof(id));
             }
 
-            var tableMold = this.GetTableInspector(connection, tableName).GetTableMold();
+            var tableInspector = this.DbInspector.GetTableInspector(tableName);
+            var tableMold = tableInspector.GetTableMold();
+            var connection = this.GetSafeConnection();
+
 
             using (var command = connection.CreateCommand())
             {
@@ -121,42 +141,8 @@ namespace TauCode.Db.Utils.Crud
             }
         }
 
-        public List<dynamic> GetRows(IDbCommand command)
+        public dynamic GetRow(string tableName, object id)
         {
-            if (command == null)
-            {
-                throw new ArgumentNullException(nameof(command));
-            }
-
-            using (var reader = command.ExecuteReader())
-            {
-                var rows = new List<dynamic>();
-
-                while (reader.Read())
-                {
-                    var row = new DynamicRow(true);
-
-                    for (var i = 0; i < reader.FieldCount; i++)
-                    {
-                        var name = reader.GetName(i);
-                        var value = reader[i];
-                        row.SetValue(name, value);
-                    }
-
-                    rows.Add(row);
-                }
-
-                return rows;
-            }
-        }
-
-        public dynamic GetRow(IDbConnection connection, string tableName, object id)
-        {
-            if (connection == null)
-            {
-                throw new ArgumentNullException(nameof(connection));
-            }
-
             if (tableName == null)
             {
                 throw new ArgumentNullException(nameof(tableName));
@@ -167,25 +153,22 @@ namespace TauCode.Db.Utils.Crud
                 throw new ArgumentNullException(nameof(id));
             }
 
-            var tableMold = this.GetTableInspector(connection, tableName).GetTableMold();
+            var tableInspector = this.DbInspector.GetTableInspector(tableName);
+            var tableMold = tableInspector.GetTableMold();
+            var connection = this.GetSafeConnection();
 
             using (var command = connection.CreateCommand())
             {
                 command.CommandText = this.ScriptBuilder.BuildSelectRowByIdSql(tableMold, out var paramName);
                 command.AddParameterWithValue(paramName, id);
 
-                var rows = this.GetRows(command);
+                var rows = UtilsHelper.GetCommandRows(command);
                 return rows.SingleOrDefault();
             }
         }
 
-        public bool UpdateRow(IDbConnection connection, string tableName, object rowUpdate, object id)
+        public bool UpdateRow(string tableName, object rowUpdate, object id)
         {
-            if (connection == null)
-            {
-                throw new ArgumentNullException(nameof(connection));
-            }
-
             if (tableName == null)
             {
                 throw new ArgumentNullException(nameof(tableName));
@@ -216,8 +199,9 @@ namespace TauCode.Db.Utils.Crud
                 dictionary = new ValueDictionary(rowUpdate);
             }
 
-            var tableInspector = this.GetTableInspector(connection, tableName);
+            var tableInspector = this.DbInspector.GetTableInspector(tableName);
             var tableMold = tableInspector.GetTableMold();
+            var connection = this.GetSafeConnection();
 
             var pkColumnName = tableMold.GetSinglePrimaryKeyColumnName();
 
@@ -256,4 +240,3 @@ namespace TauCode.Db.Utils.Crud
         #endregion
     }
 }
-

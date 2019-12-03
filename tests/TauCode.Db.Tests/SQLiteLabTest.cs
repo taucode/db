@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 using System.Linq;
-using TauCode.Db.Utils.Crud.SQLite;
+using TauCode.Db.Utils;
 
 namespace TauCode.Db.Tests
 {
@@ -54,8 +54,12 @@ SELECT
 FROM
     [user] U
 ";
-                var cruder = new SQLiteCruder();
-                var row = cruder.GetRows(command).Single();
+                //var cruder = new SQLiteCruder(this.Connection);
+
+
+                //var row = cruder.GetRows(command).Single();
+
+                var row = UtilsHelper.GetCommandRows(command).Single();
 
                 Assert.That(row.id, Is.TypeOf<long>());
                 Assert.That(row.login, Is.TypeOf<string>());

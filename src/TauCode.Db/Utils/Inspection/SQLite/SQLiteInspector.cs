@@ -21,7 +21,7 @@ namespace TauCode.Db.Utils.Inspection.SQLite
         public SQLiteInspector(IDbConnection connection)
         {
             this.Connection = connection ?? throw new ArgumentNullException(nameof(connection));
-            _cruder = new SQLiteCruder();
+            _cruder = new SQLiteCruder(this.Connection);
         }
 
         #endregion
@@ -52,8 +52,8 @@ WHERE
                 command.AddParameterWithValue("p_type", "table");
                 command.AddParameterWithValue("p_sequenceName", "sqlite_sequence");
 
-                return _cruder
-                    .GetRows(command)
+                return UtilsHelper
+                    .GetCommandRows(command)
                     .Select(x => (string)x.TableName)
                     .ToArray();
             }

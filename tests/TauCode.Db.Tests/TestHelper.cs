@@ -2,8 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SQLite;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
+using TauCode.Utils.Extensions;
 
 namespace TauCode.Db.Tests
 {
@@ -49,6 +52,34 @@ namespace TauCode.Db.Tests
 
             File.WriteAllText(actualFilePath, actual, Encoding.UTF8);
             File.WriteAllText(expectedFilePath, expected, Encoding.UTF8);
+        }
+
+        internal static IDbConnection CreateTempSQLiteDatabase()
+        {
+            var path = FileExtensions.CreateTempFilePath("zunit", ".sqlite");
+            SQLiteConnection.CreateFile(path);
+            var connectionString = TestHelper.BuildSQLiteConnectionString(path);
+            var connection = new SQLiteConnection(connectionString);
+            connection.Open();
+            return connection;
+        }
+
+        internal static string BuildSQLiteConnectionString(string path)
+        {
+            return $"Data Source={path};Version=3;";
+        }
+
+        internal static string GetSQLiteDatabasePath(IDbConnection connection)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal static string GetSQLiteDatabasePath(string sqliteConnectionString)
+        {
+            var match = Regex.Match(sqliteConnectionString, "Data Source=([^;]*);");
+            var result = match.Groups[1].ToString();
+
+            return result;
         }
     }
 }

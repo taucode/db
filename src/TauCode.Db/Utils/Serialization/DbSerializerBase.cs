@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,7 +15,8 @@ using TauCode.Db.Utils.Inspection;
 
 namespace TauCode.Db.Utils.Serialization
 {
-    public abstract class DataSerializerBase : IDataSerializer
+    // todo clean up
+    public abstract class DbSerializerBase : IDbSerializer
     {
         #region Nested
 
@@ -27,6 +30,11 @@ namespace TauCode.Db.Utils.Serialization
             public int? Scale { get; set; }
         }
 
+        private class DbMetadata
+        {
+            public IList<TableMold> Tables { get; set; }
+        }
+
         #endregion
 
         #region Fields
@@ -38,7 +46,7 @@ namespace TauCode.Db.Utils.Serialization
 
         #region Constructor
 
-        protected DataSerializerBase()
+        protected DbSerializerBase()
         {
         }
 
@@ -50,11 +58,10 @@ namespace TauCode.Db.Utils.Serialization
 
         protected abstract IScriptBuilder CreateScriptBuilder();
 
-        protected abstract IDbInspector GetDbInspector(IDbConnection connection);
-
         protected virtual string SerializeCommandResultImpl(IDbCommand command)
         {
-            var rows = this.Cruder.GetRows(command);
+            var rows = UtilsHelper.GetCommandRows(command);
+
             var json = JsonConvert.SerializeObject(rows, Formatting.Indented);
             return json;
         }
@@ -299,6 +306,7 @@ namespace TauCode.Db.Utils.Serialization
                     break;
 
                 case "int":
+                case "integer":
                     parameterInfo = new ParameterInfo
                     {
                         DbType = DbType.Int32,
@@ -318,9 +326,12 @@ namespace TauCode.Db.Utils.Serialization
 
         #region Protected
 
-        protected ICruder Cruder => _cruder ?? (_cruder = this.CreateCruder());
-
         protected IScriptBuilder ScriptBuilder => _scriptBuilder ?? (_scriptBuilder = this.CreateScriptBuilder());
+
+        protected IDbConnection GetDbConnection()
+        {
+            return this.Cruder.DbInspector.Connection;
+        }
 
         #endregion
 
@@ -339,34 +350,26 @@ namespace TauCode.Db.Utils.Serialization
             return sb.ToString();
         }
 
+        private static bool TrueTableNamePredicate(string tableName) => true;
+
         #endregion
 
-        #region IDataSerializer Members
+        #region IDbSerializer Members
 
-        public string SerializeCommandResult(IDbCommand command)
+        public ICruder Cruder => _cruder ?? (_cruder = this.CreateCruder());
+
+        public string SerializeTableData(string tableName)
         {
-            if (command == null)
-            {
-                throw new ArgumentNullException(nameof(command));
-            }
 
-            var json = this.SerializeCommandResultImpl(command);
-            return json;
-        }
-
-        public string SerializeTable(IDbConnection connection, string tableName)
-        {
-            if (connection == null)
-            {
-                throw new ArgumentNullException(nameof(connection));
-            }
 
             if (tableName == null)
             {
                 throw new ArgumentNullException(nameof(tableName));
             }
 
-            var dbInspector = this.GetDbInspector(connection);
+            var dbInspector = this.Cruder.DbInspector;
+            var connection = dbInspector.Connection;
+
             var tableInspector = dbInspector.GetTableInspector(tableName);
             var tableMold = tableInspector.GetTableMold();
             var sql = this.ScriptBuilder.BuildSelectSql(tableMold);
@@ -378,14 +381,10 @@ namespace TauCode.Db.Utils.Serialization
             }
         }
 
-        public string SerializeDb(IDbConnection connection)
+        public string SerializeDbData()
         {
-            if (connection == null)
-            {
-                throw new ArgumentNullException(nameof(connection));
-            }
-
-            var dbInspector = this.GetDbInspector(connection);
+            var dbInspector = this.Cruder.DbInspector;
+            var connection = dbInspector.Connection;
             var tableMolds = dbInspector.GetOrderedTableMolds(true);
 
             var dbData = new DynamicRow(); // it is strange to store entire data in 'dynamic' 'row', but why to invent new dynamic ancestor?
@@ -396,7 +395,10 @@ namespace TauCode.Db.Utils.Serialization
                 {
                     var sql = this.ScriptBuilder.BuildSelectSql(tableMold);
                     command.CommandText = sql;
-                    var rows = this.Cruder.GetRows(command);
+
+                    var rows = UtilsHelper
+                        .GetCommandRows(command);
+
                     dbData.SetValue(tableMold.Name, rows);
                 }
             }
@@ -405,13 +407,8 @@ namespace TauCode.Db.Utils.Serialization
             return json;
         }
 
-        public void DeserializeTable(IDbConnection connection, string tableName, string json)
+        public void DeserializeTableData(string tableName, string json)
         {
-            if (connection == null)
-            {
-                throw new ArgumentNullException(nameof(connection));
-            }
-
             if (tableName == null)
             {
                 throw new ArgumentNullException(nameof(tableName));
@@ -429,14 +426,16 @@ namespace TauCode.Db.Utils.Serialization
                 throw new ArgumentException("Could not deserialize table data as array.", nameof(json));
             }
 
-            var dbInspector = this.GetDbInspector(connection);
+            var dbInspector = this.Cruder.DbInspector;
+            var connection = dbInspector.Connection;
+
             var tableInspector = dbInspector.GetTableInspector(tableName);
             var tableMold = tableInspector.GetTableMold();
 
             this.DeserializeTableData(connection, tableMold, tableData);
         }
 
-        public void DeserializeDb(IDbConnection connection, string json)
+        public void DeserializeDbData(string json)
         {
             var dbData = JsonConvert.DeserializeObject(json) as JObject;
             if (dbData == null)
@@ -444,7 +443,8 @@ namespace TauCode.Db.Utils.Serialization
                 throw new ArgumentException("Could not deserialize DB data.", nameof(json));
             }
 
-            var dbInspector = this.GetDbInspector(connection);
+            var dbInspector = this.Cruder.DbInspector;
+            var connection = dbInspector.Connection;
 
             foreach (var property in dbData.Properties())
             {
@@ -461,6 +461,79 @@ namespace TauCode.Db.Utils.Serialization
 
                 this.DeserializeTableData(connection, tableMold, tableData);
             }
+        }
+
+        public string SerializeTableMetadata(string tableName)
+        {
+            // null-check will be performed by 'GetTableInspector'
+
+            var tableInspector = this.Cruder.DbInspector.GetTableInspector(tableName);
+            var tableMold = tableInspector.GetTableMold();
+
+            var contractResolver = new DefaultContractResolver
+            {
+                NamingStrategy = new CamelCaseNamingStrategy(),
+            };
+
+            var json = JsonConvert.SerializeObject(
+                tableMold,
+                new JsonSerializerSettings
+                {
+                    ContractResolver = contractResolver,
+                    Formatting = Formatting.Indented,
+                    Converters = new List<JsonConverter>
+                    {
+                        new StringEnumConverter(new CamelCaseNamingStrategy())
+                    }
+                });
+
+            return json;
+        }
+
+        public string SerializeDbMetadata(Func<string, bool> tableNamePredicate = null)
+        {
+            tableNamePredicate = tableNamePredicate ?? TrueTableNamePredicate;
+
+            var tables = this.Cruder.DbInspector
+                .GetOrderedTableMolds(true)
+                .Where(x => tableNamePredicate(x.Name))
+                .ToList();
+
+            var metadata = new DbMetadata
+            {
+                Tables = tables
+                    .Select(x => x.CloneTable(false))
+                    .ToList(),
+            };
+
+            var contractResolver = new DefaultContractResolver
+            {
+                NamingStrategy = new CamelCaseNamingStrategy(),
+            };
+            
+            var json = JsonConvert.SerializeObject(
+                metadata,
+                new JsonSerializerSettings
+                {
+                    ContractResolver = contractResolver,
+                    Formatting = Formatting.Indented,
+                    Converters = new List<JsonConverter>
+                    {
+                        new StringEnumConverter(new CamelCaseNamingStrategy())
+                    }
+                });
+
+            return json;
+        }
+
+        public void DeserializeTableMetadata(string tableName, string json)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DeserializeDbMetadata(string json)
+        {
+            throw new NotImplementedException();
         }
 
         public event Action<string, int, object> RowDeserialized;

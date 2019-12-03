@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using TauCode.Db.Model;
-using TauCode.Db.Utils.Crud;
-using TauCode.Db.Utils.Crud.MySql;
 using TauCode.Db.Utils.Dialects.MySql;
 using TauCode.Utils.Extensions;
 
@@ -51,8 +49,8 @@ ORDER BY
                 command.AddParameterWithValue("p_tableName", this.TableName);
                 command.AddParameterWithValue("p_tableSchema", this.Connection.Database);
 
-                return this.Cruder
-                    .GetRows(command)
+                return UtilsHelper
+                    .GetCommandRows(command)
                     .Select(x => new ColumnInfo
                     {
                         Name = x.ColumnName,
@@ -123,8 +121,8 @@ WHERE
                 command.AddParameterWithValue("p_tableSchema", this.Connection.Database);
                 command.AddParameterWithValue("p_pattern", "%auto_increment%");
 
-                return this.Cruder
-                    .GetRows(command)
+                return UtilsHelper
+                    .GetCommandRows(command)
                     .ToDictionary(
                         x => (string)x.ColumnName,
                         x => new ColumnIdentityMold
@@ -135,10 +133,11 @@ WHERE
             }
         }
 
-        protected override ICruder CreateCruder()
-        {
-            return new MySqlCruder();
-        }
+        // todo clean up
+        //protected override ICruder CreateCruder()
+        //{
+        //    return new MySqlCruder();
+        //}
 
         public override PrimaryKeyMold GetPrimaryKeyMold()
         {
@@ -182,8 +181,8 @@ WHERE
                 command.AddParameterWithValue("p_schemaName", this.Connection.Database);
                 command.AddParameterWithValue("p_tableName", this.TableName);
 
-                var foreignKeys = this.Cruder
-                    .GetRows(command)
+                var foreignKeys = UtilsHelper
+                    .GetCommandRows(command)
                     .GroupBy(x => (string)x.ConstraintName)
                     .Where(g => g.Key != "PRIMARY")
                     .Select(g => new ForeignKeyMold
@@ -211,8 +210,8 @@ WHERE
             {
                 command.CommandText = $@"SHOW INDEX FROM `{this.TableName}`";
 
-                var indexMolds = this.Cruder
-                    .GetRows(command)
+                var indexMolds = UtilsHelper
+                    .GetCommandRows(command)
                     .GroupBy(x => (string)x.key_name)
                     .Select(g => new IndexMold
                     {

@@ -59,7 +59,8 @@ namespace TauCode.Db.Utils.Inspection
             return list.ToArray();
         }
 
-        public static void ClearDb(this IDbInspector dbInspector)
+        // todo: description (removes data from tables)
+        public static void ClearData(this IDbInspector dbInspector)
         {
             var scriptBuilder = dbInspector.CreateScriptBuilder();
             var script = scriptBuilder.BuildClearDbSql(dbInspector.Connection);
@@ -74,9 +75,10 @@ namespace TauCode.Db.Utils.Inspection
             }
         }
 
+        // todo: description (removes tables and indexes)
         public static void PurgeDb(this IDbInspector dbInspector)
         {
-            dbInspector.ClearDb();
+            dbInspector.ClearData();
             var tables = dbInspector.GetOrderedTableMolds(false);
             var scriptBuilder = dbInspector.CreateScriptBuilder();
 

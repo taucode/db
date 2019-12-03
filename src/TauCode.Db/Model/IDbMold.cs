@@ -5,5 +5,6 @@ namespace TauCode.Db.Model
     public interface IDbMold
     {
         IDictionary<string, string> Properties { get; set; }
+        IDbMold Clone(bool includeProperties = false);
     }
 }

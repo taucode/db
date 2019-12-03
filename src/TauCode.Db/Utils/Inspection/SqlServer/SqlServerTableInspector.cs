@@ -2,8 +2,6 @@
 using System.Data;
 using System.Linq;
 using TauCode.Db.Model;
-using TauCode.Db.Utils.Crud;
-using TauCode.Db.Utils.Crud.SqlServer;
 using TauCode.Db.Utils.Dialects.SqlServer;
 
 namespace TauCode.Db.Utils.Inspection.SqlServer
@@ -63,8 +61,8 @@ WHERE
 ";
                 command.AddParameterWithValue("p_objectId", objectId);
 
-                return this.Cruder
-                    .GetRows(command)
+                return UtilsHelper
+                    .GetCommandRows(command)
                     .ToDictionary(
                         x => (string)x.Name,
                         x => new ColumnIdentityMold
@@ -73,11 +71,6 @@ WHERE
                             Increment = ((object)x.IncrementValue).ToString(),
                         });
             }
-        }
-
-        protected override ICruder CreateCruder()
-        {
-            return new SqlServerCruder();
         }
 
         public override List<ForeignKeyMold> GetForeignKeyMolds()
@@ -125,8 +118,8 @@ WHERE
                 command.AddParameterWithValue("p_tableName", this.TableName);
 
 
-                return this.Cruder
-                    .GetRows(command)
+                return UtilsHelper
+                    .GetCommandRows(command)
                     .GroupBy(x => (string)x.ForeignKeyName)
                     .Select(g => new ForeignKeyMold
                     {
@@ -182,9 +175,9 @@ WHERE
     T.[name] = @p_tableName
 ";
                 command.AddParameterWithValue("p_tableName", this.TableName);
-                
-                return this.Cruder
-                    .GetRows(command)
+
+                return UtilsHelper
+                    .GetCommandRows(command)
                     .GroupBy(x => (int)x.IndexId)
                     .Select(g => new IndexMold
                     {

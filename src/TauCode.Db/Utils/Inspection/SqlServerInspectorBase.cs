@@ -3,18 +3,11 @@ using System.Data;
 using System.Linq;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Utils.Building;
-using TauCode.Db.Utils.Crud;
 
 namespace TauCode.Db.Utils.Inspection
 {
     public abstract class SqlServerInspectorBase : IDbInspector
     {
-        #region Fields
-
-        private ICruder _cruder;
-
-        #endregion
-
         #region Constructor
 
         protected SqlServerInspectorBase(IDbConnection connection)
@@ -29,14 +22,6 @@ namespace TauCode.Db.Utils.Inspection
         protected abstract string TableTypeForTable { get; }
 
         protected abstract SqlServerTableInspectorBase CreateTableInspectorImpl(string tableName);
-
-        protected abstract ICruder CreateCruder();
-
-        #endregion
-
-        #region Protected
-
-        protected ICruder Cruder => _cruder ?? (_cruder = this.CreateCruder());
 
         #endregion
 
@@ -63,12 +48,12 @@ WHERE
 
                 command.CommandText = sql;
 
-                var tableNames = this.Cruder
-                    .GetRows(command)
+                var tableNames = UtilsHelper
+                    .GetCommandRows(command)
                     .Select(x => (string)x.TableName)
                     .ToArray();
 
-               return tableNames;
+                return tableNames;
             }
         }
 
@@ -97,8 +82,8 @@ WHERE
                 command.AddParameterWithValue("p_tableType", this.TableTypeForTable);
                 command.AddParameterWithValue("p_name", tableName);
 
-                var row = this.Cruder
-                    .GetRows(command)
+                var row = UtilsHelper
+                    .GetCommandRows(command)
                     .SingleOrDefault();
 
                 if (row == null)

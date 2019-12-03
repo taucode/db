@@ -1,8 +1,6 @@
 ﻿using System.Data;
 using TauCode.Db.Utils.Building;
 using TauCode.Db.Utils.Building.SqlServer;
-using TauCode.Db.Utils.Crud;
-using TauCode.Db.Utils.Crud.SqlServer;
 
 namespace TauCode.Db.Utils.Inspection.SqlServer
 {
@@ -26,10 +24,10 @@ namespace TauCode.Db.Utils.Inspection.SqlServer
             return new SqlServerTableInspector(this.Connection, realTableName);
         }
 
-        protected override ICruder CreateCruder()
-        {
-            return new SqlServerCruder();
-        }
+        //protected override ICruder CreateCruder()
+        //{
+        //    return new SqlServerCruder(this.Connection);
+        //}
 
         public override IScriptBuilder CreateScriptBuilder()
         {

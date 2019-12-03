@@ -16,6 +16,17 @@ namespace TauCode.Db.Model
         public int? Scale { get; set; }
 
         public IDictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
+        public IDbMold Clone(bool includeProperties = false)
+        {
+            return new DbTypeMold
+            {
+                Name = this.Name,
+                Size = this.Size,
+                Precision = this.Precision,
+                Scale = this.Scale,
+                Properties = this.ClonePropertiesIfNeeded(includeProperties),
+            };
+        }
 
         public string GetDefaultDefinition()
         {
