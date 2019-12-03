@@ -49,21 +49,21 @@ ORDER BY
                 command.AddParameterWithValue("p_tableName", this.TableName);
                 command.AddParameterWithValue("p_tableSchema", this.Connection.Database);
 
-                throw new NotImplementedException();
+                //throw new NotImplementedException();
 
-                //return this.Cruder
-                //    .GetRows(command)
-                //    .Select(x => new ColumnInfo
-                //    {
-                //        Name = x.ColumnName,
-                //        TypeName = x.DataType,
-                //        IsNullable = this.ParseBoolean(x.IsNullable),
-                //        Size = UtilsHelper.GetDbValueAsInt(x.MaxLen),
-                //        Precision = UtilsHelper.GetDbValueAsInt(x.NumericPrecision),
-                //        Scale = UtilsHelper.GetDbValueAsInt(x.NumericScale),
-                //        AdditionalProperties = this.GetAdditionalProperties(x),
-                //    })
-                //    .ToList();
+                return UtilsHelper
+                    .GetCommandRows(command)
+                    .Select(x => new ColumnInfo
+                    {
+                        Name = x.ColumnName,
+                        TypeName = x.DataType,
+                        IsNullable = this.ParseBoolean(x.IsNullable),
+                        Size = UtilsHelper.GetDbValueAsInt(x.MaxLen),
+                        Precision = UtilsHelper.GetDbValueAsInt(x.NumericPrecision),
+                        Scale = UtilsHelper.GetDbValueAsInt(x.NumericScale),
+                        AdditionalProperties = this.GetAdditionalProperties(x),
+                    })
+                    .ToList();
             }
         }
 
@@ -123,19 +123,20 @@ WHERE
                 command.AddParameterWithValue("p_tableSchema", this.Connection.Database);
                 command.AddParameterWithValue("p_pattern", "%auto_increment%");
 
-                throw new NotImplementedException();
-                //return this.Cruder
-                //    .GetRows(command)
-                //    .ToDictionary(
-                //        x => (string)x.ColumnName,
-                //        x => new ColumnIdentityMold
-                //        {
-                //            Seed = (1).ToString(),
-                //            Increment = (1).ToString(),
-                //        });
+                //throw new NotImplementedException();
+                return UtilsHelper
+                    .GetCommandRows(command)
+                    .ToDictionary(
+                        x => (string)x.ColumnName,
+                        x => new ColumnIdentityMold
+                        {
+                            Seed = (1).ToString(),
+                            Increment = (1).ToString(),
+                        });
             }
         }
 
+        // todo clean up
         //protected override ICruder CreateCruder()
         //{
         //    return new MySqlCruder();
@@ -183,28 +184,28 @@ WHERE
                 command.AddParameterWithValue("p_schemaName", this.Connection.Database);
                 command.AddParameterWithValue("p_tableName", this.TableName);
 
-                throw new NotImplementedException();
+                //throw new NotImplementedException();
 
-                //var foreignKeys = this.Cruder
-                //    .GetRows(command)
-                //    .GroupBy(x => (string)x.ConstraintName)
-                //    .Where(g => g.Key != "PRIMARY")
-                //    .Select(g => new ForeignKeyMold
-                //    {
-                //        Name = g.Key,
-                //        ReferencedTableName = (string)g.First().ReferencedTableName,
-                //        ColumnNames = g
-                //            .OrderBy(x => (uint)x.OrdinalPosition)
-                //            .Select(x => (string)x.ColumnName)
-                //            .ToList(),
-                //        ReferencedColumnNames = g
-                //            .OrderBy(x => (uint)x.PositionInUniqueConstraint)
-                //            .Select(x => (string)x.ReferencedColumnName)
-                //            .ToList(),
-                //    })
-                //    .ToList();
+                var foreignKeys = UtilsHelper
+                    .GetCommandRows(command)
+                    .GroupBy(x => (string)x.ConstraintName)
+                    .Where(g => g.Key != "PRIMARY")
+                    .Select(g => new ForeignKeyMold
+                    {
+                        Name = g.Key,
+                        ReferencedTableName = (string)g.First().ReferencedTableName,
+                        ColumnNames = g
+                            .OrderBy(x => (uint)x.OrdinalPosition)
+                            .Select(x => (string)x.ColumnName)
+                            .ToList(),
+                        ReferencedColumnNames = g
+                            .OrderBy(x => (uint)x.PositionInUniqueConstraint)
+                            .Select(x => (string)x.ReferencedColumnName)
+                            .ToList(),
+                    })
+                    .ToList();
 
-                //return foreignKeys;
+                return foreignKeys;
             }
         }
 
@@ -214,27 +215,27 @@ WHERE
             {
                 command.CommandText = $@"SHOW INDEX FROM `{this.TableName}`";
 
-                throw new NotImplementedException();
+                //throw new NotImplementedException();
 
-                //var indexMolds = this.Cruder
-                //    .GetRows(command)
-                //    .GroupBy(x => (string)x.key_name)
-                //    .Select(g => new IndexMold
-                //    {
-                //        Name = (string)g.Key,
-                //        IsUnique = (int)g.First().non_unique == 0,
-                //        Columns = g
-                //            .OrderBy(x => (uint)x.seq_in_index)
-                //            .Select(x => new IndexColumnMold
-                //            {
-                //                Name = (string)x.column_name,
-                //                SortDirection = (string)x.collation == "D" ? SortDirection.Descending : SortDirection.Ascending,
-                //            })
-                //            .ToList(),
-                //    })
-                //    .ToList();
+                var indexMolds = UtilsHelper
+                    .GetCommandRows(command)
+                    .GroupBy(x => (string)x.key_name)
+                    .Select(g => new IndexMold
+                    {
+                        Name = (string)g.Key,
+                        IsUnique = (int)g.First().non_unique == 0,
+                        Columns = g
+                            .OrderBy(x => (uint)x.seq_in_index)
+                            .Select(x => new IndexColumnMold
+                            {
+                                Name = (string)x.column_name,
+                                SortDirection = (string)x.collation == "D" ? SortDirection.Descending : SortDirection.Ascending,
+                            })
+                            .ToList(),
+                    })
+                    .ToList();
 
-                //return indexMolds;
+                return indexMolds;
             }
         }
 
