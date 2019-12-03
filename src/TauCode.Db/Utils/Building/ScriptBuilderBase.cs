@@ -580,7 +580,7 @@ namespace TauCode.Db.Utils.Building
                 throw new ArgumentException("Too many column values provided.");
             }
 
-            var columnValuesWithLowerCase = columnValues
+            IDictionary<string, object> columnValuesWithLowerCase = columnValues
                 .ToDictionary(x => x.Key.ToLowerInvariant(), x => x.Value);
 
             var sb = new StringBuilder();
