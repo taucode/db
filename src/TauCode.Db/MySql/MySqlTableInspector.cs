@@ -48,7 +48,7 @@ ORDER BY
                 command.AddParameterWithValue("p_tableName", this.TableName);
                 command.AddParameterWithValue("p_tableSchema", this.Connection.Database);
 
-                return UtilsHelper
+                return DbUtils
                     .GetCommandRows(command)
                     .Select(x => new ColumnInfo
                     {
@@ -121,7 +121,7 @@ WHERE
                 command.AddParameterWithValue("p_tableSchema", this.Connection.Database);
                 command.AddParameterWithValue("p_pattern", "%auto_increment%");
 
-                return UtilsHelper
+                return DbUtils
                     .GetCommandRows(command)
                     .ToDictionary(
                         x => (string)x.ColumnName,

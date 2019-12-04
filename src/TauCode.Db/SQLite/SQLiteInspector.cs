@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 
 namespace TauCode.Db.SQLite
@@ -65,7 +66,7 @@ namespace TauCode.Db.SQLite
         #endregion
 
         public IUtilityFactory Factory => throw new NotImplementedException();
-        public string[] GetTableNames(bool? independentFirst = null)
+        public IReadOnlyList<string> GetTableNames(bool? independentFirst = null)
         {
             throw new NotImplementedException();
         }

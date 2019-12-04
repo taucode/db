@@ -55,7 +55,7 @@ namespace TauCode.Db
 
         protected virtual string SerializeCommandResultImpl(IDbCommand command)
         {
-            var rows = UtilsHelper.GetCommandRows(command);
+            var rows = DbUtils.GetCommandRows(command);
 
             var json = JsonConvert.SerializeObject(rows, Formatting.Indented);
             return json;

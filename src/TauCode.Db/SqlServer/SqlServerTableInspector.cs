@@ -70,7 +70,7 @@ WHERE
 ";
                 command.AddParameterWithValue("p_objectId", objectId);
 
-                return UtilsHelper
+                return DbUtils
                     .GetCommandRows(command)
                     .ToDictionary(
                         x => (string)x.Name,

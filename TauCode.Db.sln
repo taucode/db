@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.Db.Migrations", "sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TauCode.Db.Tests.SQLite", "tests\TauCode.Db.Tests.SQLite\TauCode.Db.Tests.SQLite.csproj", "{1F7029F5-B1C1-4EA0-8C82-26C58E6FF358}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TauCode.Db.Tests.SqlServer", "tests\TauCode.Db.Tests.SqlServer\TauCode.Db.Tests.SqlServer.csproj", "{886DC4C7-D567-4902-BF13-1A15E461141F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,10 @@ Global
 		{1F7029F5-B1C1-4EA0-8C82-26C58E6FF358}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F7029F5-B1C1-4EA0-8C82-26C58E6FF358}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F7029F5-B1C1-4EA0-8C82-26C58E6FF358}.Release|Any CPU.Build.0 = Release|Any CPU
+		{886DC4C7-D567-4902-BF13-1A15E461141F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{886DC4C7-D567-4902-BF13-1A15E461141F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{886DC4C7-D567-4902-BF13-1A15E461141F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{886DC4C7-D567-4902-BF13-1A15E461141F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -51,6 +57,7 @@ Global
 		{202DC44E-5880-4A3E-A265-CA5CEFD5E085} = {89412E0C-9F93-4FB0-ACB6-DC95174759A0}
 		{3AD06183-B18C-4915-839D-E839EE591157} = {89412E0C-9F93-4FB0-ACB6-DC95174759A0}
 		{1F7029F5-B1C1-4EA0-8C82-26C58E6FF358} = {EE8B33C7-90A5-4CCF-99D9-BC9CF029F312}
+		{886DC4C7-D567-4902-BF13-1A15E461141F} = {EE8B33C7-90A5-4CCF-99D9-BC9CF029F312}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E033216E-1151-4D66-A416-3EBD14511CA8}

@@ -1,4 +1,6 @@
-﻿namespace TauCode.Db
+﻿using System.Collections.Generic;
+
+namespace TauCode.Db
 {
     public interface IDbInspector : IUtility
     {
@@ -6,7 +8,7 @@
 
         //IScriptBuilder CreateScriptBuilder();
 
-        string[] GetTableNames(bool? independentFirst = null);
+        IReadOnlyList<string> GetTableNames(bool? independentFirst = null);
 
         ITableInspector GetTableInspector(string tableName);
     }

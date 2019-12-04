@@ -1,14 +1,22 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 
 namespace TauCode.Db.SqlServer
 {
-    public class SqlServerInspector : /*SqlServerInspectorBase*/ IDbInspector
+    // todo: sort to regions
+    public class SqlServerInspector : DbInspectorBase
     {
+        #region Constants
+
+        private const string TableTypeForTable = "BASE TABLE";
+
+        #endregion
+
         #region Constructor
 
         public SqlServerInspector(IDbConnection connection)
-            //: base(connection)
+            : base(connection)
         {
         }
 
@@ -38,13 +46,35 @@ namespace TauCode.Db.SqlServer
 
         #endregion
 
-        public IUtilityFactory Factory => throw new NotImplementedException();
-        public string[] GetTableNames(bool? independentFirst = null)
+        public override IUtilityFactory Factory => SqlServerUtilityFactory.Instance;
+
+        protected override IReadOnlyList<string> GetTableNamesImpl()
         {
-            throw new System.NotImplementedException();
+            using (var command = this.Connection.CreateCommand())
+            {
+                var sql =
+$@"
+            SELECT
+                T.table_name TableName
+            FROM
+                information_schema.tables T
+            WHERE
+                T.table_type = @p_tableType";
+
+                command.AddParameterWithValue("p_tableType", TableTypeForTable);
+
+                command.CommandText = sql;
+
+                var tableNames = DbUtils
+                    .GetCommandRows(command)
+                    .Select(x => (string)x.TableName)
+                    .ToArray();
+
+                return tableNames;
+            }
         }
 
-        public ITableInspector GetTableInspector(string tableName)
+        public override ITableInspector GetTableInspector(string tableName)
         {
             throw new System.NotImplementedException();
         }

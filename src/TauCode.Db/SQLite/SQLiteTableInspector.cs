@@ -50,7 +50,7 @@ WHERE
                 command.AddParameterWithValue("p_type", "table");
                 command.AddParameterWithValue("p_tableName", this.TableName);
 
-                var rows = UtilsHelper.GetCommandRows(command);
+                var rows = DbUtils.GetCommandRows(command);
                 if (rows.Count == 0)
                 {
                     throw new ObjectNotFoundException($"Table '{this.TableName}' not found in the database.");
