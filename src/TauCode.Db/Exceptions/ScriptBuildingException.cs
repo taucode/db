@@ -3,6 +3,7 @@ using System.Data.Common;
 
 namespace TauCode.Db.Exceptions
 {
+    // todo: get rid of these exceptions. TauCodeDbException would be enough.
     [Serializable]
     public class ScriptBuildingException : DbException
     {

@@ -6,7 +6,7 @@ using System.Text;
 namespace TauCode.Db.Model
 {
     [DebuggerDisplay("{" + nameof(GetDefaultCaption) + "()}")]
-    public class ForeignKeyMold : IMold
+    public class ForeignKeyMold : IMold, IConstraint
     {
         public string Name { get; set; }
         public List<string> ColumnNames { get; set; } = new List<string>();

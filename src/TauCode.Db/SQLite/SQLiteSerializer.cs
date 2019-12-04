@@ -1,5 +1,4 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using System.Linq;
 using TauCode.Db.Model;
 
@@ -7,11 +6,12 @@ namespace TauCode.Db.SQLite
 {
     public class SQLiteSerializer : DbSerializerBase
     {
-        private readonly IDbConnection _connection;
+        //private readonly IDbConnection _connection;
 
         public SQLiteSerializer(IDbConnection connection)
+            : base(connection)
         {
-            _connection = connection ?? throw new ArgumentNullException(nameof(connection));
+            //_connection = connection ?? throw new ArgumentNullException(nameof(connection));
         }
 
         //protected override ICruder CreateCruder() => new SQLiteCruder(_connection);
@@ -24,10 +24,10 @@ namespace TauCode.Db.SQLite
         //    };
         //}
 
-        protected override IUtilityFactory GetFactoryImpl()
-        {
-            throw new NotImplementedException();
-        }
+        //protected override IUtilityFactory GetFactoryImpl()
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         protected override ParameterInfo GetParameterInfo(TableMold tableMold, string columnName)
         {
@@ -63,5 +63,7 @@ namespace TauCode.Db.SQLite
                     return null;
             }
         }
+
+        public override IUtilityFactory Factory => SQLiteUtilityFactory.Instance;
     }
 }

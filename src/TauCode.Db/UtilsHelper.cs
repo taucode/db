@@ -41,71 +41,71 @@ namespace TauCode.Db
             return (T)dbValue;
         }
 
-        internal static string DecorateColumnsOverComma(
-            this ScriptBuilderBase scriptBuilder,
-            List<string> columnNames,
-            char? delimiter)
-        {
-            throw new NotImplementedException();
-            //var sb = new StringBuilder();
+        //internal static string DecorateColumnsOverComma(
+        //    this ScriptBuilderBase scriptBuilder,
+        //    List<string> columnNames,
+        //    char? delimiter)
+        //{
+        //    throw new NotImplementedException();
+        //    //var sb = new StringBuilder();
 
-            //for (var i = 0; i < columnNames.Count; i++)
-            //{
-            //    var decoratedColumnName =
-            //        scriptBuilder.Dialect.DecorateIdentifier(DbIdentifierType.Column, columnNames[i], delimiter);
-            //    sb.Append(decoratedColumnName);
+        //    //for (var i = 0; i < columnNames.Count; i++)
+        //    //{
+        //    //    var decoratedColumnName =
+        //    //        scriptBuilder.Dialect.DecorateIdentifier(DbIdentifierType.Column, columnNames[i], delimiter);
+        //    //    sb.Append(decoratedColumnName);
 
-            //    if (i < columnNames.Count - 1)
-            //    {
-            //        sb.Append(", ");
-            //    }
-            //}
+        //    //    if (i < columnNames.Count - 1)
+        //    //    {
+        //    //        sb.Append(", ");
+        //    //    }
+        //    //}
 
-            //return sb.ToString();
-        }
+        //    //return sb.ToString();
+        //}
 
-        internal static string DecorateIndexColumnsOverComma(
-            this ScriptBuilderBase scriptBuilder,
-            List<IndexColumnMold> columns,
-            char? delimiter)
-        {
-            throw new NotImplementedException();
+        //internal static string DecorateIndexColumnsOverComma(
+        //    this ScriptBuilderBase scriptBuilder,
+        //    List<IndexColumnMold> columns,
+        //    char? delimiter)
+        //{
+        //    throw new NotImplementedException();
 
-            //var sbIndexColumns = new StringBuilder();
-            //for (var i = 0; i < columns.Count; i++)
-            //{
-            //    var column = columns[i];
-            //    sbIndexColumns.Append(scriptBuilder.Dialect.DecorateIdentifier(
-            //        DbIdentifierType.Column,
-            //        column.Name,
-            //        delimiter));
+        //    //var sbIndexColumns = new StringBuilder();
+        //    //for (var i = 0; i < columns.Count; i++)
+        //    //{
+        //    //    var column = columns[i];
+        //    //    sbIndexColumns.Append(scriptBuilder.Dialect.DecorateIdentifier(
+        //    //        DbIdentifierType.Column,
+        //    //        column.Name,
+        //    //        delimiter));
 
-            //    string sortDirection;
-            //    switch (column.SortDirection)
-            //    {
-            //        case SortDirection.Ascending:
-            //            sortDirection = "ASC";
-            //            break;
+        //    //    string sortDirection;
+        //    //    switch (column.SortDirection)
+        //    //    {
+        //    //        case SortDirection.Ascending:
+        //    //            sortDirection = "ASC";
+        //    //            break;
 
-            //        case SortDirection.Descending:
-            //            sortDirection = "DESC";
-            //            break;
+        //    //        case SortDirection.Descending:
+        //    //            sortDirection = "DESC";
+        //    //            break;
 
-            //        default:
-            //            throw new ScriptBuildingException($"Invalid sort direction: '{column.SortDirection}'.");
-            //    }
+        //    //        default:
+        //    //            throw new ScriptBuildingException($"Invalid sort direction: '{column.SortDirection}'.");
+        //    //    }
 
-            //    sbIndexColumns.Append(" ");
-            //    sbIndexColumns.Append(sortDirection);
+        //    //    sbIndexColumns.Append(" ");
+        //    //    sbIndexColumns.Append(sortDirection);
 
-            //    if (i < columns.Count - 1)
-            //    {
-            //        sbIndexColumns.Append(", ");
-            //    }
-            //}
+        //    //    if (i < columns.Count - 1)
+        //    //    {
+        //    //        sbIndexColumns.Append(", ");
+        //    //    }
+        //    //}
 
-            //return sbIndexColumns.ToString();
-        }
+        //    //return sbIndexColumns.ToString();
+        //}
 
         internal static string ByteArrayToHex(byte[] bytes)
         {

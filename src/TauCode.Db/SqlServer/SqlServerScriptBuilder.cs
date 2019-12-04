@@ -1,23 +1,23 @@
-﻿namespace TauCode.Db.SqlServer
-{
-    public class SqlServerScriptBuilder : /*SqlServerScriptBuilderBase*/ ScriptBuilderBase
-    {
-        #region Constructor
+﻿//namespace TauCode.Db.SqlServer
+//{
+//    public class SqlServerScriptBuilder : /*SqlServerScriptBuilderBase*/ ScriptBuilderBase
+//    {
+//        #region Constructor
 
-        public SqlServerScriptBuilder()
-            : base(SqlServerDialect.Instance)
-        {
-        }
+//        public SqlServerScriptBuilder()
+//            : base(SqlServerDialect.Instance)
+//        {
+//        }
 
-        #endregion
+//        #endregion
 
-        #region Overridden
+//        #region Overridden
 
-        //protected override IDbInspector CreateDbInspector(IDbConnection connection)
-        //{
-        //    return new SqlServerInspector(connection);
-        //}
+//        //protected override IDbInspector CreateDbInspector(IDbConnection connection)
+//        //{
+//        //    return new SqlServerInspector(connection);
+//        //}
 
-        #endregion
-    }
-}
+//        #endregion
+//    }
+//}

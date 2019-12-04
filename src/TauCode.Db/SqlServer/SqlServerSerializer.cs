@@ -16,11 +16,13 @@ namespace TauCode.Db.SqlServer
         #endregion
 
 
-        private readonly IDbConnection _connection;
+        //private readonly IDbConnection _connection;
 
         public SqlServerSerializer(IDbConnection connection)
+            : base(connection)
+
         {
-            _connection = connection ?? throw new ArgumentNullException(nameof(connection));
+            //_connection = connection ?? throw new ArgumentNullException(nameof(connection));
         }
 
         //protected override ICruder CreateCruder() => new SqlServerCruder(_connection);
@@ -33,10 +35,6 @@ namespace TauCode.Db.SqlServer
         //    };
         //}
 
-        protected override IUtilityFactory GetFactoryImpl()
-        {
-            throw new NotImplementedException();
-        }
 
         protected override ParameterInfo GetParameterInfo(TableMold tableMold, string columnName)
         {
@@ -68,5 +66,7 @@ namespace TauCode.Db.SqlServer
 
             return parameterInfo;
         }
+
+        public override IUtilityFactory Factory => SqlServerUtilityFactory.Instance;
     }
 }

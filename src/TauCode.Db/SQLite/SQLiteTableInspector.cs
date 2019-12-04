@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
 
 namespace TauCode.Db.SQLite
@@ -11,7 +9,7 @@ namespace TauCode.Db.SQLite
     {
         #region Fields
 
-        private readonly IDbConnection _connection;
+        //private readonly IDbConnection _connection;
 
         #endregion
 
@@ -33,40 +31,41 @@ namespace TauCode.Db.SQLite
 
         private string GetTableCreationSqlFromDb()
         {
-            using (var command = _connection.CreateCommand())
-            {
-                command.CommandText =
-@"
-SELECT
-    T.name  Name,
-    T.sql   Sql
-FROM
-    sqlite_master T
-WHERE
-    T.type = @p_type
-    AND
-    T.name = @p_tableName
-";
+            throw new NotImplementedException();
+//            using (var command = _connection.CreateCommand())
+//            {
+//                command.CommandText =
+//@"
+//SELECT
+//    T.name  Name,
+//    T.sql   Sql
+//FROM
+//    sqlite_master T
+//WHERE
+//    T.type = @p_type
+//    AND
+//    T.name = @p_tableName
+//";
 
-                command.AddParameterWithValue("p_type", "table");
-                command.AddParameterWithValue("p_tableName", this.TableName);
+//                command.AddParameterWithValue("p_type", "table");
+//                command.AddParameterWithValue("p_tableName", this.TableName);
 
-                var rows = DbUtils.GetCommandRows(command);
-                if (rows.Count == 0)
-                {
-                    throw new ObjectNotFoundException($"Table '{this.TableName}' not found in the database.");
-                    // todo: deal with such situations for all utils. (+ut)
-                }
+//                var rows = DbUtils.GetCommandRows(command);
+//                if (rows.Count == 0)
+//                {
+//                    throw new ObjectNotFoundException($"Table '{this.TableName}' not found in the database.");
+//                    // todo: deal with such situations for all utils. (+ut)
+//                }
 
-                if (rows.Count > 1)
-                {
-                    throw new NotImplementedException(); // todo: internal error?
-                }
+//                if (rows.Count > 1)
+//                {
+//                    throw new NotImplementedException(); // todo: internal error?
+//                }
 
-                return rows
-                    .Single()
-                    .Sql;
-            }
+//                return rows
+//                    .Single()
+//                    .Sql;
+//            }
         }
 
         #endregion

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 
 namespace TauCode.Db.SqlServer
 {
@@ -15,7 +14,7 @@ namespace TauCode.Db.SqlServer
 
         public IDialect GetDialect() => SqlServerDialect.Instance;
 
-        public IScriptBuilder CreateScriptBuilder() => throw new NotImplementedException();
+        public IScriptBuilderLab CreateScriptBuilderLab() => new SqlServerScriptBuilderLab();
 
         public IDbInspector CreateDbInspector(IDbConnection connection) => new SqlServerInspector(connection);
 

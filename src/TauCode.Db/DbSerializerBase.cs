@@ -9,7 +9,7 @@ using TauCode.Db.Model;
 namespace TauCode.Db
 {
     // todo clean up
-    public abstract class DbSerializerBase : IDbSerializer
+    public abstract class DbSerializerBase : UtilityBase, IDbSerializer
     {
         #region Nested
 
@@ -32,14 +32,15 @@ namespace TauCode.Db
 
         #region Fields
 
-        private ICruder _cruder;
-        private IScriptBuilder _scriptBuilder;
+        //private ICruder _cruder;
+        //private IScriptBuilder _scriptBuilder;
 
         #endregion
 
         #region Constructor
 
-        protected DbSerializerBase()
+        protected DbSerializerBase(IDbConnection connection)
+            : base(connection, true, false)
         {
         }
 
@@ -51,7 +52,7 @@ namespace TauCode.Db
 
         //protected abstract IScriptBuilder CreateScriptBuilder();
 
-        protected abstract IUtilityFactory GetFactoryImpl();
+        //protected abstract IUtilityFactory GetFactoryImpl();
 
         protected virtual string SerializeCommandResultImpl(IDbCommand command)
         {
@@ -325,7 +326,7 @@ namespace TauCode.Db
 
         //protected IScriptBuilder ScriptBuilder => _scriptBuilder ?? (_scriptBuilder = this.CreateScriptBuilder());
 
-        
+
 
         //protected IDbConnection GetDbConnection()
         //{
@@ -357,7 +358,7 @@ namespace TauCode.Db
 
         //public ICruder Cruder => _cruder ?? (_cruder = this.CreateCruder());
 
-        public IUtilityFactory Factory => this.GetFactoryImpl();
+        //public IUtilityFactory Factory => this.GetFactoryImpl();
 
         public string SerializeTableData(string tableName)
         {
@@ -518,7 +519,7 @@ namespace TauCode.Db
             //{
             //    NamingStrategy = new CamelCaseNamingStrategy(),
             //};
-            
+
             //var json = JsonConvert.SerializeObject(
             //    metadata,
             //    new JsonSerializerSettings
