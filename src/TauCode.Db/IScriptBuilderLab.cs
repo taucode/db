@@ -8,5 +8,6 @@ namespace TauCode.Db
         char? CurrentOpeningIdentifierDelimiter { get; set; }
         string BuildCreateTableScript(TableMold table, bool includeConstraints);
         string BuildInsertScript(TableMold table, IReadOnlyDictionary<string, string> columnToParameterMappings);
+        string BuildUpdateScript(TableMold table, IReadOnlyDictionary<string, string> columnToParameterMappings);
     }
 }

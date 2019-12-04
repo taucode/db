@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
 using TauCode.Db.Data;
+using TauCode.Db.Model;
 
 namespace TauCode.Db
 {
@@ -60,6 +61,11 @@ namespace TauCode.Db
 
                 return rows;
             }
+        }
+
+        public static ColumnMold GetPrimaryKeyColumn(this TableMold table)
+        {
+            return table.Columns.Single(x => x.Name == table.PrimaryKey.Columns.Single().Name); // todo can throw a lot.
         }
     }
 }

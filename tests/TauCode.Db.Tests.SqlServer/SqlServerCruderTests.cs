@@ -76,7 +76,13 @@ namespace TauCode.Db.Tests.SqlServer
             _cruder.InsertRow("language", language);
 
             // Act
-            var updated = _cruder.UpdateRow("language", new {language = "Duzhe Italian!"}, id);
+            var updated = _cruder.UpdateRow(
+                "language", 
+                new
+                {
+                    name = "Duzhe Italian!"
+                },
+                id);
 
             // Assert
             var row = this.GetRow(id);

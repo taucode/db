@@ -344,7 +344,9 @@ namespace TauCode.Db
             return sb.ToString();
         }
 
-        public string BuildInsertScript(TableMold table, IReadOnlyDictionary<string, string> columnToParameterMappings)
+        public virtual string BuildInsertScript(
+            TableMold table,
+            IReadOnlyDictionary<string, string> columnToParameterMappings)
         {
             // todo: check args, including count of columnToParameterMappings
 
@@ -393,6 +395,60 @@ namespace TauCode.Db
 
             sb.Append(")");
 
+            var sql = sb.ToString();
+            return sql;
+        }
+
+        // todo clean
+        public virtual string BuildUpdateScript(
+            TableMold table,
+            IReadOnlyDictionary<string, string> columnToParameterMappings)
+        {
+            var sb = new StringBuilder();
+            var decoratedTableName = this.Dialect.DecorateIdentifier(
+                DbIdentifierType.Table,
+                table.Name,
+                this.CurrentOpeningIdentifierDelimiter);
+
+            sb.AppendLine($"UPDATE {decoratedTableName} SET");
+
+            var idColumnName = table.GetPrimaryKeyColumn().Name.ToLowerInvariant();
+            var decoratedIdColumnName = this.Dialect.DecorateIdentifier(
+                DbIdentifierType.Column,
+                idColumnName,
+                this.CurrentOpeningIdentifierDelimiter);
+            var idParameterName = columnToParameterMappings[idColumnName];
+
+            var columnNamesToUpdate = columnToParameterMappings.Keys.Except(new[] {idColumnName}).ToList();
+
+            //var pairs = columnToParameterMappings.ToList();
+            for (var i = 0; i < columnNamesToUpdate.Count; i++)
+            {
+                //var pair = pairs[i];
+                var columnName = columnNamesToUpdate[i];
+                //if (string.Equals(columnName, idColumnName, StringComparison.InvariantCultureIgnoreCase))
+                //{
+                //    continue;
+                //}
+
+                var decoratedColumnName = this.Dialect.DecorateIdentifier(
+                    DbIdentifierType.Column,
+                    columnName,
+                    this.CurrentOpeningIdentifierDelimiter);
+
+                var parameterName = columnToParameterMappings[columnName];
+
+                sb.Append($"    {decoratedColumnName} = @{parameterName}");
+
+                if (i < columnNamesToUpdate.Count - 1)
+                {
+                    sb.AppendLine(",");
+                }
+            }
+
+            sb.AppendLine();
+
+            sb.Append($"WHERE {decoratedIdColumnName} = @{idParameterName}");
             var sql = sb.ToString();
             return sql;
         }
