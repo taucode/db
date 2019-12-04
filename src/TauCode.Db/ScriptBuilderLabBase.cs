@@ -343,5 +343,58 @@ namespace TauCode.Db
 
             return sb.ToString();
         }
+
+        public string BuildInsertScript(TableMold table, IDictionary<string, string> columnToParameterMappings)
+        {
+            // todo: check args, including count of columnToParameterMappings
+
+            var tuples = columnToParameterMappings
+                .Select(x => Tuple.Create(
+                    this.Dialect.DecorateIdentifier(
+                        DbIdentifierType.Column,
+                        x.Key,
+                        this.CurrentOpeningIdentifierDelimiter),
+                    x.Value))
+                .ToList();
+
+            var sb = new StringBuilder();
+            var decoratedTableName = this.Dialect.DecorateIdentifier(
+                DbIdentifierType.Table,
+                table.Name,
+                this.CurrentOpeningIdentifierDelimiter);
+
+            sb.AppendLine($"INSERT INTO {decoratedTableName} (");
+            for (var i = 0; i < tuples.Count; i++)
+            {
+                var tuple = tuples[i];
+                var columnName = tuple.Item1;
+                sb.Append("    ");
+                sb.Append(columnName);
+                if (i < tuples.Count - 1)
+                {
+                    sb.AppendLine(",");
+                }
+            }
+
+            sb.AppendLine(")");
+            sb.AppendLine("VALUES (");
+
+            for (var i = 0; i < tuples.Count; i++)
+            {
+                var tuple = tuples[i];
+                var parameterName = tuple.Item2;
+                sb.Append("    @");
+                sb.Append(parameterName);
+                if (i < tuples.Count - 1)
+                {
+                    sb.AppendLine(",");
+                }
+            }
+
+            sb.Append(")");
+
+            var sql = sb.ToString();
+            return sql;
+        }
     }
 }

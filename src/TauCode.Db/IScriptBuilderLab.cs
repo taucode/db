@@ -1,4 +1,5 @@
-﻿using TauCode.Db.Model;
+﻿using System.Collections.Generic;
+using TauCode.Db.Model;
 
 namespace TauCode.Db
 {
@@ -6,5 +7,6 @@ namespace TauCode.Db
     {
         char? CurrentOpeningIdentifierDelimiter { get; set; }
         string BuildCreateTableScript(TableMold table, bool includeConstraints);
+        string BuildInsertScript(TableMold table, IDictionary<string, string> columnToParameterMappings);
     }
 }

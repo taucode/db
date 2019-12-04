@@ -5,8 +5,6 @@ namespace TauCode.Db.Tests.SqlServer
     [TestFixture]
     public class SqlServerInspectorTests : TestBase
     {
-
-
         [Test]
         public void GetTableNames_IndependentFirstIsNull_ReturnsIndependentTablesFirst()
         {
