@@ -134,6 +134,31 @@ namespace TauCode.Db.Tests.SqlServer
             throw new NotImplementedException();
         }
 
+        [Test]
+        public void GetRow_ValidId_ReturnsRow()
+        {
+            // Arrange
+            this.Connection.ExecuteScript(@"
+INSERT INTO [language](
+    [id],
+    [code],
+    [name])
+VALUES(
+    '4fca7968-49cf-4c52-b793-e4b27087251b',
+    'en',
+    'English')");
+
+            var id = new Guid("4fca7968-49cf-4c52-b793-e4b27087251b");
+
+            // Act
+            var row = _cruder.GetRow("language", id);
+
+            // Assert
+            Assert.That(row.id, Is.EqualTo(id));
+            Assert.That(row.code, Is.EqualTo("en"));
+            Assert.That(row.name, Is.EqualTo("English"));
+        }
+
         private dynamic GetRow(object id)
         {
             using (var command = this.Connection.CreateCommand())

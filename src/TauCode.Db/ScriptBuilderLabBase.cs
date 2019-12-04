@@ -452,5 +452,43 @@ namespace TauCode.Db
             var sql = sb.ToString();
             return sql;
         }
+
+        public string BuildSelectScript(TableMold table, string idParameterName)
+        {
+            var sb = new StringBuilder();
+
+            var decoratedTableName = this.Dialect.DecorateIdentifier(
+                DbIdentifierType.Table,
+                table.Name,
+                this.CurrentOpeningIdentifierDelimiter);
+            
+            sb.AppendLine($"SELECT");
+            for (var i = 0; i < table.Columns.Count; i++)
+            {
+                var column = table.Columns[i];
+                var decoratedColumnName = this.Dialect.DecorateIdentifier(
+                    DbIdentifierType.Column,
+                    column.Name,
+                    this.CurrentOpeningIdentifierDelimiter);
+
+                sb.Append($"    {decoratedColumnName}");
+                if (i < table.Columns.Count - 1)
+                {
+                    sb.AppendLine(",");
+                }
+            }
+
+            sb.AppendLine();
+            sb.AppendLine($"FROM {decoratedTableName}");
+            sb.AppendLine("WHERE");
+            var decoratedIdColumnName = this.Dialect.DecorateIdentifier(
+                DbIdentifierType.Column,
+                table.GetPrimaryKeyColumn().Name,
+                this.CurrentOpeningIdentifierDelimiter);
+            sb.Append($"    {decoratedIdColumnName} = @{idParameterName}");
+
+            var sql = sb.ToString();
+            return sql;
+        }
     }
 }

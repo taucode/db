@@ -130,6 +130,13 @@ namespace TauCode.Db
 
             public int ExecuteWithValues(object values)
             {
+                this.ApplyValuesToCommand(values);
+                var result = _command.ExecuteNonQuery();
+                return result;
+            }
+
+            private void ApplyValuesToCommand(object values)
+            {
                 if (!_commandPrepared)
                 {
                     this.PrepareCommand();
@@ -149,9 +156,25 @@ namespace TauCode.Db
 
                     parameter.Value = columnValue;
                 }
+            }
 
-                var result = _command.ExecuteNonQuery();
-                return result;
+            public IList<dynamic> FetchWithValues(object values)
+            {
+                this.ApplyValuesToCommand(values);
+                var rows = DbUtils.GetCommandRows(_command);
+
+                return rows;
+                //using (var reader = _command.ExecuteReader())
+                //{
+                //    while (reader.Read())
+                //    {
+
+
+                //        throw new NotImplementedException();
+                //    }
+                //}
+
+                //throw new NotImplementedException();
             }
 
             private void PrepareCommand()
@@ -287,7 +310,7 @@ namespace TauCode.Db
                 throw new ArgumentNullException(nameof(row));
             }
 
-            this.InsertRows(tableName, new List<object> {row});
+            this.InsertRows(tableName, new List<object> { row });
         }
 
         public void InsertRows(string tableName, IReadOnlyList<object> rows)
@@ -360,7 +383,7 @@ namespace TauCode.Db
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new NotImplementedException();
             }
 
             return transformed;
@@ -433,16 +456,38 @@ namespace TauCode.Db
 
         public dynamic GetRow(string tableName, object id)
         {
-            throw new NotImplementedException();
-            //if (tableName == null)
-            //{
-            //    throw new ArgumentNullException(nameof(tableName));
-            //}
+            if (tableName == null)
+            {
+                throw new ArgumentNullException(nameof(tableName));
+            }
 
-            //if (id == null)
-            //{
-            //    throw new ArgumentNullException(nameof(id));
-            //}
+            if (id == null)
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+
+            var table = this.Factory
+                .CreateTableInspector(this.Connection, tableName)
+                .GetTable();
+
+            var idColumnName = table.GetPrimaryKeyColumn().Name.ToLowerInvariant();
+
+            using (var helper = new CommandHelper(this, table, new[] { idColumnName }))
+            {
+                var sql = this.ScriptBuilderLab.BuildSelectScript(table, helper.GetParameterNames().Single().Value);
+                helper.CommandText = sql;
+                var rows = helper.FetchWithValues(new Dictionary<string, object>
+                {
+                    {idColumnName, id}
+                });
+
+                if (rows.Count == 0)
+                {
+                    return null;
+                }
+
+                return rows.Single();
+            }
 
             //var tableInspector = this.DbInspector.GetTableInspector(tableName);
             //var tableMold = tableInspector.GetTableMold();
@@ -497,58 +542,6 @@ namespace TauCode.Db
                 var result = helper.ExecuteWithValues(dataDictionary);
                 return result > 0;
             }
-
-            //IDictionary<string, object> dictionary;
-
-            //if (rowUpdate is IDictionary<string, object> dictionaryParam)
-            //{
-            //    dictionary = dictionaryParam;
-            //}
-            //else if (rowUpdate is DynamicRow dynamicRow)
-            //{
-            //    dictionary = dynamicRow.ToDictionary();
-            //}
-            //else
-            //{
-            //    dictionary = new ValueDictionary(rowUpdate);
-            //}
-
-            //var tableInspector = this.DbInspector.GetTableInspector(tableName);
-            //var tableMold = tableInspector.GetTableMold();
-            //var connection = this.GetSafeConnection();
-
-            //var pkColumnName = tableMold.GetSinglePrimaryKeyColumnName();
-
-            //var script = this.ScriptBuilder.BuildUpdateRowByIdSql(
-            //    tableMold.Name,
-            //    pkColumnName,
-            //    dictionary.Keys.ToArray(),
-            //    out var parameterMapping);
-
-            //using (var command = connection.CreateCommand())
-            //{
-            //    command.CommandText = script;
-
-            //    foreach (var columnName in parameterMapping.Keys)
-            //    {
-            //        var paramName = parameterMapping[columnName];
-            //        object paramValue;
-
-            //        if (columnName == pkColumnName)
-            //        {
-            //            paramValue = id;
-            //        }
-            //        else
-            //        {
-            //            paramValue = dictionary[columnName] ?? DBNull.Value;
-            //        }
-
-            //        command.AddParameterWithValue(paramName, paramValue);
-            //    }
-
-            //    var rowsAffected = command.ExecuteNonQuery();
-            //    return rowsAffected > 0; // actually, should always be 0 or 1.
-            //}
         }
 
         #endregion

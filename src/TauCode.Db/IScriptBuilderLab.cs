@@ -9,5 +9,6 @@ namespace TauCode.Db
         string BuildCreateTableScript(TableMold table, bool includeConstraints);
         string BuildInsertScript(TableMold table, IReadOnlyDictionary<string, string> columnToParameterMappings);
         string BuildUpdateScript(TableMold table, IReadOnlyDictionary<string, string> columnToParameterMappings);
+        string BuildSelectScript(TableMold table, string idParameterName);
     }
 }

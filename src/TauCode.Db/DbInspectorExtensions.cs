@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using TauCode.Db.Model;
 
 namespace TauCode.Db
@@ -102,19 +103,18 @@ namespace TauCode.Db
             //}
         }
 
-        public static void ExecuteScript(this IDbInspector dbInspector, string script)
+        public static void ExecuteScript(this IDbConnection connection, string script)
         {
-            throw new NotImplementedException();
-            //var sqls = ScriptBuilderBase.SplitSqlByComments(script);
+            var sqls = DbUtils.SplitScriptByComments(script);
 
-            //foreach (var sql in sqls)
-            //{
-            //    using (var command = dbInspector.Connection.CreateCommand())
-            //    {
-            //        command.CommandText = sql;
-            //        command.ExecuteNonQuery();
-            //    }
-            //}
+            foreach (var sql in sqls)
+            {
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = sql;
+                    command.ExecuteNonQuery();
+                }
+            }
         }
     }
 }
