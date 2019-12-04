@@ -1,13 +1,9 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Text;
-using TauCode.Db.Data;
 using TauCode.Db.Model;
 
 namespace TauCode.Db
@@ -51,9 +47,11 @@ namespace TauCode.Db
 
         #region Polymorph
 
-        protected abstract ICruder CreateCruder();
+        //protected abstract ICruder CreateCruder();
 
-        protected abstract IScriptBuilder CreateScriptBuilder();
+        //protected abstract IScriptBuilder CreateScriptBuilder();
+
+        protected abstract IUtilityFactory GetFactoryImpl();
 
         protected virtual string SerializeCommandResultImpl(IDbCommand command)
         {
@@ -65,133 +63,135 @@ namespace TauCode.Db
 
         protected virtual void DeserializeTableData(IDbConnection connection, TableMold tableMold, JArray tableData)
         {
-            var tableName = tableMold.Name;
+            throw new NotImplementedException();
 
-            if (tableData.Count == 0)
-            {
-                return; // nothing to deserialize
-            }
+            //var tableName = tableMold.Name;
 
-            // take first entry as standard
-            var standard = tableData[0] as JObject;
-            if (standard == null)
-            {
-                throw new ArgumentException("Each row must be represented by a JSON object.", nameof(tableData));
-            }
+            //if (tableData.Count == 0)
+            //{
+            //    return; // nothing to deserialize
+            //}
 
-            var standardPropertyNamesSignature = GetJObjectPropertyNamesSignature(standard);
+            //// take first entry as standard
+            //var standard = tableData[0] as JObject;
+            //if (standard == null)
+            //{
+            //    throw new ArgumentException("Each row must be represented by a JSON object.", nameof(tableData));
+            //}
 
-            var standardPropertyNames = standard
-                .Properties()
-                .Select(x => x.Name)
-                .ToArray();
+            //var standardPropertyNamesSignature = GetJObjectPropertyNamesSignature(standard);
 
-            // each column must be in table
-            var columnMapping = new Dictionary<string, ColumnMold>();
+            //var standardPropertyNames = standard
+            //    .Properties()
+            //    .Select(x => x.Name)
+            //    .ToArray();
 
-            foreach (var standardPropertyName in standardPropertyNames)
-            {
-                var tableColumn = tableMold.Columns.SingleOrDefault(x =>
-                    string.Equals(x.Name, standardPropertyName));
+            //// each column must be in table
+            //var columnMapping = new Dictionary<string, ColumnMold>();
 
-                if (tableColumn == null)
-                {
-                    throw new ArgumentException(
-                        $"JSON contains '{standardPropertyName}' property, but table '{tableName}' does not contain such column.");
-                }
+            //foreach (var standardPropertyName in standardPropertyNames)
+            //{
+            //    var tableColumn = tableMold.Columns.SingleOrDefault(x =>
+            //        string.Equals(x.Name, standardPropertyName));
 
-                columnMapping.Add(standardPropertyName, tableColumn);
-            }
+            //    if (tableColumn == null)
+            //    {
+            //        throw new ArgumentException(
+            //            $"JSON contains '{standardPropertyName}' property, but table '{tableName}' does not contain such column.");
+            //    }
 
-            var sql = this.ScriptBuilder.BuildParameterizedInsertSql(
-                tableMold,
-                out var parameterMapping,
-                columnsToInclude: standardPropertyNames,
-                indent: 4);
+            //    columnMapping.Add(standardPropertyName, tableColumn);
+            //}
 
-            var command = connection.CreateCommand();
-            command.CommandText = sql;
+            //var sql = this.ScriptBuilder.BuildParameterizedInsertSql(
+            //    tableMold,
+            //    out var parameterMapping,
+            //    columnsToInclude: standardPropertyNames,
+            //    indent: 4);
 
-            var parametersByColumnName = new Dictionary<string, IDbDataParameter>();
+            //var command = connection.CreateCommand();
+            //command.CommandText = sql;
 
-            foreach (var pair in parameterMapping)
-            {
-                var columnName = pair.Key;
-                var parameterName = pair.Value;
+            //var parametersByColumnName = new Dictionary<string, IDbDataParameter>();
 
-                var parameter = command.CreateParameter();
-                parameter.ParameterName = parameterName;
+            //foreach (var pair in parameterMapping)
+            //{
+            //    var columnName = pair.Key;
+            //    var parameterName = pair.Value;
 
-                var parameterInfo = this.GetParameterInfo(tableMold, columnName);
+            //    var parameter = command.CreateParameter();
+            //    parameter.ParameterName = parameterName;
 
-                if (parameterInfo == null)
-                {
-                    throw new InvalidOperationException($"'{nameof(GetParameterInfo)}' returned null. Table name: '{tableMold.Name}', column name: '{columnName}'");
-                }
+            //    var parameterInfo = this.GetParameterInfo(tableMold, columnName);
 
-                parameter.DbType = parameterInfo.DbType;
-                if (parameterInfo.Size.HasValue)
-                {
-                    parameter.Size = parameterInfo.Size.Value;
-                }
+            //    if (parameterInfo == null)
+            //    {
+            //        throw new InvalidOperationException($"'{nameof(GetParameterInfo)}' returned null. Table name: '{tableMold.Name}', column name: '{columnName}'");
+            //    }
 
-                if (parameterInfo.Precision.HasValue)
-                {
-                    parameter.Precision = (byte)parameterInfo.Precision.Value;
-                }
+            //    parameter.DbType = parameterInfo.DbType;
+            //    if (parameterInfo.Size.HasValue)
+            //    {
+            //        parameter.Size = parameterInfo.Size.Value;
+            //    }
 
-                if (parameterInfo.Scale.HasValue)
-                {
-                    parameter.Scale = (byte)parameterInfo.Scale.Value;
-                }
+            //    if (parameterInfo.Precision.HasValue)
+            //    {
+            //        parameter.Precision = (byte)parameterInfo.Precision.Value;
+            //    }
 
-                command.Parameters.Add(parameter);
+            //    if (parameterInfo.Scale.HasValue)
+            //    {
+            //        parameter.Scale = (byte)parameterInfo.Scale.Value;
+            //    }
 
-                parametersByColumnName.Add(columnName, parameter);
-            }
+            //    command.Parameters.Add(parameter);
 
-            command.Prepare();
+            //    parametersByColumnName.Add(columnName, parameter);
+            //}
 
-            using (command)
-            {
-                for (var i = 0; i < tableData.Count; i++)
-                {
-                    var token = tableData[i];
+            //command.Prepare();
 
-                    if (token.Type != JTokenType.Object)
-                    {
-                        throw new ArgumentException("Each row must be represented by a JSON object.", nameof(tableData));
-                    }
+            //using (command)
+            //{
+            //    for (var i = 0; i < tableData.Count; i++)
+            //    {
+            //        var token = tableData[i];
 
-                    var columnValues = new Dictionary<string, object>();
-                    var tokenObject = (JObject)token;
+            //        if (token.Type != JTokenType.Object)
+            //        {
+            //            throw new ArgumentException("Each row must be represented by a JSON object.", nameof(tableData));
+            //        }
 
-                    var signature = GetJObjectPropertyNamesSignature(tokenObject);
-                    if (signature != standardPropertyNamesSignature)
-                    {
-                        throw new ArgumentException("All rows must have same properties.", nameof(tableData));
-                    }
+            //        var columnValues = new Dictionary<string, object>();
+            //        var tokenObject = (JObject)token;
 
-                    foreach (var property in tokenObject.Properties())
-                    {
-                        var name = property.Name;
-                        var jvalue = property.Value;
+            //        var signature = GetJObjectPropertyNamesSignature(tokenObject);
+            //        if (signature != standardPropertyNamesSignature)
+            //        {
+            //            throw new ArgumentException("All rows must have same properties.", nameof(tableData));
+            //        }
 
-                        var column = columnMapping[name];
+            //        foreach (var property in tokenObject.Properties())
+            //        {
+            //            var name = property.Name;
+            //            var jvalue = property.Value;
 
-                        var value = this.JsonValueToColumnValue(column, jvalue);
-                        columnValues.Add(name, value);
+            //            var column = columnMapping[name];
 
-                        var parameter = parametersByColumnName[name];
-                        parameter.Value = value ?? DBNull.Value;
-                    }
+            //            var value = this.JsonValueToColumnValue(column, jvalue);
+            //            columnValues.Add(name, value);
 
-                    command.ExecuteNonQuery();
+            //            var parameter = parametersByColumnName[name];
+            //            parameter.Value = value ?? DBNull.Value;
+            //        }
 
-                    var row = new DynamicRow(columnValues);
-                    this.RowDeserialized?.Invoke(tableName, i, row);
-                }
-            }
+            //        command.ExecuteNonQuery();
+
+            //        var row = new DynamicRow(columnValues);
+            //        this.RowDeserialized?.Invoke(tableName, i, row);
+            //    }
+            //}
         }
 
         protected virtual object JsonValueToColumnValue(ColumnMold column, JToken token)
@@ -282,7 +282,7 @@ namespace TauCode.Db
                 case "date":
                     parameterInfo = new ParameterInfo
                     {
-                        DbType = DbType.Date,
+                        DbType = DbType.Date, // todo: IParameterInfo and static readonly standard ParameterInfos.
                     };
                     break;
 
@@ -323,12 +323,14 @@ namespace TauCode.Db
 
         #region Protected
 
-        protected IScriptBuilder ScriptBuilder => _scriptBuilder ?? (_scriptBuilder = this.CreateScriptBuilder());
+        //protected IScriptBuilder ScriptBuilder => _scriptBuilder ?? (_scriptBuilder = this.CreateScriptBuilder());
 
-        protected IDbConnection GetDbConnection()
-        {
-            return this.Cruder.DbInspector.Connection;
-        }
+        
+
+        //protected IDbConnection GetDbConnection()
+        //{
+        //    return this.Cruder.DbInspector.Connection;
+        //}
 
         #endregion
 
@@ -353,185 +355,194 @@ namespace TauCode.Db
 
         #region IDbSerializer Members
 
-        public ICruder Cruder => _cruder ?? (_cruder = this.CreateCruder());
+        //public ICruder Cruder => _cruder ?? (_cruder = this.CreateCruder());
+
+        public IUtilityFactory Factory => this.GetFactoryImpl();
 
         public string SerializeTableData(string tableName)
         {
+            throw new NotImplementedException();
 
+            //if (tableName == null)
+            //{
+            //    throw new ArgumentNullException(nameof(tableName));
+            //}
 
-            if (tableName == null)
-            {
-                throw new ArgumentNullException(nameof(tableName));
-            }
+            //var dbInspector = this.Cruder.DbInspector;
+            //var connection = dbInspector.Connection;
 
-            var dbInspector = this.Cruder.DbInspector;
-            var connection = dbInspector.Connection;
+            //var tableInspector = dbInspector.GetTableInspector(tableName);
+            //var tableMold = tableInspector.GetTableMold();
+            //var sql = this.ScriptBuilder.BuildSelectSql(tableMold);
 
-            var tableInspector = dbInspector.GetTableInspector(tableName);
-            var tableMold = tableInspector.GetTableMold();
-            var sql = this.ScriptBuilder.BuildSelectSql(tableMold);
-
-            using (var command = connection.CreateCommand())
-            {
-                command.CommandText = sql;
-                return this.SerializeCommandResultImpl(command);
-            }
+            //using (var command = connection.CreateCommand())
+            //{
+            //    command.CommandText = sql;
+            //    return this.SerializeCommandResultImpl(command);
+            //}
         }
 
         public string SerializeDbData()
         {
-            var dbInspector = this.Cruder.DbInspector;
-            var connection = dbInspector.Connection;
-            var tableMolds = dbInspector.GetOrderedTableMolds(true);
+            throw new NotImplementedException();
 
-            var dbData = new DynamicRow(); // it is strange to store entire data in 'dynamic' 'row', but why to invent new dynamic ancestor?
+            //var dbInspector = this.Cruder.DbInspector;
+            //var connection = dbInspector.Connection;
+            //var tableMolds = dbInspector.GetOrderedTableMolds(true);
 
-            using (var command = connection.CreateCommand())
-            {
-                foreach (var tableMold in tableMolds)
-                {
-                    var sql = this.ScriptBuilder.BuildSelectSql(tableMold);
-                    command.CommandText = sql;
+            //var dbData = new DynamicRow(); // it is strange to store entire data in 'dynamic' 'row', but why to invent new dynamic ancestor?
 
-                    var rows = UtilsHelper
-                        .GetCommandRows(command);
+            //using (var command = connection.CreateCommand())
+            //{
+            //    foreach (var tableMold in tableMolds)
+            //    {
+            //        var sql = this.ScriptBuilder.BuildSelectSql(tableMold);
+            //        command.CommandText = sql;
 
-                    dbData.SetValue(tableMold.Name, rows);
-                }
-            }
+            //        var rows = UtilsHelper
+            //            .GetCommandRows(command);
 
-            var json = JsonConvert.SerializeObject(dbData, Formatting.Indented);
-            return json;
+            //        dbData.SetValue(tableMold.Name, rows);
+            //    }
+            //}
+
+            //var json = JsonConvert.SerializeObject(dbData, Formatting.Indented);
+            //return json;
         }
 
         public void DeserializeTableData(string tableName, string json)
         {
-            if (tableName == null)
-            {
-                throw new ArgumentNullException(nameof(tableName));
-            }
+            throw new NotImplementedException();
+            //if (tableName == null)
+            //{
+            //    throw new ArgumentNullException(nameof(tableName));
+            //}
 
-            if (json == null)
-            {
-                throw new ArgumentNullException(nameof(json));
-            }
+            //if (json == null)
+            //{
+            //    throw new ArgumentNullException(nameof(json));
+            //}
 
-            var tableData = JsonConvert.DeserializeObject(json) as JArray;
+            //var tableData = JsonConvert.DeserializeObject(json) as JArray;
 
-            if (tableData == null)
-            {
-                throw new ArgumentException("Could not deserialize table data as array.", nameof(json));
-            }
+            //if (tableData == null)
+            //{
+            //    throw new ArgumentException("Could not deserialize table data as array.", nameof(json));
+            //}
 
-            var dbInspector = this.Cruder.DbInspector;
-            var connection = dbInspector.Connection;
+            //var dbInspector = this.Cruder.DbInspector;
+            //var connection = dbInspector.Connection;
 
-            var tableInspector = dbInspector.GetTableInspector(tableName);
-            var tableMold = tableInspector.GetTableMold();
+            //var tableInspector = dbInspector.GetTableInspector(tableName);
+            //var tableMold = tableInspector.GetTableMold();
 
-            this.DeserializeTableData(connection, tableMold, tableData);
+            //this.DeserializeTableData(connection, tableMold, tableData);
         }
 
         public void DeserializeDbData(string json)
         {
-            var dbData = JsonConvert.DeserializeObject(json) as JObject;
-            if (dbData == null)
-            {
-                throw new ArgumentException("Could not deserialize DB data.", nameof(json));
-            }
+            throw new NotImplementedException();
+            //var dbData = JsonConvert.DeserializeObject(json) as JObject;
+            //if (dbData == null)
+            //{
+            //    throw new ArgumentException("Could not deserialize DB data.", nameof(json));
+            //}
 
-            var dbInspector = this.Cruder.DbInspector;
-            var connection = dbInspector.Connection;
+            //var dbInspector = this.Cruder.DbInspector;
+            //var connection = dbInspector.Connection;
 
-            foreach (var property in dbData.Properties())
-            {
-                var name = property.Name;
-                var tableData = property.Value as JArray;
+            //foreach (var property in dbData.Properties())
+            //{
+            //    var name = property.Name;
+            //    var tableData = property.Value as JArray;
 
-                if (tableData == null)
-                {
-                    throw new ArgumentException("Invalid data.", nameof(json));
-                }
+            //    if (tableData == null)
+            //    {
+            //        throw new ArgumentException("Invalid data.", nameof(json));
+            //    }
 
-                var tableInspector = dbInspector.GetTableInspector(name);
-                var tableMold = tableInspector.GetTableMold();
+            //    var tableInspector = dbInspector.GetTableInspector(name);
+            //    var tableMold = tableInspector.GetTableMold();
 
-                this.DeserializeTableData(connection, tableMold, tableData);
-            }
+            //    this.DeserializeTableData(connection, tableMold, tableData);
+            //}
         }
 
         public string SerializeTableMetadata(string tableName)
         {
             // null-check will be performed by 'GetTableInspector'
 
-            var tableInspector = this.Cruder.DbInspector.GetTableInspector(tableName);
-            var tableMold = tableInspector.GetTableMold();
+            throw new NotImplementedException();
 
-            var contractResolver = new DefaultContractResolver
-            {
-                NamingStrategy = new CamelCaseNamingStrategy(),
-            };
+            //var tableInspector = this.Cruder.DbInspector.GetTableInspector(tableName);
+            //var tableMold = tableInspector.GetTableMold();
 
-            var json = JsonConvert.SerializeObject(
-                tableMold,
-                new JsonSerializerSettings
-                {
-                    ContractResolver = contractResolver,
-                    Formatting = Formatting.Indented,
-                    Converters = new List<JsonConverter>
-                    {
-                        new StringEnumConverter(new CamelCaseNamingStrategy())
-                    }
-                });
+            //var contractResolver = new DefaultContractResolver
+            //{
+            //    NamingStrategy = new CamelCaseNamingStrategy(),
+            //};
 
-            return json;
+            //var json = JsonConvert.SerializeObject(
+            //    tableMold,
+            //    new JsonSerializerSettings
+            //    {
+            //        ContractResolver = contractResolver,
+            //        Formatting = Formatting.Indented,
+            //        Converters = new List<JsonConverter>
+            //        {
+            //            new StringEnumConverter(new CamelCaseNamingStrategy())
+            //        }
+            //    });
+
+            //return json;
         }
 
         public string SerializeDbMetadata(Func<string, bool> tableNamePredicate = null)
         {
-            tableNamePredicate = tableNamePredicate ?? TrueTableNamePredicate;
+            throw new NotImplementedException();
+            //tableNamePredicate = tableNamePredicate ?? TrueTableNamePredicate;
 
-            var tables = this.Cruder.DbInspector
-                .GetOrderedTableMolds(true)
-                .Where(x => tableNamePredicate(x.Name))
-                .ToList();
+            //var tables = this.Cruder.DbInspector
+            //    .GetOrderedTableMolds(true)
+            //    .Where(x => tableNamePredicate(x.Name))
+            //    .ToList();
 
-            var metadata = new DbMetadata
-            {
-                Tables = tables
-                    .Select(x => x.CloneTable(false))
-                    .ToList(),
-            };
+            //var metadata = new DbMetadata
+            //{
+            //    Tables = tables
+            //        .Select(x => x.CloneTable(false))
+            //        .ToList(),
+            //};
 
-            var contractResolver = new DefaultContractResolver
-            {
-                NamingStrategy = new CamelCaseNamingStrategy(),
-            };
+            //var contractResolver = new DefaultContractResolver
+            //{
+            //    NamingStrategy = new CamelCaseNamingStrategy(),
+            //};
             
-            var json = JsonConvert.SerializeObject(
-                metadata,
-                new JsonSerializerSettings
-                {
-                    ContractResolver = contractResolver,
-                    Formatting = Formatting.Indented,
-                    Converters = new List<JsonConverter>
-                    {
-                        new StringEnumConverter(new CamelCaseNamingStrategy())
-                    }
-                });
+            //var json = JsonConvert.SerializeObject(
+            //    metadata,
+            //    new JsonSerializerSettings
+            //    {
+            //        ContractResolver = contractResolver,
+            //        Formatting = Formatting.Indented,
+            //        Converters = new List<JsonConverter>
+            //        {
+            //            new StringEnumConverter(new CamelCaseNamingStrategy())
+            //        }
+            //    });
 
-            return json;
+            //return json;
         }
 
-        public void DeserializeTableMetadata(string tableName, string json)
-        {
-            throw new NotImplementedException();
-        }
+        //public void DeserializeTableMetadata(string tableName, string json)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public void DeserializeDbMetadata(string json)
-        {
-            throw new NotImplementedException();
-        }
+        //public void DeserializeDbMetadata(string json)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public event Action<string, int, object> RowDeserialized;
 

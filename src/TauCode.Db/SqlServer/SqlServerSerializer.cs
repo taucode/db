@@ -5,10 +5,16 @@ using TauCode.Db.Model;
 
 namespace TauCode.Db.SqlServer
 {
+    // todo: nice regions
     public class SqlServerSerializer : DbSerializerBase
     {
-        private const int MONEY_TYPE_PRECISION = 19;
-        private const int MONEY_TYPE_SCALE = 4;
+        #region Constants
+
+        protected const int MoneyTypePrecision = 19;
+        protected const int MoneyTypeScale = 4;
+
+        #endregion
+
 
         private readonly IDbConnection _connection;
 
@@ -17,14 +23,19 @@ namespace TauCode.Db.SqlServer
             _connection = connection ?? throw new ArgumentNullException(nameof(connection));
         }
 
-        protected override ICruder CreateCruder() => new SqlServerCruder(_connection);
+        //protected override ICruder CreateCruder() => new SqlServerCruder(_connection);
 
-        protected override IScriptBuilder CreateScriptBuilder()
+        //protected override IScriptBuilder CreateScriptBuilder()
+        //{
+        //    return new SqlServerScriptBuilder
+        //    {
+        //        CurrentOpeningIdentifierDelimiter = '[',
+        //    };
+        //}
+
+        protected override IUtilityFactory GetFactoryImpl()
         {
-            return new SqlServerScriptBuilder
-            {
-                CurrentOpeningIdentifierDelimiter = '[',
-            };
+            throw new NotImplementedException();
         }
 
         protected override ParameterInfo GetParameterInfo(TableMold tableMold, string columnName)
@@ -44,8 +55,8 @@ namespace TauCode.Db.SqlServer
                         parameterInfo = new ParameterInfo
                         {
                             DbType = DbType.Decimal,
-                            Precision = MONEY_TYPE_PRECISION,
-                            Scale = MONEY_TYPE_SCALE,
+                            Precision = MoneyTypePrecision,
+                            Scale = MoneyTypeScale,
                         };
                         break;
 

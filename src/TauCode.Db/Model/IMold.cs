@@ -2,9 +2,9 @@
 
 namespace TauCode.Db.Model
 {
-    public interface IDbMold
+    public interface IMold
     {
         IDictionary<string, string> Properties { get; set; }
-        IDbMold Clone(bool includeProperties = false);
+        IMold Clone(bool includeProperties = false);
     }
 }

@@ -5,7 +5,7 @@ using System.Linq;
 namespace TauCode.Db.Model
 {
     [DebuggerDisplay("{" + nameof(Name) + "}")]
-    public class IndexMold : IDbMold
+    public class IndexMold : IMold
     {
         public string Name { get; set; }
         public string TableName { get; set; }
@@ -13,7 +13,7 @@ namespace TauCode.Db.Model
         public bool IsUnique { get; set; }
         public IDictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
 
-        public IDbMold Clone(bool includeProperties = false)
+        public IMold Clone(bool includeProperties = false)
         {
             return new IndexMold
             {

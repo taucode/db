@@ -5,7 +5,7 @@ using System.Linq;
 namespace TauCode.Db.Model
 {
     [DebuggerDisplay("{" + nameof(Name) + "}")]
-    public class TableMold : IDbMold
+    public class TableMold : IMold
     {
         public string Name { get; set; }
         public List<ColumnMold> Columns { get; set; } = new List<ColumnMold>();
@@ -13,7 +13,7 @@ namespace TauCode.Db.Model
         public List<ForeignKeyMold> ForeignKeys { get; set; } = new List<ForeignKeyMold>();
         public List<IndexMold> Indexes { get; set; } = new List<IndexMold>();
         public IDictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
-        public IDbMold Clone(bool includeProperties = false)
+        public IMold Clone(bool includeProperties = false)
         {
             return new TableMold
             {

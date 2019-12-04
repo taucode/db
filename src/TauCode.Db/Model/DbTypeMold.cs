@@ -5,7 +5,7 @@ using System.Text;
 namespace TauCode.Db.Model
 {
     [DebuggerDisplay("{" + nameof(GetDefaultDefinition) + "()}")]
-    public class DbTypeMold : IDbMold
+    public class DbTypeMold : IMold
     {
         public string Name { get; set; }
 
@@ -16,7 +16,7 @@ namespace TauCode.Db.Model
         public int? Scale { get; set; }
 
         public IDictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
-        public IDbMold Clone(bool includeProperties = false)
+        public IMold Clone(bool includeProperties = false)
         {
             return new DbTypeMold
             {

@@ -30,6 +30,11 @@ namespace TauCode.Db.SQLite
 
         public override bool CanDecorateTypeIdentifier => false;
 
+        protected override IUtilityFactory GetFactoryImpl()
+        {
+            throw new NotImplementedException();
+        }
+
         public override IReadOnlyList<string> DataTypeNames => EmptyStrings;
 
         public override bool IsSingleWordTypeName(string typeName)

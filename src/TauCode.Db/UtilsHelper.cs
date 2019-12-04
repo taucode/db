@@ -4,7 +4,6 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using TauCode.Db.Data;
-using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
 
 namespace TauCode.Db
@@ -47,21 +46,22 @@ namespace TauCode.Db
             List<string> columnNames,
             char? delimiter)
         {
-            var sb = new StringBuilder();
+            throw new NotImplementedException();
+            //var sb = new StringBuilder();
 
-            for (var i = 0; i < columnNames.Count; i++)
-            {
-                var decoratedColumnName =
-                    scriptBuilder.Dialect.DecorateIdentifier(DbIdentifierType.Column, columnNames[i], delimiter);
-                sb.Append(decoratedColumnName);
+            //for (var i = 0; i < columnNames.Count; i++)
+            //{
+            //    var decoratedColumnName =
+            //        scriptBuilder.Dialect.DecorateIdentifier(DbIdentifierType.Column, columnNames[i], delimiter);
+            //    sb.Append(decoratedColumnName);
 
-                if (i < columnNames.Count - 1)
-                {
-                    sb.Append(", ");
-                }
-            }
+            //    if (i < columnNames.Count - 1)
+            //    {
+            //        sb.Append(", ");
+            //    }
+            //}
 
-            return sb.ToString();
+            //return sb.ToString();
         }
 
         internal static string DecorateIndexColumnsOverComma(
@@ -69,40 +69,42 @@ namespace TauCode.Db
             List<IndexColumnMold> columns,
             char? delimiter)
         {
-            var sbIndexColumns = new StringBuilder();
-            for (var i = 0; i < columns.Count; i++)
-            {
-                var column = columns[i];
-                sbIndexColumns.Append(scriptBuilder.Dialect.DecorateIdentifier(
-                    DbIdentifierType.Column,
-                    column.Name,
-                    delimiter));
+            throw new NotImplementedException();
 
-                string sortDirection;
-                switch (column.SortDirection)
-                {
-                    case SortDirection.Ascending:
-                        sortDirection = "ASC";
-                        break;
+            //var sbIndexColumns = new StringBuilder();
+            //for (var i = 0; i < columns.Count; i++)
+            //{
+            //    var column = columns[i];
+            //    sbIndexColumns.Append(scriptBuilder.Dialect.DecorateIdentifier(
+            //        DbIdentifierType.Column,
+            //        column.Name,
+            //        delimiter));
 
-                    case SortDirection.Descending:
-                        sortDirection = "DESC";
-                        break;
+            //    string sortDirection;
+            //    switch (column.SortDirection)
+            //    {
+            //        case SortDirection.Ascending:
+            //            sortDirection = "ASC";
+            //            break;
 
-                    default:
-                        throw new ScriptBuildingException($"Invalid sort direction: '{column.SortDirection}'.");
-                }
+            //        case SortDirection.Descending:
+            //            sortDirection = "DESC";
+            //            break;
 
-                sbIndexColumns.Append(" ");
-                sbIndexColumns.Append(sortDirection);
+            //        default:
+            //            throw new ScriptBuildingException($"Invalid sort direction: '{column.SortDirection}'.");
+            //    }
 
-                if (i < columns.Count - 1)
-                {
-                    sbIndexColumns.Append(", ");
-                }
-            }
+            //    sbIndexColumns.Append(" ");
+            //    sbIndexColumns.Append(sortDirection);
 
-            return sbIndexColumns.ToString();
+            //    if (i < columns.Count - 1)
+            //    {
+            //        sbIndexColumns.Append(", ");
+            //    }
+            //}
+
+            //return sbIndexColumns.ToString();
         }
 
         internal static string ByteArrayToHex(byte[] bytes)
@@ -145,12 +147,12 @@ namespace TauCode.Db
             return columnMold.GetBoolProperty("is-explicit-primary-key");
         }
 
-        internal static void SetBoolProperty(this IDbMold mold, string propertyName, bool value)
+        internal static void SetBoolProperty(this IMold mold, string propertyName, bool value)
         {
             mold.Properties[propertyName] = value.ToString();
         }
 
-        internal static bool GetBoolProperty(this IDbMold mold, string propertyName, bool? resultOnNotFound = false)
+        internal static bool GetBoolProperty(this IMold mold, string propertyName, bool? resultOnNotFound = false)
         {
             var gotProperty = mold.Properties.TryGetValue(propertyName, out var stringValue);
             if (gotProperty)

@@ -9,10 +9,14 @@ namespace TauCode.Db.SQLite
         {
         }
 
-        protected override string ExpectedDbConnectionTypeFullName => "System.Data.SQLite.SQLiteConnection";
+        //protected override string ExpectedDbConnectionTypeFullName => "System.Data.SQLite.SQLiteConnection";
 
-        protected override IScriptBuilder CreateScriptBuilder() => new SQLiteScriptBuilder();
+        //protected override IScriptBuilder CreateScriptBuilder() => new SQLiteScriptBuilder();
 
-        protected override IDbInspector CreateDbInspector() => new SQLiteInspector(this.GetSafeConnection());
+        //protected override IDbInspector CreateDbInspector() => new SQLiteInspector(this.GetSafeConnection());
+        protected override IUtilityFactory GetFactoryImpl()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

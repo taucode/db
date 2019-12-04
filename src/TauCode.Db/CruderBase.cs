@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using TauCode.Data;
-using TauCode.Db.Data;
-using TauCode.Db.Exceptions;
 
 namespace TauCode.Db
 {
+    // todo: cache scripts. YES!
     public abstract class CruderBase : ICruder
     {
         #region Fields
@@ -29,11 +25,14 @@ namespace TauCode.Db
 
         #region Polymorph
 
-        protected abstract string ExpectedDbConnectionTypeFullName { get; }
+        // todo: move to factory.
+        //protected abstract string ExpectedDbConnectionTypeFullName { get; }
 
-        protected abstract IScriptBuilder CreateScriptBuilder();
+        protected abstract IUtilityFactory GetFactoryImpl();
 
-        protected abstract IDbInspector CreateDbInspector();
+        //protected abstract IScriptBuilder CreateScriptBuilder();
+
+        //protected abstract IDbInspector CreateDbInspector();
 
         #endregion
 
@@ -41,198 +40,207 @@ namespace TauCode.Db
 
         protected IDbConnection GetSafeConnection()
         {
-            if (_connection.GetType().FullName == this.ExpectedDbConnectionTypeFullName)
-            {
-                return _connection;
-            }
+            throw new NotImplementedException();
+            //if (_connection.GetType().FullName == this.ExpectedDbConnectionTypeFullName)
+            //{
+            //    return _connection;
+            //}
 
-            throw new TypeMismatchException(
-                $"Expected DB connection type is '{this.ExpectedDbConnectionTypeFullName}', but an instance of '{_connection.GetType().FullName}' was provided.");
+            //throw new TypeMismatchException(
+            //    $"Expected DB connection type is '{this.ExpectedDbConnectionTypeFullName}', but an instance of '{_connection.GetType().FullName}' was provided.");
         }
 
         #endregion
 
         #region ICruder Members
 
-        public IDbInspector DbInspector => _dbInspector ?? (_dbInspector = this.CreateDbInspector());
+        //public IDbInspector DbInspector => _dbInspector ?? (_dbInspector = this.CreateDbInspector());
 
-        public IScriptBuilder ScriptBuilder => _scriptBuilder ?? (_scriptBuilder = this.CreateScriptBuilder());
+        //public IScriptBuilder ScriptBuilder => _scriptBuilder ?? (_scriptBuilder = this.CreateScriptBuilder());
+
+        public IUtilityFactory Factory => this.GetFactoryImpl();
 
         public void InsertRow(string tableName, object row)
         {
-            if (tableName == null)
-            {
-                throw new ArgumentNullException(nameof(tableName));
-            }
+            throw new NotImplementedException();
 
-            if (row == null)
-            {
-                throw new ArgumentNullException(nameof(row));
-            }
+            //if (tableName == null)
+            //{
+            //    throw new ArgumentNullException(nameof(tableName));
+            //}
 
-            IDictionary<string, object> dictionary;
+            //if (row == null)
+            //{
+            //    throw new ArgumentNullException(nameof(row));
+            //}
 
-            if (row is IDictionary<string, object> dictionaryParam)
-            {
-                dictionary = dictionaryParam;
-            }
-            else if (row is DynamicRow dynamicRow)
-            {
-                dictionary = dynamicRow.ToDictionary();
-            }
-            else
-            {
-                dictionary = new ValueDictionary(row);
-            }
+            //IDictionary<string, object> dictionary;
 
-            var connection = this.GetSafeConnection();
+            //if (row is IDictionary<string, object> dictionaryParam)
+            //{
+            //    dictionary = dictionaryParam;
+            //}
+            //else if (row is DynamicRow dynamicRow)
+            //{
+            //    dictionary = dynamicRow.ToDictionary();
+            //}
+            //else
+            //{
+            //    dictionary = new ValueDictionary(row);
+            //}
 
-            var tableInspector = this.DbInspector.GetTableInspector(tableName);
-            var tableMold = tableInspector.GetTableMold();
+            //var connection = this.GetSafeConnection();
 
-            var script = this.ScriptBuilder.BuildParameterizedInsertSql(
-                tableMold,
-                out var parameterMapping,
-                columnsToInclude: dictionary.Keys.ToArray(),
-                indent: 4);
+            //var tableInspector = this.DbInspector.GetTableInspector(tableName);
+            //var tableMold = tableInspector.GetTableMold();
 
-            using (var command = connection.CreateCommand())
-            {
-                command.CommandText = script;
+            //var script = this.ScriptBuilder.BuildParameterizedInsertSql(
+            //    tableMold,
+            //    out var parameterMapping,
+            //    columnsToInclude: dictionary.Keys.ToArray(),
+            //    indent: 4);
 
-                foreach (var columnName in parameterMapping.Keys)
-                {
-                    var parameterName = parameterMapping[columnName];
-                    var parameterValue = dictionary[columnName] ?? DBNull.Value;
+            //using (var command = connection.CreateCommand())
+            //{
+            //    command.CommandText = script;
 
-                    command.AddParameterWithValue(parameterName, parameterValue);
-                }
+            //    foreach (var columnName in parameterMapping.Keys)
+            //    {
+            //        var parameterName = parameterMapping[columnName];
+            //        var parameterValue = dictionary[columnName] ?? DBNull.Value;
 
-                command.ExecuteNonQuery();
-            }
+            //        command.AddParameterWithValue(parameterName, parameterValue);
+            //    }
+
+            //    command.ExecuteNonQuery();
+            //}
         }
 
         public bool DeleteRow(string tableName, object id)
         {
-            if (tableName == null)
-            {
-                throw new ArgumentNullException(nameof(tableName));
-            }
+            throw new NotImplementedException();
+            //if (tableName == null)
+            //{
+            //    throw new ArgumentNullException(nameof(tableName));
+            //}
 
-            if (id == null)
-            {
-                throw new ArgumentNullException(nameof(id));
-            }
+            //if (id == null)
+            //{
+            //    throw new ArgumentNullException(nameof(id));
+            //}
 
-            var tableInspector = this.DbInspector.GetTableInspector(tableName);
-            var tableMold = tableInspector.GetTableMold();
-            var connection = this.GetSafeConnection();
+            //var tableInspector = this.DbInspector.GetTableInspector(tableName);
+            //var tableMold = tableInspector.GetTableMold();
+            //var connection = this.GetSafeConnection();
 
 
-            using (var command = connection.CreateCommand())
-            {
-                command.CommandText = this.ScriptBuilder.BuildDeleteRowByIdSql(tableMold, out var paramName);
-                command.AddParameterWithValue(paramName, id);
+            //using (var command = connection.CreateCommand())
+            //{
+            //    command.CommandText = this.ScriptBuilder.BuildDeleteRowByIdSql(tableMold, out var paramName);
+            //    command.AddParameterWithValue(paramName, id);
 
-                var deletedCount = command.ExecuteNonQuery();
-                return deletedCount == 1;
-            }
+            //    var deletedCount = command.ExecuteNonQuery();
+            //    return deletedCount == 1;
+            //}
         }
 
         public dynamic GetRow(string tableName, object id)
         {
-            if (tableName == null)
-            {
-                throw new ArgumentNullException(nameof(tableName));
-            }
+            throw new NotImplementedException();
+            //if (tableName == null)
+            //{
+            //    throw new ArgumentNullException(nameof(tableName));
+            //}
 
-            if (id == null)
-            {
-                throw new ArgumentNullException(nameof(id));
-            }
+            //if (id == null)
+            //{
+            //    throw new ArgumentNullException(nameof(id));
+            //}
 
-            var tableInspector = this.DbInspector.GetTableInspector(tableName);
-            var tableMold = tableInspector.GetTableMold();
-            var connection = this.GetSafeConnection();
+            //var tableInspector = this.DbInspector.GetTableInspector(tableName);
+            //var tableMold = tableInspector.GetTableMold();
+            //var connection = this.GetSafeConnection();
 
-            using (var command = connection.CreateCommand())
-            {
-                command.CommandText = this.ScriptBuilder.BuildSelectRowByIdSql(tableMold, out var paramName);
-                command.AddParameterWithValue(paramName, id);
+            //using (var command = connection.CreateCommand())
+            //{
+            //    command.CommandText = this.ScriptBuilder.BuildSelectRowByIdSql(tableMold, out var paramName);
+            //    command.AddParameterWithValue(paramName, id);
 
-                var rows = UtilsHelper.GetCommandRows(command);
-                return rows.SingleOrDefault();
-            }
+            //    var rows = UtilsHelper.GetCommandRows(command);
+            //    return rows.SingleOrDefault();
+            //}
         }
 
         public bool UpdateRow(string tableName, object rowUpdate, object id)
         {
-            if (tableName == null)
-            {
-                throw new ArgumentNullException(nameof(tableName));
-            }
+            throw new NotImplementedException();
 
-            if (rowUpdate == null)
-            {
-                throw new ArgumentNullException(nameof(rowUpdate));
-            }
+            //if (tableName == null)
+            //{
+            //    throw new ArgumentNullException(nameof(tableName));
+            //}
 
-            if (id == null)
-            {
-                throw new ArgumentNullException(nameof(id));
-            }
+            //if (rowUpdate == null)
+            //{
+            //    throw new ArgumentNullException(nameof(rowUpdate));
+            //}
 
-            IDictionary<string, object> dictionary;
+            //if (id == null)
+            //{
+            //    throw new ArgumentNullException(nameof(id));
+            //}
 
-            if (rowUpdate is IDictionary<string, object> dictionaryParam)
-            {
-                dictionary = dictionaryParam;
-            }
-            else if (rowUpdate is DynamicRow dynamicRow)
-            {
-                dictionary = dynamicRow.ToDictionary();
-            }
-            else
-            {
-                dictionary = new ValueDictionary(rowUpdate);
-            }
+            //IDictionary<string, object> dictionary;
 
-            var tableInspector = this.DbInspector.GetTableInspector(tableName);
-            var tableMold = tableInspector.GetTableMold();
-            var connection = this.GetSafeConnection();
+            //if (rowUpdate is IDictionary<string, object> dictionaryParam)
+            //{
+            //    dictionary = dictionaryParam;
+            //}
+            //else if (rowUpdate is DynamicRow dynamicRow)
+            //{
+            //    dictionary = dynamicRow.ToDictionary();
+            //}
+            //else
+            //{
+            //    dictionary = new ValueDictionary(rowUpdate);
+            //}
 
-            var pkColumnName = tableMold.GetSinglePrimaryKeyColumnName();
+            //var tableInspector = this.DbInspector.GetTableInspector(tableName);
+            //var tableMold = tableInspector.GetTableMold();
+            //var connection = this.GetSafeConnection();
 
-            var script = this.ScriptBuilder.BuildUpdateRowByIdSql(
-                tableMold.Name,
-                pkColumnName,
-                dictionary.Keys.ToArray(),
-                out var parameterMapping);
+            //var pkColumnName = tableMold.GetSinglePrimaryKeyColumnName();
 
-            using (var command = connection.CreateCommand())
-            {
-                command.CommandText = script;
+            //var script = this.ScriptBuilder.BuildUpdateRowByIdSql(
+            //    tableMold.Name,
+            //    pkColumnName,
+            //    dictionary.Keys.ToArray(),
+            //    out var parameterMapping);
 
-                foreach (var columnName in parameterMapping.Keys)
-                {
-                    var paramName = parameterMapping[columnName];
-                    object paramValue;
+            //using (var command = connection.CreateCommand())
+            //{
+            //    command.CommandText = script;
 
-                    if (columnName == pkColumnName)
-                    {
-                        paramValue = id;
-                    }
-                    else
-                    {
-                        paramValue = dictionary[columnName] ?? DBNull.Value;
-                    }
+            //    foreach (var columnName in parameterMapping.Keys)
+            //    {
+            //        var paramName = parameterMapping[columnName];
+            //        object paramValue;
 
-                    command.AddParameterWithValue(paramName, paramValue);
-                }
+            //        if (columnName == pkColumnName)
+            //        {
+            //            paramValue = id;
+            //        }
+            //        else
+            //        {
+            //            paramValue = dictionary[columnName] ?? DBNull.Value;
+            //        }
 
-                var rowsAffected = command.ExecuteNonQuery();
-                return rowsAffected > 0; // actually, should always be 0 or 1.
-            }
+            //        command.AddParameterWithValue(paramName, paramValue);
+            //    }
+
+            //    var rowsAffected = command.ExecuteNonQuery();
+            //    return rowsAffected > 0; // actually, should always be 0 or 1.
+            //}
         }
 
         #endregion

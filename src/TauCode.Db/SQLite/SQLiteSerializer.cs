@@ -14,14 +14,19 @@ namespace TauCode.Db.SQLite
             _connection = connection ?? throw new ArgumentNullException(nameof(connection));
         }
 
-        protected override ICruder CreateCruder() => new SQLiteCruder(_connection);
+        //protected override ICruder CreateCruder() => new SQLiteCruder(_connection);
 
-        protected override IScriptBuilder CreateScriptBuilder()
+        //protected override IScriptBuilder CreateScriptBuilder()
+        //{
+        //    return new SQLiteScriptBuilder
+        //    {
+        //        CurrentOpeningIdentifierDelimiter = '[',
+        //    };
+        //}
+
+        protected override IUtilityFactory GetFactoryImpl()
         {
-            return new SQLiteScriptBuilder
-            {
-                CurrentOpeningIdentifierDelimiter = '[',
-            };
+            throw new NotImplementedException();
         }
 
         protected override ParameterInfo GetParameterInfo(TableMold tableMold, string columnName)

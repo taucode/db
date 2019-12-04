@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Data;
-using System.Linq;
 
 namespace TauCode.Db.MySql
 {
@@ -10,53 +9,65 @@ namespace TauCode.Db.MySql
 
         public MySqlInspector(IDbConnection connection)
         {
-            this.Connection = connection ?? throw new ArgumentNullException(nameof(connection));
+            throw new NotImplementedException();
+            //this.Connection = connection ?? throw new ArgumentNullException(nameof(connection));
         }
 
         #endregion
 
-        #region IDbInspector Members
+        #region IDbInspector Members OLD
 
-        public IDbConnection Connection { get; }
+//        public IDbConnection Connection { get; }
 
-        public IScriptBuilder CreateScriptBuilder() => new MySqlScriptBuilder();
+//        public IScriptBuilder CreateScriptBuilder() => new MySqlScriptBuilder();
 
-        public string[] GetTableNames()
+//        public string[] GetTableNames()
+//        {
+//            using (var command = this.Connection.CreateCommand())
+//            {
+//                var sql =
+//$@"
+//SELECT
+//    T.table_name TableName
+//FROM
+//    information_schema.tables T
+//WHERE
+//    T.table_schema = @p_schemaName";
+
+//                command.CommandText = sql;
+//                command.AddParameterWithValue("p_schemaName", this.Connection.Database);
+
+//                return UtilsHelper
+//                    .GetCommandRows(command)
+//                    .Select(x => (string)x.TableName)
+//                    .ToArray();
+//            }
+//        }
+
+//        public ITableInspector GetTableInspector(string tableName)
+//        {
+//            if (tableName == null)
+//            {
+//                throw new ArgumentNullException(nameof(tableName));
+//            }
+
+//            var realTableNames = this.GetTableNames();
+//            var realTableName = realTableNames.Single(x => string.Equals(x, tableName, StringComparison.InvariantCultureIgnoreCase));
+
+//            return new MySqlTableInspector(this.Connection, realTableName);
+//        }
+
+        #endregion
+
+        public IUtilityFactory Factory => throw new NotImplementedException();
+        public string[] GetTableNames(bool? independentFirst = null)
         {
-            using (var command = this.Connection.CreateCommand())
-            {
-                var sql =
-$@"
-SELECT
-    T.table_name TableName
-FROM
-    information_schema.tables T
-WHERE
-    T.table_schema = @p_schemaName";
-
-                command.CommandText = sql;
-                command.AddParameterWithValue("p_schemaName", this.Connection.Database);
-
-                return UtilsHelper
-                    .GetCommandRows(command)
-                    .Select(x => (string)x.TableName)
-                    .ToArray();
-            }
+            throw new NotImplementedException();
         }
 
         public ITableInspector GetTableInspector(string tableName)
         {
-            if (tableName == null)
-            {
-                throw new ArgumentNullException(nameof(tableName));
-            }
-
-            var realTableNames = this.GetTableNames();
-            var realTableName = realTableNames.Single(x => string.Equals(x, tableName, StringComparison.InvariantCultureIgnoreCase));
-
-            return new MySqlTableInspector(this.Connection, realTableName);
+            throw new NotImplementedException();
         }
-
-        #endregion
     }
 }

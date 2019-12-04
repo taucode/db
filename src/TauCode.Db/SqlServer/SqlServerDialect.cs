@@ -26,6 +26,7 @@ namespace TauCode.Db.SqlServer
 
         #region Overridden
 
+        // todo: need this at all?
         public override string ValueToSqlValueString(DbTypeMold type, object value)
         {
             if (type == null)
@@ -54,6 +55,11 @@ namespace TauCode.Db.SqlServer
             }
 
             return literal;
+        }
+
+        protected override IUtilityFactory GetFactoryImpl()
+        {
+            throw new NotImplementedException();
         }
 
         public override string UnicodeTextLiteralPrefix => "N";

@@ -85,18 +85,19 @@ ORDER BY
 
         protected override ColumnMold ColumnInfoToColumnMold(ColumnInfo columnInfo)
         {
-            var columnMold = new ColumnMold
-            {
-                Name = columnInfo.Name,
-                Type = this.Dialect.ResolveType(columnInfo.TypeName, columnInfo.Size, columnInfo.Precision, columnInfo.Scale),
-                IsNullable = columnInfo.IsNullable,
+            throw new NotImplementedException();
+            //var columnMold = new ColumnMold
+            //{
+            //    Name = columnInfo.Name,
+            //    Type = this.Dialect.ResolveType(columnInfo.TypeName, columnInfo.Size, columnInfo.Precision, columnInfo.Scale),
+            //    IsNullable = columnInfo.IsNullable,
 
-                // Deferred TODO: resurrect MySql when get time.
-                //Properties = columnInfo.AdditionalProperties
-                //    .ToDictionary(x => x.Key, x => x.Value),
-            };
+            //    // Deferred TODO: resurrect MySql when get time.
+            //    //Properties = columnInfo.AdditionalProperties
+            //    //    .ToDictionary(x => x.Key, x => x.Value),
+            //};
 
-            return columnMold;
+            //return columnMold;
         }
 
         protected override Dictionary<string, ColumnIdentityMold> GetIdentities()
@@ -138,98 +139,98 @@ WHERE
         //    return new MySqlCruder();
         //}
 
-        public override PrimaryKeyMold GetPrimaryKeyMold()
-        {
-            var pkIndex = this.GetIndexMolds().SingleOrDefault(x => x.Name == "PRIMARY");
+//        public override PrimaryKeyMold GetPrimaryKeyMold()
+//        {
+//            var pkIndex = this.GetIndexMolds().SingleOrDefault(x => x.Name == "PRIMARY");
 
-            if (pkIndex == null)
-            {
-                return null;
-            }
+//            if (pkIndex == null)
+//            {
+//                return null;
+//            }
 
-            return new PrimaryKeyMold
-            {
-                Name = pkIndex.Name,
-                Columns = pkIndex.Columns.ToList(),
-            };
-        }
+//            return new PrimaryKeyMold
+//            {
+//                Name = pkIndex.Name,
+//                Columns = pkIndex.Columns.ToList(),
+//            };
+//        }
 
-        public override List<ForeignKeyMold> GetForeignKeyMolds()
-        {
-            using (var command = this.Connection.CreateCommand())
-            {
-                command.CommandText =
-@"
-SELECT
-    KCU.constraint_name                 ConstraintName,
-    KCU.referenced_table_name           ReferencedTableName,
-    KCU.column_name                     ColumnName,
-    KCU.referenced_column_name          ReferencedColumnName,
-    KCU.ordinal_position                OrdinalPosition,
-    KCU.position_in_unique_constraint   PositionInUniqueConstraint
-FROM
-    information_schema.key_column_usage KCU
-WHERE
-    KCU.table_schema = @p_schemaName
-    AND
-    KCU.table_name = @p_tableName
-    AND
-    KCU.referenced_table_name IS NOT NULL
-";
+//        public override List<ForeignKeyMold> GetForeignKeyMolds()
+//        {
+//            using (var command = this.Connection.CreateCommand())
+//            {
+//                command.CommandText =
+//@"
+//SELECT
+//    KCU.constraint_name                 ConstraintName,
+//    KCU.referenced_table_name           ReferencedTableName,
+//    KCU.column_name                     ColumnName,
+//    KCU.referenced_column_name          ReferencedColumnName,
+//    KCU.ordinal_position                OrdinalPosition,
+//    KCU.position_in_unique_constraint   PositionInUniqueConstraint
+//FROM
+//    information_schema.key_column_usage KCU
+//WHERE
+//    KCU.table_schema = @p_schemaName
+//    AND
+//    KCU.table_name = @p_tableName
+//    AND
+//    KCU.referenced_table_name IS NOT NULL
+//";
 
-                command.AddParameterWithValue("p_schemaName", this.Connection.Database);
-                command.AddParameterWithValue("p_tableName", this.TableName);
+//                command.AddParameterWithValue("p_schemaName", this.Connection.Database);
+//                command.AddParameterWithValue("p_tableName", this.TableName);
 
-                var foreignKeys = UtilsHelper
-                    .GetCommandRows(command)
-                    .GroupBy(x => (string)x.ConstraintName)
-                    .Where(g => g.Key != "PRIMARY")
-                    .Select(g => new ForeignKeyMold
-                    {
-                        Name = g.Key,
-                        ReferencedTableName = (string)g.First().ReferencedTableName,
-                        ColumnNames = g
-                            .OrderBy(x => (uint)x.OrdinalPosition)
-                            .Select(x => (string)x.ColumnName)
-                            .ToList(),
-                        ReferencedColumnNames = g
-                            .OrderBy(x => (uint)x.PositionInUniqueConstraint)
-                            .Select(x => (string)x.ReferencedColumnName)
-                            .ToList(),
-                    })
-                    .ToList();
+//                var foreignKeys = UtilsHelper
+//                    .GetCommandRows(command)
+//                    .GroupBy(x => (string)x.ConstraintName)
+//                    .Where(g => g.Key != "PRIMARY")
+//                    .Select(g => new ForeignKeyMold
+//                    {
+//                        Name = g.Key,
+//                        ReferencedTableName = (string)g.First().ReferencedTableName,
+//                        ColumnNames = g
+//                            .OrderBy(x => (uint)x.OrdinalPosition)
+//                            .Select(x => (string)x.ColumnName)
+//                            .ToList(),
+//                        ReferencedColumnNames = g
+//                            .OrderBy(x => (uint)x.PositionInUniqueConstraint)
+//                            .Select(x => (string)x.ReferencedColumnName)
+//                            .ToList(),
+//                    })
+//                    .ToList();
 
-                return foreignKeys;
-            }
-        }
+//                return foreignKeys;
+//            }
+//        }
 
-        public override List<IndexMold> GetIndexMolds()
-        {
-            using (var command = this.Connection.CreateCommand())
-            {
-                command.CommandText = $@"SHOW INDEX FROM `{this.TableName}`";
+//        public override List<IndexMold> GetIndexMolds()
+//        {
+//            using (var command = this.Connection.CreateCommand())
+//            {
+//                command.CommandText = $@"SHOW INDEX FROM `{this.TableName}`";
 
-                var indexMolds = UtilsHelper
-                    .GetCommandRows(command)
-                    .GroupBy(x => (string)x.key_name)
-                    .Select(g => new IndexMold
-                    {
-                        Name = (string)g.Key,
-                        IsUnique = (int)g.First().non_unique == 0,
-                        Columns = g
-                            .OrderBy(x => (uint)x.seq_in_index)
-                            .Select(x => new IndexColumnMold
-                            {
-                                Name = (string)x.column_name,
-                                SortDirection = (string)x.collation == "D" ? SortDirection.Descending : SortDirection.Ascending,
-                            })
-                            .ToList(),
-                    })
-                    .ToList();
+//                var indexMolds = UtilsHelper
+//                    .GetCommandRows(command)
+//                    .GroupBy(x => (string)x.key_name)
+//                    .Select(g => new IndexMold
+//                    {
+//                        Name = (string)g.Key,
+//                        IsUnique = (int)g.First().non_unique == 0,
+//                        Columns = g
+//                            .OrderBy(x => (uint)x.seq_in_index)
+//                            .Select(x => new IndexColumnMold
+//                            {
+//                                Name = (string)x.column_name,
+//                                SortDirection = (string)x.collation == "D" ? SortDirection.Descending : SortDirection.Ascending,
+//                            })
+//                            .ToList(),
+//                    })
+//                    .ToList();
 
-                return indexMolds;
-            }
-        }
+//                return indexMolds;
+//            }
+//        }
 
         #endregion
 

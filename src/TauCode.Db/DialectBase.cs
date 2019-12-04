@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
 
@@ -89,12 +88,14 @@ namespace TauCode.Db
 
         #region Constructor
 
-        protected DialectBase(string name)
+        protected DialectBase(string name) // todo: remove. use IUtilityFactory's name.
         {
             this.Name = name ?? throw new ArgumentNullException(nameof(name));
         }
 
         #endregion
+
+        protected abstract IUtilityFactory GetFactoryImpl(); // todo: move to region
 
         #region Protected
 
@@ -121,13 +122,16 @@ namespace TauCode.Db
             return new ArgumentException($"Could not convert value of type '{obj.GetType().FullName}' to {desiredFamily}");
         }
 
-        protected virtual string CharFunctionName => "CHAR";
+        // todo: remove.
+        //protected virtual string CharFunctionName => "CHAR";
 
         #endregion
 
         #region IDialect Members
 
-        public string Name { get; }
+        public IUtilityFactory Factory => this.GetFactoryImpl();
+
+        public string Name { get; } // todo: remove
 
         public virtual IReadOnlyList<string> ReservedWords => _reservedWords ?? (_reservedWords = this.BuildReservedWords());
 
@@ -437,92 +441,94 @@ namespace TauCode.Db
 
         public virtual string StringToSqlString(string value, bool isUnicode)
         {
-            if (value == null)
-            {
-                return "NULL";
-            }
+            throw new NotImplementedException();
 
-            var normalStringOpened = false;
-            var sb = new StringBuilder();
+            //if (value == null)
+            //{
+            //    return "NULL";
+            //}
 
-            if (value.Length == 0)
-            {
-                if (isUnicode)
-                {
-                    sb.Append(this.UnicodeTextLiteralPrefix);
-                }
+            //var normalStringOpened = false;
+            //var sb = new StringBuilder();
 
-                sb.Append("''");
-            }
+            //if (value.Length == 0)
+            //{
+            //    if (isUnicode)
+            //    {
+            //        sb.Append(this.UnicodeTextLiteralPrefix);
+            //    }
 
-            for (var i = 0; i < value.Length; i++)
-            {
-                var c = value[i];
-                if (c < SPACE)
-                {
-                    if (c == TAB || c == CR || c == LF)
-                    {
-                        if (normalStringOpened)
-                        {
-                            sb.Append("'"); // close normal string
-                        }
+            //    sb.Append("''");
+            //}
 
-                        normalStringOpened = false;
+            //for (var i = 0; i < value.Length; i++)
+            //{
+            //    var c = value[i];
+            //    if (c < SPACE)
+            //    {
+            //        if (c == TAB || c == CR || c == LF)
+            //        {
+            //            if (normalStringOpened)
+            //            {
+            //                sb.Append("'"); // close normal string
+            //            }
 
-                        if (i == 0)
-                        {
-                            // don't add anything
-                        }
-                        else
-                        {
-                            sb.Append(" + ");
-                        }
+            //            normalStringOpened = false;
 
-                        sb.Append($"{this.CharFunctionName}({(int)c})");
-                    }
-                    else
-                    {
-                        throw new ArgumentException($"Value contains unsupported char ({(int)c}).", nameof(value));
-                    }
-                }
-                else
-                {
-                    if (normalStringOpened)
-                    {
-                        // keep working
-                    }
-                    else
-                    {
-                        if (i == 0)
-                        {
-                            // don't add anything
-                        }
-                        else
-                        {
-                            sb.Append(" + ");
-                        }
+            //            if (i == 0)
+            //            {
+            //                // don't add anything
+            //            }
+            //            else
+            //            {
+            //                sb.Append(" + ");
+            //            }
 
-                        // open string
-                        if (isUnicode)
-                        {
-                            sb.Append(this.UnicodeTextLiteralPrefix);
-                        }
+            //            sb.Append($"{this.CharFunctionName}({(int)c})");
+            //        }
+            //        else
+            //        {
+            //            throw new ArgumentException($"Value contains unsupported char ({(int)c}).", nameof(value));
+            //        }
+            //    }
+            //    else
+            //    {
+            //        if (normalStringOpened)
+            //        {
+            //            // keep working
+            //        }
+            //        else
+            //        {
+            //            if (i == 0)
+            //            {
+            //                // don't add anything
+            //            }
+            //            else
+            //            {
+            //                sb.Append(" + ");
+            //            }
 
-                        sb.Append("'");
-                        normalStringOpened = true;
-                    }
+            //            // open string
+            //            if (isUnicode)
+            //            {
+            //                sb.Append(this.UnicodeTextLiteralPrefix);
+            //            }
 
-                    sb.Append(c == QUOTE ? "''" : c.ToString());
-                }
-            }
+            //            sb.Append("'");
+            //            normalStringOpened = true;
+            //        }
 
-            if (normalStringOpened)
-            {
-                // need to close normal string
-                sb.Append("'");
-            }
+            //        sb.Append(c == QUOTE ? "''" : c.ToString());
+            //    }
+            //}
 
-            return sb.ToString();
+            //if (normalStringOpened)
+            //{
+            //    // need to close normal string
+            //    sb.Append("'");
+            //}
+
+            //return sb.ToString();
         }
 
         #endregion

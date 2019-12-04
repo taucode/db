@@ -1,8 +1,6 @@
-﻿using System.Data;
-
-namespace TauCode.Db.SqlServer
+﻿namespace TauCode.Db.SqlServer
 {
-    public class SqlServerScriptBuilder : SqlServerScriptBuilderBase
+    public class SqlServerScriptBuilder : /*SqlServerScriptBuilderBase*/ ScriptBuilderBase
     {
         #region Constructor
 
@@ -15,10 +13,10 @@ namespace TauCode.Db.SqlServer
 
         #region Overridden
 
-        protected override IDbInspector CreateDbInspector(IDbConnection connection)
-        {
-            return new SqlServerInspector(connection);
-        }
+        //protected override IDbInspector CreateDbInspector(IDbConnection connection)
+        //{
+        //    return new SqlServerInspector(connection);
+        //}
 
         #endregion
     }

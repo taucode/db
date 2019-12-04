@@ -1,14 +1,12 @@
-﻿using System.Data;
-
-namespace TauCode.Db
+﻿namespace TauCode.Db
 {
-    public interface IDbInspector
+    public interface IDbInspector : IUtility
     {
-        IDbConnection Connection { get; }
+        //IDbConnection Connection { get; }
 
-        IScriptBuilder CreateScriptBuilder();
+        //IScriptBuilder CreateScriptBuilder();
 
-        string[] GetTableNames();
+        string[] GetTableNames(bool? independentFirst = null);
 
         ITableInspector GetTableInspector(string tableName);
     }

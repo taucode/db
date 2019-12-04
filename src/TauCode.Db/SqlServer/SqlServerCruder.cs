@@ -9,10 +9,14 @@ namespace TauCode.Db.SqlServer
         {
         }
 
-        protected override string ExpectedDbConnectionTypeFullName => "System.Data.SqlClient.SqlConnection";
+        //protected override string ExpectedDbConnectionTypeFullName => "System.Data.SqlClient.SqlConnection";
 
-        protected override IScriptBuilder CreateScriptBuilder() => new SqlServerScriptBuilder();
+        //protected override IScriptBuilder CreateScriptBuilder() => new SqlServerScriptBuilder();
 
-        protected override IDbInspector CreateDbInspector() => new SqlServerInspector(this.GetSafeConnection());
+        //protected override IDbInspector CreateDbInspector() => new SqlServerInspector(this.GetSafeConnection());
+        protected override IUtilityFactory GetFactoryImpl()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

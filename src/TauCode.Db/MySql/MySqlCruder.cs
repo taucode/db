@@ -9,8 +9,12 @@ namespace TauCode.Db.MySql
         {
         }
 
-        protected override string ExpectedDbConnectionTypeFullName => "MySql.Data.MySqlClient.MySqlConnection";
-        protected override IScriptBuilder CreateScriptBuilder() => new MySqlScriptBuilder();
-        protected override IDbInspector CreateDbInspector() => new MySqlInspector(this.GetSafeConnection());
+        //protected override string ExpectedDbConnectionTypeFullName => "MySql.Data.MySqlClient.MySqlConnection";
+        //protected override IScriptBuilder CreateScriptBuilder() => new MySqlScriptBuilder();
+        //protected override IDbInspector CreateDbInspector() => new MySqlInspector(this.GetSafeConnection());
+        protected override IUtilityFactory GetFactoryImpl()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

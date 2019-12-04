@@ -1,102 +1,102 @@
-﻿using System;
-using System.Data;
-using System.Linq;
-using TauCode.Db.Exceptions;
+﻿//using System;
+//using System.Data;
+//using System.Linq;
+//using TauCode.Db.Exceptions;
 
-namespace TauCode.Db.SqlServer
-{
-    // todo: get rid of this. no more SQL Server CE :(
-    public abstract class SqlServerInspectorBase : IDbInspector
-    {
-        #region Constructor
+//namespace TauCode.Db.SqlServer
+//{
+//    // todo: get rid of this. no more SQL Server CE :(
+//    public abstract class SqlServerInspectorBase : IDbInspector
+//    {
+//        #region Constructor
 
-        protected SqlServerInspectorBase(IDbConnection connection)
-        {
-            this.Connection = connection ?? throw new ArgumentNullException(nameof(connection));
-        }
+//        protected SqlServerInspectorBase(IDbConnection connection)
+//        {
+//            this.Connection = connection ?? throw new ArgumentNullException(nameof(connection));
+//        }
 
-        #endregion
+//        #endregion
 
-        #region Abstract
+//        #region Abstract
 
-        protected abstract string TableTypeForTable { get; }
+//        protected abstract string TableTypeForTable { get; }
 
-        protected abstract SqlServerTableInspectorBase CreateTableInspectorImpl(string tableName);
+//        protected abstract SqlServerTableInspectorBase CreateTableInspectorImpl(string tableName);
 
-        #endregion
+//        #endregion
 
-        #region IDbInspector Members
+//        #region IDbInspector Members
 
-        public IDbConnection Connection { get; }
+//        public IDbConnection Connection { get; }
 
-        public abstract IScriptBuilder CreateScriptBuilder();
+//        public abstract IScriptBuilder CreateScriptBuilder();
 
-        public string[] GetTableNames()
-        {
-            using (var command = this.Connection.CreateCommand())
-            {
-                var sql =
-$@"
-SELECT
-    T.table_name TableName
-FROM
-    information_schema.tables T
-WHERE
-    T.table_type = @p_tableType";
+//        public string[] GetTableNames()
+//        {
+//            using (var command = this.Connection.CreateCommand())
+//            {
+//                var sql =
+//$@"
+//SELECT
+//    T.table_name TableName
+//FROM
+//    information_schema.tables T
+//WHERE
+//    T.table_type = @p_tableType";
 
-                command.AddParameterWithValue("p_tableType", this.TableTypeForTable);
+//                command.AddParameterWithValue("p_tableType", this.TableTypeForTable);
 
-                command.CommandText = sql;
+//                command.CommandText = sql;
 
-                var tableNames = UtilsHelper
-                    .GetCommandRows(command)
-                    .Select(x => (string)x.TableName)
-                    .ToArray();
+//                var tableNames = UtilsHelper
+//                    .GetCommandRows(command)
+//                    .Select(x => (string)x.TableName)
+//                    .ToArray();
 
-                return tableNames;
-            }
-        }
+//                return tableNames;
+//            }
+//        }
 
-        public ITableInspector GetTableInspector(string tableName)
-        {
-            if (tableName == null)
-            {
-                throw new ArgumentNullException(nameof(tableName));
-            }
+//        public ITableInspector GetTableInspector(string tableName)
+//        {
+//            if (tableName == null)
+//            {
+//                throw new ArgumentNullException(nameof(tableName));
+//            }
 
-            using (var command = this.Connection.CreateCommand())
-            {
-                var sql =
-@"
-SELECT
-    T.table_name TableName
-FROM
-    information_schema.tables T
-WHERE
-    T.table_type = @p_tableType
-    AND
-    T.table_name = @p_name";
+//            using (var command = this.Connection.CreateCommand())
+//            {
+//                var sql =
+//@"
+//SELECT
+//    T.table_name TableName
+//FROM
+//    information_schema.tables T
+//WHERE
+//    T.table_type = @p_tableType
+//    AND
+//    T.table_name = @p_name";
 
-                command.CommandText = sql;
+//                command.CommandText = sql;
 
-                command.AddParameterWithValue("p_tableType", this.TableTypeForTable);
-                command.AddParameterWithValue("p_name", tableName);
+//                command.AddParameterWithValue("p_tableType", this.TableTypeForTable);
+//                command.AddParameterWithValue("p_name", tableName);
 
-                var row = UtilsHelper
-                    .GetCommandRows(command)
-                    .SingleOrDefault();
+//                var row = UtilsHelper
+//                    .GetCommandRows(command)
+//                    .SingleOrDefault();
 
-                if (row == null)
-                {
-                    throw new ObjectNotFoundException($"Table not found: '{tableName}'", tableName);
-                }
+//                if (row == null)
+//                {
+//                    throw new ObjectNotFoundException($"Table not found: '{tableName}'", tableName);
+//                }
 
-                var realTableName = (string)row.TableName;
-                var tableInspector = this.CreateTableInspectorImpl(realTableName);
-                return tableInspector;
-            }
-        }
+//                var realTableName = (string)row.TableName;
+//                var tableInspector = this.CreateTableInspectorImpl(realTableName);
+//                return tableInspector;
+//            }
+//        }
 
-        #endregion
-    }
-}
+//        #endregion
+//    }
+//}

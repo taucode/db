@@ -9,9 +9,11 @@ namespace TauCode.Db
     {
         public static string BuildDeleteRowByIdSql(this IScriptBuilder scriptBuilder, TableMold tableMold, out string paramName)
         {
-            var colName = tableMold.GetSinglePrimaryKeyColumnName();
+            throw new NotImplementedException();
 
-            return scriptBuilder.BuildDeleteRowByIdSql(tableMold.Name, colName, out paramName);
+            //var colName = tableMold.GetSinglePrimaryKeyColumnName();
+
+            //return scriptBuilder.BuildDeleteRowByIdSql(tableMold.Name, colName, out paramName);
         }
 
         internal static string GetSinglePrimaryKeyColumnName(this TableMold tableMold)

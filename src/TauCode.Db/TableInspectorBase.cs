@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using TauCode.Db.Model;
 
 namespace TauCode.Db
@@ -30,9 +29,12 @@ namespace TauCode.Db
             IDbConnection connection,
             string tableName)
         {
-            this.Dialect = dialect ?? throw new ArgumentNullException(nameof(dialect));
-            this.Connection = connection ?? throw new ArgumentNullException(nameof(connection));
-            this.TableName = tableName ?? throw new ArgumentNullException(nameof(tableName));
+            // todo: tableName is not decorated.
+            throw new NotImplementedException();
+
+            //this.Dialect = dialect ?? throw new ArgumentNullException(nameof(dialect));
+            //this.Connection = connection ?? throw new ArgumentNullException(nameof(connection));
+            //this.TableName = tableName ?? throw new ArgumentNullException(nameof(tableName));
         }
 
         #endregion
@@ -57,55 +59,82 @@ namespace TauCode.Db
 
         #endregion
 
-        #region ITableInspector Members
+        #region ITableInspector Members OLD
 
-        public IDialect Dialect { get; }
+        //public IDialect Dialect { get; }
 
-        public string TableName { get; }
+        //public string TableName { get; }
 
-        public virtual List<ColumnMold> GetColumnMolds()
-        {
-            var columnInfos = this.GetColumnInfos();
-            var columns = columnInfos
-                .Select(this.ColumnInfoToColumnMold)
-                .ToList();
+        //public virtual List<ColumnMold> GetColumnMolds()
+        //{
+        //    var columnInfos = this.GetColumnInfos();
+        //    var columns = columnInfos
+        //        .Select(this.ColumnInfoToColumnMold)
+        //        .ToList();
 
-            var identities = this.GetIdentities();
+        //    var identities = this.GetIdentities();
 
-            foreach (var identityColumnName in identities.Keys)
-            {
-                var column = columns.Single(x => string.Equals(x.Name, identityColumnName, StringComparison.InvariantCultureIgnoreCase));
-                column.Identity = identities[identityColumnName];
-            }
+        //    foreach (var identityColumnName in identities.Keys)
+        //    {
+        //        var column = columns.Single(x => string.Equals(x.Name, identityColumnName, StringComparison.InvariantCultureIgnoreCase));
+        //        column.Identity = identities[identityColumnName];
+        //    }
 
-            return columns;
-        }
+        //    return columns;
+        //}
 
-        public abstract PrimaryKeyMold GetPrimaryKeyMold();
+        //public abstract PrimaryKeyMold GetPrimaryKeyMold();
 
-        public abstract List<ForeignKeyMold> GetForeignKeyMolds();
+        //public abstract List<ForeignKeyMold> GetForeignKeyMolds();
 
-        public abstract List<IndexMold> GetIndexMolds();
+        //public abstract List<IndexMold> GetIndexMolds();
 
-        public virtual TableMold GetTableMold()
-        {
-            var primaryKey = this.GetPrimaryKeyMold();
-            var columns = this.GetColumnMolds();
-            var foreignKeys = this.GetForeignKeyMolds();
-            var indexes = this.GetIndexMolds();
+        //public virtual TableMold GetTableMold()
+        //{
+        //    var primaryKey = this.GetPrimaryKeyMold();
+        //    var columns = this.GetColumnMolds();
+        //    var foreignKeys = this.GetForeignKeyMolds();
+        //    var indexes = this.GetIndexMolds();
 
-            var table = new TableMold
-            {
-                Name = this.TableName,
-                PrimaryKey = primaryKey,
-                Columns = columns,
-                ForeignKeys = foreignKeys,
-                Indexes = indexes,
-            };
+        //    var table = new TableMold
+        //    {
+        //        Name = this.TableName,
+        //        PrimaryKey = primaryKey,
+        //        Columns = columns,
+        //        ForeignKeys = foreignKeys,
+        //        Indexes = indexes,
+        //    };
 
-            return table;
-        }
+        //    return table;
+        //}
 
         #endregion
+
+        public IUtilityFactory Factory => throw new NotImplementedException();
+        public string TableName => throw new NotImplementedException();
+        public List<ColumnMold> GetColumns()
+        {
+            throw new NotImplementedException();
+        }
+
+        public PrimaryKeyMold GetPrimaryKey()
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<ForeignKeyMold> GetForeignKeys()
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<IndexMold> GetIndexes()
+        {
+            throw new NotImplementedException();
+        }
+
+        public TableMold GetTable()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

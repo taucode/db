@@ -1,4 +1,6 @@
-﻿namespace TauCode.Db.Ansi
+﻿using System;
+
+namespace TauCode.Db.Ansi
 {
     [Dialect(
         "sql-ansi-reserved-words.txt",
@@ -17,8 +19,14 @@
         private AnsiDialect()
             : base("ANSI SQL")
         {
+            throw new NotImplementedException();
         }
 
         #endregion
+
+        protected override IUtilityFactory GetFactoryImpl()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -1,18 +1,20 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace TauCode.Db.Model
 {
-    public class ColumnIdentityMold : IMold
+    public class DbMold : IMold
     {
-        public string Seed { get; set; }
-        public string Increment { get; set; }
+        public IList<TableMold> Tables { get; set; }= new List<TableMold>();
+
         public IDictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
         public IMold Clone(bool includeProperties = false)
         {
-            return new ColumnIdentityMold
+            return new DbMold
             {
-                Seed = this.Seed,
-                Increment = this.Increment,
+                Tables = this.Tables
+                    .Select(x => x.CloneTable(includeProperties))
+                    .ToList(),
                 Properties = this.ClonePropertiesIfNeeded(includeProperties),
             };
         }

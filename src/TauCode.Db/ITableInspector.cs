@@ -3,20 +3,20 @@ using TauCode.Db.Model;
 
 namespace TauCode.Db
 {
-    public interface ITableInspector
+    public interface ITableInspector : IUtility
     {
-        IDialect Dialect { get; }
+        //IDialect Dialect { get; }
 
         string TableName { get; }
 
-        List<ColumnMold> GetColumnMolds();
+        List<ColumnMold> GetColumns();
 
-        PrimaryKeyMold GetPrimaryKeyMold();
+        PrimaryKeyMold GetPrimaryKey();
 
-        List<ForeignKeyMold> GetForeignKeyMolds();
+        List<ForeignKeyMold> GetForeignKeys();
 
-        List<IndexMold> GetIndexMolds();
+        List<IndexMold> GetIndexes();
 
-        TableMold GetTableMold();
+        TableMold GetTable();
     }
 }
