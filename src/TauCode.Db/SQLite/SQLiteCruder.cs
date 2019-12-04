@@ -14,9 +14,11 @@ namespace TauCode.Db.SQLite
         //protected override IScriptBuilder CreateScriptBuilder() => new SQLiteScriptBuilder();
 
         //protected override IDbInspector CreateDbInspector() => new SQLiteInspector(this.GetSafeConnection());
-        protected override IUtilityFactory GetFactoryImpl()
-        {
-            throw new System.NotImplementedException();
-        }
+        //protected override IUtilityFactory GetFactoryImpl()
+        //{
+        //    throw new System.NotImplementedException();
+        //}
+
+        public override IUtilityFactory Factory => SQLiteUtilityFactory.Instance;
     }
 }

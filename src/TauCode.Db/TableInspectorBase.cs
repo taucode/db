@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using TauCode.Db.Model;
 
 namespace TauCode.Db
 {
-    public abstract class TableInspectorBase : ITableInspector
+    public abstract class TableInspectorBase : UtilityBase, ITableInspector
     {
         #region Nested
 
@@ -25,16 +26,17 @@ namespace TauCode.Db
         #region Constructor
 
         protected TableInspectorBase(
-            IDialect dialect,
+            //IDialect dialect,
             IDbConnection connection,
             string tableName)
+            : base(connection, true, false)
         {
             // todo: tableName is not decorated.
-            throw new NotImplementedException();
+
 
             //this.Dialect = dialect ?? throw new ArgumentNullException(nameof(dialect));
             //this.Connection = connection ?? throw new ArgumentNullException(nameof(connection));
-            //this.TableName = tableName ?? throw new ArgumentNullException(nameof(tableName));
+            this.TableName = tableName ?? throw new ArgumentNullException(nameof(tableName));
         }
 
         #endregion
@@ -44,7 +46,7 @@ namespace TauCode.Db
         protected abstract List<ColumnInfo> GetColumnInfos();
 
         protected abstract ColumnMold ColumnInfoToColumnMold(ColumnInfo columnInfo);
-        
+
         protected abstract Dictionary<string, ColumnIdentityMold> GetIdentities();
 
         //protected abstract ICruder CreateCruder();
@@ -53,7 +55,7 @@ namespace TauCode.Db
 
         #region Protected
 
-        protected IDbConnection Connection { get; }
+        //protected IDbConnection Connection { get; }
 
         //protected ICruder Cruder => _cruder ?? (_cruder = this.CreateCruder());
 
@@ -110,31 +112,52 @@ namespace TauCode.Db
 
         #endregion
 
-        public IUtilityFactory Factory => throw new NotImplementedException();
-        public string TableName => throw new NotImplementedException();
-        public List<ColumnMold> GetColumns()
+        //public IUtilityFactory Factory => throw new NotImplementedException();
+        public string TableName { get; }
+
+        public virtual IReadOnlyList<ColumnMold> GetColumns()
         {
-            throw new NotImplementedException();
+            var columnInfos = this.GetColumnInfos();
+            var columns = columnInfos
+                .Select(this.ColumnInfoToColumnMold)
+                .ToList();
+
+            var identities = this.GetIdentities();
+
+            foreach (var identityColumnName in identities.Keys)
+            {
+                var column = columns.Single(x =>
+                    string.Equals(x.Name, identityColumnName, StringComparison.InvariantCultureIgnoreCase));
+
+                column.Identity = identities[identityColumnName];
+            }
+
+            return columns;
         }
 
-        public PrimaryKeyMold GetPrimaryKey()
-        {
-            throw new NotImplementedException();
-        }
+        public abstract PrimaryKeyMold GetPrimaryKey();
 
-        public List<ForeignKeyMold> GetForeignKeys()
-        {
-            throw new NotImplementedException();
-        }
+        public abstract IReadOnlyList<ForeignKeyMold> GetForeignKeys();
 
-        public List<IndexMold> GetIndexes()
-        {
-            throw new NotImplementedException();
-        }
+        public abstract IReadOnlyList<IndexMold> GetIndexes();
 
-        public TableMold GetTable()
+        public virtual TableMold GetTable()
         {
-            throw new NotImplementedException();
+            var primaryKey = this.GetPrimaryKey();
+            var columns = this.GetColumns();
+            var foreignKeys = this.GetForeignKeys();
+            var indexes = this.GetIndexes();
+
+            var table = new TableMold
+            {
+                Name = this.TableName,
+                PrimaryKey = primaryKey,
+                Columns = columns.ToList(),
+                ForeignKeys = foreignKeys.ToList(),
+                Indexes = indexes.ToList(),
+            };
+
+            return table;
         }
     }
 }

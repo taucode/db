@@ -79,9 +79,9 @@ namespace TauCode.Db.MySql
             throw new NotImplementedException();
         }
 
-        public override ITableInspector GetTableInspector(string tableName)
-        {
-            throw new NotImplementedException();
-        }
+        //public override ITableInspector GetTableInspector(string tableName)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

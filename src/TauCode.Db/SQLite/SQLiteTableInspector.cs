@@ -7,7 +7,7 @@ using TauCode.Db.Model;
 
 namespace TauCode.Db.SQLite
 {
-    public sealed class SQLiteTableInspector : ITableInspector
+    public sealed class SQLiteTableInspector : TableInspectorBase
     {
         #region Fields
 
@@ -20,6 +20,7 @@ namespace TauCode.Db.SQLite
         public SQLiteTableInspector(
             IDbConnection connection,
             string tableName)
+            : base(connection, tableName)
         {
             throw new NotImplementedException();
             //_connection = connection ?? throw new ArgumentNullException(nameof(connection));
@@ -137,29 +138,66 @@ WHERE
 
         #endregion
 
-        public IUtilityFactory Factory => throw new NotImplementedException();
-        public string TableName => throw new NotImplementedException();
-        public List<ColumnMold> GetColumns()
+
+
+
+        //public IReadOnlyList<ColumnMold> GetColumns()
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public PrimaryKeyMold GetPrimaryKey()
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public IReadOnlyList<ForeignKeyMold> GetForeignKeys()
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public IReadOnlyList<IndexMold> GetIndexes()
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public TableMold GetTable()
+        //{
+        //    throw new NotImplementedException();
+        //}
+        public override IUtilityFactory Factory => SQLiteUtilityFactory.Instance;
+
+        protected override List<ColumnInfo> GetColumnInfos()
         {
             throw new NotImplementedException();
         }
 
-        public PrimaryKeyMold GetPrimaryKey()
+        protected override ColumnMold ColumnInfoToColumnMold(ColumnInfo columnInfo)
         {
             throw new NotImplementedException();
         }
 
-        public List<ForeignKeyMold> GetForeignKeys()
+        protected override Dictionary<string, ColumnIdentityMold> GetIdentities()
         {
             throw new NotImplementedException();
         }
 
-        public List<IndexMold> GetIndexes()
+        public override IReadOnlyList<ColumnMold> GetColumns()
         {
             throw new NotImplementedException();
         }
 
-        public TableMold GetTable()
+        public override PrimaryKeyMold GetPrimaryKey()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override IReadOnlyList<ForeignKeyMold> GetForeignKeys()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override IReadOnlyList<IndexMold> GetIndexes()
         {
             throw new NotImplementedException();
         }

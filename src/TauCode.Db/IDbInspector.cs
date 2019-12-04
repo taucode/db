@@ -10,6 +10,6 @@ namespace TauCode.Db
 
         IReadOnlyList<string> GetTableNames(bool? independentFirst = null);
 
-        ITableInspector GetTableInspector(string tableName);
+        //ITableInspector GetTableInspector(string tableName);
     }
 }

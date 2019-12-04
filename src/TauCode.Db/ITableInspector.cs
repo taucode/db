@@ -9,13 +9,13 @@ namespace TauCode.Db
 
         string TableName { get; }
 
-        List<ColumnMold> GetColumns();
+        IReadOnlyList<ColumnMold> GetColumns();
 
         PrimaryKeyMold GetPrimaryKey();
 
-        List<ForeignKeyMold> GetForeignKeys();
+        IReadOnlyList<ForeignKeyMold> GetForeignKeys();
 
-        List<IndexMold> GetIndexes();
+        IReadOnlyList<IndexMold> GetIndexes();
 
         TableMold GetTable();
     }

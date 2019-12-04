@@ -14,9 +14,6 @@ namespace TauCode.Db.SqlServer
         //protected override IScriptBuilder CreateScriptBuilder() => new SqlServerScriptBuilder();
 
         //protected override IDbInspector CreateDbInspector() => new SqlServerInspector(this.GetSafeConnection());
-        protected override IUtilityFactory GetFactoryImpl()
-        {
-            throw new System.NotImplementedException();
-        }
+        public override IUtilityFactory Factory => SqlServerUtilityFactory.Instance;
     }
 }

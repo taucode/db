@@ -8,7 +8,7 @@ namespace TauCode.Db.SqlServer
         public static SqlServerUtilityFactory Instance { get; } = new SqlServerUtilityFactory();
 
         private SqlServerUtilityFactory()
-        {   
+        {
         }
 
         public string DbProviderName => DbProviderNames.SqlServer;
@@ -18,6 +18,9 @@ namespace TauCode.Db.SqlServer
         public IScriptBuilder CreateScriptBuilder() => throw new NotImplementedException();
 
         public IDbInspector CreateDbInspector(IDbConnection connection) => new SqlServerInspector(connection);
+
+        public ITableInspector CreateTableInspector(IDbConnection connection, string tableName) =>
+            new SqlServerTableInspector(connection, tableName);
 
         public ICruder CreateCruder(IDbConnection connection) => new SqlServerCruder(connection);
 

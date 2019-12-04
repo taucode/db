@@ -115,5 +115,29 @@ namespace TauCode.Db.Tests.SqlServer
                 tableNames);
         }
 
+        [Test]
+        public void GetTableNames_IndependentFirstIsFalse_ReturnsDependentTablesFirst()
+        {
+            // Arrange
+
+            // Act
+            var tableNames = _dbInspector.GetTableNames(false);
+
+            // Assert
+            CollectionAssert.AreEqual(
+                new[]
+                {
+                    "fragment",
+                    "fragment_sub_type",
+                    "note_tag",
+                    "note_translation",
+                    "fragment_type",
+                    "language",
+                    "note",
+                    "tag",
+                    "user",
+                },
+                tableNames);
+        }
     }
 }

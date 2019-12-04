@@ -4,21 +4,22 @@ using System.Data;
 namespace TauCode.Db
 {
     // todo: cache scripts. YES!
-    public abstract class CruderBase : ICruder
+    public abstract class CruderBase : UtilityBase, ICruder
     {
         #region Fields
 
-        private readonly IDbConnection _connection;
-        private IScriptBuilder _scriptBuilder;
-        private IDbInspector _dbInspector;
+        //private readonly IDbConnection _connection;
+        //private IScriptBuilder _scriptBuilder;
+        //private IDbInspector _dbInspector;
 
         #endregion
 
         #region Constructor
 
         protected CruderBase(IDbConnection connection)
+            : base(connection, true, false)
         {
-            _connection = connection ?? throw new ArgumentNullException(nameof(connection));
+
         }
 
         #endregion
@@ -28,7 +29,7 @@ namespace TauCode.Db
         // todo: move to factory.
         //protected abstract string ExpectedDbConnectionTypeFullName { get; }
 
-        protected abstract IUtilityFactory GetFactoryImpl();
+        //protected abstract IUtilityFactory GetFactoryImpl();
 
         //protected abstract IScriptBuilder CreateScriptBuilder();
 
@@ -57,8 +58,6 @@ namespace TauCode.Db
         //public IDbInspector DbInspector => _dbInspector ?? (_dbInspector = this.CreateDbInspector());
 
         //public IScriptBuilder ScriptBuilder => _scriptBuilder ?? (_scriptBuilder = this.CreateScriptBuilder());
-
-        public IUtilityFactory Factory => this.GetFactoryImpl();
 
         public void InsertRow(string tableName, object row)
         {
