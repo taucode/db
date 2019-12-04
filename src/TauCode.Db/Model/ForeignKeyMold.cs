@@ -6,14 +6,14 @@ using System.Text;
 namespace TauCode.Db.Model
 {
     [DebuggerDisplay("{" + nameof(GetDefaultCaption) + "()}")]
-    public class ForeignKeyMold : IDbMold
+    public class ForeignKeyMold : IMold
     {
         public string Name { get; set; }
         public List<string> ColumnNames { get; set; } = new List<string>();
         public string ReferencedTableName { get; set; }
         public List<string> ReferencedColumnNames { get; set; } = new List<string>();
         public IDictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
-        public IDbMold Clone(bool includeProperties = false)
+        public IMold Clone(bool includeProperties = false)
         {
             return new ForeignKeyMold
             {
