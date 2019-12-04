@@ -159,6 +159,32 @@ VALUES(
             Assert.That(row.name, Is.EqualTo("English"));
         }
 
+        [Test]
+        public void DeleteRow_ValidId_DeletesRow()
+        {
+            // Arrange
+            this.Connection.ExecuteScript(@"
+INSERT INTO [language](
+    [id],
+    [code],
+    [name])
+VALUES(
+    '4fca7968-49cf-4c52-b793-e4b27087251b',
+    'en',
+    'English')");
+
+            var id = new Guid("4fca7968-49cf-4c52-b793-e4b27087251b");
+
+            // Act
+            var deleted = _cruder.DeleteRow("language", id);
+
+            // Assert
+            Assert.That(deleted, Is.True);
+
+            var deletedRow = this.GetRow(id);
+            Assert.That(deletedRow, Is.Null);
+        }
+
         private dynamic GetRow(object id)
         {
             using (var command = this.Connection.CreateCommand())
@@ -168,7 +194,7 @@ VALUES(
                 parameter.ParameterName = "p_id";
                 parameter.Value = id;
                 command.Parameters.Add(parameter);
-                var row = DbUtils.GetCommandRows(command).Single();
+                var row = DbUtils.GetCommandRows(command).SingleOrDefault();
                 return row;
             }
         }

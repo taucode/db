@@ -8,17 +8,15 @@ using TauCode.Db.Model;
 
 namespace TauCode.Db
 {
-    // todo: cache scripts. YES! NNNNOOOOOOooooooooooooo!
     public abstract class CruderBase : UtilityBase, ICruder
     {
         #region Nested
 
         protected class CommandHelper : IDisposable
         {
-            private readonly CruderBase _cruder;
+            #region Fields
 
-            //private readonly TableMold _table;
-            //private readonly IList<string> _columnNames;
+            private readonly CruderBase _cruder;
             private IDbCommand _command;
             private bool _commandPrepared;
 
@@ -27,16 +25,15 @@ namespace TauCode.Db
             private readonly IReadOnlyDictionary<string, IParameterInfo> _parameterInfosByColumnNames;
             private readonly IReadOnlyDictionary<string, IDbDataParameter> _parametersByParameterNames;
 
+            #endregion
+
+            #region Constructor
+
             public CommandHelper(CruderBase cruder, TableMold table, IEnumerable<string> columnNames)
             {
                 // todo checks
 
                 _cruder = cruder;
-                //_table = table;
-                //_columnNames = columnNames
-                //    .Select(x => x.ToLowerInvariant())
-                //    .ToList();
-
                 _command = _cruder.Connection.CreateCommand();
 
                 _columnsByColumnName = this.BuildColumnsByColumnName(table, columnNames);
@@ -44,6 +41,10 @@ namespace TauCode.Db
                 _parameterInfosByColumnNames = this.BuildParameterInfosByColumnNames();
                 _parametersByParameterNames = this.BuildParametersByParameterNames();
             }
+
+            #endregion
+
+            #region Private
 
             private IReadOnlyDictionary<string, ColumnMold> BuildColumnsByColumnName(
                 TableMold table,
@@ -62,18 +63,6 @@ namespace TauCode.Db
                     .ToDictionary(
                         x => x.Key,
                         x => $"p_{x.Key}");
-
-                //return _columnNames
-                //    .Select(x => _table.Columns.Single(y => y.Name == x))
-                //    .ToDictionary(
-                //            x => x.Name.ToLowerInvariant(),
-                //            x => $"p_{x.Name}");
-
-
-                //throw new NotImplementedException();
-                //return _table.Columns.ToDictionary(
-                //    x => x.Name.ToLowerInvariant(),
-                //    x => $"p_{x.Name}");
             }
 
             private IReadOnlyDictionary<string, IParameterInfo> BuildParameterInfosByColumnNames()
@@ -122,19 +111,6 @@ namespace TauCode.Db
                 return parameter;
             }
 
-            public string CommandText
-            {
-                get => _command.CommandText;
-                set => _command.CommandText = value;
-            }
-
-            public int ExecuteWithValues(object values)
-            {
-                this.ApplyValuesToCommand(values);
-                var result = _command.ExecuteNonQuery();
-                return result;
-            }
-
             private void ApplyValuesToCommand(object values)
             {
                 if (!_commandPrepared)
@@ -158,53 +134,57 @@ namespace TauCode.Db
                 }
             }
 
-            public IList<dynamic> FetchWithValues(object values)
-            {
-                this.ApplyValuesToCommand(values);
-                var rows = DbUtils.GetCommandRows(_command);
-
-                return rows;
-                //using (var reader = _command.ExecuteReader())
-                //{
-                //    while (reader.Read())
-                //    {
-
-
-                //        throw new NotImplementedException();
-                //    }
-                //}
-
-                //throw new NotImplementedException();
-            }
-
             private void PrepareCommand()
             {
                 _command.Prepare();
                 _commandPrepared = true;
             }
 
+            #endregion
+
+            #region Public
+
+            public string CommandText
+            {
+                get => _command.CommandText;
+                set => _command.CommandText = value;
+            }
+
+            public int ExecuteWithValues(object values)
+            {
+                this.ApplyValuesToCommand(values);
+                var result = _command.ExecuteNonQuery();
+                return result;
+            }
+
+            public IList<dynamic> FetchWithValues(object values)
+            {
+                this.ApplyValuesToCommand(values);
+                var rows = DbUtils.GetCommandRows(_command);
+
+                return rows;
+            }
+
             public IReadOnlyDictionary<string, string> GetParameterNames() => _parameterNamesByColumnNames;
+
+            #endregion
+
+            #region IDisposable Members
 
             public void Dispose()
             {
                 _command?.Dispose();
                 _command = null;
             }
+
+            #endregion
         }
 
         #endregion
 
         #region Fields
 
-        //private readonly IDbConnection _connection;
-        //private IScriptBuilder _scriptBuilder;
-        //private IDbInspector _dbInspector;
-
         private IScriptBuilderLab _scriptBuilderLab;
-        private IDbInspector _dbInspector;
-
-
-        //private readonly IDictionary<string, CrudCommandBuilder> _insertCommands; // todo: need this?
 
         #endregion
 
@@ -213,139 +193,11 @@ namespace TauCode.Db
         protected CruderBase(IDbConnection connection)
             : base(connection, true, false)
         {
-            //_insertCommands = new Dictionary<string, CrudCommandBuilder>();
         }
-
-        #endregion
-
-        #region Polymorph
-
-        // todo: move to factory.
-        //protected abstract string ExpectedDbConnectionTypeFullName { get; }
-
-        //protected abstract IUtilityFactory GetFactoryImpl();
-
-        //protected abstract IScriptBuilder CreateScriptBuilder();
-
-        //protected abstract IDbInspector CreateDbInspector();
 
         #endregion
 
         #region Protected
-
-        //protected IDbConnection GetSafeConnection()
-        //{
-        //    throw new NotImplementedException();
-        //    //if (_connection.GetType().FullName == this.ExpectedDbConnectionTypeFullName)
-        //    //{
-        //    //    return _connection;
-        //    //}
-
-        //    //throw new TypeMismatchException(
-        //    //    $"Expected DB connection type is '{this.ExpectedDbConnectionTypeFullName}', but an instance of '{_connection.GetType().FullName}' was provided.");
-        //}
-
-        protected IDbInspector DbInspector =>
-            _dbInspector ?? (_dbInspector = this.Factory.CreateDbInspector(this.Connection));
-
-        //protected virtual CrudCommandBuilder GetInserter(string tableName)
-        //{
-        //    if (tableName == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(tableName));
-        //    }
-
-        //    tableName = tableName.ToLowerInvariant();
-
-        //    var inserter = _insertCommands.GetOrDefault(tableName);
-        //    if (inserter == null)
-        //    {
-        //        var table = this.Factory.CreateTableInspector(this.Connection, tableName).GetTable();
-        //        var insertableColumns = table
-        //            .Columns
-        //            .Where(x => x.Identity == null)
-        //            .Select(x => x.Name);
-
-        //        inserter = new CrudCommandBuilder(this.Connection, insertableColumns);
-        //        inserter.CommandText =
-        //            this.ScriptBuilderLab.BuildInsertScript(table, inserter.GetColumnToParameterMappings());
-
-        //        _insertCommands.Add(tableName, inserter);
-        //    }
-
-        //    return inserter;
-        //}
-
-        protected virtual IDictionary<string, object> ObjectToDataDictionary(object obj)
-        {
-            IDictionary<string, object> dictionary;
-
-            if (obj is IDictionary<string, object> dictionaryParam)
-            {
-                dictionary = dictionaryParam;
-            }
-            else if (obj is DynamicRow dynamicRow)
-            {
-                dictionary = dynamicRow.ToDictionary();
-            }
-            else
-            {
-                dictionary = new ValueDictionary(obj);
-            }
-
-            return dictionary;
-        }
-
-        #endregion
-
-        #region ICruder Members
-
-        public IScriptBuilderLab ScriptBuilderLab =>
-            _scriptBuilderLab ?? (_scriptBuilderLab = this.Factory.CreateScriptBuilderLab());
-
-        public void InsertRow(string tableName, object row)
-        {
-            if (row == null)
-            {
-                throw new ArgumentNullException(nameof(row));
-            }
-
-            this.InsertRows(tableName, new List<object> { row });
-        }
-
-        public void InsertRows(string tableName, IReadOnlyList<object> rows)
-        {
-            if (tableName == null)
-            {
-                throw new ArgumentNullException(nameof(tableName));
-            }
-
-            if (rows == null)
-            {
-                throw new ArgumentNullException(nameof(rows));
-            }
-
-            var table = this.Factory.CreateTableInspector(this.Connection, tableName).GetTable();
-
-            if (rows.Count == 0)
-            {
-                return; // nothing to insert
-            }
-
-            using (var helper = new CommandHelper(this, table, this.ObjectToDataDictionary(rows[0]).Keys))
-            {
-                var sql = this.ScriptBuilderLab.BuildInsertScript(
-                    table,
-                    helper.GetParameterNames());
-
-                helper.CommandText = sql;
-
-                foreach (var row in rows)
-                {
-                    helper.ExecuteWithValues(row);
-                }
-            }
-        }
 
         protected virtual object TransformOriginalColumnValue(IParameterInfo parameterInfo, object originalColumnValue)
         {
@@ -389,6 +241,26 @@ namespace TauCode.Db
             return transformed;
         }
 
+        protected virtual IDictionary<string, object> ObjectToDataDictionary(object obj)
+        {
+            IDictionary<string, object> dictionary;
+
+            if (obj is IDictionary<string, object> dictionaryParam)
+            {
+                dictionary = dictionaryParam;
+            }
+            else if (obj is DynamicRow dynamicRow)
+            {
+                dictionary = dynamicRow.ToDictionary();
+            }
+            else
+            {
+                dictionary = new ValueDictionary(obj);
+            }
+
+            return dictionary;
+        }
+
         protected virtual IParameterInfo ColumnToParameterInfo(
             string columnName,
             DbTypeMold columnType,
@@ -399,7 +271,6 @@ namespace TauCode.Db
             int? precision = null;
             int? scale = null;
             var parameterName = parameterNameMappings[columnName];
-            //var parameterName = $"p_{column.Name}";
 
             var typeName = columnType.Name.ToLowerInvariant();
 
@@ -426,32 +297,55 @@ namespace TauCode.Db
             return parameterInfo;
         }
 
-        public bool DeleteRow(string tableName, object id)
+        #endregion
+
+        #region ICruder Members
+
+        public virtual IScriptBuilderLab ScriptBuilderLab =>
+            _scriptBuilderLab ?? (_scriptBuilderLab = this.Factory.CreateScriptBuilderLab());
+
+        public virtual void InsertRow(string tableName, object row)
         {
-            throw new NotImplementedException();
-            //if (tableName == null)
-            //{
-            //    throw new ArgumentNullException(nameof(tableName));
-            //}
+            if (row == null)
+            {
+                throw new ArgumentNullException(nameof(row));
+            }
 
-            //if (id == null)
-            //{
-            //    throw new ArgumentNullException(nameof(id));
-            //}
+            this.InsertRows(tableName, new List<object> { row });
+        }
 
-            //var tableInspector = this.DbInspector.GetTableInspector(tableName);
-            //var tableMold = tableInspector.GetTableMold();
-            //var connection = this.GetSafeConnection();
+        public virtual void InsertRows(string tableName, IReadOnlyList<object> rows)
+        {
+            if (tableName == null)
+            {
+                throw new ArgumentNullException(nameof(tableName));
+            }
 
+            if (rows == null)
+            {
+                throw new ArgumentNullException(nameof(rows));
+            }
 
-            //using (var command = connection.CreateCommand())
-            //{
-            //    command.CommandText = this.ScriptBuilder.BuildDeleteRowByIdSql(tableMold, out var paramName);
-            //    command.AddParameterWithValue(paramName, id);
+            var table = this.Factory.CreateTableInspector(this.Connection, tableName).GetTable();
 
-            //    var deletedCount = command.ExecuteNonQuery();
-            //    return deletedCount == 1;
-            //}
+            if (rows.Count == 0)
+            {
+                return; // nothing to insert
+            }
+
+            using (var helper = new CommandHelper(this, table, this.ObjectToDataDictionary(rows[0]).Keys))
+            {
+                var sql = this.ScriptBuilderLab.BuildInsertScript(
+                    table,
+                    helper.GetParameterNames());
+
+                helper.CommandText = sql;
+
+                foreach (var row in rows)
+                {
+                    helper.ExecuteWithValues(row);
+                }
+            }
         }
 
         public dynamic GetRow(string tableName, object id)
@@ -481,29 +375,11 @@ namespace TauCode.Db
                     {idColumnName, id}
                 });
 
-                if (rows.Count == 0)
-                {
-                    return null;
-                }
-
-                return rows.Single();
+                return rows.SingleOrDefault();
             }
-
-            //var tableInspector = this.DbInspector.GetTableInspector(tableName);
-            //var tableMold = tableInspector.GetTableMold();
-            //var connection = this.GetSafeConnection();
-
-            //using (var command = connection.CreateCommand())
-            //{
-            //    command.CommandText = this.ScriptBuilder.BuildSelectRowByIdSql(tableMold, out var paramName);
-            //    command.AddParameterWithValue(paramName, id);
-
-            //    var rows = UtilsHelper.GetCommandRows(command);
-            //    return rows.SingleOrDefault();
-            //}
         }
 
-        public bool UpdateRow(string tableName, object rowUpdate, object id)
+        public virtual bool UpdateRow(string tableName, object rowUpdate, object id)
         {
             if (tableName == null)
             {
@@ -540,6 +416,38 @@ namespace TauCode.Db
 
                 helper.CommandText = sql;
                 var result = helper.ExecuteWithValues(dataDictionary);
+                return result > 0;
+            }
+        }
+
+        public virtual bool DeleteRow(string tableName, object id)
+        {
+            if (tableName == null)
+            {
+                throw new ArgumentNullException(nameof(tableName));
+            }
+
+            if (id == null)
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+
+            var table = this.Factory
+                .CreateTableInspector(this.Connection, tableName)
+                .GetTable();
+
+            var idColumnName = table.GetPrimaryKeyColumn().Name.ToLowerInvariant();
+
+            using (var helper = new CommandHelper(this, table, new[] { idColumnName }))
+            {
+                var sql = this.ScriptBuilderLab.BuildDeleteScript(table, helper.GetParameterNames().Single().Value);
+                helper.CommandText = sql;
+                
+                var result = helper.ExecuteWithValues(new Dictionary<string, object>
+                {
+                    {idColumnName, id}
+                });
+
                 return result > 0;
             }
         }
