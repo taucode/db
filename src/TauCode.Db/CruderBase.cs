@@ -5,13 +5,172 @@ using System.Linq;
 using TauCode.Data;
 using TauCode.Db.Data;
 using TauCode.Db.Model;
-using TauCode.Utils.Extensions;
 
 namespace TauCode.Db
 {
-    // todo: cache scripts. YES!
+    // todo: cache scripts. YES! NNNNOOOOOOooooooooooooo!
     public abstract class CruderBase : UtilityBase, ICruder
     {
+        #region Nested
+
+        protected class CommandHelper : IDisposable
+        {
+            private readonly CruderBase _cruder;
+
+            //private readonly TableMold _table;
+            //private readonly IList<string> _columnNames;
+            private IDbCommand _command;
+            private bool _commandPrepared;
+
+            private readonly IReadOnlyDictionary<string, ColumnMold> _columnsByColumnName;
+            private readonly IReadOnlyDictionary<string, string> _parameterNamesByColumnNames;
+            private readonly IReadOnlyDictionary<string, IParameterInfo> _parameterInfosByColumnNames;
+            private readonly IReadOnlyDictionary<string, IDbDataParameter> _parametersByParameterNames;
+
+            public CommandHelper(CruderBase cruder, TableMold table, IEnumerable<string> columnNames)
+            {
+                // todo checks
+
+                _cruder = cruder;
+                //_table = table;
+                //_columnNames = columnNames
+                //    .Select(x => x.ToLowerInvariant())
+                //    .ToList();
+
+                _command = _cruder.Connection.CreateCommand();
+
+                _columnsByColumnName = this.BuildColumnsByColumnName(table, columnNames);
+                _parameterNamesByColumnNames = this.BuildParameterNamesByColumnNames();
+                _parameterInfosByColumnNames = this.BuildParameterInfosByColumnNames();
+                _parametersByParameterNames = this.BuildParametersByParameterNames();
+            }
+
+            private IReadOnlyDictionary<string, ColumnMold> BuildColumnsByColumnName(
+                TableMold table,
+                IEnumerable<string> columnNames)
+            {
+                return columnNames
+                    .Select(x =>
+                        table.Columns.Single(y =>
+                            string.Equals(y.Name, x, StringComparison.InvariantCultureIgnoreCase)))
+                    .ToDictionary(x => x.Name.ToLowerInvariant(), x => x);
+            }
+
+            private IReadOnlyDictionary<string, string> BuildParameterNamesByColumnNames()
+            {
+                return _columnsByColumnName
+                    .ToDictionary(
+                        x => x.Key,
+                        x => $"p_{x.Key}");
+
+                //return _columnNames
+                //    .Select(x => _table.Columns.Single(y => y.Name == x))
+                //    .ToDictionary(
+                //            x => x.Name.ToLowerInvariant(),
+                //            x => $"p_{x.Name}");
+
+
+                //throw new NotImplementedException();
+                //return _table.Columns.ToDictionary(
+                //    x => x.Name.ToLowerInvariant(),
+                //    x => $"p_{x.Name}");
+            }
+
+            private IReadOnlyDictionary<string, IParameterInfo> BuildParameterInfosByColumnNames()
+            {
+                return _columnsByColumnName
+                    .ToDictionary(
+                        x => x.Key,
+                        x => _cruder.ColumnToParameterInfo(
+                            x.Key,
+                            x.Value.Type,
+                            _parameterNamesByColumnNames));
+            }
+
+            private IReadOnlyDictionary<string, IDbDataParameter> BuildParametersByParameterNames()
+            {
+                return _parameterInfosByColumnNames
+                    .ToDictionary(
+                        x => x.Value.ParameterName,
+                        x => this.CreateParameter(x.Value));
+            }
+
+            private IDbDataParameter CreateParameter(IParameterInfo parameterInfo)
+            {
+                var parameter = _command.CreateParameter();
+                parameter.ParameterName = parameterInfo.ParameterName;
+                parameter.DbType = parameterInfo.DbType;
+
+
+
+                if (parameterInfo.Size.HasValue)
+                {
+                    parameter.Size = parameterInfo.Size.Value;
+                }
+
+                if (parameterInfo.Precision.HasValue)
+                {
+                    parameter.Precision = (byte)parameterInfo.Precision.Value;
+                }
+
+                if (parameterInfo.Scale.HasValue)
+                {
+                    parameter.Scale = (byte)parameterInfo.Scale.Value;
+                }
+
+                _command.Parameters.Add(parameter);
+                return parameter;
+            }
+
+            public string CommandText
+            {
+                get => _command.CommandText;
+                set => _command.CommandText = value;
+            }
+
+            public int ExecuteWithValues(object values)
+            {
+                if (!_commandPrepared)
+                {
+                    this.PrepareCommand();
+                }
+
+                var rowDictionary = _cruder.ObjectToDataDictionary(values);
+                foreach (var pair in rowDictionary)
+                {
+                    var columnName = pair.Key;
+                    var originalColumnValue = pair.Value;
+
+                    var parameterInfo = _parameterInfosByColumnNames[columnName];
+                    var parameterName = parameterInfo.ParameterName;
+                    var parameter = _parametersByParameterNames[parameterName];
+
+                    var columnValue = _cruder.TransformOriginalColumnValue(parameterInfo, originalColumnValue);
+
+                    parameter.Value = columnValue;
+                }
+
+                var result = _command.ExecuteNonQuery();
+                return result;
+            }
+
+            private void PrepareCommand()
+            {
+                _command.Prepare();
+                _commandPrepared = true;
+            }
+
+            public IReadOnlyDictionary<string, string> GetParameterNames() => _parameterNamesByColumnNames;
+
+            public void Dispose()
+            {
+                _command?.Dispose();
+                _command = null;
+            }
+        }
+
+        #endregion
+
         #region Fields
 
         //private readonly IDbConnection _connection;
@@ -22,7 +181,7 @@ namespace TauCode.Db
         private IDbInspector _dbInspector;
 
 
-        private readonly IDictionary<string, CrudCommandBuilder> _insertCommands; // todo: need this?
+        //private readonly IDictionary<string, CrudCommandBuilder> _insertCommands; // todo: need this?
 
         #endregion
 
@@ -31,7 +190,7 @@ namespace TauCode.Db
         protected CruderBase(IDbConnection connection)
             : base(connection, true, false)
         {
-            _insertCommands = new Dictionary<string, CrudCommandBuilder>();
+            //_insertCommands = new Dictionary<string, CrudCommandBuilder>();
         }
 
         #endregion
@@ -66,49 +225,49 @@ namespace TauCode.Db
         protected IDbInspector DbInspector =>
             _dbInspector ?? (_dbInspector = this.Factory.CreateDbInspector(this.Connection));
 
-        protected virtual CrudCommandBuilder GetInserter(string tableName)
-        {
-            if (tableName == null)
-            {
-                throw new ArgumentNullException(nameof(tableName));
-            }
+        //protected virtual CrudCommandBuilder GetInserter(string tableName)
+        //{
+        //    if (tableName == null)
+        //    {
+        //        throw new ArgumentNullException(nameof(tableName));
+        //    }
 
-            tableName = tableName.ToLowerInvariant();
+        //    tableName = tableName.ToLowerInvariant();
 
-            var inserter = _insertCommands.GetOrDefault(tableName);
-            if (inserter == null)
-            {
-                var table = this.Factory.CreateTableInspector(this.Connection, tableName).GetTable();
-                var insertableColumns = table
-                    .Columns
-                    .Where(x => x.Identity == null)
-                    .Select(x => x.Name);
+        //    var inserter = _insertCommands.GetOrDefault(tableName);
+        //    if (inserter == null)
+        //    {
+        //        var table = this.Factory.CreateTableInspector(this.Connection, tableName).GetTable();
+        //        var insertableColumns = table
+        //            .Columns
+        //            .Where(x => x.Identity == null)
+        //            .Select(x => x.Name);
 
-                inserter = new CrudCommandBuilder(this.Connection, insertableColumns);
-                inserter.CommandText =
-                    this.ScriptBuilderLab.BuildInsertScript(table, inserter.GetColumnToParameterMappings());
+        //        inserter = new CrudCommandBuilder(this.Connection, insertableColumns);
+        //        inserter.CommandText =
+        //            this.ScriptBuilderLab.BuildInsertScript(table, inserter.GetColumnToParameterMappings());
 
-                _insertCommands.Add(tableName, inserter);
-            }
+        //        _insertCommands.Add(tableName, inserter);
+        //    }
 
-            return inserter;
-        }
+        //    return inserter;
+        //}
 
-        protected virtual IDictionary<string, object> RowToDataDictionary(object row)
+        protected virtual IDictionary<string, object> ObjectToDataDictionary(object obj)
         {
             IDictionary<string, object> dictionary;
 
-            if (row is IDictionary<string, object> dictionaryParam)
+            if (obj is IDictionary<string, object> dictionaryParam)
             {
                 dictionary = dictionaryParam;
             }
-            else if (row is DynamicRow dynamicRow)
+            else if (obj is DynamicRow dynamicRow)
             {
                 dictionary = dynamicRow.ToDictionary();
             }
             else
             {
-                dictionary = new ValueDictionary(row);
+                dictionary = new ValueDictionary(obj);
             }
 
             return dictionary;
@@ -207,69 +366,103 @@ namespace TauCode.Db
                 return; // nothing to insert
             }
 
-            var rowValuesDictionary = this.RowToDataDictionary(rows[0]); // origin, sample to compare with
-            var parameterInfoDictionary = this.BuildParameterInfoDictionary(table, rowValuesDictionary.Keys);
+            //var helper = new CommandHelper(this, table, rows[]);
 
-            var sql = this.ScriptBuilderLab.BuildInsertScript(
-                table,
-                parameterInfoDictionary.ToDictionary(
-                    pair => pair.Key,
-                    pair => pair.Value.ParameterName));
+            //var rowValuesDictionary = this.ObjectToDataDictionary(rows[0]); // origin, sample to compare with
 
-            IDictionary<string, IDbDataParameter> parameterDictionary = new Dictionary<string, IDbDataParameter>();
-
-            using (var command = this.Connection.CreateCommand())
+            using (var helper = new CommandHelper(this, table, this.ObjectToDataDictionary(rows[0]).Keys))
             {
-                command.CommandText = sql;
-                foreach (var pair in parameterInfoDictionary)
-                {
-                    var parameterInfo = pair.Value;
+                var sql = this.ScriptBuilderLab.BuildInsertScript(
+                    table,
+                    helper.GetParameterNames()
+                    //parameterInfoDictionary.ToDictionary(
+                    //    pair => pair.Key,
+                    //    pair => pair.Value.ParameterName)
 
-                    var parameter = command.CreateParameter();
-                    parameter.ParameterName = parameterInfo.ParameterName;
-                    parameter.DbType = parameterInfo.DbType;
+                );
 
-                    if (parameterInfo.Size.HasValue)
-                    {
-                        parameter.Size = parameterInfo.Size.Value;
-                    }
-
-                    if (parameterInfo.Precision.HasValue)
-                    {
-                        parameter.Precision = (byte) parameterInfo.Precision.Value;
-                    }
-
-                    if (parameterInfo.Scale.HasValue)
-                    {
-                        parameter.Scale = (byte) parameterInfo.Scale.Value;
-                    }
-
-                    command.Parameters.Add(parameter);
-                    parameterDictionary.Add(parameter.ParameterName, parameter);
-                }
-
-                command.Prepare();
+                helper.CommandText = sql;
 
                 foreach (var row in rows)
                 {
-                    var rowDictionary = this.RowToDataDictionary(row); // little overhead for row #0
-                    foreach (var pair in rowDictionary)
-                    {
-                        var columnName = pair.Key;
-                        var originalColumnValue = pair.Value;
+                    helper.ExecuteWithValues(row);
+                    //var rowDictionary = this.ObjectToDataDictionary(row); // little overhead for row #0
+                    //foreach (var pair in rowDictionary)
+                    //{
+                    //    var columnName = pair.Key;
+                    //    var originalColumnValue = pair.Value;
 
-                        var parameterInfo = parameterInfoDictionary[columnName];
-                        var parameterName = parameterInfo.ParameterName;
-                        var parameter = parameterDictionary[parameterName];
+                    //    var parameterInfo = parameterInfoDictionary[columnName];
+                    //    var parameterName = parameterInfo.ParameterName;
+                    //    var parameter = parameterDictionary[parameterName];
 
-                        var columnValue = this.TransformOriginalColumnValue(parameterInfo, originalColumnValue);
+                    //    var columnValue = this.TransformOriginalColumnValue(parameterInfo, originalColumnValue);
 
-                        parameter.Value = columnValue;
-                    }
+                    //    parameter.Value = columnValue;
+                    //}
 
-                    command.ExecuteNonQuery();
+                    //command.ExecuteNonQuery();
                 }
             }
+
+            //var parameterInfoDictionary = this.BuildParameterInfoDictionary(table, rowValuesDictionary.Keys);
+
+
+
+            //IDictionary<string, IDbDataParameter> parameterDictionary = new Dictionary<string, IDbDataParameter>();
+
+            //using (var command = this.Connection.CreateCommand())
+            //{
+            //    command.CommandText = sql;
+            //    foreach (var pair in parameterInfoDictionary)
+            //    {
+            //        var parameterInfo = pair.Value;
+
+            //        var parameter = command.CreateParameter();
+            //        parameter.ParameterName = parameterInfo.ParameterName;
+            //        parameter.DbType = parameterInfo.DbType;
+
+            //        if (parameterInfo.Size.HasValue)
+            //        {
+            //            parameter.Size = parameterInfo.Size.Value;
+            //        }
+
+            //        if (parameterInfo.Precision.HasValue)
+            //        {
+            //            parameter.Precision = (byte) parameterInfo.Precision.Value;
+            //        }
+
+            //        if (parameterInfo.Scale.HasValue)
+            //        {
+            //            parameter.Scale = (byte) parameterInfo.Scale.Value;
+            //        }
+
+            //        command.Parameters.Add(parameter);
+            //        parameterDictionary.Add(parameter.ParameterName, parameter);
+            //    }
+
+            //    command.Prepare();
+
+            //    foreach (var row in rows)
+            //    {
+            //        var rowDictionary = this.ObjectToDataDictionary(row); // little overhead for row #0
+            //        foreach (var pair in rowDictionary)
+            //        {
+            //            var columnName = pair.Key;
+            //            var originalColumnValue = pair.Value;
+
+            //            var parameterInfo = parameterInfoDictionary[columnName];
+            //            var parameterName = parameterInfo.ParameterName;
+            //            var parameter = parameterDictionary[parameterName];
+
+            //            var columnValue = this.TransformOriginalColumnValue(parameterInfo, originalColumnValue);
+
+            //            parameter.Value = columnValue;
+            //        }
+
+            //        command.ExecuteNonQuery();
+            //    }
+            //}
         }
 
         protected virtual object TransformOriginalColumnValue(IParameterInfo parameterInfo, object originalColumnValue)
@@ -292,6 +485,7 @@ namespace TauCode.Db
                     {
                         throw new NotImplementedException();
                     }
+
                     break;
 
                 case DbType.String:
@@ -303,6 +497,7 @@ namespace TauCode.Db
                     {
                         throw new NotImplementedException();
                     }
+
                     break;
 
                 default:
@@ -312,31 +507,37 @@ namespace TauCode.Db
             return transformed;
         }
 
-        private IDictionary<string, IParameterInfo> BuildParameterInfoDictionary(TableMold table,
-            ICollection<string> columnNames)
-        {
-            var dictionary = new Dictionary<string, IParameterInfo>();
+        //private IDictionary<string, IParameterInfo> BuildParameterInfoDictionary(
+        //    TableMold table,
+        //    ICollection<string> columnNames)
+        //{
+        //    var dictionary = new Dictionary<string, IParameterInfo>();
 
-            foreach (var columnName in columnNames)
-            {
-                var column = table.Columns.Single(x => x.Name == columnName);
-                var parameterInfo = this.ColumnToParameterInfo(column);
+        //    foreach (var columnName in columnNames)
+        //    {
+        //        var column = table.Columns.Single(x => x.Name == columnName);
+        //        var parameterInfo = this.ColumnToParameterInfo(column);
 
-                dictionary.Add(columnName, parameterInfo);
-            }
+        //        dictionary.Add(columnName, parameterInfo);
+        //    }
 
-            return dictionary;
-        }
+        //    return dictionary;
+        //}
 
-        protected virtual IParameterInfo ColumnToParameterInfo(ColumnMold column)
+        protected virtual IParameterInfo ColumnToParameterInfo(
+            string columnName,
+            //ColumnMold column,
+            DbTypeMold columnType,
+            IReadOnlyDictionary<string, string> parameterNameMappings)
         {
             DbType dbType;
             int? size = null;
             int? precision = null;
             int? scale = null;
-            var parameterName = $"p_{column.Name}";
+            var parameterName = parameterNameMappings[columnName];
+            //var parameterName = $"p_{column.Name}";
 
-            var typeName = column.Type.Name.ToLowerInvariant();
+            var typeName = columnType.Name.ToLowerInvariant();
 
             switch (typeName)
             {
@@ -350,7 +551,7 @@ namespace TauCode.Db
 
                 case "nvarchar":
                     dbType = DbType.String;
-                    size = column.Type.Size;
+                    size = columnType.Size;
                     break;
 
                 default:
@@ -418,22 +619,22 @@ namespace TauCode.Db
 
         public bool UpdateRow(string tableName, object rowUpdate, object id)
         {
+            if (tableName == null)
+            {
+                throw new ArgumentNullException(nameof(tableName));
+            }
+
+            if (rowUpdate == null)
+            {
+                throw new ArgumentNullException(nameof(rowUpdate));
+            }
+
+            if (id == null)
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+
             throw new NotImplementedException();
-
-            //if (tableName == null)
-            //{
-            //    throw new ArgumentNullException(nameof(tableName));
-            //}
-
-            //if (rowUpdate == null)
-            //{
-            //    throw new ArgumentNullException(nameof(rowUpdate));
-            //}
-
-            //if (id == null)
-            //{
-            //    throw new ArgumentNullException(nameof(id));
-            //}
 
             //IDictionary<string, object> dictionary;
 
@@ -488,10 +689,10 @@ namespace TauCode.Db
             //}
         }
 
-        public void Reset()
-        {
-            _insertCommands.Clear();
-        }
+        //public void Reset()
+        //{
+        //    _insertCommands.Clear();
+        //}
 
         #endregion
     }

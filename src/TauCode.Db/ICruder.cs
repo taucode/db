@@ -12,6 +12,6 @@ namespace TauCode.Db
         bool DeleteRow(string tableName, object id);
         dynamic GetRow(string tableName, object id);
         bool UpdateRow(string tableName, object rowUpdate, object id);
-        void Reset();
+        //void Reset();
     }
 }

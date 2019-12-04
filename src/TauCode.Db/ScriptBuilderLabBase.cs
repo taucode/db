@@ -344,7 +344,7 @@ namespace TauCode.Db
             return sb.ToString();
         }
 
-        public string BuildInsertScript(TableMold table, IDictionary<string, string> columnToParameterMappings)
+        public string BuildInsertScript(TableMold table, IReadOnlyDictionary<string, string> columnToParameterMappings)
         {
             // todo: check args, including count of columnToParameterMappings
 

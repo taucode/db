@@ -32,7 +32,7 @@ namespace TauCode.Db.Tests.SqlServer
         [SetUp]
         public void SetUpBase()
         {
-            this.DropTables();
+            this.DropTables(); // todo: don't recreate all tables for each test, just purge the data.
             this.CreateTables();
         }
 
