@@ -8,10 +8,12 @@ namespace TauCode.Db.SQLite
         public static SQLiteUtilityFactory Instance { get; } = new SQLiteUtilityFactory();
 
         private SQLiteUtilityFactory()
-        {   
+        {
         }
 
         public string DbProviderName => DbProviderNames.SQLite;
+
+        public IDbConnection CreateConnection() => DbUtils.CreateConnection(this.DbProviderName);
 
         public IDialect GetDialect() => SQLiteDialect.Instance;
 

@@ -13,6 +13,8 @@ namespace TauCode.Db.Ansi
 
         public string DbProviderName => DbProviderNames.Ansi;
 
+        public IDbConnection CreateConnection() => throw new NotSupportedException();
+
         public IDialect GetDialect() => AnsiDialect.Instance;
 
         public IScriptBuilder CreateScriptBuilder() => throw new NotSupportedException();

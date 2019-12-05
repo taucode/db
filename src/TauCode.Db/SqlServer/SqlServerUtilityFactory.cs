@@ -12,6 +12,8 @@ namespace TauCode.Db.SqlServer
 
         public string DbProviderName => DbProviderNames.SqlServer;
 
+        public IDbConnection CreateConnection() => DbUtils.CreateConnection(this.DbProviderName);
+
         public IDialect GetDialect() => SqlServerDialect.Instance;
 
         public IScriptBuilder CreateScriptBuilder() => new SqlServerScriptBuilder();
