@@ -28,12 +28,9 @@ namespace TauCode.Db.SQLite
 
         #region Overridden
 
-        public override bool CanDecorateTypeIdentifier => false;
+        public override IUtilityFactory Factory => SQLiteUtilityFactory.Instance;
 
-        protected override IUtilityFactory GetFactoryImpl()
-        {
-            throw new NotImplementedException();
-        }
+        public override bool CanDecorateTypeIdentifier => false;
 
         public override IReadOnlyList<string> DataTypeNames => EmptyStrings;
 

@@ -24,9 +24,6 @@ namespace TauCode.Db.Ansi
 
         #endregion
 
-        protected override IUtilityFactory GetFactoryImpl()
-        {
-            throw new NotImplementedException();
-        }
+        public override IUtilityFactory Factory => AnsiUtilityFactory.Instance;
     }
 }

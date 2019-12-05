@@ -5,8 +5,6 @@ namespace TauCode.Db
 {
     public interface ITableInspector : IUtility
     {
-        //IDialect Dialect { get; }
-
         string TableName { get; }
 
         IReadOnlyList<ColumnMold> GetColumns();

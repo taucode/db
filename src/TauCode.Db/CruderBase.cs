@@ -383,7 +383,7 @@ namespace TauCode.Db
             }
         }
 
-        public virtual IList<dynamic> GetRows(string tableName)
+        public virtual IList<dynamic> GetAllRows(string tableName)
         {
             if (tableName == null)
             {

@@ -138,7 +138,7 @@ namespace TauCode.Db.Tests.SqlServer
         public void GetRow_ValidId_ReturnsRow()
         {
             // Arrange
-            this.Connection.ExecuteScript(@"
+            this.Connection.ExecuteSingleSql(@"
 INSERT INTO [language](
     [id],
     [code],
@@ -163,7 +163,7 @@ VALUES(
         public void DeleteRow_ValidId_DeletesRow()
         {
             // Arrange
-            this.Connection.ExecuteScript(@"
+            this.Connection.ExecuteSingleSql(@"
 INSERT INTO [language](
     [id],
     [code],

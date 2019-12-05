@@ -7,7 +7,7 @@ using TauCode.Db.Model;
 
 namespace TauCode.Db
 {
-    public abstract class DialectBase : IDialect
+    public abstract class DialectBase : UtilityBase, IDialect
     {
         #region Constants
 
@@ -88,14 +88,13 @@ namespace TauCode.Db
 
         #region Constructor
 
-        protected DialectBase(string name) // todo: remove. use IUtilityFactory's name.
+        protected DialectBase(string name)
+            : base(null, false, true)
         {
             this.Name = name ?? throw new ArgumentNullException(nameof(name));
         }
 
         #endregion
-
-        protected abstract IUtilityFactory GetFactoryImpl(); // todo: move to region
 
         #region Protected
 
@@ -122,16 +121,11 @@ namespace TauCode.Db
             return new ArgumentException($"Could not convert value of type '{obj.GetType().FullName}' to {desiredFamily}");
         }
 
-        // todo: remove.
-        //protected virtual string CharFunctionName => "CHAR";
-
         #endregion
 
         #region IDialect Members
 
-        public IUtilityFactory Factory => this.GetFactoryImpl();
-
-        public string Name { get; } // todo: remove
+        public string Name { get; }
 
         public virtual IReadOnlyList<string> ReservedWords => _reservedWords ?? (_reservedWords = this.BuildReservedWords());
 

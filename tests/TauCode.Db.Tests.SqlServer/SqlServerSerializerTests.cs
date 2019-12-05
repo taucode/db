@@ -23,7 +23,7 @@ namespace TauCode.Db.Tests.SqlServer
         {
             // Arrange
             var insertScript = this.GetType().Assembly.GetResourceText("script-insert-data.sql", true);
-            this.Connection.ExecuteScript(insertScript);
+            this.Connection.ExecuteCommentedScript(insertScript);
 
             // Act
             var json = _dbSerializer.SerializeTableData("language");

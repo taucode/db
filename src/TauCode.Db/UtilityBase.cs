@@ -36,7 +36,7 @@ namespace TauCode.Db
             this.Connection = connection;
         }
 
-        protected IDbConnection Connection { get; }
+        public IDbConnection Connection { get; }
 
         public abstract IUtilityFactory Factory { get; }
     }

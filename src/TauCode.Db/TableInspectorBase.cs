@@ -6,6 +6,7 @@ using TauCode.Db.Model;
 
 namespace TauCode.Db
 {
+    // todo clean, regions
     public abstract class TableInspectorBase : UtilityBase, ITableInspector
     {
         #region Nested
@@ -26,16 +27,12 @@ namespace TauCode.Db
         #region Constructor
 
         protected TableInspectorBase(
-            //IDialect dialect,
             IDbConnection connection,
             string tableName)
             : base(connection, true, false)
         {
             // todo: tableName is not decorated.
 
-
-            //this.Dialect = dialect ?? throw new ArgumentNullException(nameof(dialect));
-            //this.Connection = connection ?? throw new ArgumentNullException(nameof(connection));
             this.TableName = tableName ?? throw new ArgumentNullException(nameof(tableName));
         }
 
@@ -49,70 +46,9 @@ namespace TauCode.Db
 
         protected abstract Dictionary<string, ColumnIdentityMold> GetIdentities();
 
-        //protected abstract ICruder CreateCruder();
-
         #endregion
 
-        #region Protected
 
-        //protected IDbConnection Connection { get; }
-
-        //protected ICruder Cruder => _cruder ?? (_cruder = this.CreateCruder());
-
-        #endregion
-
-        #region ITableInspector Members OLD
-
-        //public IDialect Dialect { get; }
-
-        //public string TableName { get; }
-
-        //public virtual List<ColumnMold> GetColumnMolds()
-        //{
-        //    var columnInfos = this.GetColumnInfos();
-        //    var columns = columnInfos
-        //        .Select(this.ColumnInfoToColumnMold)
-        //        .ToList();
-
-        //    var identities = this.GetIdentities();
-
-        //    foreach (var identityColumnName in identities.Keys)
-        //    {
-        //        var column = columns.Single(x => string.Equals(x.Name, identityColumnName, StringComparison.InvariantCultureIgnoreCase));
-        //        column.Identity = identities[identityColumnName];
-        //    }
-
-        //    return columns;
-        //}
-
-        //public abstract PrimaryKeyMold GetPrimaryKeyMold();
-
-        //public abstract List<ForeignKeyMold> GetForeignKeyMolds();
-
-        //public abstract List<IndexMold> GetIndexMolds();
-
-        //public virtual TableMold GetTableMold()
-        //{
-        //    var primaryKey = this.GetPrimaryKeyMold();
-        //    var columns = this.GetColumnMolds();
-        //    var foreignKeys = this.GetForeignKeyMolds();
-        //    var indexes = this.GetIndexMolds();
-
-        //    var table = new TableMold
-        //    {
-        //        Name = this.TableName,
-        //        PrimaryKey = primaryKey,
-        //        Columns = columns,
-        //        ForeignKeys = foreignKeys,
-        //        Indexes = indexes,
-        //    };
-
-        //    return table;
-        //}
-
-        #endregion
-
-        //public IUtilityFactory Factory => throw new NotImplementedException();
         public string TableName { get; }
 
         public virtual IReadOnlyList<ColumnMold> GetColumns()

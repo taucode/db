@@ -6,28 +6,20 @@ using TauCode.Db.Model;
 
 namespace TauCode.Db
 {
-    // todo: nice regions
     public abstract class DbInspectorBase : UtilityBase, IDbInspector
     {
+        #region Constructor
+
         protected DbInspectorBase(IDbConnection connection)
             : base(connection, true, false)
         {
         }
 
+        #endregion
+
+        #region Abstract & Virtual
+
         protected abstract IReadOnlyList<string> GetTableNamesImpl();
-
-        public IReadOnlyList<string> GetTableNames(bool? independentFirst = null)
-        {
-            var tableNames = this.GetTableNamesImpl();
-            if (independentFirst.HasValue)
-            {
-                tableNames = this.GetSortedTableNames(tableNames, independentFirst.Value)
-                    .Select(x => x.Name)
-                    .ToList();
-            }
-
-            return tableNames;
-        }
 
         protected virtual IReadOnlyList<TableMold> GetSortedTableNames(IReadOnlyList<string> tableNames, bool independentFirst)
         {
@@ -74,6 +66,23 @@ namespace TauCode.Db
             return list;
         }
 
-        //public abstract ITableInspector GetTableInspector(string tableName);
+        #endregion
+
+        #region IDbInspector Members
+
+        public IReadOnlyList<string> GetTableNames(bool? independentFirst = null)
+        {
+            var tableNames = this.GetTableNamesImpl();
+            if (independentFirst.HasValue)
+            {
+                tableNames = this.GetSortedTableNames(tableNames, independentFirst.Value)
+                    .Select(x => x.Name)
+                    .ToList();
+            }
+
+            return tableNames;
+        }
+
+        #endregion
     }
 }

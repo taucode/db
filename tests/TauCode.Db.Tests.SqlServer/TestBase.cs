@@ -41,30 +41,13 @@ namespace TauCode.Db.Tests.SqlServer
         protected void CreateTables()
         {
             var script = this.GetType().Assembly.GetResourceText("script-create-tables.sql", true);
-            var sqls = DbUtils.SplitScriptByComments(script);
-
-            foreach (var sql in sqls)
-            {
-                DbUtils.ExecuteSql(Connection, sql);
-            }
+            this.Connection.ExecuteCommentedScript(script);
         }
 
         protected void DropTables()
         {
             var script = this.GetType().Assembly.GetResourceText("script-drop-tables.sql", true);
-            var sqls = DbUtils.SplitScriptByComments(script);
-
-            foreach (var sql in sqls)
-            {
-                try
-                {
-                    DbUtils.ExecuteSql(Connection, sql);
-                }
-                catch
-                {
-                    // ignore exception - maybe table does not exist yet.
-                }
-            }
+            this.Connection.ExecuteCommentedScript(script);
         }
 
         protected dynamic GetRow(string tableName, object id)
