@@ -14,7 +14,7 @@ namespace TauCode.Db.SqlServer
 
         public IDialect GetDialect() => SqlServerDialect.Instance;
 
-        public IScriptBuilderLab CreateScriptBuilderLab() => new SqlServerScriptBuilderLab();
+        public IScriptBuilder CreateScriptBuilder() => new SqlServerScriptBuilder();
 
         public IDbInspector CreateDbInspector(IDbConnection connection) => new SqlServerInspector(connection);
 

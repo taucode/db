@@ -15,7 +15,7 @@ namespace TauCode.Db.Ansi
 
         public IDialect GetDialect() => AnsiDialect.Instance;
 
-        public IScriptBuilderLab CreateScriptBuilderLab() => throw new NotSupportedException();
+        public IScriptBuilder CreateScriptBuilder() => throw new NotSupportedException();
 
         public IDbInspector CreateDbInspector(IDbConnection connection) => throw new NotSupportedException();
 

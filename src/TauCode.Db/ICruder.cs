@@ -4,7 +4,7 @@ namespace TauCode.Db
 {
     public interface ICruder : IUtility
     {
-        IScriptBuilderLab ScriptBuilderLab { get; }
+        IScriptBuilder ScriptBuilder { get; }
         void InsertRow(string tableName, object row);
         void InsertRows(string tableName, IReadOnlyList<object> rows);
         dynamic GetRow(string tableName, object id);

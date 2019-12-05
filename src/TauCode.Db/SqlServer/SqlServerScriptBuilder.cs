@@ -1,6 +1,6 @@
 ﻿namespace TauCode.Db.SqlServer
 {
-    public class SqlServerScriptBuilderLab : ScriptBuilderLabBase
+    public class SqlServerScriptBuilder : ScriptBuilderBase
     {
         public override IUtilityFactory Factory => SqlServerUtilityFactory.Instance;
     }

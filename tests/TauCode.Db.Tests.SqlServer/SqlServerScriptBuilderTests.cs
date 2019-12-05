@@ -3,15 +3,15 @@
 namespace TauCode.Db.Tests.SqlServer
 {
     [TestFixture]
-    public class SqlServerScriptBuilderLabTests : TestBase
+    public class SqlServerScriptBuilderTests : TestBase
     {
-        private IScriptBuilderLab _scriptBuilderLab;
+        private IScriptBuilder _scriptBuilder;
 
         [SetUp]
         public void SetUp()
         {
-            _scriptBuilderLab = this.DbInspector.Factory.CreateScriptBuilderLab();
-            _scriptBuilderLab.CurrentOpeningIdentifierDelimiter = '[';
+            _scriptBuilder = this.DbInspector.Factory.CreateScriptBuilder();
+            _scriptBuilder.CurrentOpeningIdentifierDelimiter = '[';
         }
 
         [Test]
@@ -24,7 +24,7 @@ namespace TauCode.Db.Tests.SqlServer
                 .GetTable();
             
             // Act
-            var sql = _scriptBuilderLab.BuildCreateTableScript(table, true);
+            var sql = _scriptBuilder.BuildCreateTableScript(table, true);
 
             // Assert
             var expectedSql = @"CREATE TABLE [fragment](

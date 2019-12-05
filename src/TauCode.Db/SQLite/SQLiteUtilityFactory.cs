@@ -15,7 +15,7 @@ namespace TauCode.Db.SQLite
 
         public IDialect GetDialect() => SQLiteDialect.Instance;
 
-        public IScriptBuilderLab CreateScriptBuilderLab() => /*new SQLiteScriptBuilder();*/ throw new NotImplementedException();
+        public IScriptBuilder CreateScriptBuilder() => throw new NotImplementedException();
 
         public IDbInspector CreateDbInspector(IDbConnection connection) => new SQLiteInspector(connection);
 

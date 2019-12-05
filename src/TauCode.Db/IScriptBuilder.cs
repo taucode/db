@@ -4,7 +4,7 @@ using TauCode.Db.Model;
 namespace TauCode.Db
 {
     // todo: get rid of lab.
-    public interface IScriptBuilderLab : IUtility
+    public interface IScriptBuilder : IUtility
     {
         char? CurrentOpeningIdentifierDelimiter { get; set; }
         string BuildCreateTableScript(TableMold table, bool includeConstraints);

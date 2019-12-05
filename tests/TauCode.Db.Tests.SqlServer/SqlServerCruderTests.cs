@@ -13,7 +13,7 @@ namespace TauCode.Db.Tests.SqlServer
         public void SetUp()
         {
             _cruder = this.DbInspector.Factory.CreateCruder(this.Connection);
-            _cruder.ScriptBuilderLab.CurrentOpeningIdentifierDelimiter = '[';
+            _cruder.ScriptBuilder.CurrentOpeningIdentifierDelimiter = '[';
         }
 
         [Test]

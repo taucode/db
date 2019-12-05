@@ -6,7 +6,7 @@ namespace TauCode.Db
     {
         string DbProviderName { get; }
         IDialect GetDialect();
-        IScriptBuilderLab CreateScriptBuilderLab();
+        IScriptBuilder CreateScriptBuilder();
         IDbInspector CreateDbInspector(IDbConnection connection);
         ITableInspector CreateTableInspector(IDbConnection connection, string tableName);
         ICruder CreateCruder(IDbConnection connection);

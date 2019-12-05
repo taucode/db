@@ -101,12 +101,12 @@ namespace TauCode.Db
         {
             var tableNames = dbInspector.GetTableNames(false);
             var dialect = dbInspector.Factory.GetDialect();
-            var scriptBuilderLab = dbInspector.Factory.CreateScriptBuilderLab();
-            scriptBuilderLab.CurrentOpeningIdentifierDelimiter = dialect.IdentifierDelimiters.FirstOrDefault()?.Item1; // choose some delimiter
+            var scriptBuilder = dbInspector.Factory.CreateScriptBuilder();
+            scriptBuilder.CurrentOpeningIdentifierDelimiter = dialect.IdentifierDelimiters.FirstOrDefault()?.Item1; // choose some delimiter
 
             foreach (var tableName in tableNames)
             {
-                var sql = scriptBuilderLab.BuildDropTableScript(tableName);
+                var sql = scriptBuilder.BuildDropTableScript(tableName);
                 dbInspector.Connection.ExecuteSingleSql(sql);
             }
         }
@@ -115,12 +115,12 @@ namespace TauCode.Db
         {
             var tableNames = dbInspector.GetTableNames(false);
             var dialect = dbInspector.Factory.GetDialect();
-            var scriptBuilderLab = dbInspector.Factory.CreateScriptBuilderLab();
-            scriptBuilderLab.CurrentOpeningIdentifierDelimiter = dialect.IdentifierDelimiters.FirstOrDefault()?.Item1; // choose some delimiter
+            var scriptBuilder = dbInspector.Factory.CreateScriptBuilder();
+            scriptBuilder.CurrentOpeningIdentifierDelimiter = dialect.IdentifierDelimiters.FirstOrDefault()?.Item1; // choose some delimiter
 
             foreach (var tableName in tableNames)
             {
-                var sql = scriptBuilderLab.BuildDeleteScript(tableName);
+                var sql = scriptBuilder.BuildDeleteScript(tableName);
                 dbInspector.Connection.ExecuteSingleSql(sql);
             }
         }

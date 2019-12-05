@@ -7,11 +7,11 @@ using TauCode.Db.Model;
 
 namespace TauCode.Db
 {
-    public abstract class ScriptBuilderLabBase : UtilityBase, IScriptBuilderLab
+    public abstract class ScriptBuilderBase : UtilityBase, IScriptBuilder
     {
         private char? _currentOpeningIdentifierDelimiter;
 
-        protected ScriptBuilderLabBase()
+        protected ScriptBuilderBase()
             : base(null, false, true)
         {
         }
