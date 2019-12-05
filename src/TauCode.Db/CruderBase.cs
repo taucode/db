@@ -5,24 +5,186 @@ using System.Linq;
 using TauCode.Data;
 using TauCode.Db.Data;
 using TauCode.Db.Model;
-using TauCode.Utils.Extensions;
 
 namespace TauCode.Db
 {
-    // todo: cache scripts. YES!
     public abstract class CruderBase : UtilityBase, ICruder
     {
+        #region Nested
+
+        protected class CommandHelper : IDisposable
+        {
+            #region Fields
+
+            private readonly CruderBase _cruder;
+            private IDbCommand _command;
+            private bool _commandPrepared;
+
+            private readonly IReadOnlyDictionary<string, ColumnMold> _columnsByColumnName;
+            private readonly IReadOnlyDictionary<string, string> _parameterNamesByColumnNames;
+            private readonly IReadOnlyDictionary<string, IParameterInfo> _parameterInfosByColumnNames;
+            private readonly IReadOnlyDictionary<string, IDbDataParameter> _parametersByParameterNames;
+
+            #endregion
+
+            #region Constructor
+
+            public CommandHelper(CruderBase cruder, TableMold table, IEnumerable<string> columnNames)
+            {
+                // todo checks
+
+                _cruder = cruder;
+                _command = _cruder.Connection.CreateCommand();
+
+                _columnsByColumnName = this.BuildColumnsByColumnName(table, columnNames);
+                _parameterNamesByColumnNames = this.BuildParameterNamesByColumnNames();
+                _parameterInfosByColumnNames = this.BuildParameterInfosByColumnNames();
+                _parametersByParameterNames = this.BuildParametersByParameterNames();
+            }
+
+            #endregion
+
+            #region Private
+
+            private IReadOnlyDictionary<string, ColumnMold> BuildColumnsByColumnName(
+                TableMold table,
+                IEnumerable<string> columnNames)
+            {
+                return columnNames
+                    .Select(x =>
+                        table.Columns.Single(y =>
+                            string.Equals(y.Name, x, StringComparison.InvariantCultureIgnoreCase)))
+                    .ToDictionary(x => x.Name.ToLowerInvariant(), x => x);
+            }
+
+            private IReadOnlyDictionary<string, string> BuildParameterNamesByColumnNames()
+            {
+                return _columnsByColumnName
+                    .ToDictionary(
+                        x => x.Key,
+                        x => $"p_{x.Key}");
+            }
+
+            private IReadOnlyDictionary<string, IParameterInfo> BuildParameterInfosByColumnNames()
+            {
+                return _columnsByColumnName
+                    .ToDictionary(
+                        x => x.Key,
+                        x => _cruder.ColumnToParameterInfo(
+                            x.Key,
+                            x.Value.Type,
+                            _parameterNamesByColumnNames));
+            }
+
+            private IReadOnlyDictionary<string, IDbDataParameter> BuildParametersByParameterNames()
+            {
+                return _parameterInfosByColumnNames
+                    .ToDictionary(
+                        x => x.Value.ParameterName,
+                        x => this.CreateParameter(x.Value));
+            }
+
+            private IDbDataParameter CreateParameter(IParameterInfo parameterInfo)
+            {
+                var parameter = _command.CreateParameter();
+                parameter.ParameterName = parameterInfo.ParameterName;
+                parameter.DbType = parameterInfo.DbType;
+
+
+
+                if (parameterInfo.Size.HasValue)
+                {
+                    parameter.Size = parameterInfo.Size.Value;
+                }
+
+                if (parameterInfo.Precision.HasValue)
+                {
+                    parameter.Precision = (byte)parameterInfo.Precision.Value;
+                }
+
+                if (parameterInfo.Scale.HasValue)
+                {
+                    parameter.Scale = (byte)parameterInfo.Scale.Value;
+                }
+
+                _command.Parameters.Add(parameter);
+                return parameter;
+            }
+
+            private void ApplyValuesToCommand(object values)
+            {
+                if (!_commandPrepared)
+                {
+                    this.PrepareCommand();
+                }
+
+                var rowDictionary = _cruder.ObjectToDataDictionary(values);
+                foreach (var pair in rowDictionary)
+                {
+                    var columnName = pair.Key;
+                    var originalColumnValue = pair.Value;
+
+                    var parameterInfo = _parameterInfosByColumnNames[columnName];
+                    var parameterName = parameterInfo.ParameterName;
+                    var parameter = _parametersByParameterNames[parameterName];
+
+                    var columnValue = _cruder.TransformOriginalColumnValue(parameterInfo, originalColumnValue);
+
+                    parameter.Value = columnValue;
+                }
+            }
+
+            private void PrepareCommand()
+            {
+                _command.Prepare();
+                _commandPrepared = true;
+            }
+
+            #endregion
+
+            #region Public
+
+            public string CommandText
+            {
+                get => _command.CommandText;
+                set => _command.CommandText = value;
+            }
+
+            public int ExecuteWithValues(object values)
+            {
+                this.ApplyValuesToCommand(values);
+                var result = _command.ExecuteNonQuery();
+                return result;
+            }
+
+            public IList<dynamic> FetchWithValues(object values)
+            {
+                this.ApplyValuesToCommand(values);
+                var rows = DbUtils.GetCommandRows(_command);
+
+                return rows;
+            }
+
+            public IReadOnlyDictionary<string, string> GetParameterNames() => _parameterNamesByColumnNames;
+
+            #endregion
+
+            #region IDisposable Members
+
+            public void Dispose()
+            {
+                _command?.Dispose();
+                _command = null;
+            }
+
+            #endregion
+        }
+
+        #endregion
+
         #region Fields
 
-        //private readonly IDbConnection _connection;
-        //private IScriptBuilder _scriptBuilder;
-        //private IDbInspector _dbInspector;
-
         private IScriptBuilderLab _scriptBuilderLab;
-        private IDbInspector _dbInspector;
-
-
-        private readonly IDictionary<string, CrudCommandBuilder> _insertCommands; // todo: need this?
 
         #endregion
 
@@ -31,164 +193,132 @@ namespace TauCode.Db
         protected CruderBase(IDbConnection connection)
             : base(connection, true, false)
         {
-            _insertCommands = new Dictionary<string, CrudCommandBuilder>();
         }
-
-        #endregion
-
-        #region Polymorph
-
-        // todo: move to factory.
-        //protected abstract string ExpectedDbConnectionTypeFullName { get; }
-
-        //protected abstract IUtilityFactory GetFactoryImpl();
-
-        //protected abstract IScriptBuilder CreateScriptBuilder();
-
-        //protected abstract IDbInspector CreateDbInspector();
 
         #endregion
 
         #region Protected
 
-        //protected IDbConnection GetSafeConnection()
-        //{
-        //    throw new NotImplementedException();
-        //    //if (_connection.GetType().FullName == this.ExpectedDbConnectionTypeFullName)
-        //    //{
-        //    //    return _connection;
-        //    //}
-
-        //    //throw new TypeMismatchException(
-        //    //    $"Expected DB connection type is '{this.ExpectedDbConnectionTypeFullName}', but an instance of '{_connection.GetType().FullName}' was provided.");
-        //}
-
-        protected IDbInspector DbInspector =>
-            _dbInspector ?? (_dbInspector = this.Factory.CreateDbInspector(this.Connection));
-
-        protected virtual CrudCommandBuilder GetInserter(string tableName)
+        protected virtual object TransformOriginalColumnValue(IParameterInfo parameterInfo, object originalColumnValue)
         {
-            if (tableName == null)
+            if (originalColumnValue == null)
             {
-                throw new ArgumentNullException(nameof(tableName));
+                return DBNull.Value;
             }
 
-            tableName = tableName.ToLowerInvariant();
+            object transformed;
 
-            var inserter = _insertCommands.GetOrDefault(tableName);
-            if (inserter == null)
+            switch (parameterInfo.DbType)
             {
-                var table = this.Factory.CreateTableInspector(this.Connection, tableName).GetTable();
-                var insertableColumns = table
-                    .Columns
-                    .Where(x => x.Identity == null)
-                    .Select(x => x.Name);
+                case DbType.Guid: // todo: override for SQLite
+                    if (originalColumnValue is Guid)
+                    {
+                        transformed = originalColumnValue;
+                    }
+                    else if (originalColumnValue is string stringValue)
+                    {
+                        transformed = new Guid(stringValue);
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
 
-                inserter = new CrudCommandBuilder(this.Connection, insertableColumns);
-                inserter.CommandText =
-                    this.ScriptBuilderLab.BuildInsertScript(table, inserter.GetColumnToParameterMappings());
+                    break;
 
-                _insertCommands.Add(tableName, inserter);
+                case DbType.String:
+                    if (originalColumnValue is string)
+                    {
+                        transformed = originalColumnValue;
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
+
+                    break;
+
+                default:
+                    throw new NotImplementedException();
             }
 
-            return inserter;
+            return transformed;
         }
 
-        protected virtual IDictionary<string, object> RowToDataDictionary(object row)
+        protected virtual IDictionary<string, object> ObjectToDataDictionary(object obj)
         {
             IDictionary<string, object> dictionary;
 
-            if (row is IDictionary<string, object> dictionaryParam)
+            if (obj is IDictionary<string, object> dictionaryParam)
             {
                 dictionary = dictionaryParam;
             }
-            else if (row is DynamicRow dynamicRow)
+            else if (obj is DynamicRow dynamicRow)
             {
                 dictionary = dynamicRow.ToDictionary();
             }
             else
             {
-                dictionary = new ValueDictionary(row);
+                dictionary = new ValueDictionary(obj);
             }
 
             return dictionary;
+        }
+
+        protected virtual IParameterInfo ColumnToParameterInfo(
+            string columnName,
+            DbTypeMold columnType,
+            IReadOnlyDictionary<string, string> parameterNameMappings)
+        {
+            DbType dbType;
+            int? size = null;
+            int? precision = null;
+            int? scale = null;
+            var parameterName = parameterNameMappings[columnName];
+
+            var typeName = columnType.Name.ToLowerInvariant();
+
+            switch (typeName)
+            {
+                case "int":
+                    dbType = DbType.Int32;
+                    break;
+
+                case "uniqueidentifier":
+                    dbType = DbType.Guid; // todo: override in SQLite
+                    break;
+
+                case "nvarchar":
+                    dbType = DbType.String;
+                    size = columnType.Size;
+                    break;
+
+                default:
+                    throw new NotImplementedException();
+            }
+
+            IParameterInfo parameterInfo = new ParameterInfoImpl(parameterName, dbType, size, precision, scale);
+            return parameterInfo;
         }
 
         #endregion
 
         #region ICruder Members
 
-        //public IDbInspector DbInspector => _dbInspector ?? (_dbInspector = this.CreateDbInspector());
-
-        //public IScriptBuilder ScriptBuilder => _scriptBuilder ?? (_scriptBuilder = this.CreateScriptBuilder());
-
-        public IScriptBuilderLab ScriptBuilderLab =>
+        public virtual IScriptBuilderLab ScriptBuilderLab =>
             _scriptBuilderLab ?? (_scriptBuilderLab = this.Factory.CreateScriptBuilderLab());
 
-        public void InsertRow(string tableName, object row)
+        public virtual void InsertRow(string tableName, object row)
         {
-            //if (tableName == null)
-            //{
-            //    throw new ArgumentNullException(nameof(tableName));
-            //}
-
             if (row == null)
             {
                 throw new ArgumentNullException(nameof(row));
             }
 
-            this.InsertRows(tableName, new List<object> {row});
-
-            //var inserter = this.GetInserter(tableName);
-            //var dataDictionary = this.ObjectToDataDictionary(row);
-
-            //inserter.SetData(dataDictionary);
-            //inserter.GetCommand().ExecuteNonQuery();
-
-
-            //IDictionary<string, object> dictionary;
-
-            //if (row is IDictionary<string, object> dictionaryParam)
-            //{
-            //    dictionary = dictionaryParam;
-            //}
-            //else if (row is DynamicRow dynamicRow)
-            //{
-            //    dictionary = dynamicRow.ToDictionary();
-            //}
-            //else
-            //{
-            //    dictionary = new ValueDictionary(row);
-            //}
-
-            //var connection = this.GetSafeConnection();
-
-            //var tableInspector = this.DbInspector.GetTableInspector(tableName);
-            //var tableMold = tableInspector.GetTableMold();
-
-            //var script = this.ScriptBuilder.BuildParameterizedInsertSql(
-            //    tableMold,
-            //    out var parameterMapping,
-            //    columnsToInclude: dictionary.Keys.ToArray(),
-            //    indent: 4);
-
-            //using (var command = connection.CreateCommand())
-            //{
-            //    command.CommandText = script;
-
-            //    foreach (var columnName in parameterMapping.Keys)
-            //    {
-            //        var parameterName = parameterMapping[columnName];
-            //        var parameterValue = dictionary[columnName] ?? DBNull.Value;
-
-            //        command.AddParameterWithValue(parameterName, parameterValue);
-            //    }
-
-            //    command.ExecuteNonQuery();
-            //}
+            this.InsertRows(tableName, new List<object> { row });
         }
 
-        public void InsertRows(string tableName, IReadOnlyList<object> rows)
+        public virtual void InsertRows(string tableName, IReadOnlyList<object> rows)
         {
             if (tableName == null)
             {
@@ -207,290 +337,143 @@ namespace TauCode.Db
                 return; // nothing to insert
             }
 
-            var rowValuesDictionary = this.RowToDataDictionary(rows[0]); // origin, sample to compare with
-            var parameterInfoDictionary = this.BuildParameterInfoDictionary(table, rowValuesDictionary.Keys);
-
-            var sql = this.ScriptBuilderLab.BuildInsertScript(
-                table,
-                parameterInfoDictionary.ToDictionary(
-                    pair => pair.Key,
-                    pair => pair.Value.ParameterName));
-
-            IDictionary<string, IDbDataParameter> parameterDictionary = new Dictionary<string, IDbDataParameter>();
-
-            using (var command = this.Connection.CreateCommand())
+            using (var helper = new CommandHelper(this, table, this.ObjectToDataDictionary(rows[0]).Keys))
             {
-                command.CommandText = sql;
-                foreach (var pair in parameterInfoDictionary)
-                {
-                    var parameterInfo = pair.Value;
+                var sql = this.ScriptBuilderLab.BuildInsertScript(
+                    table,
+                    helper.GetParameterNames());
 
-                    var parameter = command.CreateParameter();
-                    parameter.ParameterName = parameterInfo.ParameterName;
-                    parameter.DbType = parameterInfo.DbType;
-
-                    if (parameterInfo.Size.HasValue)
-                    {
-                        parameter.Size = parameterInfo.Size.Value;
-                    }
-
-                    if (parameterInfo.Precision.HasValue)
-                    {
-                        parameter.Precision = (byte) parameterInfo.Precision.Value;
-                    }
-
-                    if (parameterInfo.Scale.HasValue)
-                    {
-                        parameter.Scale = (byte) parameterInfo.Scale.Value;
-                    }
-
-                    command.Parameters.Add(parameter);
-                    parameterDictionary.Add(parameter.ParameterName, parameter);
-                }
-
-                command.Prepare();
+                helper.CommandText = sql;
 
                 foreach (var row in rows)
                 {
-                    var rowDictionary = this.RowToDataDictionary(row); // little overhead for row #0
-                    foreach (var pair in rowDictionary)
-                    {
-                        var columnName = pair.Key;
-                        var originalColumnValue = pair.Value;
-
-                        var parameterInfo = parameterInfoDictionary[columnName];
-                        var parameterName = parameterInfo.ParameterName;
-                        var parameter = parameterDictionary[parameterName];
-
-                        var columnValue = this.TransformOriginalColumnValue(parameterInfo, originalColumnValue);
-
-                        parameter.Value = columnValue;
-                    }
-
-                    command.ExecuteNonQuery();
+                    helper.ExecuteWithValues(row);
                 }
             }
         }
 
-        protected virtual object TransformOriginalColumnValue(IParameterInfo parameterInfo, object originalColumnValue)
+        public virtual dynamic GetRow(string tableName, object id)
         {
-            if (originalColumnValue == null)
+            if (tableName == null)
             {
-                return DBNull.Value;
+                throw new ArgumentNullException(nameof(tableName));
             }
 
-            object transformed;
-
-            switch (parameterInfo.DbType)
+            if (id == null)
             {
-                case DbType.Guid: // todo: override for SQLite
-                    if (originalColumnValue is Guid)
-                    {
-                        transformed = originalColumnValue;
-                    }
-                    else
-                    {
-                        throw new NotImplementedException();
-                    }
-                    break;
-
-                case DbType.String:
-                    if (originalColumnValue is string)
-                    {
-                        transformed = originalColumnValue;
-                    }
-                    else
-                    {
-                        throw new NotImplementedException();
-                    }
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException();
+                throw new ArgumentNullException(nameof(id));
             }
 
-            return transformed;
+            var table = this.Factory
+                .CreateTableInspector(this.Connection, tableName)
+                .GetTable();
+
+            var idColumnName = table.GetPrimaryKeyColumn().Name.ToLowerInvariant();
+
+            using (var helper = new CommandHelper(this, table, new[] { idColumnName }))
+            {
+                var sql = this.ScriptBuilderLab.BuildSelectByIdScript(table, helper.GetParameterNames().Single().Value);
+                helper.CommandText = sql;
+                var rows = helper.FetchWithValues(new Dictionary<string, object>
+                {
+                    {idColumnName, id}
+                });
+
+                return rows.SingleOrDefault();
+            }
         }
 
-        private IDictionary<string, IParameterInfo> BuildParameterInfoDictionary(TableMold table,
-            ICollection<string> columnNames)
+        public virtual IList<dynamic> GetAllRows(string tableName)
         {
-            var dictionary = new Dictionary<string, IParameterInfo>();
-
-            foreach (var columnName in columnNames)
+            if (tableName == null)
             {
-                var column = table.Columns.Single(x => x.Name == columnName);
-                var parameterInfo = this.ColumnToParameterInfo(column);
-
-                dictionary.Add(columnName, parameterInfo);
+                throw new ArgumentNullException(nameof(tableName));
             }
 
-            return dictionary;
+            var table = this.Factory
+                .CreateTableInspector(this.Connection, tableName)
+                .GetTable();
+
+            using (var command = this.Connection.CreateCommand())
+            {
+                var sql = this.ScriptBuilderLab.BuildSelectAllScript(table);
+                command.CommandText = sql;
+                var rows = DbUtils.GetCommandRows(command);
+                return rows;
+            }
         }
 
-        protected virtual IParameterInfo ColumnToParameterInfo(ColumnMold column)
+        public virtual bool UpdateRow(string tableName, object rowUpdate, object id)
         {
-            DbType dbType;
-            int? size = null;
-            int? precision = null;
-            int? scale = null;
-            var parameterName = $"p_{column.Name}";
-
-            var typeName = column.Type.Name.ToLowerInvariant();
-
-            switch (typeName)
+            if (tableName == null)
             {
-                case "int":
-                    dbType = DbType.Int32;
-                    break;
-
-                case "uniqueidentifier":
-                    dbType = DbType.Guid; // todo: override in SQLite
-                    break;
-
-                case "nvarchar":
-                    dbType = DbType.String;
-                    size = column.Type.Size;
-                    break;
-
-                default:
-                    throw new NotImplementedException();
+                throw new ArgumentNullException(nameof(tableName));
             }
 
-            IParameterInfo parameterInfo = new ParameterInfoImpl(parameterName, dbType, size, precision, scale);
-            return parameterInfo;
+            if (rowUpdate == null)
+            {
+                throw new ArgumentNullException(nameof(rowUpdate));
+            }
+
+            if (id == null)
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+
+            var table = this.Factory
+                .CreateTableInspector(this.Connection, tableName)
+                .GetTable();
+
+            var dataDictionary = this.ObjectToDataDictionary(rowUpdate);
+            var columnNames = new List<string>(dataDictionary.Keys)
+            {
+                table.GetPrimaryKeyColumn().Name,
+            };
+
+            using (var helper = new CommandHelper(this, table, columnNames))
+            {
+                var sql = this.ScriptBuilderLab.BuildUpdateScript(
+                    table,
+                    helper.GetParameterNames());
+
+                dataDictionary.Add(table.GetPrimaryKeyColumn().Name.ToLowerInvariant(), id);
+
+                helper.CommandText = sql;
+                var result = helper.ExecuteWithValues(dataDictionary);
+                return result > 0;
+            }
         }
 
-        public bool DeleteRow(string tableName, object id)
+        public virtual bool DeleteRow(string tableName, object id)
         {
-            throw new NotImplementedException();
-            //if (tableName == null)
-            //{
-            //    throw new ArgumentNullException(nameof(tableName));
-            //}
+            if (tableName == null)
+            {
+                throw new ArgumentNullException(nameof(tableName));
+            }
 
-            //if (id == null)
-            //{
-            //    throw new ArgumentNullException(nameof(id));
-            //}
+            if (id == null)
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
 
-            //var tableInspector = this.DbInspector.GetTableInspector(tableName);
-            //var tableMold = tableInspector.GetTableMold();
-            //var connection = this.GetSafeConnection();
+            var table = this.Factory
+                .CreateTableInspector(this.Connection, tableName)
+                .GetTable();
 
+            var idColumnName = table.GetPrimaryKeyColumn().Name.ToLowerInvariant();
 
-            //using (var command = connection.CreateCommand())
-            //{
-            //    command.CommandText = this.ScriptBuilder.BuildDeleteRowByIdSql(tableMold, out var paramName);
-            //    command.AddParameterWithValue(paramName, id);
+            using (var helper = new CommandHelper(this, table, new[] { idColumnName }))
+            {
+                var sql = this.ScriptBuilderLab.BuildDeleteScript(table, helper.GetParameterNames().Single().Value);
+                helper.CommandText = sql;
 
-            //    var deletedCount = command.ExecuteNonQuery();
-            //    return deletedCount == 1;
-            //}
-        }
+                var result = helper.ExecuteWithValues(new Dictionary<string, object>
+                {
+                    {idColumnName, id}
+                });
 
-        public dynamic GetRow(string tableName, object id)
-        {
-            throw new NotImplementedException();
-            //if (tableName == null)
-            //{
-            //    throw new ArgumentNullException(nameof(tableName));
-            //}
-
-            //if (id == null)
-            //{
-            //    throw new ArgumentNullException(nameof(id));
-            //}
-
-            //var tableInspector = this.DbInspector.GetTableInspector(tableName);
-            //var tableMold = tableInspector.GetTableMold();
-            //var connection = this.GetSafeConnection();
-
-            //using (var command = connection.CreateCommand())
-            //{
-            //    command.CommandText = this.ScriptBuilder.BuildSelectRowByIdSql(tableMold, out var paramName);
-            //    command.AddParameterWithValue(paramName, id);
-
-            //    var rows = UtilsHelper.GetCommandRows(command);
-            //    return rows.SingleOrDefault();
-            //}
-        }
-
-        public bool UpdateRow(string tableName, object rowUpdate, object id)
-        {
-            throw new NotImplementedException();
-
-            //if (tableName == null)
-            //{
-            //    throw new ArgumentNullException(nameof(tableName));
-            //}
-
-            //if (rowUpdate == null)
-            //{
-            //    throw new ArgumentNullException(nameof(rowUpdate));
-            //}
-
-            //if (id == null)
-            //{
-            //    throw new ArgumentNullException(nameof(id));
-            //}
-
-            //IDictionary<string, object> dictionary;
-
-            //if (rowUpdate is IDictionary<string, object> dictionaryParam)
-            //{
-            //    dictionary = dictionaryParam;
-            //}
-            //else if (rowUpdate is DynamicRow dynamicRow)
-            //{
-            //    dictionary = dynamicRow.ToDictionary();
-            //}
-            //else
-            //{
-            //    dictionary = new ValueDictionary(rowUpdate);
-            //}
-
-            //var tableInspector = this.DbInspector.GetTableInspector(tableName);
-            //var tableMold = tableInspector.GetTableMold();
-            //var connection = this.GetSafeConnection();
-
-            //var pkColumnName = tableMold.GetSinglePrimaryKeyColumnName();
-
-            //var script = this.ScriptBuilder.BuildUpdateRowByIdSql(
-            //    tableMold.Name,
-            //    pkColumnName,
-            //    dictionary.Keys.ToArray(),
-            //    out var parameterMapping);
-
-            //using (var command = connection.CreateCommand())
-            //{
-            //    command.CommandText = script;
-
-            //    foreach (var columnName in parameterMapping.Keys)
-            //    {
-            //        var paramName = parameterMapping[columnName];
-            //        object paramValue;
-
-            //        if (columnName == pkColumnName)
-            //        {
-            //            paramValue = id;
-            //        }
-            //        else
-            //        {
-            //            paramValue = dictionary[columnName] ?? DBNull.Value;
-            //        }
-
-            //        command.AddParameterWithValue(paramName, paramValue);
-            //    }
-
-            //    var rowsAffected = command.ExecuteNonQuery();
-            //    return rowsAffected > 0; // actually, should always be 0 or 1.
-            //}
-        }
-
-        public void Reset()
-        {
-            _insertCommands.Clear();
+                return result > 0;
+            }
         }
 
         #endregion

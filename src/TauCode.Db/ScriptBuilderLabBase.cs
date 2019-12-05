@@ -10,7 +10,6 @@ namespace TauCode.Db
     public abstract class ScriptBuilderLabBase : UtilityBase, IScriptBuilderLab
     {
         private char? _currentOpeningIdentifierDelimiter;
-        private char? _currentClosingIdentifierDelimiter;
 
         protected ScriptBuilderLabBase()
             : base(null, false, true)
@@ -64,21 +63,9 @@ namespace TauCode.Db
 
             sb.Append(decoratedColumnName);
 
-            // type definition
             sb.Append(" ");
 
             this.WriteTypeDefinitionScriptFragment(sb, column.Type);
-
-            //var decoratedTypeDefinition = this.BuildTypeDefinitionSql(column.Type);
-            //sb.Append(decoratedTypeDefinition);
-
-            // properties
-            //var columnPropertiesSql = this.BuildColumnPropertiesSubSql(column);
-            //if (!string.IsNullOrEmpty(columnPropertiesSql))
-            //{
-            //    sb.Append(" ");
-            //    sb.Append(columnPropertiesSql);
-            //}
 
             // nullability
             sb.Append(" ");
@@ -86,22 +73,11 @@ namespace TauCode.Db
             var nullability = column.IsNullable ? "NULL" : "NOT NULL";
             sb.Append(nullability);
 
-            // force inline primary key
-            //if (column.IsExplicitPrimaryKey())
-            //{
-            //    sb.Append(" PRIMARY KEY");
-            //}
-
             if (column.Identity != null)
             {
                 sb.Append(" ");
                 this.WriteIdentityScriptFragment(sb, column.Identity);
-
-                //var identitySubSql = this.BuildIdentitySubSql(column.Identity);
-                //sb.Append(identitySubSql);
             }
-
-            //return sb.ToString();
         }
 
         protected virtual void WriteIdentityScriptFragment(StringBuilder sb, ColumnIdentityMold identity)
@@ -129,10 +105,6 @@ namespace TauCode.Db
             sb.Append("(");
             this.WriteDecoratedColumnsOverCommaScriptFragment(sb, foreignKey.ReferencedColumnNames);
             sb.Append(")");
-
-
-            //CONSTRAINT [FK_fragment_subType] FOREIGN KEY([sub_type_id])
-            //REFERENCES[fragment_sub_type]([id])
         }
 
         protected virtual void WritePrimaryKeyConstraintScriptFragment(
@@ -221,12 +193,10 @@ namespace TauCode.Db
                     }
 
                     _currentOpeningIdentifierDelimiter = value;
-                    _currentClosingIdentifierDelimiter = tuple.Item2;
                 }
                 else
                 {
                     _currentOpeningIdentifierDelimiter = null;
-                    _currentClosingIdentifierDelimiter = null;
                 }
             }
         }
@@ -249,9 +219,6 @@ namespace TauCode.Db
 
                 sb.Append("    ");
                 this.WriteColumnDefinitionScriptFragment(sb, column);
-
-                //var columnSql = this.BuildCreateColumnSql(column);
-                //sb.AppendFormat("    {0}", columnSql);
 
                 if (i < table.Columns.Count - 1)
                 {
@@ -300,51 +267,13 @@ namespace TauCode.Db
                 }
             }
 
-
-
-
-
-            // primary key
-            //if (table.PrimaryKey != null && !table.Columns.Any(x =>
-            //        x.Properties.GetOrDefault("force-inline-primary-key")?.ToLower() == "true"))
-            //{
-            //    sb.AppendLine(",");
-
-            //    var primaryKeySql = this.BuildPrimaryKeySql(null, table.PrimaryKey);
-            //    sb.AppendFormat("    {0}", primaryKeySql);
-            //}
-
-            //if (inline)
-            //{
-            //    // indexes
-            //    this.AddIndexCreationIntoTableCreationScript(table, sb);
-
-            //    // foreign keys
-            //    if (table.ForeignKeys.Count > 0)
-            //    {
-            //        sb.AppendLine(",");
-
-            //        for (var i = 0; i < table.ForeignKeys.Count; i++)
-            //        {
-            //            var foreignKey = table.ForeignKeys[i];
-            //            var foreignKeySql = this.BuildForeignKeySql(null, foreignKey);
-            //            sb.Append($"    {foreignKeySql}");
-
-            //            if (i < table.ForeignKeys.Count - 1)
-            //            {
-            //                sb.AppendLine(",");
-            //            }
-            //        }
-            //    }
-            //}
-
             sb.Append(")");
-            //sb.Append(this.EffectiveClauseTerminator);
-
             return sb.ToString();
         }
 
-        public string BuildInsertScript(TableMold table, IDictionary<string, string> columnToParameterMappings)
+        public virtual string BuildInsertScript(
+            TableMold table,
+            IReadOnlyDictionary<string, string> columnToParameterMappings)
         {
             // todo: check args, including count of columnToParameterMappings
 
@@ -393,6 +322,143 @@ namespace TauCode.Db
 
             sb.Append(")");
 
+            var sql = sb.ToString();
+            return sql;
+        }
+
+        // todo clean
+        public virtual string BuildUpdateScript(
+            TableMold table,
+            IReadOnlyDictionary<string, string> columnToParameterMappings)
+        {
+            var sb = new StringBuilder();
+            var decoratedTableName = this.Dialect.DecorateIdentifier(
+                DbIdentifierType.Table,
+                table.Name,
+                this.CurrentOpeningIdentifierDelimiter);
+
+            sb.AppendLine($"UPDATE {decoratedTableName} SET");
+
+            var idColumnName = table.GetPrimaryKeyColumn().Name.ToLowerInvariant();
+            var decoratedIdColumnName = this.Dialect.DecorateIdentifier(
+                DbIdentifierType.Column,
+                idColumnName,
+                this.CurrentOpeningIdentifierDelimiter);
+            var idParameterName = columnToParameterMappings[idColumnName];
+
+            var columnNamesToUpdate = columnToParameterMappings.Keys.Except(new[] {idColumnName}).ToList();
+
+            for (var i = 0; i < columnNamesToUpdate.Count; i++)
+            {
+                var columnName = columnNamesToUpdate[i];
+
+                var decoratedColumnName = this.Dialect.DecorateIdentifier(
+                    DbIdentifierType.Column,
+                    columnName,
+                    this.CurrentOpeningIdentifierDelimiter);
+
+                var parameterName = columnToParameterMappings[columnName];
+
+                sb.Append($"    {decoratedColumnName} = @{parameterName}");
+
+                if (i < columnNamesToUpdate.Count - 1)
+                {
+                    sb.AppendLine(",");
+                }
+            }
+
+            sb.AppendLine();
+
+            sb.Append($"WHERE {decoratedIdColumnName} = @{idParameterName}");
+            var sql = sb.ToString();
+            return sql;
+        }
+
+        public virtual string BuildSelectByIdScript(TableMold table, string idParameterName)
+        {
+            var sb = new StringBuilder();
+
+            var decoratedTableName = this.Dialect.DecorateIdentifier(
+                DbIdentifierType.Table,
+                table.Name,
+                this.CurrentOpeningIdentifierDelimiter);
+            
+            sb.AppendLine($"SELECT");
+            for (var i = 0; i < table.Columns.Count; i++)
+            {
+                var column = table.Columns[i];
+                var decoratedColumnName = this.Dialect.DecorateIdentifier(
+                    DbIdentifierType.Column,
+                    column.Name,
+                    this.CurrentOpeningIdentifierDelimiter);
+
+                sb.Append($"    {decoratedColumnName}");
+                if (i < table.Columns.Count - 1)
+                {
+                    sb.AppendLine(",");
+                }
+            }
+
+            sb.AppendLine();
+            sb.AppendLine($"FROM {decoratedTableName}");
+            sb.AppendLine("WHERE");
+            var decoratedIdColumnName = this.Dialect.DecorateIdentifier(
+                DbIdentifierType.Column,
+                table.GetPrimaryKeyColumn().Name,
+                this.CurrentOpeningIdentifierDelimiter);
+            sb.Append($"    {decoratedIdColumnName} = @{idParameterName}");
+
+            var sql = sb.ToString();
+            return sql;
+        }
+
+        public virtual string BuildSelectAllScript(TableMold table)
+        {
+            var sb = new StringBuilder();
+
+            var decoratedTableName = this.Dialect.DecorateIdentifier(
+                DbIdentifierType.Table,
+                table.Name,
+                this.CurrentOpeningIdentifierDelimiter);
+
+            sb.AppendLine($"SELECT");
+            for (var i = 0; i < table.Columns.Count; i++)
+            {
+                var column = table.Columns[i];
+                var decoratedColumnName = this.Dialect.DecorateIdentifier(
+                    DbIdentifierType.Column,
+                    column.Name,
+                    this.CurrentOpeningIdentifierDelimiter);
+
+                sb.Append($"    {decoratedColumnName}");
+                if (i < table.Columns.Count - 1)
+                {
+                    sb.AppendLine(",");
+                }
+            }
+
+            sb.AppendLine();
+            sb.AppendLine($"FROM {decoratedTableName}");
+
+            var sql = sb.ToString();
+            return sql;
+        }
+
+        public virtual string BuildDeleteScript(TableMold table, string idParameterName)
+        {
+            var sb = new StringBuilder();
+
+            var decoratedTableName = this.Dialect.DecorateIdentifier(
+                DbIdentifierType.Table,
+                table.Name,
+                this.CurrentOpeningIdentifierDelimiter);
+
+            var decoratedIdColumnName = this.Dialect.DecorateIdentifier(
+                DbIdentifierType.Column,
+                table.GetPrimaryKeyColumn().Name,
+                this.CurrentOpeningIdentifierDelimiter);
+
+            sb.Append($"DELETE FROM {decoratedTableName} WHERE {decoratedIdColumnName} = @{idParameterName}");
             var sql = sb.ToString();
             return sql;
         }

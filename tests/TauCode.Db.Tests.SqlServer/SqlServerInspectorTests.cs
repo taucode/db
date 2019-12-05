@@ -79,5 +79,10 @@ namespace TauCode.Db.Tests.SqlServer
                 },
                 tableNames);
         }
+
+        protected override void ExecuteDbCreationScript()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

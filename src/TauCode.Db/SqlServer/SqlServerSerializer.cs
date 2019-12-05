@@ -1,7 +1,4 @@
-﻿using System;
-using System.Data;
-using System.Linq;
-using TauCode.Db.Model;
+﻿using System.Data;
 
 namespace TauCode.Db.SqlServer
 {
@@ -36,36 +33,36 @@ namespace TauCode.Db.SqlServer
         //}
 
 
-        protected override ParameterInfo GetParameterInfo(TableMold tableMold, string columnName)
-        {
-            var parameterInfo = base.GetParameterInfo(tableMold, columnName);
+        //protected override ParameterInfo GetParameterInfo(TableMold tableMold, string columnName)
+        //{
+        //    var parameterInfo = base.GetParameterInfo(tableMold, columnName);
 
-            if (parameterInfo == null)
-            {
-                var column = tableMold.Columns.Single(x =>
-                    string.Equals(x.Name, columnName, StringComparison.InvariantCultureIgnoreCase));
+        //    if (parameterInfo == null)
+        //    {
+        //        var column = tableMold.Columns.Single(x =>
+        //            string.Equals(x.Name, columnName, StringComparison.InvariantCultureIgnoreCase));
 
-                var typeName = column.Type.Name.ToLower();
+        //        var typeName = column.Type.Name.ToLower();
 
-                switch (typeName)
-                {
-                    case "money":
-                        parameterInfo = new ParameterInfo
-                        {
-                            DbType = DbType.Decimal,
-                            Precision = MoneyTypePrecision,
-                            Scale = MoneyTypeScale,
-                        };
-                        break;
+        //        switch (typeName)
+        //        {
+        //            case "money":
+        //                parameterInfo = new ParameterInfo
+        //                {
+        //                    DbType = DbType.Decimal,
+        //                    Precision = MoneyTypePrecision,
+        //                    Scale = MoneyTypeScale,
+        //                };
+        //                break;
 
-                    default:
-                        parameterInfo = null;
-                        break;
-                }
-            }
+        //            default:
+        //                parameterInfo = null;
+        //                break;
+        //        }
+        //    }
 
-            return parameterInfo;
-        }
+        //    return parameterInfo;
+        //}
 
         public override IUtilityFactory Factory => SqlServerUtilityFactory.Instance;
     }

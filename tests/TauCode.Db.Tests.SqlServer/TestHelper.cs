@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using TauCode.Utils.Extensions;
 
 namespace TauCode.Db.Tests.SqlServer
 {
@@ -13,6 +14,8 @@ namespace TauCode.Db.Tests.SqlServer
                 throw new InvalidOperationException("don't forget this call with mark!");
             }
 
+            fileExtension = fileExtension.Replace(".", "");
+
             var actualFileName = $"0-actual.{fileExtension}";
             var expectedFileName = $"1-expected.{fileExtension}";
 
@@ -22,5 +25,9 @@ namespace TauCode.Db.Tests.SqlServer
             File.WriteAllText(actualFilePath, actual, Encoding.UTF8);
             File.WriteAllText(expectedFilePath, expected, Encoding.UTF8);
         }
+
+        internal static string GetResourceText(string fileName) =>
+            typeof(TestHelper).Assembly.GetResourceText(fileName, true);
+
     }
 }

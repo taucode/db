@@ -26,12 +26,9 @@ namespace TauCode.Db.MySql
 
         #region Overridden
 
-        public override bool CanDecorateTypeIdentifier => throw new NotImplementedException();
+        public override IUtilityFactory Factory => MySqlUtilityFactory.Instance;
 
-        protected override IUtilityFactory GetFactoryImpl()
-        {
-            throw new NotImplementedException();
-        }
+        public override bool CanDecorateTypeIdentifier => throw new NotImplementedException();
 
         public override bool IsClauseTerminatorMandatory => throw new NotImplementedException();
 

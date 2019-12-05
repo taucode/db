@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
 using TauCode.Db.Data;
+using TauCode.Db.Model;
 
 namespace TauCode.Db
 {
@@ -19,7 +20,7 @@ namespace TauCode.Db
             return statements;
         }
 
-        public static int ExecuteSql(IDbConnection connection, string sql)
+        public static int ExecuteSingleSql(this IDbConnection connection, string sql)
         {
             using (var command = connection.CreateCommand())
             {
@@ -60,6 +61,50 @@ namespace TauCode.Db
 
                 return rows;
             }
+        }
+
+        public static ColumnMold GetPrimaryKeyColumn(this TableMold table)
+        {
+            return table.Columns.Single(x => x.Name == table.PrimaryKey.Columns.Single().Name); // todo can throw a lot.
+        }
+
+        public static void ExecuteCommentedScript(this IDbConnection connection, string script)
+        {
+            var sqls = SplitScriptByComments(script);
+
+            foreach (var sql in sqls)
+            {
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = sql;
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static IList<TableMold> GetTables(
+            this IDbInspector dbInspector,
+            bool? independentFirst = null,
+            Func<string, bool> tableNamePredicate = null)
+        {
+            return dbInspector
+                .GetTableNames(independentFirst)
+                .Where(tableNamePredicate ?? (x => true))
+                .Select(x => dbInspector
+                    .Factory
+                    .CreateTableInspector(dbInspector.Connection, x)
+                    .GetTable())
+                .ToList();
+        }
+
+        public static void DropAllTables(this IDbInspector dbInspector)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void DeleteDataFromAllTables(this IDbInspector dbInspector)
+        {
+            throw new NotImplementedException();
         }
     }
 }

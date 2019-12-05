@@ -45,5 +45,10 @@ namespace TauCode.Db.Tests.SqlServer
 
             Assert.That(sql, Is.EqualTo(expectedSql));
         }
+
+        protected override void ExecuteDbCreationScript()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

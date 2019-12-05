@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
@@ -7,13 +7,31 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\create-tables.sql" />
-    <None Remove="Resources\drop-tables.sql" />
+    <None Remove="Resources\ocean\assets\ak.png" />
+    <None Remove="Resources\ocean\assets\deserea.png" />
+    <None Remove="Resources\ocean\assets\ira.png" />
+    <None Remove="Resources\ocean\assets\marina.png" />
+    <None Remove="Resources\ocean\assets\olia.png" />
+    <None Remove="Resources\ocean\script-create-tables.sql" />
+    <None Remove="Resources\rho\data-language.json" />
+    <None Remove="Resources\rho\metadata-language.json" />
+    <None Remove="Resources\rho\script-create-tables.sql" />
+    <None Remove="Resources\rho\script-drop-tables.sql" />
+    <None Remove="Resources\rho\script-insert-data.sql" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resources\create-tables.sql" />
-    <EmbeddedResource Include="Resources\drop-tables.sql" />
+    <EmbeddedResource Include="Resources\ocean\assets\ak.png" />
+    <EmbeddedResource Include="Resources\ocean\assets\deserea.png" />
+    <EmbeddedResource Include="Resources\ocean\assets\ira.png" />
+    <EmbeddedResource Include="Resources\ocean\assets\marina.png" />
+    <EmbeddedResource Include="Resources\ocean\assets\olia.png" />
+    <EmbeddedResource Include="Resources\ocean\script-create-tables.sql" />
+    <EmbeddedResource Include="Resources\rho\data-language.json" />
+    <EmbeddedResource Include="Resources\rho\metadata-language.json" />
+    <EmbeddedResource Include="Resources\rho\script-create-tables.sql" />
+    <EmbeddedResource Include="Resources\rho\script-drop-tables.sql" />
+    <EmbeddedResource Include="Resources\rho\script-insert-data.sql" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,6 +43,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\TauCode.Db\TauCode.Db.csproj" />
+    <ProjectReference Include="..\TauCode.Db.Tests.Common\TauCode.Db.Tests.Common.csproj" />
   </ItemGroup>
 
 </Project>
