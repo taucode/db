@@ -15,19 +15,26 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{BB0AD8E1-B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuget", "nuget", "{4EE5C30C-4201-4652-AB94-49E8F9E055C8}"
 	ProjectSection(SolutionItems) = preProject
-		nuget\TauCode.Db.Migrations.nuspec = nuget\TauCode.Db.Migrations.nuspec
+		nuget\TauCode.Db.FluentMigrations.nuspec = nuget\TauCode.Db.FluentMigrations.nuspec
 		nuget\TauCode.Db.nuspec = nuget\TauCode.Db.nuspec
+		nuget\TauCode.Db.Testing.nuspec = nuget\TauCode.Db.Testing.nuspec
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.Db", "src\TauCode.Db\TauCode.Db.csproj", "{202DC44E-5880-4A3E-A265-CA5CEFD5E085}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.Db.Migrations", "src\TauCode.Db.Migrations\TauCode.Db.Migrations.csproj", "{3AD06183-B18C-4915-839D-E839EE591157}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.Db.Tests.SQLite", "tests\TauCode.Db.Tests.SQLite\TauCode.Db.Tests.SQLite.csproj", "{1F7029F5-B1C1-4EA0-8C82-26C58E6FF358}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.Db.Tests.SqlServer", "tests\TauCode.Db.Tests.SqlServer\TauCode.Db.Tests.SqlServer.csproj", "{886DC4C7-D567-4902-BF13-1A15E461141F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TauCode.Db.Tests.Common", "tests\TauCode.Db.Tests.Common\TauCode.Db.Tests.Common.csproj", "{2B2911F9-9288-467C-96D3-F872161C5A60}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.Db.Tests.Common", "tests\TauCode.Db.Tests.Common\TauCode.Db.Tests.Common.csproj", "{2B2911F9-9288-467C-96D3-F872161C5A60}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.Db.Testing", "src\TauCode.Db.Testing\TauCode.Db.Testing.csproj", "{D925EC8E-2D1C-477D-A5C5-A5FAE064530E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TauCode.Db.Testing.Tests", "tests\TauCode.Db.Testing.Tests\TauCode.Db.Testing.Tests.csproj", "{8B80F1D7-ED1C-4BB7-A21A-EB895B5AA944}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TauCode.Db.FluentMigrations.Tests", "tests\TauCode.Db.FluentMigrations.Tests\TauCode.Db.FluentMigrations.Tests.csproj", "{DCCD680D-C1F9-40D0-B574-37FA2B6D112B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TauCode.Db.FluentMigrations", "src\TauCode.Db.FluentMigrations\TauCode.Db.FluentMigrations.csproj", "{FC1739E4-8444-4DB3-BC35-630A201BC81A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,10 +46,6 @@ Global
 		{202DC44E-5880-4A3E-A265-CA5CEFD5E085}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{202DC44E-5880-4A3E-A265-CA5CEFD5E085}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{202DC44E-5880-4A3E-A265-CA5CEFD5E085}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3AD06183-B18C-4915-839D-E839EE591157}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3AD06183-B18C-4915-839D-E839EE591157}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3AD06183-B18C-4915-839D-E839EE591157}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3AD06183-B18C-4915-839D-E839EE591157}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1F7029F5-B1C1-4EA0-8C82-26C58E6FF358}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1F7029F5-B1C1-4EA0-8C82-26C58E6FF358}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F7029F5-B1C1-4EA0-8C82-26C58E6FF358}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -55,16 +58,35 @@ Global
 		{2B2911F9-9288-467C-96D3-F872161C5A60}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B2911F9-9288-467C-96D3-F872161C5A60}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2B2911F9-9288-467C-96D3-F872161C5A60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D925EC8E-2D1C-477D-A5C5-A5FAE064530E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D925EC8E-2D1C-477D-A5C5-A5FAE064530E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D925EC8E-2D1C-477D-A5C5-A5FAE064530E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D925EC8E-2D1C-477D-A5C5-A5FAE064530E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B80F1D7-ED1C-4BB7-A21A-EB895B5AA944}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B80F1D7-ED1C-4BB7-A21A-EB895B5AA944}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B80F1D7-ED1C-4BB7-A21A-EB895B5AA944}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B80F1D7-ED1C-4BB7-A21A-EB895B5AA944}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCCD680D-C1F9-40D0-B574-37FA2B6D112B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCCD680D-C1F9-40D0-B574-37FA2B6D112B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCCD680D-C1F9-40D0-B574-37FA2B6D112B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCCD680D-C1F9-40D0-B574-37FA2B6D112B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC1739E4-8444-4DB3-BC35-630A201BC81A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC1739E4-8444-4DB3-BC35-630A201BC81A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC1739E4-8444-4DB3-BC35-630A201BC81A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC1739E4-8444-4DB3-BC35-630A201BC81A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{202DC44E-5880-4A3E-A265-CA5CEFD5E085} = {89412E0C-9F93-4FB0-ACB6-DC95174759A0}
-		{3AD06183-B18C-4915-839D-E839EE591157} = {89412E0C-9F93-4FB0-ACB6-DC95174759A0}
 		{1F7029F5-B1C1-4EA0-8C82-26C58E6FF358} = {EE8B33C7-90A5-4CCF-99D9-BC9CF029F312}
 		{886DC4C7-D567-4902-BF13-1A15E461141F} = {EE8B33C7-90A5-4CCF-99D9-BC9CF029F312}
 		{2B2911F9-9288-467C-96D3-F872161C5A60} = {EE8B33C7-90A5-4CCF-99D9-BC9CF029F312}
+		{D925EC8E-2D1C-477D-A5C5-A5FAE064530E} = {89412E0C-9F93-4FB0-ACB6-DC95174759A0}
+		{8B80F1D7-ED1C-4BB7-A21A-EB895B5AA944} = {EE8B33C7-90A5-4CCF-99D9-BC9CF029F312}
+		{DCCD680D-C1F9-40D0-B574-37FA2B6D112B} = {EE8B33C7-90A5-4CCF-99D9-BC9CF029F312}
+		{FC1739E4-8444-4DB3-BC35-630A201BC81A} = {89412E0C-9F93-4FB0-ACB6-DC95174759A0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E033216E-1151-4D66-A416-3EBD14511CA8}

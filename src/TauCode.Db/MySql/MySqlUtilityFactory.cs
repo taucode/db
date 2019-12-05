@@ -15,7 +15,7 @@ namespace TauCode.Db.MySql
 
         public IDialect GetDialect() => MySqlDialect.Instance;
 
-        public IScriptBuilderLab CreateScriptBuilderLab() => throw new NotImplementedException();
+        public IScriptBuilder CreateScriptBuilder() => throw new NotImplementedException();
 
         public IDbInspector CreateDbInspector(IDbConnection connection) => new MySqlInspector(connection);
 

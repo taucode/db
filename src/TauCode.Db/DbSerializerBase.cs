@@ -69,7 +69,7 @@ namespace TauCode.Db
 
         #region IDbSerializer Members
 
-        public IScriptBuilderLab ScriptBuilderLab => this.Cruder.ScriptBuilderLab;
+        public IScriptBuilder ScriptBuilder => this.Cruder.ScriptBuilder;
 
         public virtual string SerializeTableData(string tableName)
         {
@@ -89,7 +89,7 @@ namespace TauCode.Db
             {
                 foreach (var table in tables)
                 {
-                    var sql = this.ScriptBuilderLab.BuildSelectAllScript(table);
+                    var sql = this.ScriptBuilder.BuildSelectAllScript(table);
                     command.CommandText = sql;
 
                     var rows = DbUtils

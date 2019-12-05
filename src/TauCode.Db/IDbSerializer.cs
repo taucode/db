@@ -4,7 +4,7 @@ namespace TauCode.Db
 {
     public interface IDbSerializer : IUtility
     {
-        IScriptBuilderLab ScriptBuilderLab { get; }
+        IScriptBuilder ScriptBuilder { get; }
         string SerializeTableData(string tableName);
         string SerializeDbData(Func<string, bool> tableNamePredicate = null);
         void DeserializeTableData(string tableName, string json);

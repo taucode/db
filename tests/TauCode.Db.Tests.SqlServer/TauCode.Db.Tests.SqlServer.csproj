@@ -13,7 +13,9 @@
     <None Remove="Resources\ocean\assets\marina.png" />
     <None Remove="Resources\ocean\assets\olia.png" />
     <None Remove="Resources\ocean\script-create-tables.sql" />
+    <None Remove="Resources\rho\data-db.json" />
     <None Remove="Resources\rho\data-language.json" />
+    <None Remove="Resources\rho\metadata-db.json" />
     <None Remove="Resources\rho\metadata-language.json" />
     <None Remove="Resources\rho\script-create-tables.sql" />
     <None Remove="Resources\rho\script-drop-tables.sql" />
@@ -27,7 +29,9 @@
     <EmbeddedResource Include="Resources\ocean\assets\marina.png" />
     <EmbeddedResource Include="Resources\ocean\assets\olia.png" />
     <EmbeddedResource Include="Resources\ocean\script-create-tables.sql" />
+    <EmbeddedResource Include="Resources\rho\data-db.json" />
     <EmbeddedResource Include="Resources\rho\data-language.json" />
+    <EmbeddedResource Include="Resources\rho\metadata-db.json" />
     <EmbeddedResource Include="Resources\rho\metadata-language.json" />
     <EmbeddedResource Include="Resources\rho\script-create-tables.sql" />
     <EmbeddedResource Include="Resources\rho\script-drop-tables.sql" />

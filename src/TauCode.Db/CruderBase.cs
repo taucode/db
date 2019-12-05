@@ -184,7 +184,7 @@ namespace TauCode.Db
 
         #region Fields
 
-        private IScriptBuilderLab _scriptBuilderLab;
+        private IScriptBuilder _scriptBuilder;
 
         #endregion
 
@@ -305,8 +305,8 @@ namespace TauCode.Db
 
         #region ICruder Members
 
-        public virtual IScriptBuilderLab ScriptBuilderLab =>
-            _scriptBuilderLab ?? (_scriptBuilderLab = this.Factory.CreateScriptBuilderLab());
+        public virtual IScriptBuilder ScriptBuilder =>
+            _scriptBuilder ?? (_scriptBuilder = this.Factory.CreateScriptBuilder());
 
         public virtual void InsertRow(string tableName, object row)
         {
@@ -339,7 +339,7 @@ namespace TauCode.Db
 
             using (var helper = new CommandHelper(this, table, this.ObjectToDataDictionary(rows[0]).Keys))
             {
-                var sql = this.ScriptBuilderLab.BuildInsertScript(
+                var sql = this.ScriptBuilder.BuildInsertScript(
                     table,
                     helper.GetParameterNames());
 
@@ -372,7 +372,7 @@ namespace TauCode.Db
 
             using (var helper = new CommandHelper(this, table, new[] { idColumnName }))
             {
-                var sql = this.ScriptBuilderLab.BuildSelectByIdScript(table, helper.GetParameterNames().Single().Value);
+                var sql = this.ScriptBuilder.BuildSelectByIdScript(table, helper.GetParameterNames().Single().Value);
                 helper.CommandText = sql;
                 var rows = helper.FetchWithValues(new Dictionary<string, object>
                 {
@@ -396,7 +396,7 @@ namespace TauCode.Db
 
             using (var command = this.Connection.CreateCommand())
             {
-                var sql = this.ScriptBuilderLab.BuildSelectAllScript(table);
+                var sql = this.ScriptBuilder.BuildSelectAllScript(table);
                 command.CommandText = sql;
                 var rows = DbUtils.GetCommandRows(command);
                 return rows;
@@ -432,7 +432,7 @@ namespace TauCode.Db
 
             using (var helper = new CommandHelper(this, table, columnNames))
             {
-                var sql = this.ScriptBuilderLab.BuildUpdateScript(
+                var sql = this.ScriptBuilder.BuildUpdateScript(
                     table,
                     helper.GetParameterNames());
 
@@ -464,7 +464,7 @@ namespace TauCode.Db
 
             using (var helper = new CommandHelper(this, table, new[] { idColumnName }))
             {
-                var sql = this.ScriptBuilderLab.BuildDeleteScript(table, helper.GetParameterNames().Single().Value);
+                var sql = this.ScriptBuilder.BuildDeleteByIdScript(table, helper.GetParameterNames().Single().Value);
                 helper.CommandText = sql;
 
                 var result = helper.ExecuteWithValues(new Dictionary<string, object>
