@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using TauCode.Db.SqlServer;
+using TauCode.Db.Tests.Common;
 using TauCode.Utils.Extensions;
 
 namespace TauCode.Db.Tests.SqlServer
@@ -40,13 +41,13 @@ namespace TauCode.Db.Tests.SqlServer
 
         protected void CreateTables()
         {
-            var script = this.GetType().Assembly.GetResourceText("rho.script-create-tables.sql", true);
+            var script = CommonTestHelper.GetResourceText("rho.script-create-tables.sql");
             this.Connection.ExecuteCommentedScript(script);
         }
 
         protected void DropTables()
         {
-            var script = this.GetType().Assembly.GetResourceText("rho.script-drop-tables.sql", true);
+            var script = CommonTestHelper.GetResourceText("rho.script-drop-tables.sql");
             this.Connection.ExecuteCommentedScript(script);
         }
 
