@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
-    <id>TauCode.Db.Migrations</id>
-    <version>3.1.0.1-dev-2019-12-03-22-02</version>
+    <id>TauCode.Db.FluentMigrations</id>
+    <version>3.0-dev-2019-12-05-19-45</version>
     <authors>TauCode</authors>
     <owners>TauCode</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <licenseUrl>https://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <projectUrl>http://taucode.com/</projectUrl>
-    <description>Basic functionality for database migrations</description>
+    <description>Support library for fluent migration</description>
     <releaseNotes>
-      TODO: Initial 
+      TODO: inited
     </releaseNotes>
     <tags>taucode db database migration</tags>
     <dependencies>
-      <dependency id="FluentMigrator.Runner" version="3.2.1" />
     </dependencies>
   </metadata>
   <files>
-    <file src="..\src\TauCode.Db.Migrations\bin\Release\netstandard2.0\TauCode.Db.Migrations.dll" target="lib\netstandard2.0" />
-    <file src="..\src\TauCode.Db.Migrations\bin\Release\netstandard2.0\TauCode.Db.Migrations.pdb" target="lib\netstandard2.0" />
+    <file src="..\src\TauCode.Db.FluentMigrations\bin\Release\netstandard2.0\TauCode.Db.FluentMigrations.dll" target="lib\netstandard2.0" />
+    <file src="..\src\TauCode.Db.FluentMigrations\bin\Release\netstandard2.0\TauCode.Db.FluentMigrations.pdb" target="lib\netstandard2.0" />
   </files>
 </package>
