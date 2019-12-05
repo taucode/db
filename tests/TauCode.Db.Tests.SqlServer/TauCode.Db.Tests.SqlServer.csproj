@@ -7,13 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\create-tables.sql" />
-    <None Remove="Resources\drop-tables.sql" />
+    <None Remove="Resources\data-language.json" />
+    <None Remove="Resources\md-language.json" />
+    <None Remove="Resources\script-create-tables.sql" />
+    <None Remove="Resources\script-drop-tables.sql" />
+    <None Remove="Resources\script-insert-data.sql" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resources\create-tables.sql" />
-    <EmbeddedResource Include="Resources\drop-tables.sql" />
+    <EmbeddedResource Include="Resources\data-language.json" />
+    <EmbeddedResource Include="Resources\script-insert-data.sql" />
+    <EmbeddedResource Include="Resources\script-create-tables.sql" />
+    <EmbeddedResource Include="Resources\script-drop-tables.sql" />
+    <EmbeddedResource Include="Resources\md-language.json" />
   </ItemGroup>
 
   <ItemGroup>

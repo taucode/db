@@ -13,6 +13,8 @@ namespace TauCode.Db.Tests.SqlServer
                 throw new InvalidOperationException("don't forget this call with mark!");
             }
 
+            fileExtension = fileExtension.Replace(".", "");
+
             var actualFileName = $"0-actual.{fileExtension}";
             var expectedFileName = $"1-expected.{fileExtension}";
 

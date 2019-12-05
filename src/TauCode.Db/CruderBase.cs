@@ -348,7 +348,7 @@ namespace TauCode.Db
             }
         }
 
-        public dynamic GetRow(string tableName, object id)
+        public virtual dynamic GetRow(string tableName, object id)
         {
             if (tableName == null)
             {
@@ -368,7 +368,7 @@ namespace TauCode.Db
 
             using (var helper = new CommandHelper(this, table, new[] { idColumnName }))
             {
-                var sql = this.ScriptBuilderLab.BuildSelectScript(table, helper.GetParameterNames().Single().Value);
+                var sql = this.ScriptBuilderLab.BuildSelectByIdScript(table, helper.GetParameterNames().Single().Value);
                 helper.CommandText = sql;
                 var rows = helper.FetchWithValues(new Dictionary<string, object>
                 {
@@ -376,6 +376,26 @@ namespace TauCode.Db
                 });
 
                 return rows.SingleOrDefault();
+            }
+        }
+
+        public virtual IList<dynamic> GetRows(string tableName)
+        {
+            if (tableName == null)
+            {
+                throw new ArgumentNullException(nameof(tableName));
+            }
+
+            var table = this.Factory
+                .CreateTableInspector(this.Connection, tableName)
+                .GetTable();
+
+            using (var command = this.Connection.CreateCommand())
+            {
+                var sql = this.ScriptBuilderLab.BuildSelectAllScript(table);
+                command.CommandText = sql;
+                var rows = DbUtils.GetCommandRows(command);
+                return rows;
             }
         }
 
@@ -442,7 +462,7 @@ namespace TauCode.Db
             {
                 var sql = this.ScriptBuilderLab.BuildDeleteScript(table, helper.GetParameterNames().Single().Value);
                 helper.CommandText = sql;
-                
+
                 var result = helper.ExecuteWithValues(new Dictionary<string, object>
                 {
                     {idColumnName, id}

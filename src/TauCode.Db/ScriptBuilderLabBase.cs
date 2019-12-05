@@ -10,7 +10,7 @@ namespace TauCode.Db
     public abstract class ScriptBuilderLabBase : UtilityBase, IScriptBuilderLab
     {
         private char? _currentOpeningIdentifierDelimiter;
-        private char? _currentClosingIdentifierDelimiter;
+        //private char? _currentClosingIdentifierDelimiter;
 
         protected ScriptBuilderLabBase()
             : base(null, false, true)
@@ -221,12 +221,12 @@ namespace TauCode.Db
                     }
 
                     _currentOpeningIdentifierDelimiter = value;
-                    _currentClosingIdentifierDelimiter = tuple.Item2;
+                    //_currentClosingIdentifierDelimiter = tuple.Item2;
                 }
                 else
                 {
                     _currentOpeningIdentifierDelimiter = null;
-                    _currentClosingIdentifierDelimiter = null;
+                    //_currentClosingIdentifierDelimiter = null;
                 }
             }
         }
@@ -421,15 +421,9 @@ namespace TauCode.Db
 
             var columnNamesToUpdate = columnToParameterMappings.Keys.Except(new[] {idColumnName}).ToList();
 
-            //var pairs = columnToParameterMappings.ToList();
             for (var i = 0; i < columnNamesToUpdate.Count; i++)
             {
-                //var pair = pairs[i];
                 var columnName = columnNamesToUpdate[i];
-                //if (string.Equals(columnName, idColumnName, StringComparison.InvariantCultureIgnoreCase))
-                //{
-                //    continue;
-                //}
 
                 var decoratedColumnName = this.Dialect.DecorateIdentifier(
                     DbIdentifierType.Column,
@@ -453,7 +447,7 @@ namespace TauCode.Db
             return sql;
         }
 
-        public virtual string BuildSelectScript(TableMold table, string idParameterName)
+        public virtual string BuildSelectByIdScript(TableMold table, string idParameterName)
         {
             var sb = new StringBuilder();
 
@@ -486,6 +480,38 @@ namespace TauCode.Db
                 table.GetPrimaryKeyColumn().Name,
                 this.CurrentOpeningIdentifierDelimiter);
             sb.Append($"    {decoratedIdColumnName} = @{idParameterName}");
+
+            var sql = sb.ToString();
+            return sql;
+        }
+
+        public virtual string BuildSelectAllScript(TableMold table)
+        {
+            var sb = new StringBuilder();
+
+            var decoratedTableName = this.Dialect.DecorateIdentifier(
+                DbIdentifierType.Table,
+                table.Name,
+                this.CurrentOpeningIdentifierDelimiter);
+
+            sb.AppendLine($"SELECT");
+            for (var i = 0; i < table.Columns.Count; i++)
+            {
+                var column = table.Columns[i];
+                var decoratedColumnName = this.Dialect.DecorateIdentifier(
+                    DbIdentifierType.Column,
+                    column.Name,
+                    this.CurrentOpeningIdentifierDelimiter);
+
+                sb.Append($"    {decoratedColumnName}");
+                if (i < table.Columns.Count - 1)
+                {
+                    sb.AppendLine(",");
+                }
+            }
+
+            sb.AppendLine();
+            sb.AppendLine($"FROM {decoratedTableName}");
 
             var sql = sb.ToString();
             return sql;

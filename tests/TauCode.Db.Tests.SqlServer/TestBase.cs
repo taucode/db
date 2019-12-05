@@ -38,7 +38,7 @@ namespace TauCode.Db.Tests.SqlServer
 
         protected void CreateTables()
         {
-            var script = this.GetType().Assembly.GetResourceText("create-tables.sql", true);
+            var script = this.GetType().Assembly.GetResourceText("script-create-tables.sql", true);
             var sqls = DbUtils.SplitScriptByComments(script);
 
             foreach (var sql in sqls)
@@ -49,7 +49,7 @@ namespace TauCode.Db.Tests.SqlServer
 
         protected void DropTables()
         {
-            var script = this.GetType().Assembly.GetResourceText("drop-tables.sql", true);
+            var script = this.GetType().Assembly.GetResourceText("script-drop-tables.sql", true);
             var sqls = DbUtils.SplitScriptByComments(script);
 
             foreach (var sql in sqls)

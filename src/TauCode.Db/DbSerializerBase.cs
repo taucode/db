@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,15 +15,15 @@ namespace TauCode.Db
     {
         #region Nested
 
-        protected class ParameterInfo
-        {
-            public DbType DbType { get; set; }
-            public int? Size { get; set; }
+        //protected class ParameterInfo
+        //{
+        //    public DbType DbType { get; set; }
+        //    public int? Size { get; set; }
 
-            public int? Precision { get; set; }
+        //    public int? Precision { get; set; }
 
-            public int? Scale { get; set; }
-        }
+        //    public int? Scale { get; set; }
+        //}
 
         private class DbMetadata
         {
@@ -34,6 +36,10 @@ namespace TauCode.Db
 
         //private ICruder _cruder;
         //private IScriptBuilder _scriptBuilder;
+
+        //private IScriptBuilderLab _scriptBuilderLab;
+
+        private ICruder _cruder;
 
         #endregion
 
@@ -54,13 +60,13 @@ namespace TauCode.Db
 
         //protected abstract IUtilityFactory GetFactoryImpl();
 
-        protected virtual string SerializeCommandResultImpl(IDbCommand command)
-        {
-            var rows = DbUtils.GetCommandRows(command);
+        //protected virtual string SerializeCommandResultImpl(IDbCommand command)
+        //{
+        //    var rows = DbUtils.GetCommandRows(command);
 
-            var json = JsonConvert.SerializeObject(rows, Formatting.Indented);
-            return json;
-        }
+        //    var json = JsonConvert.SerializeObject(rows, Formatting.Indented);
+        //    return json;
+        //}
 
         protected virtual void DeserializeTableData(IDbConnection connection, TableMold tableMold, JArray tableData)
         {
@@ -195,6 +201,7 @@ namespace TauCode.Db
             //}
         }
 
+        // todo: sweep out as well?
         protected virtual object JsonValueToColumnValue(ColumnMold column, JToken token)
         {
             switch (token.Type)
@@ -241,84 +248,84 @@ namespace TauCode.Db
             }
         }
 
-        protected virtual ParameterInfo GetParameterInfo(TableMold tableMold, string columnName)
-        {
-            ParameterInfo parameterInfo;
+        //protected virtual ParameterInfo GetParameterInfo(TableMold tableMold, string columnName)
+        //{
+        //    ParameterInfo parameterInfo;
 
-            var column = tableMold.GetColumn(columnName);
-            var typeName = column.Type.Name.ToLower();
+        //    var column = tableMold.GetColumn(columnName);
+        //    var typeName = column.Type.Name.ToLower();
 
-            switch (typeName)
-            {
-                case "uniqueidentifier":
-                    parameterInfo = new ParameterInfo
-                    {
-                        DbType = DbType.Guid,
-                    };
-                    break;
+        //    switch (typeName)
+        //    {
+        //        case "uniqueidentifier":
+        //            parameterInfo = new ParameterInfo
+        //            {
+        //                DbType = DbType.Guid,
+        //            };
+        //            break;
 
-                case "varchar":
-                    parameterInfo = new ParameterInfo
-                    {
-                        DbType = DbType.AnsiString,
-                        Size = column.Type.Size,
-                    };
-                    break;
+        //        case "varchar":
+        //            parameterInfo = new ParameterInfo
+        //            {
+        //                DbType = DbType.AnsiString,
+        //                Size = column.Type.Size,
+        //            };
+        //            break;
 
-                case "nvarchar":
-                    parameterInfo = new ParameterInfo
-                    {
-                        DbType = DbType.String,
-                        Size = column.Type.Size,
-                    };
-                    break;
+        //        case "nvarchar":
+        //            parameterInfo = new ParameterInfo
+        //            {
+        //                DbType = DbType.String,
+        //                Size = column.Type.Size,
+        //            };
+        //            break;
 
-                case "datetime":
-                    parameterInfo = new ParameterInfo
-                    {
-                        DbType = DbType.DateTime,
-                    };
-                    break;
+        //        case "datetime":
+        //            parameterInfo = new ParameterInfo
+        //            {
+        //                DbType = DbType.DateTime,
+        //            };
+        //            break;
 
-                case "date":
-                    parameterInfo = new ParameterInfo
-                    {
-                        DbType = DbType.Date, // todo: IParameterInfo and static readonly standard ParameterInfos.
-                    };
-                    break;
+        //        case "date":
+        //            parameterInfo = new ParameterInfo
+        //            {
+        //                DbType = DbType.Date, // todo: IParameterInfo and static readonly standard ParameterInfos.
+        //            };
+        //            break;
 
-                case "bit":
-                    parameterInfo = new ParameterInfo
-                    {
-                        DbType = DbType.Boolean,
-                    };
-                    break;
+        //        case "bit":
+        //            parameterInfo = new ParameterInfo
+        //            {
+        //                DbType = DbType.Boolean,
+        //            };
+        //            break;
 
-                case "decimal":
-                    parameterInfo = new ParameterInfo
-                    {
-                        DbType = DbType.Decimal,
-                        Precision = column.Type.Precision,
-                        Scale = column.Type.Scale,
-                    };
-                    break;
+        //        case "decimal":
+        //            parameterInfo = new ParameterInfo
+        //            {
+        //                DbType = DbType.Decimal,
+        //                Precision = column.Type.Precision,
+        //                Scale = column.Type.Scale,
+        //            };
+        //            break;
 
-                case "int":
-                case "integer":
-                    parameterInfo = new ParameterInfo
-                    {
-                        DbType = DbType.Int32,
-                    };
-                    break;
+        //        case "int":
+        //        case "integer":
+        //            parameterInfo = new ParameterInfo
+        //            {
+        //                DbType = DbType.Int32,
+        //            };
+        //            break;
 
-                default:
-                    parameterInfo = null;
-                    break;
-            }
+        //        default:
+        //            parameterInfo = null;
+        //            break;
+        //    }
 
 
-            return parameterInfo;
-        }
+        //    return parameterInfo;
+        //}
 
         #endregion
 
@@ -326,12 +333,15 @@ namespace TauCode.Db
 
         //protected IScriptBuilder ScriptBuilder => _scriptBuilder ?? (_scriptBuilder = this.CreateScriptBuilder());
 
-
+        protected virtual ICruder Cruder => _cruder ?? (_cruder = this.Factory.CreateCruder(this.Connection));
 
         //protected IDbConnection GetDbConnection()
         //{
         //    return this.Cruder.DbInspector.Connection;
         //}
+
+        //protected virtual IDbInspector DbInspector =>
+        //    _dbInspector ?? (_dbInspector = this.Factory.CreateDbInspector(this.Connection));
 
         #endregion
 
@@ -360,10 +370,14 @@ namespace TauCode.Db
 
         //public IUtilityFactory Factory => this.GetFactoryImpl();
 
-        public string SerializeTableData(string tableName)
-        {
-            throw new NotImplementedException();
+        //public virtual IScriptBuilderLab ScriptBuilderLab =>
+        //    _scriptBuilderLab ?? (_scriptBuilderLab = this.Factory.CreateScriptBuilderLab());
 
+
+        public IScriptBuilderLab ScriptBuilderLab => this.Cruder.ScriptBuilderLab;
+
+        public virtual string SerializeTableData(string tableName)
+        {
             //if (tableName == null)
             //{
             //    throw new ArgumentNullException(nameof(tableName));
@@ -373,8 +387,15 @@ namespace TauCode.Db
             //var connection = dbInspector.Connection;
 
             //var tableInspector = dbInspector.GetTableInspector(tableName);
-            //var tableMold = tableInspector.GetTableMold();
-            //var sql = this.ScriptBuilder.BuildSelectSql(tableMold);
+            //var tableInspector = this.Factory.CreateTableInspector(this.Connection, tableName);
+
+            //var table = tableInspector.GetTable();
+
+            var rows = this.Cruder.GetRows(tableName);
+            var json = JsonConvert.SerializeObject(rows, Formatting.Indented);
+            return json;
+
+            //var sql = this.ScriptBuilderLab.BuildSelectScript(table);
 
             //using (var command = connection.CreateCommand())
             //{
@@ -383,7 +404,7 @@ namespace TauCode.Db
             //}
         }
 
-        public string SerializeDbData()
+        public virtual string SerializeDbData(Func<string, bool> tableNamePredicate = null)
         {
             throw new NotImplementedException();
 
@@ -411,7 +432,7 @@ namespace TauCode.Db
             //return json;
         }
 
-        public void DeserializeTableData(string tableName, string json)
+        public virtual void DeserializeTableData(string tableName, string json)
         {
             throw new NotImplementedException();
             //if (tableName == null)
@@ -440,7 +461,7 @@ namespace TauCode.Db
             //this.DeserializeTableData(connection, tableMold, tableData);
         }
 
-        public void DeserializeDbData(string json)
+        public virtual void DeserializeDbData(string json)
         {
             throw new NotImplementedException();
             //var dbData = JsonConvert.DeserializeObject(json) as JObject;
@@ -469,36 +490,32 @@ namespace TauCode.Db
             //}
         }
 
-        public string SerializeTableMetadata(string tableName)
+        public virtual string SerializeTableMetadata(string tableName)
         {
-            // null-check will be performed by 'GetTableInspector'
+            var tableInspector = this.Factory.CreateTableInspector(this.Connection, tableName);
+            var tableMold = tableInspector.GetTable();
 
-            throw new NotImplementedException();
+            var contractResolver = new DefaultContractResolver
+            {
+                NamingStrategy = new CamelCaseNamingStrategy(),
+            };
 
-            //var tableInspector = this.Cruder.DbInspector.GetTableInspector(tableName);
-            //var tableMold = tableInspector.GetTableMold();
+            var json = JsonConvert.SerializeObject(
+                tableMold,
+                new JsonSerializerSettings
+                {
+                    ContractResolver = contractResolver,
+                    Formatting = Formatting.Indented,
+                    Converters = new List<JsonConverter>
+                    {
+                        new StringEnumConverter(new CamelCaseNamingStrategy())
+                    }
+                });
 
-            //var contractResolver = new DefaultContractResolver
-            //{
-            //    NamingStrategy = new CamelCaseNamingStrategy(),
-            //};
-
-            //var json = JsonConvert.SerializeObject(
-            //    tableMold,
-            //    new JsonSerializerSettings
-            //    {
-            //        ContractResolver = contractResolver,
-            //        Formatting = Formatting.Indented,
-            //        Converters = new List<JsonConverter>
-            //        {
-            //            new StringEnumConverter(new CamelCaseNamingStrategy())
-            //        }
-            //    });
-
-            //return json;
+            return json;
         }
 
-        public string SerializeDbMetadata(Func<string, bool> tableNamePredicate = null)
+        public virtual string SerializeDbMetadata(Func<string, bool> tableNamePredicate = null)
         {
             throw new NotImplementedException();
             //tableNamePredicate = tableNamePredicate ?? TrueTableNamePredicate;
@@ -534,18 +551,6 @@ namespace TauCode.Db
 
             //return json;
         }
-
-        //public void DeserializeTableMetadata(string tableName, string json)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public void DeserializeDbMetadata(string json)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        public event Action<string, int, object> RowDeserialized;
 
         #endregion
     }

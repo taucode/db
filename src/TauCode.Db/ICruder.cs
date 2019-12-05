@@ -8,6 +8,7 @@ namespace TauCode.Db
         void InsertRow(string tableName, object row);
         void InsertRows(string tableName, IReadOnlyList<object> rows);
         dynamic GetRow(string tableName, object id);
+        IList<dynamic> GetRows(string tableName); // todo: 'GetAllRows'
         bool UpdateRow(string tableName, object rowUpdate, object id);
         bool DeleteRow(string tableName, object id);
     }
