@@ -1,7 +1,11 @@
-﻿namespace TauCode.Db.Testing
+﻿using System.Data;
+
+namespace TauCode.Db.Testing
 {
     public abstract class DbTestBase
     {
+        protected IDbConnection DbConnection { get; set; }
+        
         protected virtual void OneTimeSetUpImpl()
         {
         }
