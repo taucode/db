@@ -1,24 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="Resources\rho\data-language.json" />
-    <None Remove="Resources\rho\metadata-language.json" />
-    <None Remove="Resources\rho\script-create-tables.sql" />
-    <None Remove="Resources\rho\script-drop-tables.sql" />
-    <None Remove="Resources\rho\script-insert-data.sql" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\rho\data-language.json" />
-    <EmbeddedResource Include="Resources\rho\metadata-language.json" />
-    <EmbeddedResource Include="Resources\rho\script-create-tables.sql" />
-    <EmbeddedResource Include="Resources\rho\script-drop-tables.sql" />
-    <EmbeddedResource Include="Resources\rho\script-insert-data.sql" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="TauCode.Utils" Version="3.0.3" />

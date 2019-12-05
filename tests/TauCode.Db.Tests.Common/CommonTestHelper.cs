@@ -2,9 +2,9 @@
 
 namespace TauCode.Db.Tests.Common
 {
-    public static class CommonTestHelper
-    {
-        public static string GetResourceText(string fileName) =>
-            typeof(CommonTestHelper).Assembly.GetResourceText(fileName, true);
-    }
+    //public static class CommonTestHelper
+    //{
+    //    public static string GetResourceText(string fileName) =>
+    //        typeof(CommonTestHelper).Assembly.GetResourceText(fileName, true);
+    //}
 }
