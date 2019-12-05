@@ -40,13 +40,13 @@ namespace TauCode.Db.Tests.SqlServer
 
         protected void CreateTables()
         {
-            var script = this.GetType().Assembly.GetResourceText("script-create-tables.sql", true);
+            var script = this.GetType().Assembly.GetResourceText("rho.script-create-tables.sql", true);
             this.Connection.ExecuteCommentedScript(script);
         }
 
         protected void DropTables()
         {
-            var script = this.GetType().Assembly.GetResourceText("script-drop-tables.sql", true);
+            var script = this.GetType().Assembly.GetResourceText("rho.script-drop-tables.sql", true);
             this.Connection.ExecuteCommentedScript(script);
         }
 

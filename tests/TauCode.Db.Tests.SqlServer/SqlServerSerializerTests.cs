@@ -22,14 +22,14 @@ namespace TauCode.Db.Tests.SqlServer
         public void SerializeTableData_ValidInput_ProducesExpectedResult()
         {
             // Arrange
-            var insertScript = this.GetType().Assembly.GetResourceText("script-insert-data.sql", true);
+            var insertScript = this.GetType().Assembly.GetResourceText("rho.script-insert-data.sql", true);
             this.Connection.ExecuteCommentedScript(insertScript);
 
             // Act
             var json = _dbSerializer.SerializeTableData("language");
 
             // Assert
-            var expectedJson = this.GetType().Assembly.GetResourceText(".data-language.json", true);
+            var expectedJson = this.GetType().Assembly.GetResourceText("rho.data-language.json", true);
 
             if (json != expectedJson)
             {
@@ -48,7 +48,7 @@ namespace TauCode.Db.Tests.SqlServer
             var json = _dbSerializer.SerializeTableMetadata("language");
 
             // Assert
-            var expectedJson = this.GetType().Assembly.GetResourceText(".metadata-language.json", true);
+            var expectedJson = this.GetType().Assembly.GetResourceText("rho.metadata-language.json", true);
 
             if (json != expectedJson)
             {
@@ -62,7 +62,7 @@ namespace TauCode.Db.Tests.SqlServer
         public void DeserializeTableData_ValidInput_ProducesExpectedResult()
         {
             // Arrange
-            var json = this.GetType().Assembly.GetResourceText(".data-language.json", true);
+            var json = this.GetType().Assembly.GetResourceText("rho.data-language.json", true);
             
             // Act
             _dbSerializer.DeserializeTableData("language", json);

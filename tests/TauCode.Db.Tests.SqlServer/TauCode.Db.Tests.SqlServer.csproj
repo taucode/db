@@ -15,11 +15,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resources\data-language.json" />
-    <EmbeddedResource Include="Resources\script-insert-data.sql" />
-    <EmbeddedResource Include="Resources\script-create-tables.sql" />
-    <EmbeddedResource Include="Resources\script-drop-tables.sql" />
-    <EmbeddedResource Include="Resources\metadata-language.json" />
+    <EmbeddedResource Include="Resources\rho\data-language.json" />
+    <EmbeddedResource Include="Resources\rho\script-insert-data.sql" />
+    <EmbeddedResource Include="Resources\rho\script-create-tables.sql" />
+    <EmbeddedResource Include="Resources\rho\script-drop-tables.sql" />
+    <EmbeddedResource Include="Resources\rho\metadata-language.json" />
   </ItemGroup>
 
   <ItemGroup>
