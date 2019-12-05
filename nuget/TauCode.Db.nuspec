@@ -14,7 +14,7 @@
     </releaseNotes>
     <tags>taucode db database</tags>
     <dependencies>
-      <dependency id="Microsoft.CSharp" version="4.6.0" />
+      <dependency id="Microsoft.CSharp" version="4.7.0" />
       <dependency id="Newtonsoft.Json" version="12.0.3" />
       <dependency id="TauCode.Algorithms" version="3.0.1" />
       <dependency id="TauCode.Data" version="3.0.0.1" />
