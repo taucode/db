@@ -464,7 +464,7 @@ namespace TauCode.Db
 
             using (var helper = new CommandHelper(this, table, new[] { idColumnName }))
             {
-                var sql = this.ScriptBuilderLab.BuildDeleteScript(table, helper.GetParameterNames().Single().Value);
+                var sql = this.ScriptBuilderLab.BuildDeleteByIdScript(table, helper.GetParameterNames().Single().Value);
                 helper.CommandText = sql;
 
                 var result = helper.ExecuteWithValues(new Dictionary<string, object>

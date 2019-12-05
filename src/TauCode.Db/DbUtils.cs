@@ -99,12 +99,30 @@ namespace TauCode.Db
 
         public static void DropAllTables(this IDbInspector dbInspector)
         {
-            throw new NotImplementedException();
+            var tableNames = dbInspector.GetTableNames(false);
+            var dialect = dbInspector.Factory.GetDialect();
+            var scriptBuilderLab = dbInspector.Factory.CreateScriptBuilderLab();
+            scriptBuilderLab.CurrentOpeningIdentifierDelimiter = dialect.IdentifierDelimiters.FirstOrDefault()?.Item1; // choose some delimiter
+
+            foreach (var tableName in tableNames)
+            {
+                var sql = scriptBuilderLab.BuildDropTableScript(tableName);
+                dbInspector.Connection.ExecuteSingleSql(sql);
+            }
         }
 
         public static void DeleteDataFromAllTables(this IDbInspector dbInspector)
         {
-            throw new NotImplementedException();
+            var tableNames = dbInspector.GetTableNames(false);
+            var dialect = dbInspector.Factory.GetDialect();
+            var scriptBuilderLab = dbInspector.Factory.CreateScriptBuilderLab();
+            scriptBuilderLab.CurrentOpeningIdentifierDelimiter = dialect.IdentifierDelimiters.FirstOrDefault()?.Item1; // choose some delimiter
+
+            foreach (var tableName in tableNames)
+            {
+                var sql = scriptBuilderLab.BuildDeleteScript(tableName);
+                dbInspector.Connection.ExecuteSingleSql(sql);
+            }
         }
     }
 }

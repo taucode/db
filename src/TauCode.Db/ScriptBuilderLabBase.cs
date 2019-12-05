@@ -271,6 +271,18 @@ namespace TauCode.Db
             return sb.ToString();
         }
 
+        public virtual string BuildDropTableScript(string tableName)
+        {
+            // todo checks
+
+            var decoratedTableName = this.Dialect.DecorateIdentifier(
+                DbIdentifierType.Table,
+                tableName,
+                this.CurrentOpeningIdentifierDelimiter);
+
+            return $"DROP TABLE {decoratedTableName}";
+        }
+
         public virtual string BuildInsertScript(
             TableMold table,
             IReadOnlyDictionary<string, string> columnToParameterMappings)
@@ -444,7 +456,7 @@ namespace TauCode.Db
             return sql;
         }
 
-        public virtual string BuildDeleteScript(TableMold table, string idParameterName)
+        public virtual string BuildDeleteByIdScript(TableMold table, string idParameterName)
         {
             var sb = new StringBuilder();
 
@@ -461,6 +473,18 @@ namespace TauCode.Db
             sb.Append($"DELETE FROM {decoratedTableName} WHERE {decoratedIdColumnName} = @{idParameterName}");
             var sql = sb.ToString();
             return sql;
+        }
+
+        public virtual string BuildDeleteScript(string tableName)
+        {
+            // todo checks
+
+            var decoratedTableName = this.Dialect.DecorateIdentifier(
+                DbIdentifierType.Table,
+                tableName,
+                this.CurrentOpeningIdentifierDelimiter);
+
+            return $"DELETE FROM {decoratedTableName}";
         }
     }
 }
