@@ -184,5 +184,10 @@ VALUES(
             var deletedRow = this.GetRow("language", id);
             Assert.That(deletedRow, Is.Null);
         }
+
+        protected override void ExecuteDbCreationScript()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

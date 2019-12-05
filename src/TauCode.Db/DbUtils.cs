@@ -96,5 +96,15 @@ namespace TauCode.Db
                     .GetTable())
                 .ToList();
         }
+
+        public static void DropAllTables(this IDbInspector dbInspector)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void DeleteDataFromAllTables(this IDbInspector dbInspector)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

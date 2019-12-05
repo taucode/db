@@ -78,5 +78,10 @@ namespace TauCode.Db.Tests.SqlServer
             Assert.That(en.code, Is.EqualTo("en"));
             Assert.That(en.name, Is.EqualTo("English"));
         }
+
+        protected override void ExecuteDbCreationScript()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -15,26 +15,54 @@ namespace TauCode.Db.Tests.SqlServer
 
         protected const string ConnectionString = @"Server=.\mssqltest;Database=rho.test;User Id=testadmin;Password=1234;";
 
+        protected virtual void OneTimeSetUpImpl()
+        {
+            this.Connection = new SqlConnection(ConnectionString);
+            this.Connection.Open();
+            this.DbInspector = new SqlServerInspector(Connection);
+
+            this.DbInspector.DropAllTables();
+            this.ExecuteDbCreationScript();
+        }
+
+        protected abstract void ExecuteDbCreationScript();
+
+        protected virtual void OneTimeTearDownImpl()
+        {
+            this.Connection.Dispose();
+        }
+
+        protected virtual void SetUpImpl()
+        {
+            this.DbInspector.DeleteDataFromAllTables();
+        }
+
+        protected virtual void TearDownImpl()
+        {
+        }
+
         [OneTimeSetUp]
         public void OneTimeSetUpBase()
         {
-            Connection = new SqlConnection(ConnectionString);
-            Connection.Open();
-
-            DbInspector = new SqlServerInspector(Connection);
+            this.OneTimeSetUpImpl();
         }
 
         [OneTimeTearDown]
         public void OneTimeTearDownBase()
         {
-            Connection.Dispose();
+            this.OneTimeTearDownImpl();
         }
 
         [SetUp]
         public void SetUpBase()
         {
-            this.DropTables(); // todo: don't recreate all tables for each test, just purge the data.
-            this.CreateTables();
+            this.SetUpImpl();
+        }
+
+        [TearDown]
+        public void TearDownBase()
+        {
+            this.TearDownImpl();
         }
 
         protected void CreateTables()
