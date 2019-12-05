@@ -1,6 +1,8 @@
 ﻿using NUnit.Framework;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using TauCode.Db.SqlServer;
 using TauCode.Utils.Extensions;
 
@@ -62,6 +64,30 @@ namespace TauCode.Db.Tests.SqlServer
                 {
                     // ignore exception - maybe table does not exist yet.
                 }
+            }
+        }
+
+        protected dynamic GetRow(string tableName, object id)
+        {
+            using (var command = this.Connection.CreateCommand())
+            {
+                command.CommandText = $@"SELECT * FROM [{tableName}] WHERE [id] = @p_id";
+                var parameter = command.CreateParameter();
+                parameter.ParameterName = "p_id";
+                parameter.Value = id;
+                command.Parameters.Add(parameter);
+                var row = DbUtils.GetCommandRows(command).SingleOrDefault();
+                return row;
+            }
+        }
+
+        protected IList<dynamic> GetRows(string tableName)
+        {
+            using (var command = this.Connection.CreateCommand())
+            {
+                command.CommandText = $@"SELECT * FROM [{tableName}]";
+                var rows = DbUtils.GetCommandRows(command);
+                return rows;
             }
         }
     }

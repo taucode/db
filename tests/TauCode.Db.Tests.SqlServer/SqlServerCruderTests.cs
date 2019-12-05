@@ -85,7 +85,7 @@ namespace TauCode.Db.Tests.SqlServer
                 id);
 
             // Assert
-            var row = this.GetRow(id);
+            var row = this.GetRow("language", id);
             Assert.That(row.id, Is.EqualTo(id));
             Assert.That(row.code, Is.EqualTo("it"));
             Assert.That(row.name, Is.EqualTo("Duzhe Italian!"));
@@ -110,7 +110,7 @@ namespace TauCode.Db.Tests.SqlServer
             _cruder.UpdateRow("language", new { language = "Duzhe Italian!" }, id);
 
             // Assert
-            var row = this.GetRow(id);
+            var row = this.GetRow("language", id);
             Assert.That(row.id, Is.EqualTo(id));
             Assert.That(row.code, Is.EqualTo("it"));
             Assert.That(row.name, Is.EqualTo("Duzhe Italian!"));
@@ -181,22 +181,8 @@ VALUES(
             // Assert
             Assert.That(deleted, Is.True);
 
-            var deletedRow = this.GetRow(id);
+            var deletedRow = this.GetRow("language", id);
             Assert.That(deletedRow, Is.Null);
-        }
-
-        private dynamic GetRow(object id)
-        {
-            using (var command = this.Connection.CreateCommand())
-            {
-                command.CommandText = @"SELECT [id], [code], [name] FROM [language] WHERE [id] = @p_id";
-                var parameter = command.CreateParameter();
-                parameter.ParameterName = "p_id";
-                parameter.Value = id;
-                command.Parameters.Add(parameter);
-                var row = DbUtils.GetCommandRows(command).SingleOrDefault();
-                return row;
-            }
         }
     }
 }

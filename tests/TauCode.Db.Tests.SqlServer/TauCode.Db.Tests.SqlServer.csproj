@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <None Remove="Resources\data-language.json" />
-    <None Remove="Resources\md-language.json" />
+    <None Remove="Resources\metadata-language.json" />
     <None Remove="Resources\script-create-tables.sql" />
     <None Remove="Resources\script-drop-tables.sql" />
     <None Remove="Resources\script-insert-data.sql" />
@@ -19,7 +19,7 @@
     <EmbeddedResource Include="Resources\script-insert-data.sql" />
     <EmbeddedResource Include="Resources\script-create-tables.sql" />
     <EmbeddedResource Include="Resources\script-drop-tables.sql" />
-    <EmbeddedResource Include="Resources\md-language.json" />
+    <EmbeddedResource Include="Resources\metadata-language.json" />
   </ItemGroup>
 
   <ItemGroup>

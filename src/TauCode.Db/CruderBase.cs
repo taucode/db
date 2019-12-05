@@ -215,6 +215,10 @@ namespace TauCode.Db
                     {
                         transformed = originalColumnValue;
                     }
+                    else if (originalColumnValue is string stringValue)
+                    {
+                        transformed = new Guid(stringValue);
+                    }
                     else
                     {
                         throw new NotImplementedException();

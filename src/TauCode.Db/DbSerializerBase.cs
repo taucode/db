@@ -5,6 +5,7 @@ using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Text;
 using TauCode.Db.Model;
 
@@ -68,9 +69,37 @@ namespace TauCode.Db
         //    return json;
         //}
 
-        protected virtual void DeserializeTableData(IDbConnection connection, TableMold tableMold, JArray tableData)
+        protected virtual void DeserializeTableData(TableMold tableMold, JArray tableData)
         {
-            throw new NotImplementedException();
+            var rows = tableData
+                .ToList() // todo: get rid of this.
+                .Select(x => tableMold
+                    .Columns
+                    .Select(y => y.Name)
+                    .ToDictionary(
+                        z => z,
+                        z => ((JValue)x[z]).Value))
+                //.Select(x => new ValueDictionary(x))
+                .ToList();
+                //.Select(x => new ValueDictionary(x));
+
+            //var p = 33;
+                
+
+
+            this.Cruder.InsertRows(tableMold.Name, rows);
+
+            //var dict = new ValueDictionary(tableData);
+
+            ////throw new NotImplementedException();
+
+            ////dynamic rows = tableData;
+            //foreach (dynamic obj in tableData)
+            //{
+            //    this.cru
+            //}
+
+            //throw new NotImplementedException();
 
             //var tableName = tableMold.Name;
 
@@ -434,23 +463,22 @@ namespace TauCode.Db
 
         public virtual void DeserializeTableData(string tableName, string json)
         {
-            throw new NotImplementedException();
-            //if (tableName == null)
-            //{
-            //    throw new ArgumentNullException(nameof(tableName));
-            //}
+            if (tableName == null)
+            {
+                throw new ArgumentNullException(nameof(tableName));
+            }
 
-            //if (json == null)
-            //{
-            //    throw new ArgumentNullException(nameof(json));
-            //}
+            if (json == null)
+            {
+                throw new ArgumentNullException(nameof(json));
+            }
 
-            //var tableData = JsonConvert.DeserializeObject(json) as JArray;
+            var tableData = JsonConvert.DeserializeObject(json) as JArray;
 
-            //if (tableData == null)
-            //{
-            //    throw new ArgumentException("Could not deserialize table data as array.", nameof(json));
-            //}
+            if (tableData == null)
+            {
+                throw new ArgumentException("Could not deserialize table data as array.", nameof(json));
+            }
 
             //var dbInspector = this.Cruder.DbInspector;
             //var connection = dbInspector.Connection;
@@ -458,7 +486,8 @@ namespace TauCode.Db
             //var tableInspector = dbInspector.GetTableInspector(tableName);
             //var tableMold = tableInspector.GetTableMold();
 
-            //this.DeserializeTableData(connection, tableMold, tableData);
+            var table = this.Factory.CreateTableInspector(this.Connection, tableName).GetTable();
+            this.DeserializeTableData(table, tableData);
         }
 
         public virtual void DeserializeDbData(string json)
