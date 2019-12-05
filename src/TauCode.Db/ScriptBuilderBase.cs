@@ -343,6 +343,8 @@ namespace TauCode.Db
             TableMold table,
             IReadOnlyDictionary<string, string> columnToParameterMappings)
         {
+            // todo checks
+
             var sb = new StringBuilder();
             var decoratedTableName = this.Dialect.DecorateIdentifier(
                 DbIdentifierType.Table,

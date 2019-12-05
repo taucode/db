@@ -187,7 +187,8 @@ VALUES(
 
         protected override void ExecuteDbCreationScript()
         {
-            throw new NotImplementedException();
+            var script = TestHelper.GetResourceText("rho.script-create-tables.sql");
+            this.Connection.ExecuteCommentedScript(script);
         }
     }
 }

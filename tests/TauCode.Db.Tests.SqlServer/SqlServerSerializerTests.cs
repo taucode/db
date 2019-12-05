@@ -15,6 +15,7 @@ namespace TauCode.Db.Tests.SqlServer
         public void SetUp()
         {
             _dbSerializer = new SqlServerSerializer(this.Connection);
+            _dbSerializer.ScriptBuilder.CurrentOpeningIdentifierDelimiter = '[';
         }
 
         [Test]
@@ -37,7 +38,28 @@ namespace TauCode.Db.Tests.SqlServer
 
             Assert.That(json, Is.EqualTo(expectedJson));
         }
-        
+
+        [Test]
+        public void SerializeDbData_ValidInput_ProducesExpectedResult()
+        {
+            // Arrange
+            var insertScript = TestHelper.GetResourceText("rho.script-insert-data.sql");
+            this.Connection.ExecuteCommentedScript(insertScript);
+
+            // Act
+            var json = _dbSerializer.SerializeDbData();
+
+            // Assert
+            var expectedJson = TestHelper.GetResourceText("rho.data-db.json");
+
+            if (json != expectedJson)
+            {
+                TestHelper.WriteDiff(json, expectedJson, "c:/temp/ko-33", ".json", "todo");
+            }
+
+            Assert.That(json, Is.EqualTo(expectedJson));
+        }
+
         [Test]
         public void SerializeTableMetadata_ValidInput_ProducesExpectedResult()
         {
@@ -48,6 +70,25 @@ namespace TauCode.Db.Tests.SqlServer
 
             // Assert
             var expectedJson = TestHelper.GetResourceText("rho.metadata-language.json");
+
+            if (json != expectedJson)
+            {
+                TestHelper.WriteDiff(json, expectedJson, "c:/temp/ko-33", ".json", "todo");
+            }
+
+            Assert.That(json, Is.EqualTo(expectedJson));
+        }
+
+        [Test]
+        public void SerializeDbMetadata_ValidInput_ProducesExpectedResult()
+        {
+            // Arrange
+
+            // Act
+            var json = _dbSerializer.SerializeDbMetadata();
+
+            // Assert
+            var expectedJson = TestHelper.GetResourceText(".rho.metadata-db.json");
 
             if (json != expectedJson)
             {
@@ -81,7 +122,8 @@ namespace TauCode.Db.Tests.SqlServer
 
         protected override void ExecuteDbCreationScript()
         {
-            throw new NotImplementedException();
+            var script = TestHelper.GetResourceText("rho.script-create-tables.sql");
+            this.Connection.ExecuteCommentedScript(script);
         }
     }
 }

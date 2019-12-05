@@ -48,7 +48,9 @@ namespace TauCode.Db.Tests.SqlServer
 
         protected override void ExecuteDbCreationScript()
         {
-            throw new System.NotImplementedException();
+            var script = TestHelper.GetResourceText("rho.script-create-tables.sql");
+            this.Connection.ExecuteCommentedScript(script);
+
         }
     }
 }
