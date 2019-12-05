@@ -14,7 +14,6 @@
     </releaseNotes>
     <tags>taucode db database testing</tags>
     <dependencies>
-      <dependency id="TauCode.Db.FluentMigrations" version="3.0.0-dev-2019-12-05-22-58" />
     </dependencies>
   </metadata>
   <files>

@@ -1,12 +1,7 @@
-﻿using System;
-using System.Data;
-using System.Reflection;
-using TauCode.Db.FluentMigrations;
-
-namespace TauCode.Db.Testing
+﻿namespace TauCode.Db.Testing
 {
     public abstract class DbTestBase
-    {
+    {/*
         #region Utilities
 
         protected abstract string GetDbProviderName();
@@ -114,5 +109,6 @@ namespace TauCode.Db.Testing
         }
 
         #endregion
+        */
     }
 }
