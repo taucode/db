@@ -13,6 +13,8 @@ namespace TauCode.Db.MySql
 
         public string DbProviderName => DbProviderNames.MySql;
 
+        public IDbConnection CreateConnection() => DbUtils.CreateConnection(this.DbProviderName);
+
         public IDialect GetDialect() => MySqlDialect.Instance;
 
         public IScriptBuilder CreateScriptBuilder() => throw new NotImplementedException();

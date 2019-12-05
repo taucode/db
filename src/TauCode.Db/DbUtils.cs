@@ -124,5 +124,15 @@ namespace TauCode.Db
                 dbInspector.Connection.ExecuteSingleSql(sql);
             }
         }
+
+        public static IDbConnection CreateConnection(string dbProviderName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static IUtilityFactory GetUtilityFactory(string dbProviderName)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
