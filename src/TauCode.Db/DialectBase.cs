@@ -189,7 +189,7 @@ namespace TauCode.Db
             }
             else
             {
-                throw new UnknownDataTypeNameException(typeName: typeName);
+                throw new TauCodeDbException("todo");
             }
         }
 
@@ -209,7 +209,7 @@ namespace TauCode.Db
             }
             else
             {
-                throw new UnknownDataTypeNameException(typeName: typeName);
+                throw new TauCodeDbException("todo");
             }
         }
 

@@ -1,12 +1,18 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Linq;
+using TauCode.Db.Exceptions;
+using TauCode.Db.Tests.Common;
 
 namespace TauCode.Db.Tests.SqlServer
 {
     [TestFixture]
     public class SqlServerCruderTests : TestBase
     {
+        private class WrongData
+        {
+        }
+
         private ICruder _cruder;
 
         [SetUp]
@@ -51,13 +57,41 @@ namespace TauCode.Db.Tests.SqlServer
         [Test]
         public void InsertRow_WrongColumnValue_ThrowsTauCodeDbException()
         {
-            throw new NotImplementedException();
+            // Arrange
+            var id = new Guid("bf7f7507-4b08-48f0-9bbe-d061acdbca31");
+
+            var language = new
+            {
+                id,
+                code = new WrongData(),
+                name = "Italian",
+            };
+
+            // Act
+            var ex = Assert.Throws<TauCodeDbException>(() => _cruder.InsertRow("language", language));
+
+            // Assert
+            Assert.That(ex.Message, Is.EqualTo("Could not transform value. DB type is: 'String', column value type is: 'TauCode.Db.Tests.SqlServer.SqlServerCruderTests+WrongData'."));
         }
 
         [Test]
         public void InsertRow_NonExistingColumnNames_ThrowsTauCodeDbException()
         {
-            throw new NotImplementedException();
+            // Arrange
+            var id = new Guid("bf7f7507-4b08-48f0-9bbe-d061acdbca31");
+
+            var language = new
+            {
+                id,
+                wrong_column_name = "it",
+                name = "Italian",
+            };
+
+            // Act
+            var ex = Assert.Throws<TauCodeDbException>(() => _cruder.InsertRow("language", language));
+
+            // Assert
+            Assert.That(ex.Message, Is.EqualTo("Column not found: 'wrong_column_name'."));
         }
 
         [Test]
@@ -77,7 +111,7 @@ namespace TauCode.Db.Tests.SqlServer
 
             // Act
             var updated = _cruder.UpdateRow(
-                "language", 
+                "language",
                 new
                 {
                     name = "Duzhe Italian!"
@@ -85,6 +119,8 @@ namespace TauCode.Db.Tests.SqlServer
                 id);
 
             // Assert
+            Assert.That(updated, Is.True);
+
             var row = this.GetRow("language", id);
             Assert.That(row.id, Is.EqualTo(id));
             Assert.That(row.code, Is.EqualTo("it"));
@@ -93,6 +129,19 @@ namespace TauCode.Db.Tests.SqlServer
 
         [Test]
         public void UpdateRow_NonExistingId_DoesNothingAndReturnsFalse()
+        {
+            // Arrange
+            var id = CommonTestHelper.NonExistingGuid;
+
+            // Act
+            var updated = _cruder.UpdateRow("language", new { name = "Duzhe Italian!" }, id);
+
+            // Assert
+            Assert.That(updated, Is.False);
+        }
+
+        [Test]
+        public void UpdateRow_NonExistingColumnNames_ThrowsTauCodeDbException()
         {
             // Arrange
             var id = new Guid("bf7f7507-4b08-48f0-9bbe-d061acdbca31");
@@ -107,31 +156,73 @@ namespace TauCode.Db.Tests.SqlServer
             _cruder.InsertRow("language", language);
 
             // Act
-            _cruder.UpdateRow("language", new { language = "Duzhe Italian!" }, id);
+            var ex = Assert.Throws<TauCodeDbException>(() => _cruder.UpdateRow(
+                "language",
+                new
+                {
+                    wrong_name = "Duzhe Italian!"
+                },
+                id));
 
             // Assert
-            var row = this.GetRow("language", id);
-            Assert.That(row.id, Is.EqualTo(id));
-            Assert.That(row.code, Is.EqualTo("it"));
-            Assert.That(row.name, Is.EqualTo("Duzhe Italian!"));
-        }
-
-        [Test]
-        public void UpdateRow_NonExistingColumnNames_ThrowsTauCodeDbException()
-        {
-            throw new NotImplementedException();
+            Assert.That(ex.Message, Is.EqualTo("Column not found: 'wrong_name'."));
         }
 
         [Test]
         public void UpdateRow_PrimaryKeyColumnIncluded_ThrowsTauCodeDbException()
         {
-            throw new NotImplementedException();
+            // Arrange
+            var id = new Guid("bf7f7507-4b08-48f0-9bbe-d061acdbca31");
+
+            var language = new
+            {
+                id,
+                code = "it",
+                name = "Italian",
+            };
+
+            _cruder.InsertRow("language", language);
+
+            // Act
+            var ex = Assert.Throws<TauCodeDbException>(() => _cruder.UpdateRow(
+                "language",
+                new
+                {
+                    id = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+                    name = "Duzhe Italian!"
+                },
+                id));
+
+            // Assert
+            Assert.That(ex.Message, Is.EqualTo("Update object must not contain ID column."));
         }
 
         [Test]
         public void UpdateRow_WrongColumnValue_ThrowsTauCodeDbException()
         {
-            throw new NotImplementedException();
+            // Arrange
+            var id = new Guid("bf7f7507-4b08-48f0-9bbe-d061acdbca31");
+
+            var language = new
+            {
+                id,
+                code = "it",
+                name = "Italian",
+            };
+
+            _cruder.InsertRow("language", language);
+
+            // Act
+            var ex = Assert.Throws<TauCodeDbException>(() => _cruder.UpdateRow(
+                "language",
+                new
+                {
+                    name = new WrongData(),
+                },
+                id));
+
+            // Assert
+            Assert.That(ex.Message, Is.EqualTo("Could not transform value. DB type is: 'String', column value type is: 'TauCode.Db.Tests.SqlServer.SqlServerCruderTests+WrongData'."));
         }
 
         [Test]
