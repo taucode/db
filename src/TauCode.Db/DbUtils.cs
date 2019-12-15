@@ -4,7 +4,10 @@ using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
 using TauCode.Db.Data;
+using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
+using TauCode.Db.SQLite;
+using TauCode.Db.SqlServer;
 
 namespace TauCode.Db
 {
@@ -125,14 +128,103 @@ namespace TauCode.Db
             }
         }
 
+        private static IDbConnection TryCreateDbConnection(string dbConnectionTypeFullName)
+        {
+            var allTypes = AppDomain.CurrentDomain
+                .GetAssemblies()
+                .SelectMany(x => x.Modules)
+                .SelectMany(x => x.GetTypes())
+                .OrderBy(x => x.FullName)
+                .ToList();
+
+            var types = allTypes
+                .Where(x => x.FullName == dbConnectionTypeFullName)
+                .ToList();
+
+            if (!types.Any())
+            {
+                throw new TauCodeDbException($"Type '{dbConnectionTypeFullName}' was not found in the current AppDomain.");
+            }
+
+            if (types.Count() > 1)
+            {
+                throw new TauCodeDbException($"Current AppDomain hosts more than one type with full name '{dbConnectionTypeFullName}'.");
+            }
+
+            var type = types.Single();
+
+            var ctor = type.GetConstructor(Type.EmptyTypes);
+            if (ctor == null)
+            {
+                throw new TauCodeDbException($"Type '{dbConnectionTypeFullName}' doesn't have .ctor(string).");
+            }
+
+            object connectionObject;
+
+            try
+            {
+                connectionObject = ctor.Invoke(new object[0]);
+            }
+            catch (Exception ex)
+            {
+                throw new TauCodeDbException($"Failed to invoke .ctor(string) of '{dbConnectionTypeFullName}'.", ex);
+            }
+
+            if (connectionObject is IDbConnection dbConnection)
+            {
+                return dbConnection;
+            }
+            else
+            {
+                throw new TauCodeDbException($".ctor(string) of '{dbConnectionTypeFullName}' returned not an instance of '{typeof(IDbConnection).FullName}'.");
+            }
+        }
+
         public static IDbConnection CreateConnection(string dbProviderName)
         {
-            throw new NotImplementedException();
+            if (dbProviderName == null)
+            {
+                throw new ArgumentNullException(nameof(dbProviderName));
+            }
+
+            string fullTypeName = null;
+
+            switch (dbProviderName)
+            {
+                case DbProviderNames.SqlServer:
+                    fullTypeName = "System.Data.SqlClient.SqlConnection";
+                    break;
+
+                case DbProviderNames.SQLite:
+                    //return SQLiteUtilityFactory.Instance;
+                    throw new NotImplementedException();
+
+                default:
+                    throw new NotSupportedException($"Cannot instantiate connection for type '{dbProviderName}'.");
+            }
+
+            var connection = TryCreateDbConnection(fullTypeName);
+            return connection;
         }
 
         public static IUtilityFactory GetUtilityFactory(string dbProviderName)
         {
-            throw new NotImplementedException();
+            if (dbProviderName == null)
+            {
+                throw new ArgumentNullException(nameof(dbProviderName));
+            }
+
+            switch (dbProviderName)
+            {
+                case DbProviderNames.SqlServer:
+                    return SqlServerUtilityFactory.Instance;
+
+                case DbProviderNames.SQLite:
+                    return SQLiteUtilityFactory.Instance;
+
+                default:
+                    throw new NotSupportedException($"Cannot create utility factory for '{dbProviderName}'.");
+            }
         }
     }
 }

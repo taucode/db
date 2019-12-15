@@ -13,11 +13,9 @@ namespace TauCode.Db.Tests.SqlServer
         protected IDbInspector DbInspector;
         protected IDbConnection Connection;
 
-        protected const string ConnectionString = @"Server=.\mssqltest;Database=rho.test;User Id=testadmin;Password=1234;";
-
         protected virtual void OneTimeSetUpImpl()
         {
-            this.Connection = new SqlConnection(ConnectionString);
+            this.Connection = new SqlConnection(TestHelper.ConnectionString);
             this.Connection.Open();
             this.DbInspector = new SqlServerInspector(Connection);
 
