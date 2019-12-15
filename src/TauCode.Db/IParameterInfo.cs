@@ -9,6 +9,5 @@ namespace TauCode.Db
         int? Size { get; }
         int? Precision { get; }
         int? Scale { get; }
-
     }
 }

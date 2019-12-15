@@ -28,6 +28,5 @@ namespace TauCode.Db.Tests.SqlServer
 
         internal static string GetResourceText(string fileName) =>
             typeof(TestHelper).Assembly.GetResourceText(fileName, true);
-
     }
 }

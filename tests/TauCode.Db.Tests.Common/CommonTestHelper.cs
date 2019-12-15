@@ -1,10 +1,10 @@
-﻿using TauCode.Utils.Extensions;
+﻿using System;
 
 namespace TauCode.Db.Tests.Common
 {
-    //public static class CommonTestHelper
-    //{
-    //    public static string GetResourceText(string fileName) =>
-    //        typeof(CommonTestHelper).Assembly.GetResourceText(fileName, true);
-    //}
+    public static class CommonTestHelper
+    {
+        public const string NonExistingGuidString = "eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee";
+        public static readonly Guid NonExistingGuid = new Guid(NonExistingGuidString);
+    }
 }

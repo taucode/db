@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using TauCode.Data;
 using TauCode.Db.Data;
+using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
 
 namespace TauCode.Db
@@ -52,8 +54,17 @@ namespace TauCode.Db
             {
                 return columnNames
                     .Select(x =>
-                        table.Columns.Single(y =>
-                            string.Equals(y.Name, x, StringComparison.InvariantCultureIgnoreCase)))
+                    {
+                        var column = table.Columns.SingleOrDefault(y =>
+                            string.Equals(y.Name, x, StringComparison.InvariantCultureIgnoreCase));
+
+                        if (column == null)
+                        {
+                            throw new TauCodeDbException($"Column not found: '{x}'.");
+                        }
+
+                        return column;
+                    })
                     .ToDictionary(x => x.Name.ToLowerInvariant(), x => x);
             }
 
@@ -90,11 +101,10 @@ namespace TauCode.Db
                 parameter.ParameterName = parameterInfo.ParameterName;
                 parameter.DbType = parameterInfo.DbType;
 
-
-
                 if (parameterInfo.Size.HasValue)
                 {
-                    parameter.Size = parameterInfo.Size.Value;
+                    //parameter.Size = parameterInfo.Size.Value;
+                    parameter.Size = 65536; // todo 0000000000000000000000000
                 }
 
                 if (parameterInfo.Precision.HasValue)
@@ -129,6 +139,12 @@ namespace TauCode.Db
                     var parameter = _parametersByParameterNames[parameterName];
 
                     var columnValue = _cruder.TransformOriginalColumnValue(parameterInfo, originalColumnValue);
+
+                    parameter.Size = 0;
+                    if (columnValue is string stringColumnValue)
+                    {
+                        parameter.Size = stringColumnValue.Length;
+                    }
 
                     parameter.Value = columnValue;
                 }
@@ -221,19 +237,24 @@ namespace TauCode.Db
                     }
                     else
                     {
-                        throw new NotImplementedException();
+                        throw CreateCannotTransformException(parameterInfo.DbType, originalColumnValue.GetType());
                     }
 
                     break;
 
                 case DbType.String:
+                case DbType.AnsiString:
                     if (originalColumnValue is string)
                     {
                         transformed = originalColumnValue;
                     }
+                    else if (originalColumnValue is decimal decimalValue)
+                    {
+                        transformed = decimalValue.ToString(CultureInfo.InvariantCulture);
+                    }
                     else
                     {
-                        throw new NotImplementedException();
+                        throw CreateCannotTransformException(parameterInfo.DbType, originalColumnValue.GetType());
                     }
 
                     break;
@@ -243,6 +264,11 @@ namespace TauCode.Db
             }
 
             return transformed;
+        }
+
+        private TauCodeDbException CreateCannotTransformException(DbType dbType, Type originalColumnValueType)
+        {
+            return new TauCodeDbException($"Could not transform value. DB type is: '{dbType}', column value type is: '{originalColumnValueType.FullName}'.");
         }
 
         protected virtual IDictionary<string, object> ObjectToDataDictionary(object obj)
@@ -425,6 +451,14 @@ namespace TauCode.Db
                 .GetTable();
 
             var dataDictionary = this.ObjectToDataDictionary(rowUpdate);
+
+            // todo: what if table.GetPrimaryKeyColumn() throws/fails?
+            if (dataDictionary.Keys.Contains(table.GetPrimaryKeyColumn().Name,
+                StringComparer.InvariantCultureIgnoreCase))
+            {
+                throw new TauCodeDbException("Update object must not contain ID column.");
+            }
+
             var columnNames = new List<string>(dataDictionary.Keys)
             {
                 table.GetPrimaryKeyColumn().Name,
