@@ -63,17 +63,18 @@ namespace TauCode.Db.Tests.SqlServer
             this.TearDownImpl();
         }
 
-        protected void CreateTables()
-        {
-            var script = TestHelper.GetResourceText("rho.script-create-tables.sql");
-            this.Connection.ExecuteCommentedScript(script);
-        }
+        // todo clean up
+        //protected void CreateTables()
+        //{
+        //    var script = TestHelper.GetResourceText("rho.script-create-tables.sql");
+        //    this.Connection.ExecuteCommentedScript(script);
+        //}
 
-        protected void DropTables()
-        {
-            var script = TestHelper.GetResourceText("rho.script-drop-tables.sql");
-            this.Connection.ExecuteCommentedScript(script);
-        }
+        //protected void DropTables()
+        //{
+        //    var script = TestHelper.GetResourceText("rho.script-drop-tables.sql");
+        //    this.Connection.ExecuteCommentedScript(script);
+        //}
 
         protected dynamic GetRow(string tableName, object id)
         {
