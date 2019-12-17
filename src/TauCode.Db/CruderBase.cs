@@ -6,6 +6,7 @@ using TauCode.Data;
 using TauCode.Db.Data;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
+using TauCode.Utils.Extensions;
 
 namespace TauCode.Db
 {
@@ -153,7 +154,11 @@ namespace TauCode.Db
                         throw new DbException($"Could not transform value '{originalColumnValue}' of type '{originalColumnValue.GetType().FullName}'. Column name is '{columnName}'.");
                     }
 
-                    if (columnValue is string stringColumnValue)
+                    if (columnValue is string stringColumnValue && parameterInfo.DbType.IsIn(
+                            DbType.AnsiString,
+                            DbType.AnsiStringFixedLength,
+                            DbType.String,
+                            DbType.StringFixedLength))
                     {
                         if (stringColumnValue.Length > parameter.Size && parameter.Size >= 0) // parameter.Size might be '-1', e.g. for type NVARCHAR(max)
                         {

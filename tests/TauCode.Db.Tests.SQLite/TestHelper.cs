@@ -21,5 +21,8 @@ namespace TauCode.Db.Tests.SQLite
 
             return Tuple.Create(tempDbFilePath, connectionString);
         }
+
+        internal static string GetResourceText(string fileName) =>
+            typeof(TestHelper).Assembly.GetResourceText(fileName, true);
     }
 }

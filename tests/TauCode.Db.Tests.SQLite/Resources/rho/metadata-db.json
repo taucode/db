@@ -1,0 +1,1072 @@
+﻿{
+  "tables": [
+    {
+      "name": "fragment_type",
+      "columns": [
+        {
+          "name": "id",
+          "type": {
+            "name": "uniqueidentifier",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "code",
+          "type": {
+            "name": "nvarchar",
+            "size": 255,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "name",
+          "type": {
+            "name": "nvarchar",
+            "size": 255,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "is_default",
+          "type": {
+            "name": "bit",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        }
+      ],
+      "primaryKey": {
+        "name": "PK_fragmentType",
+        "columns": [
+          {
+            "name": "id",
+            "sortDirection": "ascending",
+            "properties": {}
+          }
+        ],
+        "properties": {}
+      },
+      "foreignKeys": [],
+      "indexes": [
+        {
+          "name": "PK_fragmentType",
+          "tableName": null,
+          "columns": [
+            {
+              "name": "id",
+              "sortDirection": "ascending",
+              "properties": {}
+            }
+          ],
+          "isUnique": true,
+          "properties": {}
+        },
+        {
+          "name": "UX_fragmentType_code",
+          "tableName": null,
+          "columns": [
+            {
+              "name": "code",
+              "sortDirection": "ascending",
+              "properties": {}
+            }
+          ],
+          "isUnique": true,
+          "properties": {}
+        }
+      ],
+      "properties": {}
+    },
+    {
+      "name": "language",
+      "columns": [
+        {
+          "name": "id",
+          "type": {
+            "name": "uniqueidentifier",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "code",
+          "type": {
+            "name": "nvarchar",
+            "size": 2,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "name",
+          "type": {
+            "name": "nvarchar",
+            "size": 255,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        }
+      ],
+      "primaryKey": {
+        "name": "PK_language",
+        "columns": [
+          {
+            "name": "id",
+            "sortDirection": "ascending",
+            "properties": {}
+          }
+        ],
+        "properties": {}
+      },
+      "foreignKeys": [],
+      "indexes": [
+        {
+          "name": "PK_language",
+          "tableName": null,
+          "columns": [
+            {
+              "name": "id",
+              "sortDirection": "ascending",
+              "properties": {}
+            }
+          ],
+          "isUnique": true,
+          "properties": {}
+        },
+        {
+          "name": "UX_language_code",
+          "tableName": null,
+          "columns": [
+            {
+              "name": "code",
+              "sortDirection": "ascending",
+              "properties": {}
+            }
+          ],
+          "isUnique": true,
+          "properties": {}
+        }
+      ],
+      "properties": {}
+    },
+    {
+      "name": "note",
+      "columns": [
+        {
+          "name": "id",
+          "type": {
+            "name": "uniqueidentifier",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "code",
+          "type": {
+            "name": "nvarchar",
+            "size": 255,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "created",
+          "type": {
+            "name": "datetime",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        }
+      ],
+      "primaryKey": {
+        "name": "PK_note",
+        "columns": [
+          {
+            "name": "id",
+            "sortDirection": "ascending",
+            "properties": {}
+          }
+        ],
+        "properties": {}
+      },
+      "foreignKeys": [],
+      "indexes": [
+        {
+          "name": "PK_note",
+          "tableName": null,
+          "columns": [
+            {
+              "name": "id",
+              "sortDirection": "ascending",
+              "properties": {}
+            }
+          ],
+          "isUnique": true,
+          "properties": {}
+        },
+        {
+          "name": "UX_note_code",
+          "tableName": null,
+          "columns": [
+            {
+              "name": "code",
+              "sortDirection": "ascending",
+              "properties": {}
+            }
+          ],
+          "isUnique": true,
+          "properties": {}
+        },
+        {
+          "name": "UX_note_created",
+          "tableName": null,
+          "columns": [
+            {
+              "name": "created",
+              "sortDirection": "ascending",
+              "properties": {}
+            }
+          ],
+          "isUnique": true,
+          "properties": {}
+        }
+      ],
+      "properties": {}
+    },
+    {
+      "name": "tag",
+      "columns": [
+        {
+          "name": "id",
+          "type": {
+            "name": "uniqueidentifier",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "code",
+          "type": {
+            "name": "nvarchar",
+            "size": 255,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "name",
+          "type": {
+            "name": "nvarchar",
+            "size": 255,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        }
+      ],
+      "primaryKey": {
+        "name": "PK_tag",
+        "columns": [
+          {
+            "name": "id",
+            "sortDirection": "ascending",
+            "properties": {}
+          }
+        ],
+        "properties": {}
+      },
+      "foreignKeys": [],
+      "indexes": [
+        {
+          "name": "PK_tag",
+          "tableName": null,
+          "columns": [
+            {
+              "name": "id",
+              "sortDirection": "ascending",
+              "properties": {}
+            }
+          ],
+          "isUnique": true,
+          "properties": {}
+        },
+        {
+          "name": "UX_tag_code",
+          "tableName": null,
+          "columns": [
+            {
+              "name": "code",
+              "sortDirection": "ascending",
+              "properties": {}
+            }
+          ],
+          "isUnique": true,
+          "properties": {}
+        }
+      ],
+      "properties": {}
+    },
+    {
+      "name": "user",
+      "columns": [
+        {
+          "name": "id",
+          "type": {
+            "name": "uniqueidentifier",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "login",
+          "type": {
+            "name": "nvarchar",
+            "size": 255,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "email",
+          "type": {
+            "name": "nvarchar",
+            "size": 255,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "password_hash",
+          "type": {
+            "name": "nvarchar",
+            "size": 255,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        }
+      ],
+      "primaryKey": {
+        "name": "PK_user",
+        "columns": [
+          {
+            "name": "id",
+            "sortDirection": "ascending",
+            "properties": {}
+          }
+        ],
+        "properties": {}
+      },
+      "foreignKeys": [],
+      "indexes": [
+        {
+          "name": "PK_user",
+          "tableName": null,
+          "columns": [
+            {
+              "name": "id",
+              "sortDirection": "ascending",
+              "properties": {}
+            }
+          ],
+          "isUnique": true,
+          "properties": {}
+        },
+        {
+          "name": "UX_user_email",
+          "tableName": null,
+          "columns": [
+            {
+              "name": "email",
+              "sortDirection": "ascending",
+              "properties": {}
+            }
+          ],
+          "isUnique": true,
+          "properties": {}
+        },
+        {
+          "name": "UX_user_login",
+          "tableName": null,
+          "columns": [
+            {
+              "name": "login",
+              "sortDirection": "ascending",
+              "properties": {}
+            }
+          ],
+          "isUnique": true,
+          "properties": {}
+        }
+      ],
+      "properties": {}
+    },
+    {
+      "name": "fragment_sub_type",
+      "columns": [
+        {
+          "name": "id",
+          "type": {
+            "name": "uniqueidentifier",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "type_id",
+          "type": {
+            "name": "uniqueidentifier",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "code",
+          "type": {
+            "name": "nvarchar",
+            "size": 255,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "name",
+          "type": {
+            "name": "nvarchar",
+            "size": 255,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "is_default",
+          "type": {
+            "name": "bit",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        }
+      ],
+      "primaryKey": {
+        "name": "PK_fragmentSubType",
+        "columns": [
+          {
+            "name": "id",
+            "sortDirection": "ascending",
+            "properties": {}
+          }
+        ],
+        "properties": {}
+      },
+      "foreignKeys": [
+        {
+          "name": "FK_fragmentSubType_fragmentType",
+          "columnNames": [
+            "type_id"
+          ],
+          "referencedTableName": "fragment_type",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "properties": {}
+        }
+      ],
+      "indexes": [
+        {
+          "name": "PK_fragmentSubType",
+          "tableName": null,
+          "columns": [
+            {
+              "name": "id",
+              "sortDirection": "ascending",
+              "properties": {}
+            }
+          ],
+          "isUnique": true,
+          "properties": {}
+        },
+        {
+          "name": "UX_fragmentSubType_typeId_code",
+          "tableName": null,
+          "columns": [
+            {
+              "name": "type_id",
+              "sortDirection": "ascending",
+              "properties": {}
+            },
+            {
+              "name": "code",
+              "sortDirection": "ascending",
+              "properties": {}
+            }
+          ],
+          "isUnique": true,
+          "properties": {}
+        }
+      ],
+      "properties": {}
+    },
+    {
+      "name": "note_tag",
+      "columns": [
+        {
+          "name": "id",
+          "type": {
+            "name": "uniqueidentifier",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "note_id",
+          "type": {
+            "name": "uniqueidentifier",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "tag_id",
+          "type": {
+            "name": "uniqueidentifier",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        }
+      ],
+      "primaryKey": {
+        "name": "PK_noteTag",
+        "columns": [
+          {
+            "name": "id",
+            "sortDirection": "ascending",
+            "properties": {}
+          }
+        ],
+        "properties": {}
+      },
+      "foreignKeys": [
+        {
+          "name": "FK_noteTag_note",
+          "columnNames": [
+            "note_id"
+          ],
+          "referencedTableName": "note",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "properties": {}
+        },
+        {
+          "name": "FK_noteTag_tag",
+          "columnNames": [
+            "tag_id"
+          ],
+          "referencedTableName": "tag",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "properties": {}
+        }
+      ],
+      "indexes": [
+        {
+          "name": "PK_noteTag",
+          "tableName": null,
+          "columns": [
+            {
+              "name": "id",
+              "sortDirection": "ascending",
+              "properties": {}
+            }
+          ],
+          "isUnique": true,
+          "properties": {}
+        }
+      ],
+      "properties": {}
+    },
+    {
+      "name": "note_translation",
+      "columns": [
+        {
+          "name": "id",
+          "type": {
+            "name": "uniqueidentifier",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "note_id",
+          "type": {
+            "name": "uniqueidentifier",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "language_id",
+          "type": {
+            "name": "uniqueidentifier",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "is_default",
+          "type": {
+            "name": "bit",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "is_published",
+          "type": {
+            "name": "bit",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "title",
+          "type": {
+            "name": "nvarchar",
+            "size": 255,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "last_updated",
+          "type": {
+            "name": "datetime",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        }
+      ],
+      "primaryKey": {
+        "name": "PK_noteTranslation",
+        "columns": [
+          {
+            "name": "id",
+            "sortDirection": "ascending",
+            "properties": {}
+          }
+        ],
+        "properties": {}
+      },
+      "foreignKeys": [
+        {
+          "name": "FK_noteTranslation_language",
+          "columnNames": [
+            "language_id"
+          ],
+          "referencedTableName": "language",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "properties": {}
+        },
+        {
+          "name": "FK_noteTranslation_note",
+          "columnNames": [
+            "note_id"
+          ],
+          "referencedTableName": "note",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "properties": {}
+        }
+      ],
+      "indexes": [
+        {
+          "name": "ix_note_noteId",
+          "tableName": null,
+          "columns": [
+            {
+              "name": "note_id",
+              "sortDirection": "ascending",
+              "properties": {}
+            }
+          ],
+          "isUnique": false,
+          "properties": {}
+        },
+        {
+          "name": "PK_noteTranslation",
+          "tableName": null,
+          "columns": [
+            {
+              "name": "id",
+              "sortDirection": "ascending",
+              "properties": {}
+            }
+          ],
+          "isUnique": true,
+          "properties": {}
+        }
+      ],
+      "properties": {}
+    },
+    {
+      "name": "fragment",
+      "columns": [
+        {
+          "name": "id",
+          "type": {
+            "name": "uniqueidentifier",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "note_translation_id",
+          "type": {
+            "name": "uniqueidentifier",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "sub_type_id",
+          "type": {
+            "name": "uniqueidentifier",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "code",
+          "type": {
+            "name": "nvarchar",
+            "size": 255,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": true,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "order",
+          "type": {
+            "name": "int",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "content",
+          "type": {
+            "name": "ntext",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        }
+      ],
+      "primaryKey": {
+        "name": "PK_fragment",
+        "columns": [
+          {
+            "name": "id",
+            "sortDirection": "ascending",
+            "properties": {}
+          }
+        ],
+        "properties": {}
+      },
+      "foreignKeys": [
+        {
+          "name": "FK_fragment_noteTranslation",
+          "columnNames": [
+            "note_translation_id"
+          ],
+          "referencedTableName": "note_translation",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "properties": {}
+        },
+        {
+          "name": "FK_fragment_subType",
+          "columnNames": [
+            "sub_type_id"
+          ],
+          "referencedTableName": "fragment_sub_type",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "properties": {}
+        }
+      ],
+      "indexes": [
+        {
+          "name": "PK_fragment",
+          "tableName": null,
+          "columns": [
+            {
+              "name": "id",
+              "sortDirection": "ascending",
+              "properties": {}
+            }
+          ],
+          "isUnique": true,
+          "properties": {}
+        },
+        {
+          "name": "UX_fragment_noteTranslationId_code",
+          "tableName": null,
+          "columns": [
+            {
+              "name": "note_translation_id",
+              "sortDirection": "ascending",
+              "properties": {}
+            },
+            {
+              "name": "code",
+              "sortDirection": "ascending",
+              "properties": {}
+            }
+          ],
+          "isUnique": true,
+          "properties": {}
+        },
+        {
+          "name": "UX_fragment_noteTranslationId_order",
+          "tableName": null,
+          "columns": [
+            {
+              "name": "note_translation_id",
+              "sortDirection": "ascending",
+              "properties": {}
+            },
+            {
+              "name": "order",
+              "sortDirection": "ascending",
+              "properties": {}
+            }
+          ],
+          "isUnique": true,
+          "properties": {}
+        }
+      ],
+      "properties": {}
+    }
+  ]
+}
