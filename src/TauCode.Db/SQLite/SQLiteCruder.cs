@@ -39,6 +39,15 @@ namespace TauCode.Db.SQLite
                     size = -1;
                     break;
 
+                case "integer":
+                    dbType = DbType.Int64;
+                    break;
+
+                case "blob":
+                    dbType = DbType.Binary;
+                    size = -1;
+                    break;
+
                 default:
                     return base.ColumnToParameterInfo(columnName, columnType, parameterNameMappings);
             }
