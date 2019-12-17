@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>TauCode.Db</id>
-    <version>3.1.0.2-dev-2019-12-15-19-02</version>
+    <version>3.1.0.2-dev-2019-12-17-21-24</version>
     <authors>TauCode</authors>
     <owners>TauCode</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -10,7 +10,7 @@
     <projectUrl>http://taucode.com/</projectUrl>
     <description>Basic functionality for database support</description>
     <releaseNotes>
-      TODO: complete refactor.
+      Completely refactored.
     </releaseNotes>
     <tags>taucode db database</tags>
     <dependencies>
