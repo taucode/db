@@ -39,7 +39,5 @@ namespace TauCode.Db
         string DecorateIdentifier(DbIdentifierType identifierType, string identifier, char? openingDelimiter);
 
         DbTypeMold ResolveType(string typeName, int? size, int? precision, int? scale);
-
-        string StringToSqlString(string value, bool isUnicode);
     }
 }

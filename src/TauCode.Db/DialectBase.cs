@@ -188,7 +188,7 @@ namespace TauCode.Db
             }
             else
             {
-                throw new DbException("todo");
+                throw new DbException($"Could not get type family for type '{typeName}'.");
             }
         }
 
@@ -208,7 +208,7 @@ namespace TauCode.Db
             }
             else
             {
-                throw new DbException("todo");
+                throw new DbException($"Could not get type name category for type '{typeName}'.");
             }
         }
 
@@ -281,98 +281,6 @@ namespace TauCode.Db
             }
 
             return dbTypeMold;
-        }
-
-        public virtual string StringToSqlString(string value, bool isUnicode)
-        {
-            throw new NotImplementedException();
-
-            //if (value == null)
-            //{
-            //    return "NULL";
-            //}
-
-            //var normalStringOpened = false;
-            //var sb = new StringBuilder();
-
-            //if (value.Length == 0)
-            //{
-            //    if (isUnicode)
-            //    {
-            //        sb.Append(this.UnicodeTextLiteralPrefix);
-            //    }
-
-            //    sb.Append("''");
-            //}
-
-            //for (var i = 0; i < value.Length; i++)
-            //{
-            //    var c = value[i];
-            //    if (c < SPACE)
-            //    {
-            //        if (c == TAB || c == CR || c == LF)
-            //        {
-            //            if (normalStringOpened)
-            //            {
-            //                sb.Append("'"); // close normal string
-            //            }
-
-            //            normalStringOpened = false;
-
-            //            if (i == 0)
-            //            {
-            //                // don't add anything
-            //            }
-            //            else
-            //            {
-            //                sb.Append(" + ");
-            //            }
-
-            //            sb.Append($"{this.CharFunctionName}({(int)c})");
-            //        }
-            //        else
-            //        {
-            //            throw new ArgumentException($"Value contains unsupported char ({(int)c}).", nameof(value));
-            //        }
-            //    }
-            //    else
-            //    {
-            //        if (normalStringOpened)
-            //        {
-            //            // keep working
-            //        }
-            //        else
-            //        {
-            //            if (i == 0)
-            //            {
-            //                // don't add anything
-            //            }
-            //            else
-            //            {
-            //                sb.Append(" + ");
-            //            }
-
-            //            // open string
-            //            if (isUnicode)
-            //            {
-            //                sb.Append(this.UnicodeTextLiteralPrefix);
-            //            }
-
-            //            sb.Append("'");
-            //            normalStringOpened = true;
-            //        }
-
-            //        sb.Append(c == QUOTE ? "''" : c.ToString());
-            //    }
-            //}
-
-            //if (normalStringOpened)
-            //{
-            //    // need to close normal string
-            //    sb.Append("'");
-            //}
-
-            //return sb.ToString();
         }
 
         #endregion

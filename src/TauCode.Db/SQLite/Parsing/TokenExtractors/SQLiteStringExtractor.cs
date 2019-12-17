@@ -1,4 +1,4 @@
-﻿using System;
+﻿using TauCode.Db.Exceptions;
 using TauCode.Parsing;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tokens;
@@ -34,7 +34,7 @@ namespace TauCode.Db.SQLite.Parsing.TokenExtractors
                 }
                 else
                 {
-                    throw new NotImplementedException();
+                    throw new DbException("Internal SQLite parser error.");
                 }
             }
 

@@ -68,7 +68,7 @@ namespace TauCode.Db
 
         public static ColumnMold GetPrimaryKeyColumn(this TableMold table)
         {
-            return table.Columns.Single(x => x.Name == table.PrimaryKey.Columns.Single().Name); // todo can throw a lot.
+            return table.Columns.Single(x => x.Name == table.PrimaryKey.Columns.Single().Name);
         }
 
         public static void ExecuteCommentedScript(this IDbConnection connection, string script)
@@ -225,6 +225,38 @@ namespace TauCode.Db
                 default:
                     throw new NotSupportedException($"Cannot create utility factory for '{dbProviderName}'.");
             }
+        }
+
+        internal static void AddParameterWithValue(
+            this IDbCommand command,
+            string parameterName,
+            object parameterValue)
+        {
+            var parameter = command.CreateParameter();
+            parameter.ParameterName = parameterName;
+            parameter.Value = parameterValue;
+            command.Parameters.Add(parameter);
+        }
+
+        /// <summary>
+        /// (Justified TODO). Get rid of this method when migrated to .NET Standard 2.1 which has 'ToHashSet'
+        /// </summary>
+        /// <typeparam name="T">Collection element type.</typeparam>
+        /// <param name="collection">Collection to convert to has table.</param>
+        /// <returns>Hash set built from collection.</returns>
+        internal static HashSet<T> ToMyHashSet<T>(this IEnumerable<T> collection)
+        {
+            return new HashSet<T>(collection);
+        }
+
+        internal static void MarkAsExplicitPrimaryKey(this ColumnMold columnMold)
+        {
+            columnMold.SetBoolProperty("is-explicit-primary-key", true);
+        }
+
+        internal static void SetBoolProperty(this IMold mold, string propertyName, bool value)
+        {
+            mold.Properties[propertyName] = value.ToString();
         }
     }
 }

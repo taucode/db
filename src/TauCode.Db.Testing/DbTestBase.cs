@@ -24,11 +24,9 @@ namespace TauCode.Db.Testing
         #region Utility Creation
 
         protected virtual IUtilityFactory
-            GetUtilityFactory() => // DbUtils.GetUtilityFactory(this.GetDbProviderName());
-            throw new NotImplementedException();
+            GetUtilityFactory() => DbUtils.GetUtilityFactory(this.GetDbProviderName());
 
-        protected virtual IDbConnection CreateConnection() => //DbUtils.CreateConnection(this.GetDbProviderName());
-            throw new NotImplementedException();
+        protected virtual IDbConnection CreateConnection() => DbUtils.CreateConnection(this.GetDbProviderName());
 
         protected virtual IDbInspector CreateDbInspector()
         {

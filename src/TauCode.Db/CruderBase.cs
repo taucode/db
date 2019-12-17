@@ -266,7 +266,7 @@ namespace TauCode.Db
 
             switch (parameterInfo.DbType)
             {
-                case DbType.Guid: // todo: override for SQLite
+                case DbType.Guid:
                     if (originalColumnValue is Guid)
                     {
                         transformed = originalColumnValue;
@@ -495,7 +495,7 @@ namespace TauCode.Db
                     break;
 
                 case "uniqueidentifier":
-                    dbType = DbType.Guid; // todo: override in SQLite
+                    dbType = DbType.Guid;
                     break;
 
                 case "char":
@@ -519,11 +519,11 @@ namespace TauCode.Db
                     break;
 
                 case "datetime":
-                    dbType = DbType.DateTime; // todo: override in SQLite
+                    dbType = DbType.DateTime;
                     break;
 
                 case "bit":
-                    dbType = DbType.Boolean; // todo: override in SQLite
+                    dbType = DbType.Boolean;
                     break;
 
                 case "binary":
@@ -680,7 +680,6 @@ namespace TauCode.Db
 
             var dataDictionary = this.ObjectToDataDictionary(rowUpdate);
 
-            // todo: what if table.GetPrimaryKeyColumn() throws/fails?
             if (dataDictionary.Keys.Contains(table.GetPrimaryKeyColumn().Name,
                 StringComparer.InvariantCultureIgnoreCase))
             {

@@ -166,7 +166,7 @@ namespace TauCode.Db
                         break;
 
                     default:
-                        throw new NotImplementedException();
+                        throw new ArgumentOutOfRangeException("indexColumn.SortDirection");
                 }
 
                 sb.Append(" ");
@@ -273,7 +273,10 @@ namespace TauCode.Db
 
         public virtual string BuildDropTableScript(string tableName)
         {
-            // todo checks
+            if (tableName == null)
+            {
+                throw new ArgumentNullException(nameof(tableName));
+            }
 
             var decoratedTableName = this.Dialect.DecorateIdentifier(
                 DbIdentifierType.Table,
@@ -287,7 +290,20 @@ namespace TauCode.Db
             TableMold table,
             IReadOnlyDictionary<string, string> columnToParameterMappings)
         {
-            // todo: check args, including count of columnToParameterMappings
+            if (table == null)
+            {
+                throw new ArgumentNullException(nameof(table));
+            }
+
+            if (columnToParameterMappings == null)
+            {
+                throw new ArgumentNullException(nameof(columnToParameterMappings));
+            }
+
+            if (columnToParameterMappings.Count == 0)
+            {
+                throw new ArgumentException($"'{nameof(columnToParameterMappings)}' must not be empty.");
+            }
 
             var tuples = columnToParameterMappings
                 .Select(x => Tuple.Create(
@@ -338,12 +354,24 @@ namespace TauCode.Db
             return sql;
         }
 
-        // todo clean
         public virtual string BuildUpdateScript(
             TableMold table,
             IReadOnlyDictionary<string, string> columnToParameterMappings)
         {
-            // todo checks
+            if (table == null)
+            {
+                throw new ArgumentNullException(nameof(table));
+            }
+
+            if (columnToParameterMappings == null)
+            {
+                throw new ArgumentNullException(nameof(columnToParameterMappings));
+            }
+
+            if (columnToParameterMappings.Count == 0)
+            {
+                throw new ArgumentException($"'{nameof(columnToParameterMappings)}' must not be empty.");
+            }
 
             var sb = new StringBuilder();
             var decoratedTableName = this.Dialect.DecorateIdentifier(
@@ -460,6 +488,16 @@ namespace TauCode.Db
 
         public virtual string BuildDeleteByIdScript(TableMold table, string idParameterName)
         {
+            if (table == null)
+            {
+                throw new ArgumentNullException(nameof(table));
+            }
+
+            if (idParameterName == null)
+            {
+                throw new ArgumentNullException(nameof(idParameterName));
+            }
+
             var sb = new StringBuilder();
 
             var decoratedTableName = this.Dialect.DecorateIdentifier(
@@ -479,7 +517,10 @@ namespace TauCode.Db
 
         public virtual string BuildDeleteScript(string tableName)
         {
-            // todo checks
+            if (tableName == null)
+            {
+                throw new ArgumentNullException(nameof(tableName));
+            }
 
             var decoratedTableName = this.Dialect.DecorateIdentifier(
                 DbIdentifierType.Table,

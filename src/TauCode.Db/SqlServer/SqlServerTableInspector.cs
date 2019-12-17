@@ -69,6 +69,16 @@ WHERE
             throw new ArgumentException($"Could not parse value '{value}' of type '{value.GetType().FullName}' as boolean.");
         }
 
+        private static int? GetDbValueAsInt(object dbValue)
+        {
+            if (dbValue == DBNull.Value)
+            {
+                return null;
+            }
+
+            return int.Parse(dbValue.ToString());
+        }
+
         #endregion
 
         #region Overridden
@@ -105,9 +115,9 @@ ORDER BY
                         Name = x.ColumnName,
                         TypeName = x.DataType,
                         IsNullable = ParseBoolean(x.IsNullable),
-                        Size = UtilsHelper.GetDbValueAsInt(x.MaxLen),
-                        Precision = UtilsHelper.GetDbValueAsInt(x.NumericPrecision),
-                        Scale = UtilsHelper.GetDbValueAsInt(x.NumericScale),
+                        Size = GetDbValueAsInt(x.MaxLen),
+                        Precision = GetDbValueAsInt(x.NumericPrecision),
+                        Scale = GetDbValueAsInt(x.NumericScale),
                     })
                     .ToList();
 

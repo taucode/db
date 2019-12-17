@@ -101,7 +101,7 @@ namespace TauCode.Db.FluentMigrations
                             break;
 
                         default:
-                            throw new NotImplementedException();
+                            throw new NotSupportedException($"'{DbProviderName}' not supported.");
                     }
 
                     rb
