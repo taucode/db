@@ -86,9 +86,6 @@ namespace TauCode.Db.Tests.SQLite
                 .WithColumn("is_default")
                     .AsBoolean()
                     .NotNullable();
-            
-            this.Create.UniqueConstraint("UX_fragmentSubType_typeId_code")
-                .OnTable("fragment_sub_type").Columns("type_id", "code");
 
             #endregion
 
@@ -120,10 +117,10 @@ namespace TauCode.Db.Tests.SQLite
                     .AsAnsiString(100)
                     .NotNullable()
                     .Unique("UX_note_code")
-                .WithColumn("created_on")
+                .WithColumn("created_at")
                     .AsDateTime()
                     .NotNullable()
-                    .Unique("UX_note_created");
+                    .Unique("UX_note_createdAt");
 
             #endregion
 
@@ -180,9 +177,6 @@ namespace TauCode.Db.Tests.SQLite
                     .AsDateTime()
                     .NotNullable();
 
-            this.Create.UniqueConstraint("UX_noteTranslation_noteId_languageId")
-                .OnTable("note_translation").Columns("note_id", "language_id");
-
             #endregion
 
             #region fragment
@@ -210,12 +204,6 @@ namespace TauCode.Db.Tests.SQLite
                 .WithColumn("content")
                     .AsString(int.MaxValue)
                     .NotNullable();
-
-            this.Create.UniqueConstraint("UX_fragment_noteTranslationId_code")
-                .OnTable("fragment").Columns("note_translation_id", "code");
-
-            this.Create.UniqueConstraint("UX_fragment_noteTranslationId_order")
-                .OnTable("fragment").Columns("note_translation_id", "order");
 
             #endregion
         }

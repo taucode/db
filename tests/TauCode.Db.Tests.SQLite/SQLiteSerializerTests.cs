@@ -79,7 +79,7 @@ namespace TauCode.Db.Tests.SQLite
             // Arrange
 
             // Act
-            var json = _dbSerializer.SerializeDbMetadata();
+            var json = _dbSerializer.SerializeDbMetadata(x => !string.Equals(x, "versioninfo", StringComparison.InvariantCultureIgnoreCase));
 
             // Assert
             var expectedJson = TestHelper.GetResourceText(".rho.metadata-db.json");

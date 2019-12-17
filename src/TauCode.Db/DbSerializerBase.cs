@@ -155,7 +155,10 @@ namespace TauCode.Db
         public virtual string SerializeTableMetadata(string tableName)
         {
             var tableInspector = this.Factory.CreateTableInspector(this.Connection, tableName);
-            var tableMold = tableInspector.GetTable();
+            var table = tableInspector.GetTable().CloneTable(false);
+
+            table.ForeignKeys.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.InvariantCultureIgnoreCase));
+            table.Indexes.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.InvariantCultureIgnoreCase));
 
             var contractResolver = new DefaultContractResolver
             {
@@ -163,7 +166,7 @@ namespace TauCode.Db
             };
 
             var json = JsonConvert.SerializeObject(
-                tableMold,
+                table,
                 new JsonSerializerSettings
                 {
                     ContractResolver = contractResolver,
@@ -186,6 +189,12 @@ namespace TauCode.Db
                 .Select(x => this.Factory.CreateTableInspector(this.Connection, x).GetTable())
                 .Where(x => tableNamePredicate(x.Name))
                 .ToList();
+
+            foreach (var table in tables)
+            {
+                table.ForeignKeys.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.InvariantCultureIgnoreCase));
+                table.Indexes.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.InvariantCultureIgnoreCase));
+            }
 
             var metadata = new DbMetadata
             {

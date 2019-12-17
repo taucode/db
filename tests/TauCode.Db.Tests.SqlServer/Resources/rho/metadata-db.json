@@ -222,7 +222,7 @@
           "properties": {}
         },
         {
-          "name": "created",
+          "name": "created_at",
           "type": {
             "name": "datetime",
             "size": null,
@@ -276,11 +276,11 @@
           "properties": {}
         },
         {
-          "name": "UX_note_created",
+          "name": "UX_note_createdAt",
           "tableName": "note",
           "columns": [
             {
-              "name": "created",
+              "name": "created_at",
               "sortDirection": "ascending",
               "properties": {}
             }
@@ -397,7 +397,7 @@
           "properties": {}
         },
         {
-          "name": "login",
+          "name": "username",
           "type": {
             "name": "nvarchar",
             "size": 255,
@@ -479,11 +479,11 @@
           "properties": {}
         },
         {
-          "name": "UX_user_login",
+          "name": "UX_user_username",
           "tableName": "user",
           "columns": [
             {
-              "name": "login",
+              "name": "username",
               "sortDirection": "ascending",
               "properties": {}
             }
@@ -864,7 +864,7 @@
       ],
       "indexes": [
         {
-          "name": "ix_note_noteId",
+          "name": "IX_note_noteId",
           "tableName": "note_translation",
           "columns": [
             {
