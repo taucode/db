@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Globalization;
 using System.Linq;
 using TauCode.Data;
 using TauCode.Db.Data;
@@ -78,13 +77,23 @@ namespace TauCode.Db
 
             private IReadOnlyDictionary<string, IParameterInfo> BuildParameterInfosByColumnNames()
             {
-                return _columnsByColumnName
-                    .ToDictionary(
-                        x => x.Key,
-                        x => _cruder.ColumnToParameterInfo(
-                            x.Key,
-                            x.Value.Type,
-                            _parameterNamesByColumnNames));
+                var dictionary = new Dictionary<string, IParameterInfo>();
+
+                foreach (var pair in _columnsByColumnName)
+                {
+                    var columnName = pair.Key;
+                    var columnType = pair.Value.Type;
+                    var parameterInfo = _cruder.ColumnToParameterInfo(columnName, columnType, _parameterNamesByColumnNames);
+
+                    if (parameterInfo == null)
+                    {
+                        throw new TauCodeDbException($"Could not build parameter info for column '{columnName}'.");
+                    }
+
+                    dictionary.Add(columnName, parameterInfo);
+                }
+
+                return dictionary;
             }
 
             private IReadOnlyDictionary<string, IDbDataParameter> BuildParametersByParameterNames()
@@ -103,8 +112,7 @@ namespace TauCode.Db
 
                 if (parameterInfo.Size.HasValue)
                 {
-                    //parameter.Size = parameterInfo.Size.Value;
-                    parameter.Size = 65536; // todo 0000000000000000000000000
+                    parameter.Size = parameterInfo.Size.Value;
                 }
 
                 if (parameterInfo.Precision.HasValue)
@@ -140,10 +148,24 @@ namespace TauCode.Db
 
                     var columnValue = _cruder.TransformOriginalColumnValue(parameterInfo, originalColumnValue);
 
-                    parameter.Size = 0;
+                    if (columnValue == null)
+                    {
+                        throw new TauCodeDbException($"Could not transform value '{originalColumnValue}' of type '{originalColumnValue.GetType().FullName}'. Column name is '{columnName}'.");
+                    }
+
                     if (columnValue is string stringColumnValue)
                     {
-                        parameter.Size = stringColumnValue.Length;
+                        if (stringColumnValue.Length > parameter.Size && parameter.Size >= 0) // parameter.Size might be '-1', e.g. for type NVARCHAR(max)
+                        {
+                            throw _cruder.CreateTruncateException(columnName);
+                        }
+                    }
+                    else if (columnValue is byte[] byteArray)
+                    {
+                        if (byteArray.Length > parameter.Size && parameter.Size >= 0) // parameter.Size might be '-1', e.g. for type VARBINARY(max)
+                        {
+                            throw _cruder.CreateTruncateException(columnName);
+                        }
                     }
 
                     parameter.Value = columnValue;
@@ -196,6 +218,11 @@ namespace TauCode.Db
             #endregion
         }
 
+        protected TauCodeDbException CreateTruncateException(string columnName)
+        {
+            return new TauCodeDbException($"Data will be truncated for column '{columnName}'.");
+        }
+
         #endregion
 
         #region Fields
@@ -243,14 +270,149 @@ namespace TauCode.Db
                     break;
 
                 case DbType.String:
+                case DbType.StringFixedLength:
                 case DbType.AnsiString:
+                case DbType.AnsiStringFixedLength:
                     if (originalColumnValue is string)
                     {
                         transformed = originalColumnValue;
                     }
-                    else if (originalColumnValue is decimal decimalValue)
+                    //else if (originalColumnValue is decimal decimalValue) // todo clean up
+                    //{
+                    //    transformed = decimalValue.ToString(CultureInfo.InvariantCulture);
+                    //}
+                    else
                     {
-                        transformed = decimalValue.ToString(CultureInfo.InvariantCulture);
+                        throw CreateCannotTransformException(parameterInfo.DbType, originalColumnValue.GetType());
+                    }
+
+                    break;
+
+                case DbType.DateTime:
+                    if (originalColumnValue is DateTime dateTime)
+                    {
+                        transformed = originalColumnValue;
+                    }
+                    else
+                    {
+                        throw CreateCannotTransformException(parameterInfo.DbType, originalColumnValue.GetType());
+                    }
+                    break;
+
+                case DbType.Boolean:
+                    if (originalColumnValue is bool boolValue)
+                    {
+                        transformed = originalColumnValue;
+                    }
+                    else
+                    {
+                        throw CreateCannotTransformException(parameterInfo.DbType, originalColumnValue.GetType());
+                    }
+                    break;
+
+                case DbType.Binary:
+                    if (originalColumnValue is byte[] byteArray)
+                    {
+                        transformed = originalColumnValue;
+                    }
+                    else if (originalColumnValue is string base64)
+                    {
+                        transformed = Convert.FromBase64String(base64);
+                    }
+                    else
+                    {
+                        throw CreateCannotTransformException(parameterInfo.DbType, originalColumnValue.GetType());
+                    }
+                    break;
+
+                case DbType.Double:
+                case DbType.Single:
+                    if (originalColumnValue is double)
+                    {
+                        transformed = originalColumnValue;
+                    }
+                    else
+                    {
+                        throw CreateCannotTransformException(parameterInfo.DbType, originalColumnValue.GetType());
+                    }
+                    break;
+
+                case DbType.Decimal:
+                    if (originalColumnValue is decimal decimalValue)
+                    {
+                        transformed = originalColumnValue;
+                    }
+                    else if (originalColumnValue is double doubleValue)
+                    {
+                        transformed = (decimal)doubleValue;
+                    }
+                    else
+                    {
+                        throw CreateCannotTransformException(parameterInfo.DbType, originalColumnValue.GetType());
+                    }
+                    break;
+
+                case DbType.Byte:
+                    if (originalColumnValue is byte byteValue)
+                    {
+                        transformed = byteValue;
+                    }
+                    else if (originalColumnValue is long longValue)
+                    {
+                        checked
+                        {
+                            transformed = (byte)longValue;
+                        }
+                    }
+                    else
+                    {
+                        throw CreateCannotTransformException(parameterInfo.DbType, originalColumnValue.GetType());
+                    }
+
+                    break;
+
+                case DbType.Int16:
+                    if (originalColumnValue is short shortValue)
+                    {
+                        transformed = shortValue;
+                    }
+                    else if (originalColumnValue is long longValue)
+                    {
+                        checked
+                        {
+                            transformed = (short)longValue;
+                        }
+                    }
+                    else
+                    {
+                        throw CreateCannotTransformException(parameterInfo.DbType, originalColumnValue.GetType());
+                    }
+
+                    break;
+
+                case DbType.Int32:
+                    if (originalColumnValue is int intValue)
+                    {
+                        transformed = intValue;
+                    }
+                    else if (originalColumnValue is long longValue)
+                    {
+                        checked
+                        {
+                            transformed = (int)longValue;
+                        }
+                    }
+                    else
+                    {
+                        throw CreateCannotTransformException(parameterInfo.DbType, originalColumnValue.GetType());
+                    }
+
+                    break;
+
+                case DbType.Int64:
+                    if (originalColumnValue is long longValue2)
+                    {
+                        transformed = longValue2;
                     }
                     else
                     {
@@ -260,13 +422,14 @@ namespace TauCode.Db
                     break;
 
                 default:
-                    throw new NotImplementedException();
+                    transformed = null;
+                    break;
             }
 
             return transformed;
         }
 
-        private TauCodeDbException CreateCannotTransformException(DbType dbType, Type originalColumnValueType)
+        protected TauCodeDbException CreateCannotTransformException(DbType dbType, Type originalColumnValueType)
         {
             return new TauCodeDbException($"Could not transform value. DB type is: '{dbType}', column value type is: '{originalColumnValueType.FullName}'.");
         }
@@ -310,8 +473,35 @@ namespace TauCode.Db
                     dbType = DbType.Int32;
                     break;
 
+                case "tinyint":
+                    dbType = DbType.Byte;
+                    break;
+
+                case "smallint":
+                    dbType = DbType.Int16;
+                    break;
+
+                case "bigint":
+                    dbType = DbType.Int64;
+                    break;
+
                 case "uniqueidentifier":
                     dbType = DbType.Guid; // todo: override in SQLite
+                    break;
+
+                case "char":
+                    dbType = DbType.AnsiStringFixedLength;
+                    size = columnType.Size;
+                    break;
+
+                case "varchar":
+                    dbType = DbType.AnsiString;
+                    size = columnType.Size;
+                    break;
+
+                case "nchar":
+                    dbType = DbType.StringFixedLength;
+                    size = columnType.Size;
                     break;
 
                 case "nvarchar":
@@ -319,8 +509,37 @@ namespace TauCode.Db
                     size = columnType.Size;
                     break;
 
+                case "datetime":
+                    dbType = DbType.DateTime; // todo: override in SQLite
+                    break;
+
+                case "bit":
+                    dbType = DbType.Boolean; // todo: override in SQLite
+                    break;
+
+                case "binary":
+                case "varbinary":
+                    dbType = DbType.Binary;
+                    size = columnType.Size;
+                    break;
+
+                case "float":
+                    dbType = DbType.Double;
+                    break;
+
+                case "real":
+                    dbType = DbType.Single;
+                    break;
+
+                case "decimal":
+                case "numeric":
+                    dbType = DbType.Decimal;
+                    precision = columnType.Precision;
+                    scale = columnType.Scale;
+                    break;
+
                 default:
-                    throw new NotImplementedException();
+                    return null;
             }
 
             IParameterInfo parameterInfo = new ParameterInfoImpl(parameterName, dbType, size, precision, scale);

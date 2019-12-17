@@ -13,11 +13,9 @@ namespace TauCode.Db.Tests.SqlServer
         protected IDbInspector DbInspector;
         protected IDbConnection Connection;
 
-        protected const string ConnectionString = @"Server=.\mssqltest;Database=rho.test;User Id=testadmin;Password=1234;";
-
         protected virtual void OneTimeSetUpImpl()
         {
-            this.Connection = new SqlConnection(ConnectionString);
+            this.Connection = new SqlConnection(TestHelper.ConnectionString);
             this.Connection.Open();
             this.DbInspector = new SqlServerInspector(Connection);
 
@@ -65,17 +63,18 @@ namespace TauCode.Db.Tests.SqlServer
             this.TearDownImpl();
         }
 
-        protected void CreateTables()
-        {
-            var script = TestHelper.GetResourceText("rho.script-create-tables.sql");
-            this.Connection.ExecuteCommentedScript(script);
-        }
+        // todo clean up
+        //protected void CreateTables()
+        //{
+        //    var script = TestHelper.GetResourceText("rho.script-create-tables.sql");
+        //    this.Connection.ExecuteCommentedScript(script);
+        //}
 
-        protected void DropTables()
-        {
-            var script = TestHelper.GetResourceText("rho.script-drop-tables.sql");
-            this.Connection.ExecuteCommentedScript(script);
-        }
+        //protected void DropTables()
+        //{
+        //    var script = TestHelper.GetResourceText("rho.script-drop-tables.sql");
+        //    this.Connection.ExecuteCommentedScript(script);
+        //}
 
         protected dynamic GetRow(string tableName, object id)
         {
