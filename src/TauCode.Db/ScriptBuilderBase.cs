@@ -30,8 +30,7 @@ namespace TauCode.Db
             {
                 if (type.Precision.HasValue || type.Scale.HasValue)
                 {
-                    throw new DbException("todo");
-                    //throw new ScriptBuildingException("If type has Size, it must not have Precision and Scale.");
+                    throw new DbException("If type has Size, it must not have Precision and Scale.");
                 }
 
                 sb.Append($"({type.Size.Value})");
@@ -40,8 +39,7 @@ namespace TauCode.Db
             {
                 if (type.Size.HasValue)
                 {
-                    throw new DbException("todo");
-                    //throw new ScriptBuildingException("If type has Precision, it must not have Size.");
+                    throw new DbException("If type has Precision, it must not have Size.");
                 }
 
                 sb.Append($"({type.Precision.Value}");

@@ -1,7 +1,4 @@
-﻿using System;
-using TauCode.Db.Model;
-
-namespace TauCode.Db.SqlServer
+﻿namespace TauCode.Db.SqlServer
 {
     [Dialect(
         "sql-sqlserver-reserved-words.txt",
@@ -27,38 +24,7 @@ namespace TauCode.Db.SqlServer
         #region Overridden
 
         public override IUtilityFactory Factory => SqlServerUtilityFactory.Instance;
-
-        // todo: need this at all?
-        public override string ValueToSqlValueString(DbTypeMold type, object value)
-        {
-            if (type == null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-
-            if (value == null)
-            {
-                return base.ValueToSqlValueString(type, value);
-            }
-
-            var family = this.GetTypeFamily(type.Name);
-            string literal;
-            var typeName = type.Name.ToLower();
-
-            if (family == DbTypeFamily.DateTime && 
-                typeName == "date" && 
-                value is DateTime date)
-            {
-                literal = $"'{date:yyyy-MM-dd}'";
-            }
-            else
-            {
-                literal = base.ValueToSqlValueString(type, value);
-            }
-
-            return literal;
-        }
-
+        
         public override string UnicodeTextLiteralPrefix => "N";
 
         #endregion
