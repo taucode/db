@@ -196,8 +196,8 @@ namespace TauCode.Db
                     break;
 
                 case DbProviderNames.SQLite:
-                    //return SQLiteUtilityFactory.Instance;
-                    throw new NotImplementedException();
+                    fullTypeName = "System.Data.SQLite.SQLiteConnection";
+                    break;
 
                 default:
                     throw new NotSupportedException($"Cannot instantiate connection for type '{dbProviderName}'.");

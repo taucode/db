@@ -5,6 +5,8 @@ using TauCode.Db.Model;
 
 namespace TauCode.Db.SQLite
 {
+    // todo clean up
+    // todo nice regions
     public sealed class SQLiteTableInspector : TableInspectorBase
     {
         #region Fields
@@ -20,9 +22,6 @@ namespace TauCode.Db.SQLite
             string tableName)
             : base(connection, tableName)
         {
-            throw new NotImplementedException();
-            //_connection = connection ?? throw new ArgumentNullException(nameof(connection));
-            //this.TableName = tableName ?? throw new ArgumentNullException(nameof(tableName));
         }
 
         #endregion
@@ -138,32 +137,6 @@ namespace TauCode.Db.SQLite
         #endregion
 
 
-
-
-        //public IReadOnlyList<ColumnMold> GetColumns()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public PrimaryKeyMold GetPrimaryKey()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public IReadOnlyList<ForeignKeyMold> GetForeignKeys()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public IReadOnlyList<IndexMold> GetIndexes()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public TableMold GetTable()
-        //{
-        //    throw new NotImplementedException();
-        //}
         public override IUtilityFactory Factory => SQLiteUtilityFactory.Instance;
 
         protected override List<ColumnInfo> GetColumnInfos()

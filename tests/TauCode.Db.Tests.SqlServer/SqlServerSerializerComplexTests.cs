@@ -14,10 +14,10 @@ namespace TauCode.Db.Tests.SqlServer
         [SetUp]
         public void SetUp()
         {
-            this.DbInspector.DropAllTables();
+            //this.DbInspector.DropAllTables();
 
-            var ddlScript = TestHelper.GetResourceText("ocean.script-create-tables.sql");
-            this.Connection.ExecuteCommentedScript(ddlScript);
+            //var ddlScript = TestHelper.GetResourceText("ocean.script-create-tables.sql");
+            //this.Connection.ExecuteCommentedScript(ddlScript);
 
             _dbSerializer = new SqlServerSerializer(this.Connection);
             _dbSerializer.ScriptBuilder.CurrentOpeningIdentifierDelimiter = '[';
@@ -192,7 +192,7 @@ namespace TauCode.Db.Tests.SqlServer
 
         protected override void ExecuteDbCreationScript()
         {
-            var script = TestHelper.GetResourceText("rho.script-create-tables.sql");
+            var script = TestHelper.GetResourceText("ocean.script-create-tables.sql");
             this.Connection.ExecuteCommentedScript(script);
         }
     }

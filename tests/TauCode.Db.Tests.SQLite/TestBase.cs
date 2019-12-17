@@ -1,11 +1,12 @@
 ﻿using NUnit.Framework;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
+using System.Data.SQLite;
+using System.IO;
 using System.Linq;
-using TauCode.Db.SqlServer;
+using TauCode.Db.SQLite;
 
-namespace TauCode.Db.Tests.SqlServer
+namespace TauCode.Db.Tests.SQLite
 {
     [TestFixture]
     public abstract class TestBase
@@ -13,13 +14,18 @@ namespace TauCode.Db.Tests.SqlServer
         protected IDbInspector DbInspector;
         protected IDbConnection Connection;
 
+        protected string TempDbFilePath;
+
         protected virtual void OneTimeSetUpImpl()
         {
-            this.Connection = new SqlConnection(TestHelper.ConnectionString);
-            this.Connection.Open();
-            this.DbInspector = new SqlServerInspector(Connection);
+            var tuple = TestHelper.CreateSQLiteConnectionString();
+            this.TempDbFilePath = tuple.Item1;
+            var connectionString = tuple.Item2;
 
-            this.DbInspector.DropAllTables();
+            this.Connection = new SQLiteConnection(connectionString);
+            this.Connection.Open();
+            this.DbInspector = new SQLiteInspector(Connection);
+
             this.ExecuteDbCreationScript();
         }
 
@@ -28,6 +34,14 @@ namespace TauCode.Db.Tests.SqlServer
         protected virtual void OneTimeTearDownImpl()
         {
             this.Connection.Dispose();
+            try
+            {
+                File.Delete(TempDbFilePath);
+            }
+            catch
+            {
+                // dismiss
+            }
         }
 
         protected virtual void SetUpImpl()

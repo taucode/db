@@ -12,10 +12,6 @@ namespace TauCode.Db.SQLite
         public SQLiteInspector(IDbConnection connection)
             : base(connection)
         {
-            throw new NotImplementedException();
-
-            //this.Connection = connection ?? throw new ArgumentNullException(nameof(connection));
-            //_cruder = new SQLiteCruder(this.Connection);
         }
 
         #endregion
