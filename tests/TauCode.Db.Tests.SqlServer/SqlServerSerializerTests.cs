@@ -56,27 +56,6 @@ namespace TauCode.Db.Tests.SqlServer
         }
 
         [Test]
-        public void SerializeDbData_ComplexData_ProducesExpectedResult()
-        {
-            // Arrange
-            this.DbInspector.DropAllTables();
-
-            var ddlScript = TestHelper.GetResourceText("ocean.script-create-tables.sql");
-            this.Connection.ExecuteCommentedScript(ddlScript);
-
-            var insertScript = TestHelper.GetResourceText("ocean.script-data.sql");
-            this.Connection.ExecuteCommentedScript(insertScript);
-
-            // Act
-            var json = _dbSerializer.SerializeDbData();
-
-            // Assert
-            throw new NotImplementedException();
-            //var expectedJson = TestHelper.GetResourceText("rho.data-db.json");
-            //Assert.That(json, Is.EqualTo(expectedJson));
-        }
-
-        [Test]
         public void SerializeTableMetadata_ValidInput_ProducesExpectedResult()
         {
             // Arrange
@@ -134,36 +113,6 @@ namespace TauCode.Db.Tests.SqlServer
             var en = dictionary[new Guid("04990c0d-5d4a-41b9-98e4-103545d094d9")];
             Assert.That(en.code, Is.EqualTo("en"));
             Assert.That(en.name, Is.EqualTo("English"));
-        }
-
-        [Test]
-        public void WatTodo()
-        {
-            //var dir = @"C:\work\tau\lib\taucode.db\tests\TauCode.Db.Tests.SqlServer\Resources\ocean\assets\";
-            //var dirInfo = new DirectoryInfo(dir);
-            //var files = dirInfo.GetFiles();
-
-            //foreach (var file in files)
-            //{
-            //    var bytes = File.ReadAllBytes(file.FullName);
-            //    var sb = new StringBuilder("0x");
-            //    this.WriteHex(sb, bytes);
-            //    var txt = sb.ToString();
-
-            //    var fnameWithExtension = file.Name;
-            //    var fname = Path.GetFileNameWithoutExtension(fnameWithExtension);
-            //    fname += ".txt";
-            //    var fpath = Path.Combine(dirInfo.FullName, fname);
-            //    File.WriteAllText(fpath, txt);
-            //}
-        }
-
-        private void WriteHex(StringBuilder sb, byte[] bytes)
-        {
-            foreach (var b in bytes)
-            {
-                sb.AppendFormat("{0:x2}", b);
-            }
         }
 
         protected override void ExecuteDbCreationScript()

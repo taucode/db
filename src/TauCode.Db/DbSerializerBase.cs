@@ -145,10 +145,10 @@ namespace TauCode.Db
                     throw new ArgumentException("Invalid data.", nameof(json));
                 }
 
-                throw new NotImplementedException();
-                //var tableMold = tableInspector.GetTableMold();
+                var tableInspector = this.Factory.CreateTableInspector(this.Connection, name);
+                var tableMold = tableInspector.GetTable();
 
-                //this.DeserializeTableData(connection, tableMold, tableData);
+                this.DeserializeTableData(tableMold, tableData);
             }
         }
 
