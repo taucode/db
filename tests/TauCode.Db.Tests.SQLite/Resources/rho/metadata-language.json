@@ -4,7 +4,7 @@
     {
       "name": "id",
       "type": {
-        "name": "uniqueidentifier",
+        "name": "UNIQUEIDENTIFIER",
         "size": null,
         "precision": null,
         "scale": null,
@@ -18,8 +18,8 @@
     {
       "name": "code",
       "type": {
-        "name": "nvarchar",
-        "size": 2,
+        "name": "TEXT",
+        "size": null,
         "precision": null,
         "scale": null,
         "properties": {}
@@ -32,8 +32,8 @@
     {
       "name": "name",
       "type": {
-        "name": "nvarchar",
-        "size": 255,
+        "name": "TEXT",
+        "size": null,
         "precision": null,
         "scale": null,
         "properties": {}
@@ -57,19 +57,6 @@
   },
   "foreignKeys": [],
   "indexes": [
-    {
-      "name": "PK_language",
-      "tableName": "language",
-      "columns": [
-        {
-          "name": "id",
-          "sortDirection": "ascending",
-          "properties": {}
-        }
-      ],
-      "isUnique": true,
-      "properties": {}
-    },
     {
       "name": "UX_language_code",
       "tableName": "language",

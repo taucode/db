@@ -189,7 +189,7 @@ namespace TauCode.Db
             }
             else
             {
-                throw new TauCodeDbException("todo");
+                throw new DbException("todo");
             }
         }
 
@@ -209,7 +209,7 @@ namespace TauCode.Db
             }
             else
             {
-                throw new TauCodeDbException("todo");
+                throw new DbException("todo");
             }
         }
 

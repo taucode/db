@@ -6,6 +6,7 @@ using TauCode.Data;
 using TauCode.Db.Data;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
+using TauCode.Utils.Extensions;
 
 namespace TauCode.Db
 {
@@ -59,7 +60,7 @@ namespace TauCode.Db
 
                         if (column == null)
                         {
-                            throw new TauCodeDbException($"Column not found: '{x}'.");
+                            throw new DbException($"Column not found: '{x}'.");
                         }
 
                         return column;
@@ -87,7 +88,7 @@ namespace TauCode.Db
 
                     if (parameterInfo == null)
                     {
-                        throw new TauCodeDbException($"Could not build parameter info for column '{columnName}'.");
+                        throw new DbException($"Could not build parameter info for column '{columnName}'.");
                     }
 
                     dictionary.Add(columnName, parameterInfo);
@@ -150,10 +151,14 @@ namespace TauCode.Db
 
                     if (columnValue == null)
                     {
-                        throw new TauCodeDbException($"Could not transform value '{originalColumnValue}' of type '{originalColumnValue.GetType().FullName}'. Column name is '{columnName}'.");
+                        throw new DbException($"Could not transform value '{originalColumnValue}' of type '{originalColumnValue.GetType().FullName}'. Column name is '{columnName}'.");
                     }
 
-                    if (columnValue is string stringColumnValue)
+                    if (columnValue is string stringColumnValue && parameterInfo.DbType.IsIn(
+                            DbType.AnsiString,
+                            DbType.AnsiStringFixedLength,
+                            DbType.String,
+                            DbType.StringFixedLength))
                     {
                         if (stringColumnValue.Length > parameter.Size && parameter.Size >= 0) // parameter.Size might be '-1', e.g. for type NVARCHAR(max)
                         {
@@ -218,9 +223,9 @@ namespace TauCode.Db
             #endregion
         }
 
-        protected TauCodeDbException CreateTruncateException(string columnName)
+        protected DbException CreateTruncateException(string columnName)
         {
-            return new TauCodeDbException($"Data will be truncated for column '{columnName}'.");
+            return new DbException($"Data will be truncated for column '{columnName}'.");
         }
 
         #endregion
@@ -277,10 +282,6 @@ namespace TauCode.Db
                     {
                         transformed = originalColumnValue;
                     }
-                    //else if (originalColumnValue is decimal decimalValue) // todo clean up
-                    //{
-                    //    transformed = decimalValue.ToString(CultureInfo.InvariantCulture);
-                    //}
                     else
                     {
                         throw CreateCannotTransformException(parameterInfo.DbType, originalColumnValue.GetType());
@@ -429,9 +430,9 @@ namespace TauCode.Db
             return transformed;
         }
 
-        protected TauCodeDbException CreateCannotTransformException(DbType dbType, Type originalColumnValueType)
+        protected DbException CreateCannotTransformException(DbType dbType, Type originalColumnValueType)
         {
-            return new TauCodeDbException($"Could not transform value. DB type is: '{dbType}', column value type is: '{originalColumnValueType.FullName}'.");
+            return new DbException($"Could not transform value. DB type is: '{dbType}', column value type is: '{originalColumnValueType.FullName}'.");
         }
 
         protected virtual IDictionary<string, object> ObjectToDataDictionary(object obj)
@@ -675,7 +676,7 @@ namespace TauCode.Db
             if (dataDictionary.Keys.Contains(table.GetPrimaryKeyColumn().Name,
                 StringComparer.InvariantCultureIgnoreCase))
             {
-                throw new TauCodeDbException("Update object must not contain ID column.");
+                throw new DbException("Update object must not contain ID column.");
             }
 
             var columnNames = new List<string>(dataDictionary.Keys)

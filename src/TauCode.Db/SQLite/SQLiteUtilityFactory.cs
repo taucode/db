@@ -1,5 +1,4 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 
 namespace TauCode.Db.SQLite
 {
@@ -17,7 +16,7 @@ namespace TauCode.Db.SQLite
 
         public IDialect GetDialect() => SQLiteDialect.Instance;
 
-        public IScriptBuilder CreateScriptBuilder() => throw new NotImplementedException();
+        public IScriptBuilder CreateScriptBuilder() => new SQLiteScriptBuilder();
 
         public IDbInspector CreateDbInspector(IDbConnection connection) => new SQLiteInspector(connection);
 

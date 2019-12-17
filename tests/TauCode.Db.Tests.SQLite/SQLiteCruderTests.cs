@@ -4,10 +4,10 @@ using System.Linq;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Tests.Common;
 
-namespace TauCode.Db.Tests.SqlServer
+namespace TauCode.Db.Tests.SQLite
 {
     [TestFixture]
-    public class SqlServerCruderTests : TestBase
+    public class SQLiteCruderTests : TestBase
     {
         private class WrongData
         {
@@ -44,7 +44,7 @@ namespace TauCode.Db.Tests.SqlServer
                 command.CommandText = @"SELECT [id], [code], [name] FROM [language] WHERE [id] = @p_id";
                 var parameter = command.CreateParameter();
                 parameter.ParameterName = "p_id";
-                parameter.Value = id;
+                parameter.Value = id.ToString();
                 command.Parameters.Add(parameter);
                 var row = DbUtils.GetCommandRows(command).Single();
 
@@ -71,7 +71,7 @@ namespace TauCode.Db.Tests.SqlServer
             var ex = Assert.Throws<DbException>(() => _cruder.InsertRow("language", language));
 
             // Assert
-            Assert.That(ex.Message, Is.EqualTo("Could not transform value. DB type is: 'String', column value type is: 'TauCode.Db.Tests.SqlServer.SqlServerCruderTests+WrongData'."));
+            Assert.That(ex.Message, Is.EqualTo("Could not transform value. DB type is: 'String', column value type is: 'TauCode.Db.Tests.SQLite.SQLiteCruderTests+WrongData'."));
         }
 
         [Test]
@@ -121,7 +121,7 @@ namespace TauCode.Db.Tests.SqlServer
             // Assert
             Assert.That(updated, Is.True);
 
-            var row = this.GetRow("language", id);
+            var row = this.GetRow("language", id.ToString());
             Assert.That(row.id, Is.EqualTo(id));
             Assert.That(row.code, Is.EqualTo("it"));
             Assert.That(row.name, Is.EqualTo("Duzhe Italian!"));
@@ -222,7 +222,7 @@ namespace TauCode.Db.Tests.SqlServer
                 id));
 
             // Assert
-            Assert.That(ex.Message, Is.EqualTo("Could not transform value. DB type is: 'String', column value type is: 'TauCode.Db.Tests.SqlServer.SqlServerCruderTests+WrongData'."));
+            Assert.That(ex.Message, Is.EqualTo("Could not transform value. DB type is: 'String', column value type is: 'TauCode.Db.Tests.SQLite.SQLiteCruderTests+WrongData'."));
         }
 
         [Test]
@@ -278,8 +278,8 @@ VALUES(
 
         protected override void ExecuteDbCreationScript()
         {
-            var script = TestHelper.GetResourceText("rho.script-create-tables.sql");
-            this.Connection.ExecuteCommentedScript(script);
+            var migrator = new TestMigrator(this.ConnectionString, this.GetType().Assembly);
+            migrator.Migrate();
         }
     }
 }

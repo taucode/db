@@ -143,12 +143,12 @@ namespace TauCode.Db
 
             if (!types.Any())
             {
-                throw new TauCodeDbException($"Type '{dbConnectionTypeFullName}' was not found in the current AppDomain.");
+                throw new DbException($"Type '{dbConnectionTypeFullName}' was not found in the current AppDomain.");
             }
 
             if (types.Count() > 1)
             {
-                throw new TauCodeDbException($"Current AppDomain hosts more than one type with full name '{dbConnectionTypeFullName}'.");
+                throw new DbException($"Current AppDomain hosts more than one type with full name '{dbConnectionTypeFullName}'.");
             }
 
             var type = types.Single();
@@ -156,7 +156,7 @@ namespace TauCode.Db
             var ctor = type.GetConstructor(Type.EmptyTypes);
             if (ctor == null)
             {
-                throw new TauCodeDbException($"Type '{dbConnectionTypeFullName}' doesn't have .ctor(string).");
+                throw new DbException($"Type '{dbConnectionTypeFullName}' doesn't have .ctor(string).");
             }
 
             object connectionObject;
@@ -167,7 +167,7 @@ namespace TauCode.Db
             }
             catch (Exception ex)
             {
-                throw new TauCodeDbException($"Failed to invoke .ctor(string) of '{dbConnectionTypeFullName}'.", ex);
+                throw new DbException($"Failed to invoke .ctor(string) of '{dbConnectionTypeFullName}'.", ex);
             }
 
             if (connectionObject is IDbConnection dbConnection)
@@ -176,7 +176,7 @@ namespace TauCode.Db
             }
             else
             {
-                throw new TauCodeDbException($".ctor(string) of '{dbConnectionTypeFullName}' returned not an instance of '{typeof(IDbConnection).FullName}'.");
+                throw new DbException($".ctor(string) of '{dbConnectionTypeFullName}' returned not an instance of '{typeof(IDbConnection).FullName}'.");
             }
         }
 
@@ -196,8 +196,8 @@ namespace TauCode.Db
                     break;
 
                 case DbProviderNames.SQLite:
-                    //return SQLiteUtilityFactory.Instance;
-                    throw new NotImplementedException();
+                    fullTypeName = "System.Data.SQLite.SQLiteConnection";
+                    break;
 
                 default:
                     throw new NotSupportedException($"Cannot instantiate connection for type '{dbProviderName}'.");

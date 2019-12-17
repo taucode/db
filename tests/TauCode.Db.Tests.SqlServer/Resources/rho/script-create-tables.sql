@@ -23,14 +23,14 @@ CREATE UNIQUE INDEX [UX_language_code] ON [language]([code])
 CREATE TABLE [note](
     [id] [uniqueidentifier] NOT NULL,
     [code] [nvarchar](255) NOT NULL,
-    [created] [datetime] NOT NULL,
+    [created_at] [datetime] NOT NULL,
     CONSTRAINT [PK_note] PRIMARY KEY([id]))
 
 /* create unique index UX_note_code: note(code) */
 CREATE UNIQUE INDEX [UX_note_code] ON [note]([code])
 
-/* create unique index UX_note_created: note(created) */
-CREATE UNIQUE INDEX [UX_note_created] ON [note]([created])
+/* create unique index UX_note_createdAt: note(created_at) */
+CREATE UNIQUE INDEX [UX_note_createdAt] ON [note]([created_at])
 
 /* create table: tag */
 CREATE TABLE [tag](
@@ -45,7 +45,7 @@ CREATE UNIQUE INDEX [UX_tag_code] ON [tag]([code])
 /* create table: user */
 CREATE TABLE [user](
     [id] [uniqueidentifier] NOT NULL,
-    [login] [nvarchar](255) NOT NULL,
+    [username] [nvarchar](255) NOT NULL,
     [email] [nvarchar](255) NOT NULL,
     [password_hash] [nvarchar](255) NOT NULL,
     CONSTRAINT [PK_user] PRIMARY KEY([id]))
@@ -53,8 +53,8 @@ CREATE TABLE [user](
 /* create unique index UX_user_email: user(email) */
 CREATE UNIQUE INDEX [UX_user_email] ON [user]([email])
 
-/* create unique index UX_user_login: user(login) */
-CREATE UNIQUE INDEX [UX_user_login] ON [user]([login])
+/* create unique index UX_user_username: user(username) */
+CREATE UNIQUE INDEX [UX_user_username] ON [user]([username])
 
 /* create table: fragment_sub_type */
 CREATE TABLE [fragment_sub_type](
@@ -98,8 +98,8 @@ CREATE TABLE [note_translation](
     [last_updated] [datetime] NOT NULL,
     CONSTRAINT [PK_noteTranslation] PRIMARY KEY([id]))
 
-/* create index ix_note_noteId: note_translation(note_id) */
-CREATE INDEX [ix_note_noteId] ON [note_translation]([note_id])
+/* create index IX_note_noteId: note_translation(note_id) */
+CREATE INDEX [IX_note_noteId] ON [note_translation]([note_id])
 
 /* create foreign key FK_noteTranslation_language: note_translation(language_id) -> language(id) */
 ALTER TABLE [note_translation] ADD CONSTRAINT [FK_noteTranslation_language] FOREIGN KEY([language_id])
