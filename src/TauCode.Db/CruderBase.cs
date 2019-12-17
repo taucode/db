@@ -153,14 +153,19 @@ namespace TauCode.Db
                         throw new TauCodeDbException($"Could not transform value '{originalColumnValue}' of type '{originalColumnValue.GetType().FullName}'. Column name is '{columnName}'.");
                     }
 
-                    parameter.Size = 0;
                     if (columnValue is string stringColumnValue)
                     {
-                        parameter.Size = stringColumnValue.Length;
+                        if (stringColumnValue.Length > parameter.Size && parameter.Size >= 0) // parameter.Size might be '-1', e.g. for type NVARCHAR(max)
+                        {
+                            throw _cruder.CreateTruncateException(columnName);
+                        }
                     }
                     else if (columnValue is byte[] byteArray)
                     {
-                        parameter.Size = byteArray.Length;
+                        if (byteArray.Length > parameter.Size && parameter.Size >= 0) // parameter.Size might be '-1', e.g. for type VARBINARY(max)
+                        {
+                            throw _cruder.CreateTruncateException(columnName);
+                        }
                     }
 
                     parameter.Value = columnValue;
@@ -211,6 +216,11 @@ namespace TauCode.Db
             }
 
             #endregion
+        }
+
+        protected TauCodeDbException CreateTruncateException(string columnName)
+        {
+            return new TauCodeDbException($"Data will be truncated for column '{columnName}'.");
         }
 
         #endregion
