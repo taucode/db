@@ -6,7 +6,7 @@
         {
           "name": "id",
           "type": {
-            "name": "uniqueidentifier",
+            "name": "UNIQUEIDENTIFIER",
             "size": null,
             "precision": null,
             "scale": null,
@@ -108,7 +108,7 @@
         {
           "name": "id",
           "type": {
-            "name": "uniqueidentifier",
+            "name": "UNIQUEIDENTIFIER",
             "size": null,
             "precision": null,
             "scale": null,
@@ -196,7 +196,7 @@
         {
           "name": "id",
           "type": {
-            "name": "uniqueidentifier",
+            "name": "UNIQUEIDENTIFIER",
             "size": null,
             "precision": null,
             "scale": null,
@@ -297,7 +297,7 @@
         {
           "name": "id",
           "type": {
-            "name": "uniqueidentifier",
+            "name": "UNIQUEIDENTIFIER",
             "size": null,
             "precision": null,
             "scale": null,
@@ -385,7 +385,7 @@
         {
           "name": "id",
           "type": {
-            "name": "uniqueidentifier",
+            "name": "UNIQUEIDENTIFIER",
             "size": null,
             "precision": null,
             "scale": null,
@@ -500,7 +500,7 @@
         {
           "name": "id",
           "type": {
-            "name": "uniqueidentifier",
+            "name": "UNIQUEIDENTIFIER",
             "size": null,
             "precision": null,
             "scale": null,
@@ -514,7 +514,7 @@
         {
           "name": "type_id",
           "type": {
-            "name": "uniqueidentifier",
+            "name": "UNIQUEIDENTIFIER",
             "size": null,
             "precision": null,
             "scale": null,
@@ -633,7 +633,7 @@
         {
           "name": "id",
           "type": {
-            "name": "uniqueidentifier",
+            "name": "UNIQUEIDENTIFIER",
             "size": null,
             "precision": null,
             "scale": null,
@@ -647,7 +647,7 @@
         {
           "name": "note_id",
           "type": {
-            "name": "uniqueidentifier",
+            "name": "UNIQUEIDENTIFIER",
             "size": null,
             "precision": null,
             "scale": null,
@@ -661,7 +661,7 @@
         {
           "name": "tag_id",
           "type": {
-            "name": "uniqueidentifier",
+            "name": "UNIQUEIDENTIFIER",
             "size": null,
             "precision": null,
             "scale": null,
@@ -731,7 +731,7 @@
         {
           "name": "id",
           "type": {
-            "name": "uniqueidentifier",
+            "name": "UNIQUEIDENTIFIER",
             "size": null,
             "precision": null,
             "scale": null,
@@ -745,7 +745,7 @@
         {
           "name": "note_id",
           "type": {
-            "name": "uniqueidentifier",
+            "name": "UNIQUEIDENTIFIER",
             "size": null,
             "precision": null,
             "scale": null,
@@ -759,7 +759,7 @@
         {
           "name": "language_id",
           "type": {
-            "name": "uniqueidentifier",
+            "name": "UNIQUEIDENTIFIER",
             "size": null,
             "precision": null,
             "scale": null,
@@ -898,7 +898,7 @@
         {
           "name": "id",
           "type": {
-            "name": "uniqueidentifier",
+            "name": "UNIQUEIDENTIFIER",
             "size": null,
             "precision": null,
             "scale": null,
@@ -912,7 +912,7 @@
         {
           "name": "note_translation_id",
           "type": {
-            "name": "uniqueidentifier",
+            "name": "UNIQUEIDENTIFIER",
             "size": null,
             "precision": null,
             "scale": null,
@@ -926,7 +926,7 @@
         {
           "name": "sub_type_id",
           "type": {
-            "name": "uniqueidentifier",
+            "name": "UNIQUEIDENTIFIER",
             "size": null,
             "precision": null,
             "scale": null,

@@ -75,7 +75,7 @@
       "indexes": [
         {
           "name": "PK_fragmentType",
-          "tableName": null,
+          "tableName": "fragment_type",
           "columns": [
             {
               "name": "id",
@@ -88,7 +88,7 @@
         },
         {
           "name": "UX_fragmentType_code",
-          "tableName": null,
+          "tableName": "fragment_type",
           "columns": [
             {
               "name": "code",
@@ -163,7 +163,7 @@
       "indexes": [
         {
           "name": "PK_language",
-          "tableName": null,
+          "tableName": "language",
           "columns": [
             {
               "name": "id",
@@ -176,7 +176,7 @@
         },
         {
           "name": "UX_language_code",
-          "tableName": null,
+          "tableName": "language",
           "columns": [
             {
               "name": "code",
@@ -251,7 +251,7 @@
       "indexes": [
         {
           "name": "PK_note",
-          "tableName": null,
+          "tableName": "note",
           "columns": [
             {
               "name": "id",
@@ -264,7 +264,7 @@
         },
         {
           "name": "UX_note_code",
-          "tableName": null,
+          "tableName": "note",
           "columns": [
             {
               "name": "code",
@@ -277,7 +277,7 @@
         },
         {
           "name": "UX_note_created",
-          "tableName": null,
+          "tableName": "note",
           "columns": [
             {
               "name": "created",
@@ -352,7 +352,7 @@
       "indexes": [
         {
           "name": "PK_tag",
-          "tableName": null,
+          "tableName": "tag",
           "columns": [
             {
               "name": "id",
@@ -365,7 +365,7 @@
         },
         {
           "name": "UX_tag_code",
-          "tableName": null,
+          "tableName": "tag",
           "columns": [
             {
               "name": "code",
@@ -454,7 +454,7 @@
       "indexes": [
         {
           "name": "PK_user",
-          "tableName": null,
+          "tableName": "user",
           "columns": [
             {
               "name": "id",
@@ -467,7 +467,7 @@
         },
         {
           "name": "UX_user_email",
-          "tableName": null,
+          "tableName": "user",
           "columns": [
             {
               "name": "email",
@@ -480,7 +480,7 @@
         },
         {
           "name": "UX_user_login",
-          "tableName": null,
+          "tableName": "user",
           "columns": [
             {
               "name": "login",
@@ -595,7 +595,7 @@
       "indexes": [
         {
           "name": "PK_fragmentSubType",
-          "tableName": null,
+          "tableName": "fragment_sub_type",
           "columns": [
             {
               "name": "id",
@@ -608,7 +608,7 @@
         },
         {
           "name": "UX_fragmentSubType_typeId_code",
-          "tableName": null,
+          "tableName": "fragment_sub_type",
           "columns": [
             {
               "name": "type_id",
@@ -711,7 +711,7 @@
       "indexes": [
         {
           "name": "PK_noteTag",
-          "tableName": null,
+          "tableName": "note_tag",
           "columns": [
             {
               "name": "id",
@@ -865,7 +865,7 @@
       "indexes": [
         {
           "name": "ix_note_noteId",
-          "tableName": null,
+          "tableName": "note_translation",
           "columns": [
             {
               "name": "note_id",
@@ -878,7 +878,7 @@
         },
         {
           "name": "PK_noteTranslation",
-          "tableName": null,
+          "tableName": "note_translation",
           "columns": [
             {
               "name": "id",
@@ -1018,7 +1018,7 @@
       "indexes": [
         {
           "name": "PK_fragment",
-          "tableName": null,
+          "tableName": "fragment",
           "columns": [
             {
               "name": "id",
@@ -1031,7 +1031,7 @@
         },
         {
           "name": "UX_fragment_noteTranslationId_code",
-          "tableName": null,
+          "tableName": "fragment",
           "columns": [
             {
               "name": "note_translation_id",
@@ -1049,7 +1049,7 @@
         },
         {
           "name": "UX_fragment_noteTranslationId_order",
-          "tableName": null,
+          "tableName": "fragment",
           "columns": [
             {
               "name": "note_translation_id",
