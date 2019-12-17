@@ -203,7 +203,7 @@ namespace TauCode.Db.Tests.SQLite
                     .ForeignKey("FK_fragment_fragmentSubType", "fragment_sub_type", "id")
                 .WithColumn("code")
                     .AsAnsiString(100)
-                    .NotNullable()
+                    .Nullable()
                 .WithColumn("order")
                     .AsInt32()
                     .NotNullable()
