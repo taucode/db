@@ -1,20 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
+using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
+using TauCode.Db.SQLite.Parsing;
 
 namespace TauCode.Db.SQLite
 {
-    // todo clean up
     // todo nice regions
     public sealed class SQLiteTableInspector : TableInspectorBase
     {
-        #region Fields
-
-        //private readonly IDbConnection _connection;
-
-        #endregion
-
         #region Constructor
 
         public SQLiteTableInspector(
@@ -30,112 +26,56 @@ namespace TauCode.Db.SQLite
 
         private string GetTableCreationSqlFromDb()
         {
-            throw new NotImplementedException();
-//            using (var command = _connection.CreateCommand())
-//            {
-//                command.CommandText =
-//@"
-//SELECT
-//    T.name  Name,
-//    T.sql   Sql
-//FROM
-//    sqlite_master T
-//WHERE
-//    T.type = @p_type
-//    AND
-//    T.name = @p_tableName
-//";
+            using (var command = this.Connection.CreateCommand())
+            {
+                command.CommandText =
+@"
+SELECT
+    T.name  Name,
+    T.sql   Sql
+FROM
+    sqlite_master T
+WHERE
+    T.type = @p_type
+    AND
+    T.name = @p_tableName
+";
 
-//                command.AddParameterWithValue("p_type", "table");
-//                command.AddParameterWithValue("p_tableName", this.TableName);
+                command.AddParameterWithValue("p_type", "table");
+                command.AddParameterWithValue("p_tableName", this.TableName);
 
-//                var rows = DbUtils.GetCommandRows(command);
-//                if (rows.Count == 0)
-//                {
-//                    throw new ObjectNotFoundException($"Table '{this.TableName}' not found in the database.");
-//                    // todo: deal with such situations for all utils. (+ut)
-//                }
+                var rows = DbUtils.GetCommandRows(command);
+                if (rows.Count == 0)
+                {
+                    throw new DbException($"Table '{this.TableName}' not found in the database.");
+                    // todo: deal with such situations for all utils. (+ut)
+                }
 
-//                if (rows.Count > 1)
-//                {
-//                    throw new NotImplementedException(); // todo: internal error?
-//                }
+                if (rows.Count > 1)
+                {
+                    throw new NotImplementedException(); // todo: internal error?
+                }
 
-//                return rows
-//                    .Single()
-//                    .Sql;
-//            }
+                return rows
+                    .Single()
+                    .Sql;
+            }
         }
 
         #endregion
 
-        #region ITableInspector Members OLD
+        private DbException UseGetTableMethodException() => new DbException($"Use '{nameof(GetTable)}' method instead.");
 
-        //        public IDialect Dialect => SQLiteDialect.Instance;
+        public override TableMold GetTable()
+        {
+            var sql = this.GetTableCreationSqlFromDb();
+            var parser = SQLiteParser.Instance;
+            var table = (TableMold)parser.Parse(sql).Single();
 
-        //        public string TableName { get; }
+            table.Indexes = this.GetIndexes().ToList();
 
-        //        public List<ColumnMold> GetColumnMolds()
-        //        {
-        //            return this.GetTableMold().Columns;
-        //        }
-
-        //        public PrimaryKeyMold GetPrimaryKeyMold()
-        //        {
-        //            return this.GetTableMold().PrimaryKey;
-        //        }
-
-        //        public List<ForeignKeyMold> GetForeignKeyMolds()
-        //        {
-        //            return this.GetTableMold().ForeignKeys;
-        //        }
-
-        //        public List<IndexMold> GetIndexMolds()
-        //        {
-        //            using (var command = _connection.CreateCommand())
-        //            {
-        //                command.CommandText =
-        //@"
-        //SELECT
-        //    T.[name]    Name,
-        //    T.[sql]     Sql
-        //FROM
-        //    sqlite_master T
-        //WHERE
-        //    T.[type] = @p_type
-        //    AND
-        //    T.[tbl_name] = @p_tableName
-        //    AND
-        //    T.[name] NOT LIKE @p_antiPattern
-        //";
-        //                command.AddParameterWithValue("p_type", "index");
-        //                command.AddParameterWithValue("p_tableName", this.TableName);
-        //                command.AddParameterWithValue("p_antiPattern", "sqlite_autoindex_%");
-
-        //                var parser = SQLiteParser.Instance;
-
-        //                var indexes = UtilsHelper
-        //                    .GetCommandRows(command)
-        //                    .Select(x => (IndexMold)parser.Parse((string)x.Sql).Single())
-        //                    .ToList();
-
-        //                return indexes;
-        //            }
-        //        }
-
-        //        public TableMold GetTableMold()
-        //        {
-        //            var sql = this.GetTableCreationSqlFromDb();
-        //            var parser = SQLiteParser.Instance;
-        //            var table = (TableMold)parser.Parse(sql).Single();
-
-        //            table.Indexes = this.GetIndexMolds();
-
-        //            return table;
-        //        }
-
-        #endregion
-
+            return table;
+        }
 
         public override IUtilityFactory Factory => SQLiteUtilityFactory.Instance;
 
@@ -149,29 +89,45 @@ namespace TauCode.Db.SQLite
             throw new NotImplementedException();
         }
 
-        protected override Dictionary<string, ColumnIdentityMold> GetIdentities()
-        {
-            throw new NotImplementedException();
-        }
+        protected override Dictionary<string, ColumnIdentityMold> GetIdentities() => throw this.UseGetTableMethodException();
 
-        public override IReadOnlyList<ColumnMold> GetColumns()
-        {
-            throw new NotImplementedException();
-        }
+        public override IReadOnlyList<ColumnMold> GetColumns() => throw this.UseGetTableMethodException();
 
-        public override PrimaryKeyMold GetPrimaryKey()
-        {
-            throw new NotImplementedException();
-        }
+        public override PrimaryKeyMold GetPrimaryKey() => throw this.UseGetTableMethodException();
 
-        public override IReadOnlyList<ForeignKeyMold> GetForeignKeys()
-        {
-            throw new NotImplementedException();
-        }
+        public override IReadOnlyList<ForeignKeyMold> GetForeignKeys() => throw this.UseGetTableMethodException();
 
         public override IReadOnlyList<IndexMold> GetIndexes()
         {
-            throw new NotImplementedException();
+            using (var command = this.Connection.CreateCommand())
+            {
+                command.CommandText =
+@"
+SELECT
+    T.[name]    Name,
+    T.[sql]     Sql
+FROM
+    sqlite_master T
+WHERE
+    T.[type] = @p_type
+    AND
+    T.[tbl_name] = @p_tableName
+    AND
+    T.[name] NOT LIKE @p_antiPattern
+";
+                command.AddParameterWithValue("p_type", "index");
+                command.AddParameterWithValue("p_tableName", this.TableName);
+                command.AddParameterWithValue("p_antiPattern", "sqlite_autoindex_%");
+
+                var parser = SQLiteParser.Instance;
+
+                var indexes = DbUtils
+                    .GetCommandRows(command)
+                    .Select(x => (IndexMold)parser.Parse((string)x.Sql).Single())
+                    .ToList();
+
+                return indexes;
+            }
         }
     }
 }

@@ -68,7 +68,7 @@ namespace TauCode.Db.Tests.SqlServer
             };
 
             // Act
-            var ex = Assert.Throws<TauCodeDbException>(() => _cruder.InsertRow("language", language));
+            var ex = Assert.Throws<DbException>(() => _cruder.InsertRow("language", language));
 
             // Assert
             Assert.That(ex.Message, Is.EqualTo("Could not transform value. DB type is: 'String', column value type is: 'TauCode.Db.Tests.SqlServer.SqlServerCruderTests+WrongData'."));
@@ -88,7 +88,7 @@ namespace TauCode.Db.Tests.SqlServer
             };
 
             // Act
-            var ex = Assert.Throws<TauCodeDbException>(() => _cruder.InsertRow("language", language));
+            var ex = Assert.Throws<DbException>(() => _cruder.InsertRow("language", language));
 
             // Assert
             Assert.That(ex.Message, Is.EqualTo("Column not found: 'wrong_column_name'."));
@@ -156,7 +156,7 @@ namespace TauCode.Db.Tests.SqlServer
             _cruder.InsertRow("language", language);
 
             // Act
-            var ex = Assert.Throws<TauCodeDbException>(() => _cruder.UpdateRow(
+            var ex = Assert.Throws<DbException>(() => _cruder.UpdateRow(
                 "language",
                 new
                 {
@@ -184,7 +184,7 @@ namespace TauCode.Db.Tests.SqlServer
             _cruder.InsertRow("language", language);
 
             // Act
-            var ex = Assert.Throws<TauCodeDbException>(() => _cruder.UpdateRow(
+            var ex = Assert.Throws<DbException>(() => _cruder.UpdateRow(
                 "language",
                 new
                 {
@@ -213,7 +213,7 @@ namespace TauCode.Db.Tests.SqlServer
             _cruder.InsertRow("language", language);
 
             // Act
-            var ex = Assert.Throws<TauCodeDbException>(() => _cruder.UpdateRow(
+            var ex = Assert.Throws<DbException>(() => _cruder.UpdateRow(
                 "language",
                 new
                 {

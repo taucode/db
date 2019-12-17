@@ -13,6 +13,7 @@ namespace TauCode.Db.Tests.SQLite
     {
         protected IDbInspector DbInspector;
         protected IDbConnection Connection;
+        protected string ConnectionString;
 
         protected string TempDbFilePath;
 
@@ -20,9 +21,9 @@ namespace TauCode.Db.Tests.SQLite
         {
             var tuple = TestHelper.CreateSQLiteConnectionString();
             this.TempDbFilePath = tuple.Item1;
-            var connectionString = tuple.Item2;
+            this.ConnectionString = tuple.Item2;
 
-            this.Connection = new SQLiteConnection(connectionString);
+            this.Connection = new SQLiteConnection(this.ConnectionString);
             this.Connection.Open();
             this.DbInspector = new SQLiteInspector(Connection);
 
