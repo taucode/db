@@ -1,20 +1,20 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Linq;
-using TauCode.Db.SqlServer;
+using TauCode.Db.SQLite;
 using TauCode.Utils.Extensions;
 
-namespace TauCode.Db.Tests.SqlServer
+namespace TauCode.Db.Tests.SQLite
 {
     [TestFixture]
-    public class SqlServerSerializerComplexTests : TestBase
+    public class SQLiteSerializerComplexTests : TestBase
     {
         private IDbSerializer _dbSerializer;
 
         [SetUp]
         public void SetUp()
         {
-            _dbSerializer = new SqlServerSerializer(this.Connection);
+            _dbSerializer = new SQLiteSerializer(this.Connection);
             _dbSerializer.ScriptBuilder.CurrentOpeningIdentifierDelimiter = '[';
         }
 

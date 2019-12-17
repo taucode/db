@@ -356,7 +356,7 @@ WHERE
                     .Select(g => new IndexMold
                     {
                         Name = (string)g.First().IndexName,
-                        IsUnique = (bool)g.First().IndexIsUnique,
+                        TableName = this.TableName,
                         Columns = g
                             .OrderBy(x => (int)x.KeyOrdinal)
                             .Select(x => new IndexColumnMold
@@ -365,6 +365,7 @@ WHERE
                                 SortDirection = (bool)x.IsDescendingKey ? SortDirection.Descending : SortDirection.Ascending,
                             })
                             .ToList(),
+                        IsUnique = (bool)g.First().IndexIsUnique,
                     })
                     .OrderBy(x => x.Name)
                     .ToList();

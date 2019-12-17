@@ -15,7 +15,7 @@ namespace TauCode.Db.Tests.SQLite
             // Act
             var tableNames = this.DbInspector
                 .GetTableNames()
-                .Except(new[] {"versioninfo"}, StringComparer.InvariantCultureIgnoreCase);
+                .Except(new[] {"versioninfo", "foo"}, StringComparer.InvariantCultureIgnoreCase);
 
             // Assert
             CollectionAssert.AreEquivalent(
@@ -42,7 +42,7 @@ namespace TauCode.Db.Tests.SQLite
             // Act
             var tableNames = this.DbInspector
                 .GetTableNames(true)
-                .Except(new[] {"versioninfo"}, StringComparer.InvariantCultureIgnoreCase);
+                .Except(new[] {"versioninfo", "foo"}, StringComparer.InvariantCultureIgnoreCase);
 
             // Assert
             CollectionAssert.AreEqual(
@@ -69,7 +69,7 @@ namespace TauCode.Db.Tests.SQLite
             // Act
             var tableNames = this.DbInspector
                 .GetTableNames(false)
-                .Except(new[] {"versioninfo"}, StringComparer.InvariantCultureIgnoreCase);
+                .Except(new[] {"versioninfo", "foo"}, StringComparer.InvariantCultureIgnoreCase);
 
             // Assert
             CollectionAssert.AreEqual(

@@ -206,6 +206,42 @@ namespace TauCode.Db.Tests.SQLite
                     .NotNullable();
 
             #endregion
+
+            #region foo
+
+            this.Create.Table("foo")
+                .WithColumn("my_string")
+                    .AsString()
+                .WithColumn("my_ansi_string")
+                    .AsAnsiString()
+                .WithColumn("my_binary")
+                    .AsBinary()
+                .WithColumn("my_bool")
+                    .AsBoolean()
+                .WithColumn("my_byte")
+                    .AsByte()
+                .WithColumn("my_currency")
+                    .AsCurrency()
+                .WithColumn("my_datetime")
+                    .AsDateTime()
+                .WithColumn("my_decimal")
+                    .AsDecimal()
+                .WithColumn("my_double")
+                    .AsDouble()
+                .WithColumn("my_fixed_string")
+                    .AsFixedLengthString(100)
+                .WithColumn("my_fixed_ansi_string")
+                    .AsFixedLengthAnsiString(100)
+                .WithColumn("my_float")
+                    .AsFloat()
+                .WithColumn("my_int16")
+                    .AsInt16()
+                .WithColumn("my_int32")
+                    .AsInt32()
+                .WithColumn("my_int64")
+                    .AsInt64();
+
+            #endregion
         }
     }
 }

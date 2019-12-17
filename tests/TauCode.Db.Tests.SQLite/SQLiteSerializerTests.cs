@@ -47,7 +47,7 @@ namespace TauCode.Db.Tests.SQLite
             this.Connection.ExecuteCommentedScript(insertScript);
 
             // Act
-            var json = _dbSerializer.SerializeDbData();
+            var json = _dbSerializer.SerializeDbData(x => !string.Equals(x, "foo", StringComparison.InvariantCultureIgnoreCase));
 
             // Assert
             var expectedJson = TestHelper.GetResourceText("rho.data-db.json");
@@ -77,9 +77,14 @@ namespace TauCode.Db.Tests.SQLite
         public void SerializeDbMetadata_ValidInput_ProducesExpectedResult()
         {
             // Arrange
+            var tablesToExclude = new[]
+            {
+                "foo",
+                "versioninfo"
+            };
 
             // Act
-            var json = _dbSerializer.SerializeDbMetadata(x => !string.Equals(x, "versioninfo", StringComparison.InvariantCultureIgnoreCase));
+            var json = _dbSerializer.SerializeDbMetadata(x => !tablesToExclude.Contains(x, StringComparer.InvariantCultureIgnoreCase));
 
             // Assert
             var expectedJson = TestHelper.GetResourceText(".rho.metadata-db.json");
