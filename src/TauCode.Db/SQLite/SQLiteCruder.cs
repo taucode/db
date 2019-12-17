@@ -7,6 +7,8 @@ namespace TauCode.Db.SQLite
 {
     public class SQLiteCruder : CruderBase
     {
+        private static readonly int GuidRepresentationLength = Guid.Empty.ToString().Length;
+
         public SQLiteCruder(IDbConnection connection)
             : base(connection)
         {
@@ -31,7 +33,7 @@ namespace TauCode.Db.SQLite
             {
                 case "uniqueidentifier":
                     dbType = DbType.AnsiStringFixedLength;
-                    size = Guid.Empty.ToString().Length; // todo constant
+                    size = GuidRepresentationLength;
                     break;
 
                 case "text":

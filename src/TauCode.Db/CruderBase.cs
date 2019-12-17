@@ -33,9 +33,17 @@ namespace TauCode.Db
 
             public CommandHelper(CruderBase cruder, TableMold table, IEnumerable<string> columnNames)
             {
-                // todo checks
+                if (table == null)
+                {
+                    throw new ArgumentNullException(nameof(table));
+                }
 
-                _cruder = cruder;
+                if (columnNames == null)
+                {
+                    throw new ArgumentNullException(nameof(columnNames));
+                }
+
+                _cruder = cruder ?? throw new ArgumentNullException(nameof(cruder));
                 _command = _cruder.Connection.CreateCommand();
 
                 _columnsByColumnName = this.BuildColumnsByColumnName(table, columnNames);

@@ -5,7 +5,6 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Db.SQLite.Parsing.TokenExtractors
 {
-    // todo: use standard string extractor in TauCode.Parsing.
     public class SQLiteStringExtractor : TokenExtractorBase
     {
         public SQLiteStringExtractor()

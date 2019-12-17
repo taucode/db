@@ -8,7 +8,6 @@ using TauCode.Db.SQLite.Parsing;
 
 namespace TauCode.Db.SQLite
 {
-    // todo nice regions
     public sealed class SQLiteTableInspector : TableInspectorBase
     {
         #region Constructor
@@ -48,12 +47,11 @@ WHERE
                 if (rows.Count == 0)
                 {
                     throw new DbException($"Table '{this.TableName}' not found in the database.");
-                    // todo: deal with such situations for all utils. (+ut)
                 }
 
                 if (rows.Count > 1)
                 {
-                    throw new NotImplementedException(); // todo: internal error?
+                    throw new DbException($"Internal error: more than one metadata row returned.");
                 }
 
                 return rows
@@ -62,9 +60,11 @@ WHERE
             }
         }
 
+        private DbException UseGetTableMethodException() => new DbException($"Use '{nameof(GetTable)}' method instead.");
+
         #endregion
 
-        private DbException UseGetTableMethodException() => new DbException($"Use '{nameof(GetTable)}' method instead.");
+        #region Overridden
 
         public override TableMold GetTable()
         {
@@ -79,15 +79,9 @@ WHERE
 
         public override IUtilityFactory Factory => SQLiteUtilityFactory.Instance;
 
-        protected override List<ColumnInfo> GetColumnInfos()
-        {
-            throw new NotImplementedException();
-        }
+        protected override List<ColumnInfo> GetColumnInfos() => throw new NotSupportedException(); // shouldn't ever be called
 
-        protected override ColumnMold ColumnInfoToColumnMold(ColumnInfo columnInfo)
-        {
-            throw new NotImplementedException();
-        }
+        protected override ColumnMold ColumnInfoToColumnMold(ColumnInfo columnInfo) => throw new NotSupportedException(); // shouldn't ever be called
 
         protected override Dictionary<string, ColumnIdentityMold> GetIdentities() => throw this.UseGetTableMethodException();
 
@@ -129,5 +123,7 @@ WHERE
                 return indexes;
             }
         }
+
+        #endregion
     }
 }

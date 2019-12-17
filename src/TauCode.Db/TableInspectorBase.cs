@@ -6,7 +6,6 @@ using TauCode.Db.Model;
 
 namespace TauCode.Db
 {
-    // todo clean, regions
     public abstract class TableInspectorBase : UtilityBase, ITableInspector
     {
         #region Nested
@@ -31,8 +30,6 @@ namespace TauCode.Db
             string tableName)
             : base(connection, true, false)
         {
-            // todo: tableName is not decorated.
-
             this.TableName = tableName ?? throw new ArgumentNullException(nameof(tableName));
         }
 
@@ -48,6 +45,7 @@ namespace TauCode.Db
 
         #endregion
 
+        #region ITableInspector Members
 
         public string TableName { get; }
 
@@ -95,5 +93,7 @@ namespace TauCode.Db
 
             return table;
         }
+
+        #endregion
     }
 }

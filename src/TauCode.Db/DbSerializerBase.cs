@@ -11,7 +11,6 @@ using TauCode.Db.Model;
 
 namespace TauCode.Db
 {
-    // todo clean up
     public abstract class DbSerializerBase : UtilityBase, IDbSerializer
     {
         #region Nested
@@ -44,7 +43,6 @@ namespace TauCode.Db
         protected virtual void DeserializeTableData(TableMold tableMold, JArray tableData)
         {
             var rows = tableData
-                .ToList() // todo: get rid of this.
                 .Select(x => tableMold
                     .Columns
                     .Select(y => y.Name)

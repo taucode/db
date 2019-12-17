@@ -30,12 +30,6 @@ namespace TauCode.Db.Tests.SQLite
 
             // Assert
             var expectedJson = TestHelper.GetResourceText("rho.data-language.json");
-
-            if (json != expectedJson)
-            {
-                TestHelper.WriteDiff(json, expectedJson, "c:/temp/ko-33", ".json", "todo");
-            }
-
             Assert.That(json, Is.EqualTo(expectedJson));
         }
 
@@ -64,12 +58,6 @@ namespace TauCode.Db.Tests.SQLite
 
             // Assert
             var expectedJson = TestHelper.GetResourceText("rho.metadata-language.json");
-
-            if (json != expectedJson)
-            {
-                TestHelper.WriteDiff(json, expectedJson, "c:/temp/ko-33", ".json", "todo");
-            }
-
             Assert.That(json, Is.EqualTo(expectedJson));
         }
 
@@ -88,12 +76,6 @@ namespace TauCode.Db.Tests.SQLite
 
             // Assert
             var expectedJson = TestHelper.GetResourceText(".rho.metadata-db.json");
-
-            if (json != expectedJson)
-            {
-                TestHelper.WriteDiff(json, expectedJson, "c:/temp/ko-33", ".json", "todo");
-            }
-
             Assert.That(json, Is.EqualTo(expectedJson));
         }
 

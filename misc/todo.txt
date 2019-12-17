@@ -20,4 +20,5 @@
 2019-12-17
 ==========
     1. Check if all resources are needed in test projects.
+    2. Remove dummy tests one day.
 

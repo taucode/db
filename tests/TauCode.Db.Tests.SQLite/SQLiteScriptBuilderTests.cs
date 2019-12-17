@@ -38,11 +38,6 @@ namespace TauCode.Db.Tests.SQLite
     CONSTRAINT [FK_fragment_noteTranslation] FOREIGN KEY([note_translation_id]) REFERENCES [note_translation]([id]),
     CONSTRAINT [FK_fragment_fragmentSubType] FOREIGN KEY([sub_type_id]) REFERENCES [fragment_sub_type]([id]))";
 
-            if (sql != expectedSql)
-            {
-                TestHelper.WriteDiff(sql, expectedSql, "c:/temp/wrzze0", ".sql", "todo");
-            }
-
             Assert.That(sql, Is.EqualTo(expectedSql));
         }
 

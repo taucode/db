@@ -2,7 +2,6 @@
 
 namespace TauCode.Db.Tests
 {
-    // todo remove
     [TestFixture]
     public class DbDummyFixture
     {

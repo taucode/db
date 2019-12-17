@@ -2,7 +2,6 @@
 
 namespace TauCode.Db.FluentMigrations.Tests
 {
-    // todo remove
     [TestFixture]
     public class DbFluentMigrationsDummyFixture
     {

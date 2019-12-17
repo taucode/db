@@ -1,7 +1,6 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Linq;
-using System.Text;
 using TauCode.Db.Data;
 using TauCode.Db.SqlServer;
 
@@ -31,12 +30,6 @@ namespace TauCode.Db.Tests.SqlServer
 
             // Assert
             var expectedJson = TestHelper.GetResourceText("rho.data-language.json");
-
-            if (json != expectedJson)
-            {
-                TestHelper.WriteDiff(json, expectedJson, "c:/temp/ko-33", ".json", "todo");
-            }
-
             Assert.That(json, Is.EqualTo(expectedJson));
         }
 
@@ -65,12 +58,6 @@ namespace TauCode.Db.Tests.SqlServer
 
             // Assert
             var expectedJson = TestHelper.GetResourceText("rho.metadata-language.json");
-
-            if (json != expectedJson)
-            {
-                TestHelper.WriteDiff(json, expectedJson, "c:/temp/ko-33", ".json", "todo");
-            }
-
             Assert.That(json, Is.EqualTo(expectedJson));
         }
 
@@ -84,12 +71,6 @@ namespace TauCode.Db.Tests.SqlServer
 
             // Assert
             var expectedJson = TestHelper.GetResourceText(".rho.metadata-db.json");
-
-            if (json != expectedJson)
-            {
-                TestHelper.WriteDiff(json, expectedJson, "c:/temp/ko-33", ".json", "todo");
-            }
-
             Assert.That(json, Is.EqualTo(expectedJson));
         }
 

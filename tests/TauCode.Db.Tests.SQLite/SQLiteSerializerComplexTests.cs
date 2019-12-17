@@ -30,12 +30,6 @@ namespace TauCode.Db.Tests.SQLite
 
             // Assert
             var expectedJson = this.GetType().Assembly.GetResourceText("ocean.data-db.json", true);
-
-            if (json != expectedJson)
-            {
-                TestHelper.WriteDiff(json, expectedJson, "c:/temp/mihi-94/", ".json", "todo");
-            }
-
             Assert.That(json, Is.EqualTo(expectedJson));
         }
 
