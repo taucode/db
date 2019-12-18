@@ -14,7 +14,8 @@
     </releaseNotes>
     <tags>taucode db database testing</tags>
     <dependencies>
-      <dependency id="TauCode.Db.FluentMigrations" version="3.0.0-dev-2019-12-17-21-39" />
+      <dependency id="System.Data.SQLite.Core" version="1.0.112" />
+      <dependency id="TauCode.Db.FluentMigrations" version="3.0.0-dev-2019-12-18-16-12" />
     </dependencies>
   </metadata>
   <files>
