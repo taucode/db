@@ -1,9 +1,6 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using TauCode.Db.Data;
@@ -152,23 +149,7 @@ namespace TauCode.Db
                 .OrderBy(x => x.Name, StringComparer.InvariantCultureIgnoreCase)
                 .ToList();
 
-            var contractResolver = new DefaultContractResolver
-            {
-                NamingStrategy = new CamelCaseNamingStrategy(),
-            };
-
-            var json = JsonConvert.SerializeObject(
-                table,
-                new JsonSerializerSettings
-                {
-                    ContractResolver = contractResolver,
-                    Formatting = Formatting.Indented,
-                    Converters = new List<JsonConverter>
-                    {
-                        new StringEnumConverter(new CamelCaseNamingStrategy())
-                    }
-                });
-
+            var json = DbUtils.FineSerializeToJson(table);
             return json;
         }
 
@@ -193,7 +174,7 @@ namespace TauCode.Db
                     .ToList();
             }
 
-            var metadata = new DbMold
+            var dbMold = new DbMold
             {
                 DbProviderName = this.Factory.DbProviderName,
                 Tables = tables
@@ -201,23 +182,7 @@ namespace TauCode.Db
                     .ToList(),
             };
 
-            var contractResolver = new DefaultContractResolver
-            {
-                NamingStrategy = new CamelCaseNamingStrategy(),
-            };
-
-            var json = JsonConvert.SerializeObject(
-                metadata,
-                new JsonSerializerSettings
-                {
-                    ContractResolver = contractResolver,
-                    Formatting = Formatting.Indented,
-                    Converters = new List<JsonConverter>
-                    {
-                        new StringEnumConverter(new CamelCaseNamingStrategy())
-                    }
-                });
-
+            var json = DbUtils.FineSerializeToJson(dbMold);
             return json;
         }
 

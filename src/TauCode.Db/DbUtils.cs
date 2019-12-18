@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -254,5 +257,28 @@ namespace TauCode.Db
         {
             mold.Properties[propertyName] = value.ToString();
         }
+
+        public static string FineSerializeToJson(object obj)
+        {
+            var contractResolver = new DefaultContractResolver
+            {
+                NamingStrategy = new CamelCaseNamingStrategy(),
+            };
+
+            var json = JsonConvert.SerializeObject(
+                obj,
+                new JsonSerializerSettings
+                {
+                    ContractResolver = contractResolver,
+                    Formatting = Formatting.Indented,
+                    Converters = new List<JsonConverter>
+                    {
+                        new StringEnumConverter(new CamelCaseNamingStrategy())
+                    }
+                });
+
+            return json;
+        }
+
     }
 }
