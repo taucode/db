@@ -9,12 +9,24 @@ namespace TauCode.Db
 {
     public abstract class ScriptBuilderBase : UtilityBase, IScriptBuilder
     {
+        #region Fields
+
         private char? _currentOpeningIdentifierDelimiter;
+        private bool _currentOpeningIdentifierDelimiterWasRequested;
+
+
+        #endregion
+
+        #region Constructor
 
         protected ScriptBuilderBase()
             : base(null, false, true)
         {
         }
+
+        #endregion
+
+        #region Protected
 
         protected virtual IDialect Dialect => this.Factory.GetDialect();
 
@@ -123,7 +135,7 @@ namespace TauCode.Db
 
         protected virtual void WriteDecoratedColumnsOverCommaScriptFragment(
             StringBuilder sb,
-            IReadOnlyList<string> columnNames)
+            IList<string> columnNames)
         {
             for (var i = 0; i < columnNames.Count; i++)
             {
@@ -143,7 +155,7 @@ namespace TauCode.Db
 
         protected virtual void WriteDecoratedIndexColumnsOverCommaScriptFragment(
             StringBuilder sb,
-            IReadOnlyList<IndexColumnMold> indexColumns)
+            IList<IndexColumnMold> indexColumns)
         {
             for (var i = 0; i < indexColumns.Count; i++)
             {
@@ -179,11 +191,30 @@ namespace TauCode.Db
             }
         }
 
+
+        #endregion
+
+        #region IScriptBuilder Members
+
         public char? CurrentOpeningIdentifierDelimiter
         {
-            get => _currentOpeningIdentifierDelimiter;
+            get
+            {
+                if (_currentOpeningIdentifierDelimiterWasRequested)
+                {
+                    // ok
+                }
+                else
+                {
+                    _currentOpeningIdentifierDelimiterWasRequested = true;
+                    _currentOpeningIdentifierDelimiter = this.Dialect.IdentifierDelimiters.FirstOrDefault()?.Item1;
+                }
+
+                return _currentOpeningIdentifierDelimiter;
+            }
             set
             {
+                _currentOpeningIdentifierDelimiterWasRequested = true;
                 if (value.HasValue)
                 {
                     var tuple = this.Dialect.IdentifierDelimiters.SingleOrDefault(x => x.Item1 == value.Value);
@@ -269,6 +300,39 @@ namespace TauCode.Db
 
             sb.Append(")");
             return sb.ToString();
+        }
+
+        public virtual string BuildCreateIndexScript(IndexMold index)
+        {
+            var sb = new StringBuilder();
+
+            sb.Append("CREATE");
+            if (index.IsUnique)
+            {
+                sb.Append(" UNIQUE");
+            }
+
+            sb.Append(" INDEX ");
+            var decoratedIndexName = this.Dialect.DecorateIdentifier(
+                DbIdentifierType.Index,
+                index.Name,
+                this.CurrentOpeningIdentifierDelimiter);
+
+            sb.Append(decoratedIndexName);
+            sb.Append(" ON ");
+
+            var decoratedTableName = this.Dialect.DecorateIdentifier(
+                DbIdentifierType.Table,
+                index.TableName,
+                this.CurrentOpeningIdentifierDelimiter);
+
+            sb.Append(decoratedTableName);
+            sb.Append("(");
+            this.WriteDecoratedIndexColumnsOverCommaScriptFragment(sb, index.Columns);
+            sb.Append(")");
+
+            var script = sb.ToString();
+            return script;
         }
 
         public virtual string BuildDropTableScript(string tableName)
@@ -529,5 +593,7 @@ namespace TauCode.Db
 
             return $"DELETE FROM {decoratedTableName}";
         }
+
+        #endregion
     }
 }

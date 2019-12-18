@@ -1,0 +1,379 @@
+﻿{
+  "dbProviderName": "SQLite",
+  "tables": [
+    {
+      "name": "currency",
+      "columns": [
+        {
+          "name": "id",
+          "type": {
+            "name": "UNIQUEIDENTIFIER",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "code",
+          "type": {
+            "name": "TEXT",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "name",
+          "type": {
+            "name": "TEXT",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "is_available_to_users",
+          "type": {
+            "name": "INTEGER",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        }
+      ],
+      "primaryKey": {
+        "name": "PK_currency",
+        "columns": [
+          {
+            "name": "id",
+            "sortDirection": "ascending",
+            "properties": {}
+          }
+        ],
+        "properties": {}
+      },
+      "foreignKeys": [],
+      "indexes": [
+        {
+          "name": "UX_currency_code",
+          "tableName": "currency",
+          "columns": [
+            {
+              "name": "code",
+              "sortDirection": "ascending",
+              "properties": {}
+            }
+          ],
+          "isUnique": true,
+          "properties": {}
+        }
+      ],
+      "properties": {}
+    },
+    {
+      "name": "user",
+      "columns": [
+        {
+          "name": "id",
+          "type": {
+            "name": "UNIQUEIDENTIFIER",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        }
+      ],
+      "primaryKey": {
+        "name": "PK_user",
+        "columns": [
+          {
+            "name": "id",
+            "sortDirection": "ascending",
+            "properties": {}
+          }
+        ],
+        "properties": {}
+      },
+      "foreignKeys": [],
+      "indexes": [],
+      "properties": {}
+    },
+    {
+      "name": "system_user",
+      "columns": [
+        {
+          "name": "user_id",
+          "type": {
+            "name": "UNIQUEIDENTIFIER",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "code",
+          "type": {
+            "name": "TEXT",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        }
+      ],
+      "primaryKey": {
+        "name": "PK_systemUser",
+        "columns": [
+          {
+            "name": "user_id",
+            "sortDirection": "ascending",
+            "properties": {}
+          }
+        ],
+        "properties": {}
+      },
+      "foreignKeys": [
+        {
+          "name": "FK_systemUser_user",
+          "columnNames": [
+            "user_id"
+          ],
+          "referencedTableName": "user",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "properties": {}
+        }
+      ],
+      "indexes": [
+        {
+          "name": "UX_systemUser_Code",
+          "tableName": "system_user",
+          "columns": [
+            {
+              "name": "code",
+              "sortDirection": "ascending",
+              "properties": {}
+            }
+          ],
+          "isUnique": true,
+          "properties": {}
+        }
+      ],
+      "properties": {}
+    },
+    {
+      "name": "quote",
+      "columns": [
+        {
+          "name": "id",
+          "type": {
+            "name": "UNIQUEIDENTIFIER",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "user_id",
+          "type": {
+            "name": "UNIQUEIDENTIFIER",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "currency_id",
+          "type": {
+            "name": "UNIQUEIDENTIFIER",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "date",
+          "type": {
+            "name": "DATETIME",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "is_basic",
+          "type": {
+            "name": "INTEGER",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": false,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "rate",
+          "type": {
+            "name": "NUMERIC",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": true,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        },
+        {
+          "name": "system_user_id",
+          "type": {
+            "name": "UNIQUEIDENTIFIER",
+            "size": null,
+            "precision": null,
+            "scale": null,
+            "properties": {}
+          },
+          "isNullable": true,
+          "identity": null,
+          "default": null,
+          "properties": {}
+        }
+      ],
+      "primaryKey": {
+        "name": "PK_quote",
+        "columns": [
+          {
+            "name": "id",
+            "sortDirection": "ascending",
+            "properties": {}
+          }
+        ],
+        "properties": {}
+      },
+      "foreignKeys": [
+        {
+          "name": "FK_quote_currency",
+          "columnNames": [
+            "currency_id"
+          ],
+          "referencedTableName": "currency",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "properties": {}
+        },
+        {
+          "name": "FK_quote_systemUser",
+          "columnNames": [
+            "system_user_id"
+          ],
+          "referencedTableName": "system_user",
+          "referencedColumnNames": [
+            "user_id"
+          ],
+          "properties": {}
+        },
+        {
+          "name": "FK_quote_user",
+          "columnNames": [
+            "user_id"
+          ],
+          "referencedTableName": "user",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "properties": {}
+        }
+      ],
+      "indexes": [
+        {
+          "name": "IX_quote_systemUserId",
+          "tableName": "quote",
+          "columns": [
+            {
+              "name": "system_user_id",
+              "sortDirection": "ascending",
+              "properties": {}
+            }
+          ],
+          "isUnique": false,
+          "properties": {}
+        },
+        {
+          "name": "IX_quote_userId",
+          "tableName": "quote",
+          "columns": [
+            {
+              "name": "user_id",
+              "sortDirection": "ascending",
+              "properties": {}
+            }
+          ],
+          "isUnique": false,
+          "properties": {}
+        }
+      ],
+      "properties": {}
+    }
+  ],
+  "properties": {}
+}

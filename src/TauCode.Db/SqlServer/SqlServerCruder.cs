@@ -72,12 +72,8 @@ namespace TauCode.Db.SqlServer
                         {
                             transformed = originalColumnValue;
                         }
-                        else
-                        {
-                            throw this.CreateCannotTransformException(
-                                parameterInfo.DbType,
-                                originalColumnValue.GetType());
-                        }
+
+                        // will remain null.
 
                         break;
                 }

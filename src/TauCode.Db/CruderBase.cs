@@ -277,7 +277,7 @@ namespace TauCode.Db
                     }
                     else
                     {
-                        throw CreateCannotTransformException(parameterInfo.DbType, originalColumnValue.GetType());
+                        transformed = null;
                     }
 
                     break;
@@ -292,7 +292,7 @@ namespace TauCode.Db
                     }
                     else
                     {
-                        throw CreateCannotTransformException(parameterInfo.DbType, originalColumnValue.GetType());
+                        transformed = null;
                     }
 
                     break;
@@ -304,7 +304,7 @@ namespace TauCode.Db
                     }
                     else
                     {
-                        throw CreateCannotTransformException(parameterInfo.DbType, originalColumnValue.GetType());
+                        transformed = null;
                     }
                     break;
 
@@ -315,7 +315,7 @@ namespace TauCode.Db
                     }
                     else
                     {
-                        throw CreateCannotTransformException(parameterInfo.DbType, originalColumnValue.GetType());
+                        transformed = null;
                     }
                     break;
 
@@ -330,7 +330,7 @@ namespace TauCode.Db
                     }
                     else
                     {
-                        throw CreateCannotTransformException(parameterInfo.DbType, originalColumnValue.GetType());
+                        transformed = null;
                     }
                     break;
 
@@ -342,7 +342,7 @@ namespace TauCode.Db
                     }
                     else
                     {
-                        throw CreateCannotTransformException(parameterInfo.DbType, originalColumnValue.GetType());
+                        transformed = null;
                     }
                     break;
 
@@ -357,7 +357,7 @@ namespace TauCode.Db
                     }
                     else
                     {
-                        throw CreateCannotTransformException(parameterInfo.DbType, originalColumnValue.GetType());
+                        transformed = null;
                     }
                     break;
 
@@ -375,7 +375,7 @@ namespace TauCode.Db
                     }
                     else
                     {
-                        throw CreateCannotTransformException(parameterInfo.DbType, originalColumnValue.GetType());
+                        transformed = null;
                     }
 
                     break;
@@ -394,7 +394,7 @@ namespace TauCode.Db
                     }
                     else
                     {
-                        throw CreateCannotTransformException(parameterInfo.DbType, originalColumnValue.GetType());
+                        transformed = null;
                     }
 
                     break;
@@ -413,7 +413,7 @@ namespace TauCode.Db
                     }
                     else
                     {
-                        throw CreateCannotTransformException(parameterInfo.DbType, originalColumnValue.GetType());
+                        transformed = null;
                     }
 
                     break;
@@ -423,9 +423,13 @@ namespace TauCode.Db
                     {
                         transformed = longValue2;
                     }
+                    else if (originalColumnValue is bool boolValue2)
+                    {
+                        transformed = boolValue2 ? 1 : 0;
+                    }
                     else
                     {
-                        throw CreateCannotTransformException(parameterInfo.DbType, originalColumnValue.GetType());
+                        transformed = null;
                     }
 
                     break;
@@ -436,11 +440,6 @@ namespace TauCode.Db
             }
 
             return transformed;
-        }
-
-        protected DbException CreateCannotTransformException(DbType dbType, Type originalColumnValueType)
-        {
-            return new DbException($"Could not transform value. DB type is: '{dbType}', column value type is: '{originalColumnValueType.FullName}'.");
         }
 
         protected virtual IDictionary<string, object> ObjectToDataDictionary(object obj)

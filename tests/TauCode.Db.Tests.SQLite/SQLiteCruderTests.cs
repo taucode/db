@@ -19,7 +19,6 @@ namespace TauCode.Db.Tests.SQLite
         public void SetUp()
         {
             _cruder = this.DbInspector.Factory.CreateCruder(this.Connection);
-            _cruder.ScriptBuilder.CurrentOpeningIdentifierDelimiter = '[';
         }
 
         [Test]
@@ -71,7 +70,7 @@ namespace TauCode.Db.Tests.SQLite
             var ex = Assert.Throws<DbException>(() => _cruder.InsertRow("language", language));
 
             // Assert
-            Assert.That(ex.Message, Is.EqualTo("Could not transform value. DB type is: 'String', column value type is: 'TauCode.Db.Tests.SQLite.SQLiteCruderTests+WrongData'."));
+            Assert.That(ex.Message, Does.StartWith("Could not transform value"));
         }
 
         [Test]
@@ -222,7 +221,7 @@ namespace TauCode.Db.Tests.SQLite
                 id));
 
             // Assert
-            Assert.That(ex.Message, Is.EqualTo("Could not transform value. DB type is: 'String', column value type is: 'TauCode.Db.Tests.SQLite.SQLiteCruderTests+WrongData'."));
+            Assert.That(ex.Message, Does.StartWith("Could not transform value"));
         }
 
         [Test]

@@ -5,6 +5,7 @@ namespace TauCode.Db.Model
 {
     public class DbMold : IMold
     {
+        public string DbProviderName { get; set; } // todo: ut this!
         public IList<TableMold> Tables { get; set; }= new List<TableMold>();
 
         public IDictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
@@ -12,6 +13,7 @@ namespace TauCode.Db.Model
         {
             return new DbMold
             {
+                DbProviderName = this.DbProviderName,
                 Tables = this.Tables
                     .Select(x => x.CloneTable(includeProperties))
                     .ToList(),

@@ -46,7 +46,10 @@ namespace TauCode.Db.Tests.SQLite
             Assert.That(dbProviderName, Is.EqualTo("SQLite"));
             Assert.That(connection, Is.TypeOf<SQLiteConnection>());
             Assert.That(dialect, Is.SameAs(SQLiteDialect.Instance));
+
             Assert.That(scriptBuilder, Is.TypeOf<SQLiteScriptBuilder>());
+            Assert.That(scriptBuilder.CurrentOpeningIdentifierDelimiter, Is.EqualTo('['));
+
             Assert.That(dbInspector, Is.TypeOf<SQLiteInspector>());
             Assert.That(tableInspector, Is.TypeOf<SQLiteTableInspector>());
             Assert.That(cruder, Is.TypeOf<SQLiteCruder>());

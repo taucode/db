@@ -11,7 +11,6 @@ namespace TauCode.Db.Tests.SqlServer
         public void SetUp()
         {
             _scriptBuilder = this.DbInspector.Factory.CreateScriptBuilder();
-            _scriptBuilder.CurrentOpeningIdentifierDelimiter = '[';
         }
 
         [Test]

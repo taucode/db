@@ -103,10 +103,8 @@ namespace TauCode.Db
         public static void DropAllTables(this IDbInspector dbInspector)
         {
             var tableNames = dbInspector.GetTableNames(false);
-            var dialect = dbInspector.Factory.GetDialect();
             var scriptBuilder = dbInspector.Factory.CreateScriptBuilder();
-            scriptBuilder.CurrentOpeningIdentifierDelimiter = dialect.IdentifierDelimiters.FirstOrDefault()?.Item1; // choose some delimiter
-
+            
             foreach (var tableName in tableNames)
             {
                 var sql = scriptBuilder.BuildDropTableScript(tableName);
@@ -117,10 +115,8 @@ namespace TauCode.Db
         public static void DeleteDataFromAllTables(this IDbInspector dbInspector)
         {
             var tableNames = dbInspector.GetTableNames(false);
-            var dialect = dbInspector.Factory.GetDialect();
             var scriptBuilder = dbInspector.Factory.CreateScriptBuilder();
-            scriptBuilder.CurrentOpeningIdentifierDelimiter = dialect.IdentifierDelimiters.FirstOrDefault()?.Item1; // choose some delimiter
-
+            
             foreach (var tableName in tableNames)
             {
                 var sql = scriptBuilder.BuildDeleteScript(tableName);

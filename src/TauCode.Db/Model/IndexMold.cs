@@ -9,7 +9,7 @@ namespace TauCode.Db.Model
     {
         public string Name { get; set; }
         public string TableName { get; set; }
-        public List<IndexColumnMold> Columns { get; set; } = new List<IndexColumnMold>();
+        public IList<IndexColumnMold> Columns { get; set; } = new List<IndexColumnMold>();
         public bool IsUnique { get; set; }
         public IDictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
 

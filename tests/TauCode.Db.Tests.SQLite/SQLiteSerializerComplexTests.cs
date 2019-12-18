@@ -15,7 +15,6 @@ namespace TauCode.Db.Tests.SQLite
         public void SetUp()
         {
             _dbSerializer = new SQLiteSerializer(this.Connection);
-            _dbSerializer.ScriptBuilder.CurrentOpeningIdentifierDelimiter = '[';
         }
 
         [Test]
@@ -44,7 +43,6 @@ namespace TauCode.Db.Tests.SQLite
 
             // Assert
             var cruder = this.DbInspector.Factory.CreateCruder(this.Connection);
-            cruder.ScriptBuilder.CurrentOpeningIdentifierDelimiter = '[';
             var users = cruder.GetAllRows("user");
             var userInfos = cruder.GetAllRows("user_info");
 

@@ -7,7 +7,7 @@ namespace TauCode.Db.SQLite
     [Dialect(
         "sql-sqlite-reserved-words.txt",
         "sql-sqlite-data-type-names.txt",
-        "\"\",[],``")]
+        "[],\"\",``")]
     public class SQLiteDialect : DialectBase
     {
         #region Static

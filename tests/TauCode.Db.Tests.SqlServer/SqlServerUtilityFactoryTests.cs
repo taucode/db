@@ -37,7 +37,10 @@ namespace TauCode.Db.Tests.SqlServer
             Assert.That(dbProviderName, Is.EqualTo("SqlServer"));
             Assert.That(connection, Is.TypeOf<SqlConnection>());
             Assert.That(dialect, Is.SameAs(SqlServerDialect.Instance));
+
             Assert.That(scriptBuilder, Is.TypeOf<SqlServerScriptBuilder>());
+            Assert.That(scriptBuilder.CurrentOpeningIdentifierDelimiter, Is.EqualTo('['));
+
             Assert.That(dbInspector, Is.TypeOf<SqlServerInspector>());
             Assert.That(tableInspector, Is.TypeOf<SqlServerTableInspector>());
             Assert.That(cruder, Is.TypeOf<SqlServerCruder>());

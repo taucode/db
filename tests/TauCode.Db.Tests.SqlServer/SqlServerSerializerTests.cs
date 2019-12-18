@@ -15,7 +15,6 @@ namespace TauCode.Db.Tests.SqlServer
         public void SetUp()
         {
             _dbSerializer = new SqlServerSerializer(this.Connection);
-            _dbSerializer.ScriptBuilder.CurrentOpeningIdentifierDelimiter = '[';
         }
 
         [Test]

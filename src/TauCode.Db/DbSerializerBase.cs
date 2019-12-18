@@ -57,9 +57,7 @@ namespace TauCode.Db
         #endregion
 
         #region Protected
-
-        protected virtual ICruder Cruder => _cruder ?? (_cruder = this.Factory.CreateCruder(this.Connection));
-
+        
         protected virtual IDbInspector DbInspector =>
             _dbInspector ?? (_dbInspector = this.Factory.CreateDbInspector(this.Connection));
 
@@ -67,7 +65,7 @@ namespace TauCode.Db
 
         #region IDbSerializer Members
 
-        public IScriptBuilder ScriptBuilder => this.Cruder.ScriptBuilder;
+        public virtual ICruder Cruder => _cruder ?? (_cruder = this.Factory.CreateCruder(this.Connection));
 
         public virtual string SerializeTableData(string tableName)
         {
@@ -87,7 +85,7 @@ namespace TauCode.Db
             {
                 foreach (var table in tables)
                 {
-                    var sql = this.ScriptBuilder.BuildSelectAllScript(table);
+                    var sql = this.Cruder.ScriptBuilder.BuildSelectAllScript(table);
                     command.CommandText = sql;
 
                     var rows = DbUtils
@@ -155,8 +153,13 @@ namespace TauCode.Db
             var tableInspector = this.Factory.CreateTableInspector(this.Connection, tableName);
             var table = tableInspector.GetTable().CloneTable(false);
 
-            table.ForeignKeys.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.InvariantCultureIgnoreCase));
-            table.Indexes.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.InvariantCultureIgnoreCase));
+            table.ForeignKeys = table.ForeignKeys
+                .OrderBy(x => x.Name, StringComparer.InvariantCultureIgnoreCase)
+                .ToList();
+
+            table.Indexes = table.Indexes
+                .OrderBy(x => x.Name, StringComparer.InvariantCultureIgnoreCase)
+                .ToList();
 
             var contractResolver = new DefaultContractResolver
             {
@@ -190,8 +193,13 @@ namespace TauCode.Db
 
             foreach (var table in tables)
             {
-                table.ForeignKeys.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.InvariantCultureIgnoreCase));
-                table.Indexes.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.InvariantCultureIgnoreCase));
+                table.ForeignKeys = table.ForeignKeys
+                    .OrderBy(x => x.Name, StringComparer.InvariantCultureIgnoreCase)
+                    .ToList();
+
+                table.Indexes = table.Indexes
+                    .OrderBy(x => x.Name, StringComparer.InvariantCultureIgnoreCase)
+                    .ToList();
             }
 
             var metadata = new DbMetadata

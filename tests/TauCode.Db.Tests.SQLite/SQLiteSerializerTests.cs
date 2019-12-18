@@ -15,7 +15,6 @@ namespace TauCode.Db.Tests.SQLite
         public void SetUp()
         {
             _dbSerializer = new SQLiteSerializer(this.Connection);
-            _dbSerializer.ScriptBuilder.CurrentOpeningIdentifierDelimiter = '[';
         }
 
         [Test]

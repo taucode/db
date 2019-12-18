@@ -9,7 +9,7 @@ namespace TauCode.Db.Model
     public class PrimaryKeyMold : IMold, IConstraint
     {
         public string Name { get; set; }
-        public List<IndexColumnMold> Columns { get; set; } = new List<IndexColumnMold>();
+        public IList<IndexColumnMold> Columns { get; set; } = new List<IndexColumnMold>();
         public IDictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
         public IMold Clone(bool includeProperties = false)
         {
