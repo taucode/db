@@ -298,9 +298,13 @@ namespace TauCode.Db
                     break;
 
                 case DbType.DateTime:
-                    if (originalColumnValue is DateTime dateTime)
+                    if (originalColumnValue is DateTime)
                     {
                         transformed = originalColumnValue;
+                    }
+                    else if (originalColumnValue is string stringValue)
+                    {
+                        transformed = DateTime.Parse(stringValue);
                     }
                     else
                     {
