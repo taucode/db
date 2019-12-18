@@ -5,7 +5,7 @@ namespace TauCode.Db.Model
 {
     public class DbMold : IMold
     {
-        public string DbProviderName { get; set; } // todo: ut this!
+        public string DbProviderName { get; set; }
         public IList<TableMold> Tables { get; set; }= new List<TableMold>();
 
         public IDictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();

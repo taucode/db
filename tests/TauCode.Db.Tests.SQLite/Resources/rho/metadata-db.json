@@ -1,4 +1,5 @@
 ﻿{
+  "dbProviderName": "SQLite",
   "tables": [
     {
       "name": "fragment_type",
@@ -976,5 +977,6 @@
       ],
       "properties": {}
     }
-  ]
+  ],
+  "properties": {}
 }

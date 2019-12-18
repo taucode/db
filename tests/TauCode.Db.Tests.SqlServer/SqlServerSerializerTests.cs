@@ -1,7 +1,9 @@
-﻿using NUnit.Framework;
+﻿using Newtonsoft.Json;
+using NUnit.Framework;
 using System;
 using System.Linq;
 using TauCode.Db.Data;
+using TauCode.Db.Model;
 using TauCode.Db.SqlServer;
 
 namespace TauCode.Db.Tests.SqlServer
@@ -67,10 +69,12 @@ namespace TauCode.Db.Tests.SqlServer
 
             // Act
             var json = _dbSerializer.SerializeDbMetadata();
+            var inverted = JsonConvert.DeserializeObject<DbMold>(json);
 
             // Assert
             var expectedJson = TestHelper.GetResourceText(".rho.metadata-db.json");
             Assert.That(json, Is.EqualTo(expectedJson));
+            Assert.That(inverted.DbProviderName, Is.EqualTo("SqlServer"));
         }
 
         [Test]

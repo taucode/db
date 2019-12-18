@@ -13,15 +13,6 @@ namespace TauCode.Db
 {
     public abstract class DbSerializerBase : UtilityBase, IDbSerializer
     {
-        #region Nested
-
-        private class DbMetadata
-        {
-            public IList<TableMold> Tables { get; set; }
-        }
-
-        #endregion
-
         #region Fields
 
         private IDbInspector _dbInspector;
@@ -202,8 +193,9 @@ namespace TauCode.Db
                     .ToList();
             }
 
-            var metadata = new DbMetadata
+            var metadata = new DbMold
             {
+                DbProviderName = this.Factory.DbProviderName,
                 Tables = tables
                     .Select(x => x.CloneTable(false))
                     .ToList(),

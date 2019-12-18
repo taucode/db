@@ -183,7 +183,7 @@ namespace TauCode.Db
                 throw new ArgumentNullException(nameof(dbProviderName));
             }
 
-            string fullTypeName = null;
+            string fullTypeName;
 
             switch (dbProviderName)
             {

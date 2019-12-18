@@ -20,8 +20,6 @@
     <None Remove="Resources\ocean\data-db.json" />
     <None Remove="Resources\ocean\script-create-tables.sql" />
     <None Remove="Resources\ocean\script-data.sql" />
-    <None Remove="Resources\performance\data.json" />
-    <None Remove="Resources\performance\metadata.json" />
     <None Remove="Resources\rho\data-db.json" />
     <None Remove="Resources\rho\data-language.json" />
     <None Remove="Resources\rho\metadata-db.json" />
@@ -44,8 +42,6 @@
     <EmbeddedResource Include="Resources\ocean\data-db.json" />
     <EmbeddedResource Include="Resources\ocean\script-create-tables.sql" />
     <EmbeddedResource Include="Resources\ocean\script-data.sql" />
-    <EmbeddedResource Include="Resources\performance\data.json" />
-    <EmbeddedResource Include="Resources\performance\metadata.json" />
     <EmbeddedResource Include="Resources\rho\data-db.json" />
     <EmbeddedResource Include="Resources\rho\data-language.json" />
     <EmbeddedResource Include="Resources\rho\metadata-db.json" />

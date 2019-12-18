@@ -1,4 +1,5 @@
 ﻿{
+  "dbProviderName": "SqlServer",
   "tables": [
     {
       "name": "fragment_type",
@@ -1068,5 +1069,6 @@
       ],
       "properties": {}
     }
-  ]
+  ],
+  "properties": {}
 }

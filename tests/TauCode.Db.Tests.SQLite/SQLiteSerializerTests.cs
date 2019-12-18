@@ -1,7 +1,9 @@
-﻿using NUnit.Framework;
+﻿using Newtonsoft.Json;
+using NUnit.Framework;
 using System;
 using System.Linq;
 using TauCode.Db.Data;
+using TauCode.Db.Model;
 using TauCode.Db.SQLite;
 
 namespace TauCode.Db.Tests.SQLite
@@ -72,10 +74,12 @@ namespace TauCode.Db.Tests.SQLite
 
             // Act
             var json = _dbSerializer.SerializeDbMetadata(x => !tablesToExclude.Contains(x, StringComparer.InvariantCultureIgnoreCase));
+            var inverted = JsonConvert.DeserializeObject<DbMold>(json);
 
             // Assert
             var expectedJson = TestHelper.GetResourceText(".rho.metadata-db.json");
             Assert.That(json, Is.EqualTo(expectedJson));
+            Assert.That(inverted.DbProviderName, Is.EqualTo("SQLite"));
         }
 
         [Test]
