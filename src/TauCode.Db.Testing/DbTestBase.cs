@@ -43,31 +43,6 @@ namespace TauCode.Db.Testing
             return this.UtilityFactory.CreateDbInspector(this.Connection);
         }
 
-        protected virtual ICruder CreateCruder()
-        {
-            if (this.UtilityFactory == null)
-            {
-                throw new InvalidOperationException($"'{nameof(UtilityFactory)}' is null.");
-            }
-
-            if (this.Connection == null)
-            {
-                throw new InvalidOperationException($"'{nameof(Connection)}' is null.");
-            }
-
-            return this.UtilityFactory.CreateCruder(this.Connection);
-        }
-
-        protected virtual IScriptBuilder GetScriptBuilder()
-        {
-            if (this.Cruder == null)
-            {
-                throw new InvalidOperationException($"'{nameof(Cruder)}' is null.");
-            }
-
-            return this.Cruder.ScriptBuilder;
-        }
-
         protected virtual IDbSerializer CreateDbSerializer()
         {
             if (this.UtilityFactory == null)
@@ -96,11 +71,22 @@ namespace TauCode.Db.Testing
 
         protected virtual void OneTimeSetUpImpl()
         {
+            this.UtilityFactory = this.GetUtilityFactory();
 
+            this.Connection = this.CreateConnection();
+            this.Connection.ConnectionString = this.GetConnectionString();
+            this.Connection.Open();
+
+            this.DbInspector = this.CreateDbInspector();
+            this.DbSerializer = this.CreateDbSerializer();
+            this.Cruder = this.DbSerializer.Cruder;
+            this.ScriptBuilder = this.Cruder.ScriptBuilder;
         }
 
         protected virtual void OneTimeTearDownImpl()
         {
+            this.Connection.Dispose();
+            this.Connection = null;
         }
 
         protected virtual void SetUpImpl()
