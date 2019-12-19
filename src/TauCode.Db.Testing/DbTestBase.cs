@@ -17,7 +17,6 @@ namespace TauCode.Db.Testing
         protected ICruder Cruder { get; set; }
         protected IScriptBuilder ScriptBuilder { get; set; }
         protected IDbSerializer DbSerializer { get; set; }
-        protected IDbMigrator DbMigrator { get; set; }
 
         #endregion
 
@@ -57,8 +56,6 @@ namespace TauCode.Db.Testing
 
             return this.UtilityFactory.CreateDbSerializer(this.Connection);
         }
-
-        protected abstract IDbMigrator CreateDbMigrator();
 
         protected virtual FluentDbMigrator CreateFluentMigrator(Assembly migrationsAssembly)
         {

@@ -19,12 +19,14 @@ namespace TauCode.Db.Tests.SQLite
 
         protected virtual void OneTimeSetUpImpl()
         {
-            var tuple = TestHelper.CreateSQLiteConnectionString();
+            var tuple = DbUtils.CreateSQLiteConnectionString();
             this.TempDbFilePath = tuple.Item1;
             this.ConnectionString = tuple.Item2;
 
             this.Connection = new SQLiteConnection(this.ConnectionString);
             this.Connection.Open();
+            ((SQLiteConnection)this.Connection).BoostSQLiteInsertions();
+
             this.DbInspector = new SQLiteInspector(Connection);
 
             this.ExecuteDbCreationScript();

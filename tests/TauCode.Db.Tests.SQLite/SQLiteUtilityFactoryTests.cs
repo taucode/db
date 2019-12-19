@@ -24,7 +24,7 @@ namespace TauCode.Db.Tests.SQLite
             var dbProviderName = utilityFactory.DbProviderName;
 
             IDbConnection connection = utilityFactory.CreateConnection();
-            var tuple = TestHelper.CreateSQLiteConnectionString();
+            var tuple = DbUtils.CreateSQLiteConnectionString();
             var filePath = tuple.Item1;
             var connectionString = tuple.Item2;
             connection.ConnectionString = connectionString;

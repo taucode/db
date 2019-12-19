@@ -4,6 +4,7 @@ using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SQLite;
 using System.Linq;
 using System.Text.RegularExpressions;
 using TauCode.Db.Data;
@@ -11,6 +12,7 @@ using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
 using TauCode.Db.SQLite;
 using TauCode.Db.SqlServer;
+using TauCode.Utils.Extensions;
 
 namespace TauCode.Db
 {
@@ -278,6 +280,44 @@ namespace TauCode.Db
                 });
 
             return json;
+        }
+
+        /// <summary>
+        /// Boosts SQLite insertions
+        /// https://stackoverflow.com/questions/3852068/sqlite-insert-very-slow
+        /// </summary>
+        /// <param name="sqLiteConnection">SQLite connection to boost</param>
+        public static void BoostSQLiteInsertions(this SQLiteConnection sqLiteConnection)
+        {
+            if (sqLiteConnection == null)
+            {
+                throw new ArgumentNullException(nameof(sqLiteConnection));
+            }
+
+            using (var command = sqLiteConnection.CreateCommand())
+            {
+                command.CommandText = "PRAGMA journal_mode = WAL";
+                command.ExecuteNonQuery();
+
+                command.CommandText = "PRAGMA synchronous = NORMAL";
+                command.ExecuteNonQuery();
+            }
+        }
+
+        /// <summary>
+        /// Creates temporary .sqlite file and returns a SQLite connection string for this file.
+        /// </summary>
+        /// <returns>
+        /// Tuple with two strings. Item1 is temporary file path, Item2 is connection string.
+        /// </returns>
+        public static Tuple<string, string> CreateSQLiteConnectionString()
+        {
+            var tempDbFilePath = FileExtensions.CreateTempFilePath("zunit", ".sqlite");
+            SQLiteConnection.CreateFile(tempDbFilePath);
+
+            var connectionString = $"Data Source={tempDbFilePath};Version=3;";
+
+            return Tuple.Create(tempDbFilePath, connectionString);
         }
 
     }
