@@ -5,8 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.112" />
-    <PackageReference Include="TauCode.Db.FluentMigrations" Version="3.0.0-dev-2019-12-19-08-48" />
+    <PackageReference Include="TauCode.Db.FluentMigrations" Version="3.0.0-dev-2019-12-19-09-19" />
   </ItemGroup>
 
 </Project>
