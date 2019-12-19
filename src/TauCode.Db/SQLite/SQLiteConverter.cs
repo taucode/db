@@ -84,6 +84,7 @@ namespace TauCode.Db.SQLite
                     break;
 
                 case "datetime":
+                case "date":
                     typeName = "DATETIME";
                     break;
 

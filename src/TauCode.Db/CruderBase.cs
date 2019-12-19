@@ -297,6 +297,8 @@ namespace TauCode.Db
 
                     break;
 
+
+                case DbType.Date:
                 case DbType.DateTime:
                     if (originalColumnValue is DateTime)
                     {
@@ -519,6 +521,10 @@ namespace TauCode.Db
                 case "nvarchar":
                     dbType = DbType.String;
                     size = columnType.Size;
+                    break;
+
+                case "date":
+                    dbType = DbType.Date;
                     break;
 
                 case "datetime":
