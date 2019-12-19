@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>TauCode.Db.Testing</id>
-    <version>3.1.0.0-dev-2019-12-19-09-32</version>
+    <version>3.1.0.0-dev-2019-12-19-10-06</version>
     <authors>TauCode</authors>
     <owners>TauCode</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -14,7 +14,7 @@
     </releaseNotes>
     <tags>taucode db database testing</tags>
     <dependencies>
-      <dependency id="TauCode.Db.FluentMigrations" version="3.0.0-dev-2019-12-19-09-39" />
+      <dependency id="TauCode.Db.FluentMigrations" version="3.0.0-dev-2019-12-19-09-59" />
     </dependencies>
   </metadata>
   <files>
