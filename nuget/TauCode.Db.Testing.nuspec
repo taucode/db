@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>TauCode.Db.Testing</id>
-    <version>3.1.0.0-dev-2019-12-19-09-23</version>
+    <version>3.1.0.0-dev-2019-12-19-09-32</version>
     <authors>TauCode</authors>
     <owners>TauCode</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
