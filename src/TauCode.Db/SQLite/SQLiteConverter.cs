@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
 
 namespace TauCode.Db.SQLite
@@ -26,14 +27,34 @@ namespace TauCode.Db.SQLite
 
         public DbTypeMold ConvertType(DbTypeMold originType, string originProviderName)
         {
+            if (originType == null)
+            {
+                throw new ArgumentNullException(nameof(originType));
+            }
+
+            if (originProviderName == null)
+            {
+                throw new ArgumentNullException(nameof(originProviderName));
+            }
+
+            DbTypeMold convertedType;
+
             switch (originProviderName)
             {
                 case DbProviderNames.SqlServer:
-                    return this.ConvertTypeFromSqlServer(originType);
+                    convertedType = this.ConvertTypeFromSqlServer(originType);
+                    break;
 
                 default:
                     throw new NotSupportedException($"Conversion from '{originProviderName}' is not supported.");
             }
+
+            if (convertedType == null)
+            {
+                throw new DbException($"Failed to convert type '{originType.Name}'.");
+            }
+
+            return convertedType;
         }
 
         protected virtual DbTypeMold ConvertTypeFromSqlServer(DbTypeMold originType)
@@ -89,7 +110,7 @@ namespace TauCode.Db.SQLite
                     break;
 
                 default:
-                    throw new NotSupportedException($"Conversion of type '{originTypeName}' is not supported.");
+                    return null;
             }
 
             var result = new DbTypeMold
