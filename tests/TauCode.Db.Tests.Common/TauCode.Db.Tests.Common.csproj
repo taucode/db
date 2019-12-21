@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="TauCode.Utils" Version="3.0.3" />
   </ItemGroup>
 
 </Project>

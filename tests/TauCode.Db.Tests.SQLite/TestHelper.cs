@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using TauCode.Utils.Extensions;
+using TauCode.Extensions;
 
 namespace TauCode.Db.Tests.SQLite
 {

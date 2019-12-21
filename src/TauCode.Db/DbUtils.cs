@@ -12,7 +12,7 @@ using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
 using TauCode.Db.SQLite;
 using TauCode.Db.SqlServer;
-using TauCode.Utils.Extensions;
+using TauCode.Extensions;
 
 namespace TauCode.Db
 {

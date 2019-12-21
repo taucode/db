@@ -2,7 +2,7 @@
 using System;
 using System.Linq;
 using TauCode.Db.SQLite;
-using TauCode.Utils.Extensions;
+using TauCode.Extensions;
 
 namespace TauCode.Db.Tests.SQLite
 {

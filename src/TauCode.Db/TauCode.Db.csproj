@@ -32,10 +32,8 @@
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.112" />
-    <PackageReference Include="TauCode.Algorithms" Version="3.0.1" />
-    <PackageReference Include="TauCode.Data" Version="3.0.0.1" />
-    <PackageReference Include="TauCode.Parsing" Version="3.0.2.4" />
-    <PackageReference Include="TauCode.Utils" Version="3.0.3" />
+    <PackageReference Include="TauCode.Algorithms" Version="1.0.0-dev-2019-12-21-20-57" />
+    <PackageReference Include="TauCode.Parsing" Version="1.0.0-dev-2019-12-21-21-30" />
   </ItemGroup>
 
 </Project>

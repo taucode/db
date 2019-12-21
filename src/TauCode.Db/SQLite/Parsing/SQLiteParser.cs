@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Linq;
 using TauCode.Db.Model;
+using TauCode.Extensions;
 using TauCode.Parsing;
 using TauCode.Parsing.Building;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Nodes;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.Tokens;
-using TauCode.Utils.Extensions;
 
 namespace TauCode.Db.SQLite.Parsing
 {

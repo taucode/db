@@ -6,7 +6,7 @@ using TauCode.Data;
 using TauCode.Db.Data;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
-using TauCode.Utils.Extensions;
+using TauCode.Extensions;
 
 namespace TauCode.Db
 {
