@@ -15,6 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{BB0AD8E1-B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuget", "nuget", "{4EE5C30C-4201-4652-AB94-49E8F9E055C8}"
 	ProjectSection(SolutionItems) = preProject
+		nuget\TauCode.Db.FluentMigrations.nuspec = nuget\TauCode.Db.FluentMigrations.nuspec
 		nuget\TauCode.Db.nuspec = nuget\TauCode.Db.nuspec
 	EndProjectSection
 EndProject
