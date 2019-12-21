@@ -19,6 +19,7 @@
     </dependencies>
   </metadata>
   <files>
+    <file src="..\LICENSE.txt" target="" />
     <file src="..\src\TauCode.Db.FluentMigrations\bin\Release\netstandard2.0\TauCode.Db.FluentMigrations.dll" target="lib\netstandard2.0" />
     <file src="..\src\TauCode.Db.FluentMigrations\bin\Release\netstandard2.0\TauCode.Db.FluentMigrations.pdb" target="lib\netstandard2.0" />
   </files>
