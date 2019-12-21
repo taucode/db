@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="TauCode.Db.FluentMigrations" Version="3.0.0-dev-2019-12-19-10-47" />
+    <PackageReference Include="TauCode.Db.FluentMigrations" Version="1.0.0-dev-2019-12-21-22-01" />
   </ItemGroup>
 
 </Project>
