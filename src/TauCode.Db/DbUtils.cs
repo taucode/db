@@ -60,7 +60,7 @@ namespace TauCode.Db
                     for (var i = 0; i < reader.FieldCount; i++)
                     {
                         var name = reader.GetName(i);
-                        var value = reader[i];
+                        var value = reader[i]; // todo: what about db nulls?
                         row.SetValue(name, value);
                     }
 

@@ -18,6 +18,11 @@ namespace TauCode.Db.SQLite.Parsing.TokenExtractors
             return c.IsIn('(', ')', ',');
         }
 
+        protected override void ResetState()
+        {
+            // idle
+        }
+
         protected override IToken ProduceResult()
         {
             var str = this.ExtractResultString();

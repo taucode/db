@@ -2,6 +2,8 @@
 using TauCode.Parsing;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tokens;
+using TauCode.Parsing.Tokens.TextClasses;
+using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Db.SQLite.Parsing.TokenExtractors
 {
@@ -14,11 +16,16 @@ namespace TauCode.Db.SQLite.Parsing.TokenExtractors
         {
         }
 
+        protected override void ResetState()
+        {
+            // idle
+        }
+
         protected override IToken ProduceResult()
         {
             var str = this.ExtractResultString();
             var value = str.Substring(1, str.Length - 2);
-            return new StringToken(value);
+            return new TextToken(StringTextClass.Instance, SingleQuoteTextDecoration.Instance, value);
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()
