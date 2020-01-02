@@ -14,11 +14,10 @@
     </releaseNotes>
     <tags>taucode db database</tags>
     <dependencies>
-      <dependency id="Microsoft.CSharp" version="4.7.0" />
       <dependency id="Newtonsoft.Json" version="12.0.3" />
       <dependency id="System.Data.SQLite.Core" version="1.0.112" />
       <dependency id="TauCode.Algorithms" version="1.0.0-dev-2019-12-21-20-57" />
-      <dependency id="TauCode.Parsing" version="1.0.0-dev-2019-12-21-21-30" />
+      <dependency id="TauCode.Parsing" version="1.0.0-dev-2020-01-02-12-43" />
     </dependencies>
   </metadata>
   <files>
