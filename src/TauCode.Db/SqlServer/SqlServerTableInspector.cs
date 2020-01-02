@@ -71,7 +71,7 @@ WHERE
 
         private static int? GetDbValueAsInt(object dbValue)
         {
-            if (dbValue == DBNull.Value)
+            if (dbValue == null)
             {
                 return null;
             }

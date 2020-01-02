@@ -42,7 +42,7 @@ namespace TauCode.Db.Tests.SqlServer
             this.Connection.ExecuteCommentedScript(insertScript);
 
             // Act
-            var json = _dbSerializer.SerializeDbData();
+            var json = _dbSerializer.SerializeDbData(x => x != "foo");
 
             // Assert
             var expectedJson = TestHelper.GetResourceText("rho.data-db.json");
@@ -68,7 +68,7 @@ namespace TauCode.Db.Tests.SqlServer
             // Arrange
 
             // Act
-            var json = _dbSerializer.SerializeDbMetadata();
+            var json = _dbSerializer.SerializeDbMetadata(x => x != "foo");
             var inverted = JsonConvert.DeserializeObject<DbMold>(json);
 
             // Assert

@@ -132,3 +132,9 @@ REFERENCES [note_translation]([id])
 /* create foreign key FK_fragment_subType: fragment(sub_type_id) -> fragment_sub_type(id) */
 ALTER TABLE [fragment] ADD CONSTRAINT [FK_fragment_subType] FOREIGN KEY([sub_type_id])
 REFERENCES [fragment_sub_type]([id])
+
+/* create table: foo */
+CREATE TABLE [foo](
+    [id] int NOT NULL PRIMARY KEY,
+    [name] nvarchar(100) NULL
+)

@@ -1,7 +1,9 @@
 ﻿using NUnit.Framework;
+using System.Linq;
 
 namespace TauCode.Db.Tests.SqlServer
 {
+    // todo: if table doesn't exist, TableInspector throws bad exception. ut it!
     [TestFixture]
     public class SqlServerInspectorTests : TestBase
     {
@@ -11,7 +13,7 @@ namespace TauCode.Db.Tests.SqlServer
             // Arrange
 
             // Act
-            var tableNames = this.DbInspector.GetTableNames();
+            var tableNames = this.DbInspector.GetTableNames().Except(new[] { "foo" });
 
             // Assert
             CollectionAssert.AreEquivalent(
@@ -36,7 +38,7 @@ namespace TauCode.Db.Tests.SqlServer
             // Arrange
 
             // Act
-            var tableNames = this.DbInspector.GetTableNames(true);
+            var tableNames = this.DbInspector.GetTableNames(true).Except(new[] { "foo" });
 
             // Assert
             CollectionAssert.AreEqual(
@@ -61,7 +63,7 @@ namespace TauCode.Db.Tests.SqlServer
             // Arrange
 
             // Act
-            var tableNames = this.DbInspector.GetTableNames(false);
+            var tableNames = this.DbInspector.GetTableNames(false).Except(new[] { "foo" });
 
             // Assert
             CollectionAssert.AreEqual(

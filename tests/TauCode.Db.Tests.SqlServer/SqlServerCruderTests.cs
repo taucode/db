@@ -275,6 +275,26 @@ VALUES(
             Assert.That(deletedRow, Is.Null);
         }
 
+        [Test]
+        public void GetRow_ColumnValueIsNull_ReturnsRowWithNull()
+        {
+            // Arrange
+            this.Connection.ExecuteSingleSql(@"
+INSERT INTO [foo](
+    [id],
+    [name])
+VALUES(
+    11,    
+    null)");
+
+            // Act
+            var row = _cruder.GetRow("foo", 11);
+
+            // Assert
+            Assert.That(row.id, Is.EqualTo(11));
+            Assert.That(row.name, Is.Null);
+        }
+
         protected override void ExecuteDbCreationScript()
         {
             var script = TestHelper.GetResourceText("rho.script-create-tables.sql");

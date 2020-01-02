@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
+using TauCode.Db.DbValueConverters;
 using TauCode.Db.Model;
 
 namespace TauCode.Db.SqlServer
 {
+    // todo clean up
     public class SqlServerCruder : CruderBase
     {
         #region Constants
@@ -19,6 +22,59 @@ namespace TauCode.Db.SqlServer
         }
 
         public override IUtilityFactory Factory => SqlServerUtilityFactory.Instance;
+
+        protected override IDbValueConverter CreateDbValueConverter(ColumnMold column)
+        {
+            var typeName = column.Type.Name.ToLowerInvariant();
+            switch (typeName)
+            {
+                case "uniqueidentifier":
+                    return new GuidValueConverter();
+
+                case "char":
+                case "varchar":
+                case "nchar":
+                case "nvarchar":
+                    return new StringValueConverter();
+
+                case "int":
+                case "integer":
+                    return new Int32ValueConverter();
+
+                case "datetime":
+                    return new DateTimeValueConverter();
+
+                case "bit":
+                    return new BooleanValueConverter();
+
+                case "binary":
+                case "varbinary":
+                    return new ByteArrayValueConverter();
+
+                case "float":
+                    return new DoubleValueConverter();
+
+                case "real":
+                    return new SingleValueConverter();
+
+                case "money":
+                case "decimal":
+                case "numeric":
+                    return new DecimalValueConverter();
+
+                case "tinyint":
+                    return new ByteValueConverter();
+
+                case "smallint":
+                    return new Int16ValueConverter();
+
+                case "bigint":
+                    return new Int64ValueConverter();
+
+                default:
+                    throw new NotImplementedException();
+            }
+        }
 
         protected override IParameterInfo ColumnToParameterInfo(
             string columnName,
@@ -55,31 +111,31 @@ namespace TauCode.Db.SqlServer
             return result;
         }
 
-        protected override object TransformOriginalColumnValue(IParameterInfo parameterInfo, object originalColumnValue)
-        {
-            var transformed = base.TransformOriginalColumnValue(parameterInfo, originalColumnValue);
+        //protected override object TransformOriginalColumnValue(IParameterInfo parameterInfo, object originalColumnValue)
+        //{
+        //    var transformed = base.TransformOriginalColumnValue(parameterInfo, originalColumnValue);
 
-            if (transformed == null)
-            {
-                switch (parameterInfo.DbType)
-                {
-                    case DbType.Currency:
-                        if (originalColumnValue is double doubleValue)
-                        {
-                            transformed = (decimal)doubleValue;
-                        }
-                        else if (originalColumnValue is decimal decimalValue)
-                        {
-                            transformed = originalColumnValue;
-                        }
+        //    if (transformed == null)
+        //    {
+        //        switch (parameterInfo.DbType)
+        //        {
+        //            case DbType.Currency:
+        //                if (originalColumnValue is double doubleValue)
+        //                {
+        //                    transformed = (decimal)doubleValue;
+        //                }
+        //                else if (originalColumnValue is decimal decimalValue)
+        //                {
+        //                    transformed = originalColumnValue;
+        //                }
 
-                        // will remain null.
+        //                // will remain null.
 
-                        break;
-                }
-            }
+        //                break;
+        //        }
+        //    }
 
-            return transformed;
-        }
+        //    return transformed;
+        //}
     }
 }

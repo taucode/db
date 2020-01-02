@@ -37,6 +37,7 @@ namespace TauCode.Db
             }
         }
 
+        // todo: use ITableValuesConverter here
         public static IList<dynamic> GetCommandRows(IDbCommand command)
         {
             if (command == null)
@@ -60,7 +61,13 @@ namespace TauCode.Db
                     for (var i = 0; i < reader.FieldCount; i++)
                     {
                         var name = reader.GetName(i);
-                        var value = reader[i]; // todo: what about db nulls?
+
+                        var value = reader[i];
+                        if (value == DBNull.Value)
+                        {
+                            value = null;
+                        }
+
                         row.SetValue(name, value);
                     }
 
