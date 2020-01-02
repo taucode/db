@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Linq;
+using TauCode.Db.DbValueConverters;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Tests.Common;
 
@@ -11,6 +12,12 @@ namespace TauCode.Db.Tests.SqlServer
     {
         private class WrongData
         {
+        }
+
+        public enum UserRole
+        {
+            Admin = 1,
+            Developer
         }
 
         private ICruder _cruder;
@@ -282,10 +289,14 @@ VALUES(
             this.Connection.ExecuteSingleSql(@"
 INSERT INTO [foo](
     [id],
-    [name])
+    [name],
+    [enum_string])
 VALUES(
     11,    
-    null)");
+    null,
+    'Developer')");
+
+            _cruder.GetTableValuesConverter("foo").SetColumnConverter("enum_string", new EnumValueConverter<UserRole>(EnumValueConverterBehaviour.String));
 
             // Act
             var row = _cruder.GetRow("foo", 11);
@@ -293,6 +304,7 @@ VALUES(
             // Assert
             Assert.That(row.id, Is.EqualTo(11));
             Assert.That(row.name, Is.Null);
+            Assert.That(row.enum_string, Is.EqualTo(UserRole.Developer));
         }
 
         protected override void ExecuteDbCreationScript()

@@ -20,7 +20,12 @@ namespace TauCode.Db.DbValueConverters
 
         protected override object FromDbValueImpl(object dbValue)
         {
-            throw new NotImplementedException();
+            if (dbValue is decimal decimalDbValue)
+            {
+                return decimalDbValue;
+            }
+
+            return DBNull.Value;
         }
     }
 }

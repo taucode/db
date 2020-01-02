@@ -136,5 +136,7 @@ REFERENCES [fragment_sub_type]([id])
 /* create table: foo */
 CREATE TABLE [foo](
     [id] int NOT NULL PRIMARY KEY,
-    [name] nvarchar(100) NULL
+    [name] nvarchar(100) NULL,
+    [enum_int32] int NULL,
+    [enum_string] varchar(100) NULL
 )

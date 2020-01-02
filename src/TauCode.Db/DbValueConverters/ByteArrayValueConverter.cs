@@ -20,7 +20,12 @@ namespace TauCode.Db.DbValueConverters
 
         protected override object FromDbValueImpl(object dbValue)
         {
-            throw new NotImplementedException();
+            if (dbValue is byte[] bytesDbValue)
+            {
+                return bytesDbValue;
+            }
+
+            return DBNull.Value;
         }
     }
 }

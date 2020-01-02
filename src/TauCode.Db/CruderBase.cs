@@ -214,7 +214,7 @@ namespace TauCode.Db
             public IList<dynamic> FetchWithValues(object values)
             {
                 this.ApplyValuesToCommand(values);
-                var rows = DbUtils.GetCommandRows(_command);
+                var rows = DbUtils.GetCommandRows(_command, _cruder.GetTableValuesConverter(_table.Name));
 
                 return rows;
             }
@@ -704,7 +704,7 @@ namespace TauCode.Db
             {
                 var sql = this.ScriptBuilder.BuildSelectAllScript(table);
                 command.CommandText = sql;
-                var rows = DbUtils.GetCommandRows(command);
+                var rows = DbUtils.GetCommandRows(command, this.GetTableValuesConverter(tableName));
                 return rows;
             }
         }

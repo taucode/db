@@ -16,7 +16,12 @@ namespace TauCode.Db.DbValueConverters
 
         protected override object FromDbValueImpl(object dbValue)
         {
-            throw new NotImplementedException();
+            if (dbValue is double doubleDbValue)
+            {
+                return doubleDbValue;
+            }
+
+            return DBNull.Value;
         }
     }
 }

@@ -20,7 +20,12 @@ namespace TauCode.Db.DbValueConverters
 
         protected override object FromDbValueImpl(object dbValue)
         {
-            throw new NotImplementedException();
+            if (dbValue is short shortDbValue)
+            {
+                return shortDbValue;
+            }
+
+            return DBNull.Value; // todo: consider returning null. just rethink.
         }
     }
 }

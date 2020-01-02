@@ -38,7 +38,7 @@ namespace TauCode.Db
         }
 
         // todo: use ITableValuesConverter here
-        public static IList<dynamic> GetCommandRows(IDbCommand command)
+        public static IList<dynamic> GetCommandRows(IDbCommand command, ITableValuesConverter tableValuesConverter = null)
         {
             if (command == null)
             {
@@ -63,9 +63,31 @@ namespace TauCode.Db
                         var name = reader.GetName(i);
 
                         var value = reader[i];
-                        if (value == DBNull.Value)
+
+                        if (tableValuesConverter == null)
                         {
-                            value = null;
+                            // only simplest obvious transformation
+                            if (value == DBNull.Value)
+                            {
+                                value = null;
+                            }
+                        }
+                        else
+                        {
+                            var dbValueConverter = tableValuesConverter.GetColumnConverter(name);
+                            var convertedValue = dbValueConverter.FromDbValue(value);
+
+                            if (convertedValue == null && value != DBNull.Value)
+                            {
+                                throw new NotImplementedException(); // error in your converter logic.
+                            }
+
+                            if (convertedValue == DBNull.Value)
+                            {
+                                throw new NotImplementedException(); // todo: could not transform blah blah
+                            }
+
+                            value = convertedValue;
                         }
 
                         row.SetValue(name, value);
