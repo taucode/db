@@ -18,6 +18,20 @@ namespace TauCode.Db
 {
     public static class DbUtils
     {
+        private static readonly HashSet<Type> IntegerTypes = new HashSet<Type>(new[]
+        {
+            typeof(byte),
+            typeof(sbyte),
+            typeof(short),
+            typeof(ushort),
+            typeof(int),
+            typeof(uint),
+            typeof(long),
+            typeof(ulong),
+        });
+
+        public static bool IsIntegerType(Type type) => IntegerTypes.Contains(type);
+
         public static IList<string> SplitScriptByComments(string script)
         {
             var statements = Regex.Split(script, @"/\*.*?\*/", RegexOptions.Singleline)
@@ -77,14 +91,16 @@ namespace TauCode.Db
                             var dbValueConverter = tableValuesConverter.GetColumnConverter(name);
                             var convertedValue = dbValueConverter.FromDbValue(value);
 
-                            if (convertedValue == null && value != DBNull.Value)
+                            if (convertedValue == DBNull.Value)
                             {
                                 throw new NotImplementedException(); // error in your converter logic.
                             }
 
-                            if (convertedValue == DBNull.Value)
+                            if (convertedValue == null && value != DBNull.Value)
                             {
-                                throw new NotImplementedException(); // todo: could not transform blah blah
+                                // the only case IDbValueConverter.FromDbValue returns null is value equal to DBNull.Value.
+
+                                throw new NotImplementedException();
                             }
 
                             value = convertedValue;

@@ -5,8 +5,15 @@ namespace TauCode.Db.DbValueConverters
     public class EnumValueConverter<TEnum> : DbValueConverterBase
         where TEnum : struct
     {
+
         public EnumValueConverter(EnumValueConverterBehaviour behaviour)
         {
+            bool validGenericArg = typeof(TEnum).IsEnum;
+            if (!validGenericArg)
+            {
+                throw new NotImplementedException(); // todo
+            }
+
             this.Behaviour = behaviour;
         }
 
@@ -14,7 +21,24 @@ namespace TauCode.Db.DbValueConverters
 
         protected override object ToDbValueImpl(object value)
         {
-            throw new NotImplementedException();
+            switch (this.Behaviour)
+            {
+                case EnumValueConverterBehaviour.Integer:
+                    if (DbUtils.IsIntegerType(value.GetType()))
+                    {
+                        return value;
+                    }
+                    break;
+
+                case EnumValueConverterBehaviour.String:
+                    if (value is TEnum)
+                    {
+                        return value.ToString();
+                    }
+                    break;
+            }
+
+            return null;
         }
 
         protected override object FromDbValueImpl(object dbValue)
@@ -37,7 +61,7 @@ namespace TauCode.Db.DbValueConverters
             throw new NotImplementedException();
         }
 
-        protected virtual TEnum FromDbValueAsString(object dbValue)
+        protected virtual TEnum? FromDbValueAsString(object dbValue)
         {
             if (dbValue is string stringDbValue)
             {
@@ -46,11 +70,9 @@ namespace TauCode.Db.DbValueConverters
                 {
                     return result;
                 }
-
-                throw new NotImplementedException();
             }
 
-            throw new NotImplementedException();
+            return null;
         }
     }
 }

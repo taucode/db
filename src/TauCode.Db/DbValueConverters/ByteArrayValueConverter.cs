@@ -25,7 +25,7 @@ namespace TauCode.Db.DbValueConverters
                 return bytesDbValue;
             }
 
-            return DBNull.Value;
+            return null;
         }
     }
 }

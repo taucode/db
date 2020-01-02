@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TauCode.Db.DbValueConverters
+﻿namespace TauCode.Db.DbValueConverters
 {
     public class SingleValueConverter : DbValueConverterBase
     {
@@ -25,7 +23,7 @@ namespace TauCode.Db.DbValueConverters
                 return floatDbValue;
             }
 
-            return DBNull.Value;
+            return null;
         }
     }
 }

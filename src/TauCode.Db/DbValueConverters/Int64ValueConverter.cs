@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TauCode.Db.DbValueConverters
+﻿namespace TauCode.Db.DbValueConverters
 {
     public class Int64ValueConverter : DbValueConverterBase
     {
@@ -21,7 +19,7 @@ namespace TauCode.Db.DbValueConverters
                 return longValue;
             }
 
-            return DBNull.Value;
+            return null;
         }
     }
 }

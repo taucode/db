@@ -21,7 +21,7 @@ namespace TauCode.Db.DbValueConverters
                 return dateTimedDbValue;
             }
 
-            return DBNull.Value;
+            return null;
         }
     }
 }

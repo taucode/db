@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
 
 namespace TauCode.Db.SqlServer
@@ -33,7 +34,15 @@ WHERE
     T.name = @p_name
 ";
                 command.AddParameterWithValue("p_name", this.TableName);
-                var objectId = (int)command.ExecuteScalar();
+
+                var objectResult = command.ExecuteScalar();
+
+                if (objectResult == null)
+                {
+                    throw new DbException($"Table not found: '{this.TableName}'.");
+                }
+                
+                var objectId = (int)objectResult;
                 return objectId;
             }
         }
