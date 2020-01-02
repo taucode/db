@@ -1,6 +1,5 @@
 ﻿using TauCode.Extensions;
 using TauCode.Parsing;
-using TauCode.Parsing.Lab;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Lexing.StandardTokenExtractors;
 using TauCode.Parsing.Tokens;
@@ -58,7 +57,7 @@ namespace TauCode.Db.SQLite.Parsing.TokenExtractors
 
                     case '`':
                         _expectedClosingDelimiter = '`';
-                        _textDecoration = BackQuoteTextDecorationLab.Instance;
+                        _textDecoration = BackQuoteTextDecoration.Instance;
                         break;
                 }
 
