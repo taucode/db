@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using System.Linq;
+using TauCode.Db.Exceptions;
 using TauCode.Db.SQLite;
 
 namespace TauCode.Db.Tests.SQLite
@@ -68,6 +69,22 @@ namespace TauCode.Db.Tests.SQLite
 
             column = table.Columns.Single(x => x.Name == "my_int64");
             Assert.That(column.Type.Name, Is.EqualTo("INTEGER"));
+        }
+
+        [Test]
+        public void GetTable_NonExistingTable_ThrowsDbException()
+        {
+            // Arrange
+
+            // Act
+            var ex = Assert.Throws<DbException>(() =>
+            {
+                var tableInspector = this.DbInspector.Factory.CreateTableInspector(this.Connection, "non_existing_table");
+                tableInspector.GetTable();
+            });
+
+            // Assert
+            Assert.That(ex.Message, Is.EqualTo("Table 'non_existing_table' not found."));
         }
 
         protected override void ExecuteDbCreationScript()

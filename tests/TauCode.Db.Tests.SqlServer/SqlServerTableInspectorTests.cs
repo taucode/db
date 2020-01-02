@@ -27,7 +27,7 @@ namespace TauCode.Db.Tests.SqlServer
                 });
 
             // Assert
-            Assert.That(ex.Message, Is.EqualTo("Table not found: 'non_existing_table'."));
+            Assert.That(ex.Message, Is.EqualTo("Table 'non_existing_table' not found."));
         }
 
         protected override void ExecuteDbCreationScript()

@@ -296,6 +296,31 @@ VALUES(
         }
 
         [Test]
+        public void GetRow_ColumnValueIsNull_ReturnsRowWithNull()
+        {
+            // Arrange
+            this.Connection.ExecuteSingleSql(@"
+INSERT INTO [foo](
+    [id],
+    [name],
+    [enum_string])
+VALUES(
+    11,    
+    null,
+    'Developer')");
+
+            _cruder.GetTableValuesConverter("foo").SetColumnConverter("enum_string", new EnumValueConverter<UserRole>(EnumValueConverterBehaviour.String));
+
+            // Act
+            var row = _cruder.GetRow("foo", 11);
+
+            // Assert
+            Assert.That(row.id, Is.EqualTo(11));
+            Assert.That(row.name, Is.Null);
+            Assert.That(row.enum_string, Is.EqualTo(UserRole.Developer));
+        }
+
+        [Test]
         public void DeleteRow_ValidId_DeletesRow()
         {
             // Arrange
@@ -319,31 +344,6 @@ VALUES(
 
             var deletedRow = this.GetRow("language", id);
             Assert.That(deletedRow, Is.Null);
-        }
-
-        [Test]
-        public void GetRow_ColumnValueIsNull_ReturnsRowWithNull()
-        {
-            // Arrange
-            this.Connection.ExecuteSingleSql(@"
-INSERT INTO [foo](
-    [id],
-    [name],
-    [enum_string])
-VALUES(
-    11,    
-    null,
-    'Developer')");
-
-            _cruder.GetTableValuesConverter("foo").SetColumnConverter("enum_string", new EnumValueConverter<UserRole>(EnumValueConverterBehaviour.String));
-
-            // Act
-            var row = _cruder.GetRow("foo", 11);
-
-            // Assert
-            Assert.That(row.id, Is.EqualTo(11));
-            Assert.That(row.name, Is.Null);
-            Assert.That(row.enum_string, Is.EqualTo(UserRole.Developer));
         }
 
         protected override void ExecuteDbCreationScript()

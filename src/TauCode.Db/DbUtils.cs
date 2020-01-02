@@ -51,7 +51,6 @@ namespace TauCode.Db
             }
         }
 
-        // todo: use ITableValuesConverter here
         public static IList<dynamic> GetCommandRows(IDbCommand command, ITableValuesConverter tableValuesConverter = null)
         {
             if (command == null)
@@ -303,6 +302,11 @@ namespace TauCode.Db
         internal static void SetBoolProperty(this IMold mold, string propertyName, bool value)
         {
             mold.Properties[propertyName] = value.ToString();
+        }
+
+        internal static DbException CreateTableNotFoundException(string tableName)
+        {
+            return new DbException($"Table '{tableName}' not found.");
         }
 
         public static string FineSerializeToJson(object obj)

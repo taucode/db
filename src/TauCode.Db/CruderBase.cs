@@ -10,7 +10,6 @@ using TauCode.Extensions;
 
 namespace TauCode.Db
 {
-    // todo clean up
     public abstract class CruderBase : UtilityBase, ICruder
     {
         #region Nested
@@ -154,8 +153,6 @@ namespace TauCode.Db
                     var parameterName = parameterInfo.ParameterName;
                     var parameter = _parametersByParameterNames[parameterName];
 
-                    //var columnValue = _cruder.TransformOriginalColumnValue(parameterInfo, originalColumnValue);
-
                     var tableValuesConverter = _cruder.GetTableValuesConverter(_table.Name);
                     var dbValueConverter = tableValuesConverter.GetColumnConverter(columnName);
                     var columnValue = dbValueConverter.ToDbValue(originalColumnValue);
@@ -265,199 +262,6 @@ namespace TauCode.Db
         #endregion
 
         #region Protected
-
-        //protected virtual object TransformOriginalColumnValue(IParameterInfo parameterInfo, object originalColumnValue)
-        //{
-        //    if (originalColumnValue == null)
-        //    {
-        //        return DBNull.Value;
-        //    }
-
-        //    object transformed;
-
-        //    switch (parameterInfo.DbType)
-        //    {
-        //        case DbType.Guid:
-        //            if (originalColumnValue is Guid)
-        //            {
-        //                transformed = originalColumnValue;
-        //            }
-        //            else if (originalColumnValue is string stringValue)
-        //            {
-        //                transformed = new Guid(stringValue);
-        //            }
-        //            else
-        //            {
-        //                transformed = null;
-        //            }
-
-        //            break;
-
-        //        case DbType.String:
-        //        case DbType.StringFixedLength:
-        //        case DbType.AnsiString:
-        //        case DbType.AnsiStringFixedLength:
-        //            if (originalColumnValue is string)
-        //            {
-        //                transformed = originalColumnValue;
-        //            }
-        //            else
-        //            {
-        //                transformed = null;
-        //            }
-
-        //            break;
-
-
-        //        case DbType.Date:
-        //        case DbType.DateTime:
-        //            if (originalColumnValue is DateTime)
-        //            {
-        //                transformed = originalColumnValue;
-        //            }
-        //            else if (originalColumnValue is string stringValue)
-        //            {
-        //                transformed = DateTime.Parse(stringValue);
-        //            }
-        //            else
-        //            {
-        //                transformed = null;
-        //            }
-        //            break;
-
-        //        case DbType.Boolean:
-        //            if (originalColumnValue is bool boolValue)
-        //            {
-        //                transformed = originalColumnValue;
-        //            }
-        //            else
-        //            {
-        //                transformed = null;
-        //            }
-        //            break;
-
-        //        case DbType.Binary:
-        //            if (originalColumnValue is byte[] byteArray)
-        //            {
-        //                transformed = originalColumnValue;
-        //            }
-        //            else if (originalColumnValue is string base64)
-        //            {
-        //                transformed = Convert.FromBase64String(base64);
-        //            }
-        //            else
-        //            {
-        //                transformed = null;
-        //            }
-        //            break;
-
-        //        case DbType.Double:
-        //        case DbType.Single:
-        //            if (originalColumnValue is double)
-        //            {
-        //                transformed = originalColumnValue;
-        //            }
-        //            else
-        //            {
-        //                transformed = null;
-        //            }
-        //            break;
-
-        //        case DbType.Decimal:
-        //            if (originalColumnValue is decimal decimalValue)
-        //            {
-        //                transformed = originalColumnValue;
-        //            }
-        //            else if (originalColumnValue is double doubleValue)
-        //            {
-        //                transformed = (decimal)doubleValue;
-        //            }
-        //            else
-        //            {
-        //                transformed = null;
-        //            }
-        //            break;
-
-        //        case DbType.Byte:
-        //            if (originalColumnValue is byte byteValue)
-        //            {
-        //                transformed = byteValue;
-        //            }
-        //            else if (originalColumnValue is long longValue)
-        //            {
-        //                checked
-        //                {
-        //                    transformed = (byte)longValue;
-        //                }
-        //            }
-        //            else
-        //            {
-        //                transformed = null;
-        //            }
-
-        //            break;
-
-        //        case DbType.Int16:
-        //            if (originalColumnValue is short shortValue)
-        //            {
-        //                transformed = shortValue;
-        //            }
-        //            else if (originalColumnValue is long longValue)
-        //            {
-        //                checked
-        //                {
-        //                    transformed = (short)longValue;
-        //                }
-        //            }
-        //            else
-        //            {
-        //                transformed = null;
-        //            }
-
-        //            break;
-
-        //        case DbType.Int32:
-        //            if (originalColumnValue is int intValue)
-        //            {
-        //                transformed = intValue;
-        //            }
-        //            else if (originalColumnValue is long longValue)
-        //            {
-        //                checked
-        //                {
-        //                    transformed = (int)longValue;
-        //                }
-        //            }
-        //            else
-        //            {
-        //                transformed = null;
-        //            }
-
-        //            break;
-
-        //        case DbType.Int64:
-        //            if (originalColumnValue is long longValue2)
-        //            {
-        //                transformed = longValue2;
-        //            }
-        //            else if (originalColumnValue is bool boolValue2)
-        //            {
-        //                transformed = boolValue2 ? 1 : 0;
-        //            }
-        //            else
-        //            {
-        //                transformed = null;
-        //            }
-
-        //            break;
-
-        //        default:
-        //            transformed = null;
-        //            break;
-        //    }
-
-        //    return transformed;
-        //}
 
         protected virtual IDictionary<string, object> ObjectToDataDictionary(object obj)
         {
@@ -611,7 +415,7 @@ namespace TauCode.Db
 
         public void ResetTableValuesConverters()
         {
-            throw new NotImplementedException();
+            _tableValuesConverters.Clear();
         }
 
         public virtual void InsertRow(string tableName, object row)

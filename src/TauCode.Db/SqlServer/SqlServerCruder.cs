@@ -6,7 +6,6 @@ using TauCode.Db.Model;
 
 namespace TauCode.Db.SqlServer
 {
-    // todo clean up
     public class SqlServerCruder : CruderBase
     {
         #region Constants
@@ -110,32 +109,5 @@ namespace TauCode.Db.SqlServer
 
             return result;
         }
-
-        //protected override object TransformOriginalColumnValue(IParameterInfo parameterInfo, object originalColumnValue)
-        //{
-        //    var transformed = base.TransformOriginalColumnValue(parameterInfo, originalColumnValue);
-
-        //    if (transformed == null)
-        //    {
-        //        switch (parameterInfo.DbType)
-        //        {
-        //            case DbType.Currency:
-        //                if (originalColumnValue is double doubleValue)
-        //                {
-        //                    transformed = (decimal)doubleValue;
-        //                }
-        //                else if (originalColumnValue is decimal decimalValue)
-        //                {
-        //                    transformed = originalColumnValue;
-        //                }
-
-        //                // will remain null.
-
-        //                break;
-        //        }
-        //    }
-
-        //    return transformed;
-        //}
     }
 }

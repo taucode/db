@@ -8,6 +8,10 @@
             {
                 return longValue;
             }
+            else if (value is int intValue)
+            {
+                return intValue;
+            }
 
             return null;
         }

@@ -242,6 +242,25 @@ namespace TauCode.Db.Tests.SQLite
                     .AsInt64();
 
             #endregion
+
+            #region hoo
+
+            this.Create.Table("hoo")
+                .WithColumn("id")
+                    .AsInt32()
+                    .NotNullable()
+                    .PrimaryKey()
+                .WithColumn("name")
+                    .AsString()
+                    .Nullable()
+                .WithColumn("enum_int32")
+                    .AsInt32()
+                    .Nullable()
+                .WithColumn("enum_string")
+                    .AsString()
+                    .Nullable();
+
+            #endregion
         }
     }
 }

@@ -3,7 +3,6 @@ using System.Linq;
 
 namespace TauCode.Db.Tests.SqlServer
 {
-    // todo: if table doesn't exist, TableInspector throws bad exception. ut it!
     [TestFixture]
     public class SqlServerInspectorTests : TestBase
     {

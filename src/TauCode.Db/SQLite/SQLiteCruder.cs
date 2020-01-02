@@ -6,7 +6,6 @@ using TauCode.Db.Model;
 
 namespace TauCode.Db.SQLite
 {
-    // todo clean up
     public class SQLiteCruder : CruderBase
     {
         private static readonly int GuidRepresentationLength = Guid.Empty.ToString().Length;
@@ -90,29 +89,5 @@ namespace TauCode.Db.SQLite
             IParameterInfo parameterInfo = new ParameterInfoImpl(parameterName, dbType, size, precision, scale);
             return parameterInfo;
         }
-
-        //protected override object TransformOriginalColumnValue(IParameterInfo parameterInfo, object originalColumnValue)
-        //{
-        //    if (originalColumnValue == null)
-        //    {
-        //        return base.TransformOriginalColumnValue(parameterInfo, originalColumnValue);
-        //    }
-
-        //    switch (parameterInfo.DbType)
-        //    {
-        //        case DbType.AnsiStringFixedLength:
-        //            if (originalColumnValue is Guid guid)
-        //            {
-        //                return guid.ToString();
-        //            }
-        //            else
-        //            {
-        //                return base.TransformOriginalColumnValue(parameterInfo, originalColumnValue);
-        //            }
-
-        //        default:
-        //            return base.TransformOriginalColumnValue(parameterInfo, originalColumnValue);
-        //    }
-        //}
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
 
 namespace TauCode.Db.SqlServer
@@ -39,7 +38,7 @@ WHERE
 
                 if (objectResult == null)
                 {
-                    throw new DbException($"Table not found: '{this.TableName}'.");
+                    throw DbUtils.CreateTableNotFoundException(this.TableName);
                 }
                 
                 var objectId = (int)objectResult;
