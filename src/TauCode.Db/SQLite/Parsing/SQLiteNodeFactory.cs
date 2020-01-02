@@ -11,7 +11,7 @@ using TauCode.Parsing.Tokens.TextClasses;
 
 namespace TauCode.Db.SQLite.Parsing
 {
-    public class SQLiteNodeFactory : NodeFactory
+    public class SQLiteNodeFactory : NodeFactoryBase
     {
         public SQLiteNodeFactory()
             : base("SQLite Paring Tree")
