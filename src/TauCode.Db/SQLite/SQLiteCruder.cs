@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using TauCode.Db.DbValueConverters;
 using TauCode.Db.Model;
 
 namespace TauCode.Db.SQLite
@@ -15,6 +16,37 @@ namespace TauCode.Db.SQLite
         }
 
         public override IUtilityFactory Factory => SQLiteUtilityFactory.Instance;
+
+        protected override IDbValueConverter CreateDbValueConverter(ColumnMold column)
+        {
+            var typeName = column.Type.Name.ToLowerInvariant();
+            switch (typeName)
+            {
+                case "uniqueidentifier":
+                    return new GuidValueConverter();
+
+                case "text":
+                    return new StringValueConverter();
+
+                case "datetime":
+                    return new DateTimeValueConverter();
+
+                case "integer":
+                    return new Int64ValueConverter();
+
+                case "blob":
+                    return new ByteArrayValueConverter();
+
+                case "real":
+                    return new DoubleValueConverter();
+
+                case "numeric":
+                    return new DecimalValueConverter();
+
+                default:
+                    throw new NotImplementedException();
+            }
+        }
 
         protected override IParameterInfo ColumnToParameterInfo(
             string columnName,
@@ -56,30 +88,6 @@ namespace TauCode.Db.SQLite
 
             IParameterInfo parameterInfo = new ParameterInfoImpl(parameterName, dbType, size, precision, scale);
             return parameterInfo;
-        }
-
-        protected override object TransformOriginalColumnValue(IParameterInfo parameterInfo, object originalColumnValue)
-        {
-            if (originalColumnValue == null)
-            {
-                return base.TransformOriginalColumnValue(parameterInfo, originalColumnValue);
-            }
-
-            switch (parameterInfo.DbType)
-            {
-                case DbType.AnsiStringFixedLength:
-                    if (originalColumnValue is Guid guid)
-                    {
-                        return guid.ToString();
-                    }
-                    else
-                    {
-                        return base.TransformOriginalColumnValue(parameterInfo, originalColumnValue);
-                    }
-
-                default:
-                    return base.TransformOriginalColumnValue(parameterInfo, originalColumnValue);
-            }
         }
     }
 }

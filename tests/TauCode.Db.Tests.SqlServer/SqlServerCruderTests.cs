@@ -1,6 +1,8 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Linq;
+using TauCode.Db.Data;
+using TauCode.Db.DbValueConverters;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Tests.Common;
 
@@ -11,6 +13,18 @@ namespace TauCode.Db.Tests.SqlServer
     {
         private class WrongData
         {
+        }
+
+        public enum Town : sbyte
+        {
+            Kiev = 1,
+            Tropea = 2,
+        }
+
+        public enum UserRole
+        {
+            Admin = 1,
+            Developer
         }
 
         private ICruder _cruder;
@@ -50,6 +64,38 @@ namespace TauCode.Db.Tests.SqlServer
                 Assert.That(row.id, Is.EqualTo(id));
                 Assert.That(row.code, Is.EqualTo("it"));
                 Assert.That(row.name, Is.EqualTo("Italian"));
+            }
+        }
+
+        [Test]
+        public void InsertRow_RowWithEnums_Inserts()
+        {
+            // Arrange
+            var foo = new DynamicRow(new
+            {
+                id = 1,
+                name = "Vasya",
+                enum_int32 = (ushort)1,
+                enum_string = UserRole.Admin,
+            });
+
+            // Act
+            _cruder.GetTableValuesConverter("foo").SetColumnConverter("enum_int32", new EnumValueConverter<Town>(EnumValueConverterBehaviour.Integer));
+            _cruder.GetTableValuesConverter("foo").SetColumnConverter("enum_string", new EnumValueConverter<UserRole>(EnumValueConverterBehaviour.String));
+
+            _cruder.InsertRow("foo", foo);
+
+            // Assert
+            using (var command = this.Connection.CreateCommand())
+            {
+                command.CommandText = @"SELECT [id], [name], [enum_int32], [enum_string] FROM [foo] WHERE [id] = 1";
+
+                var row = DbUtils.GetCommandRows(command).Single();
+
+                Assert.That(row.id, Is.EqualTo(1));
+                Assert.That(row.name, Is.EqualTo("Vasya"));
+                Assert.That(row.enum_int32, Is.EqualTo(1));
+                Assert.That(row.enum_string, Is.EqualTo(UserRole.Admin.ToString()));
             }
         }
 
@@ -247,6 +293,31 @@ VALUES(
             Assert.That(row.id, Is.EqualTo(id));
             Assert.That(row.code, Is.EqualTo("en"));
             Assert.That(row.name, Is.EqualTo("English"));
+        }
+
+        [Test]
+        public void GetRow_ColumnValueIsNull_ReturnsRowWithNull()
+        {
+            // Arrange
+            this.Connection.ExecuteSingleSql(@"
+INSERT INTO [foo](
+    [id],
+    [name],
+    [enum_string])
+VALUES(
+    11,    
+    null,
+    'Developer')");
+
+            _cruder.GetTableValuesConverter("foo").SetColumnConverter("enum_string", new EnumValueConverter<UserRole>(EnumValueConverterBehaviour.String));
+
+            // Act
+            var row = _cruder.GetRow("foo", 11);
+
+            // Assert
+            Assert.That(row.id, Is.EqualTo(11));
+            Assert.That(row.name, Is.Null);
+            Assert.That(row.enum_string, Is.EqualTo(UserRole.Developer));
         }
 
         [Test]

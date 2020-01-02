@@ -18,6 +18,20 @@ namespace TauCode.Db
 {
     public static class DbUtils
     {
+        private static readonly HashSet<Type> IntegerTypes = new HashSet<Type>(new[]
+        {
+            typeof(byte),
+            typeof(sbyte),
+            typeof(short),
+            typeof(ushort),
+            typeof(int),
+            typeof(uint),
+            typeof(long),
+            typeof(ulong),
+        });
+
+        public static bool IsIntegerType(Type type) => IntegerTypes.Contains(type);
+
         public static IList<string> SplitScriptByComments(string script)
         {
             var statements = Regex.Split(script, @"/\*.*?\*/", RegexOptions.Singleline)
@@ -37,7 +51,7 @@ namespace TauCode.Db
             }
         }
 
-        public static IList<dynamic> GetCommandRows(IDbCommand command)
+        public static IList<dynamic> GetCommandRows(IDbCommand command, ITableValuesConverter tableValuesConverter = null)
         {
             if (command == null)
             {
@@ -60,7 +74,37 @@ namespace TauCode.Db
                     for (var i = 0; i < reader.FieldCount; i++)
                     {
                         var name = reader.GetName(i);
+
                         var value = reader[i];
+
+                        if (tableValuesConverter == null)
+                        {
+                            // only simplest obvious transformation
+                            if (value == DBNull.Value)
+                            {
+                                value = null;
+                            }
+                        }
+                        else
+                        {
+                            var dbValueConverter = tableValuesConverter.GetColumnConverter(name);
+                            var convertedValue = dbValueConverter.FromDbValue(value);
+
+                            if (convertedValue == DBNull.Value)
+                            {
+                                throw new NotImplementedException(); // error in your converter logic.
+                            }
+
+                            if (convertedValue == null && value != DBNull.Value)
+                            {
+                                // the only case IDbValueConverter.FromDbValue returns null is value equal to DBNull.Value.
+
+                                throw new NotImplementedException();
+                            }
+
+                            value = convertedValue;
+                        }
+
                         row.SetValue(name, value);
                     }
 
@@ -258,6 +302,11 @@ namespace TauCode.Db
         internal static void SetBoolProperty(this IMold mold, string propertyName, bool value)
         {
             mold.Properties[propertyName] = value.ToString();
+        }
+
+        internal static DbException CreateTableNotFoundException(string tableName)
+        {
+            return new DbException($"Table '{tableName}' not found.");
         }
 
         public static string FineSerializeToJson(object obj)

@@ -46,7 +46,7 @@ WHERE
                 var rows = DbUtils.GetCommandRows(command);
                 if (rows.Count == 0)
                 {
-                    throw new DbException($"Table '{this.TableName}' not found in the database.");
+                    throw DbUtils.CreateTableNotFoundException(this.TableName);
                 }
 
                 if (rows.Count > 1)

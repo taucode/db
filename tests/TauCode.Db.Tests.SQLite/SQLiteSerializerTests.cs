@@ -5,6 +5,7 @@ using System.Linq;
 using TauCode.Db.Data;
 using TauCode.Db.Model;
 using TauCode.Db.SQLite;
+using TauCode.Extensions;
 
 namespace TauCode.Db.Tests.SQLite
 {
@@ -42,7 +43,7 @@ namespace TauCode.Db.Tests.SQLite
             this.Connection.ExecuteCommentedScript(insertScript);
 
             // Act
-            var json = _dbSerializer.SerializeDbData(x => !string.Equals(x, "foo", StringComparison.InvariantCultureIgnoreCase));
+            var json = _dbSerializer.SerializeDbData(x => !x.IsIn("foo", "hoo"));
 
             // Assert
             var expectedJson = TestHelper.GetResourceText("rho.data-db.json");
@@ -69,6 +70,7 @@ namespace TauCode.Db.Tests.SQLite
             var tablesToExclude = new[]
             {
                 "foo",
+                "hoo",
                 "versioninfo"
             };
 

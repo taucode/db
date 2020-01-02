@@ -18,6 +18,7 @@ namespace TauCode.Db
         {
             #region Fields
 
+            private readonly TableMold _table;
             private readonly CruderBase _cruder;
             private IDbCommand _command;
             private bool _commandPrepared;
@@ -33,15 +34,12 @@ namespace TauCode.Db
 
             public CommandHelper(CruderBase cruder, TableMold table, IEnumerable<string> columnNames)
             {
-                if (table == null)
-                {
-                    throw new ArgumentNullException(nameof(table));
-                }
-
                 if (columnNames == null)
                 {
                     throw new ArgumentNullException(nameof(columnNames));
                 }
+
+                _table = table ?? throw new ArgumentNullException(nameof(table));
 
                 _cruder = cruder ?? throw new ArgumentNullException(nameof(cruder));
                 _command = _cruder.Connection.CreateCommand();
@@ -155,7 +153,9 @@ namespace TauCode.Db
                     var parameterName = parameterInfo.ParameterName;
                     var parameter = _parametersByParameterNames[parameterName];
 
-                    var columnValue = _cruder.TransformOriginalColumnValue(parameterInfo, originalColumnValue);
+                    var tableValuesConverter = _cruder.GetTableValuesConverter(_table.Name);
+                    var dbValueConverter = tableValuesConverter.GetColumnConverter(columnName);
+                    var columnValue = dbValueConverter.ToDbValue(originalColumnValue);
 
                     if (columnValue == null)
                     {
@@ -211,7 +211,7 @@ namespace TauCode.Db
             public IList<dynamic> FetchWithValues(object values)
             {
                 this.ApplyValuesToCommand(values);
-                var rows = DbUtils.GetCommandRows(_command);
+                var rows = DbUtils.GetCommandRows(_command, _cruder.GetTableValuesConverter(_table.Name));
 
                 return rows;
             }
@@ -241,7 +241,8 @@ namespace TauCode.Db
         #region Fields
 
         private IScriptBuilder _scriptBuilder;
-
+        private readonly IDictionary<string, ITableValuesConverter> _tableValuesConverters;
+        
         #endregion
 
         #region Constructor
@@ -249,204 +250,18 @@ namespace TauCode.Db
         protected CruderBase(IDbConnection connection)
             : base(connection, true, false)
         {
+            _tableValuesConverters = new Dictionary<string, ITableValuesConverter>();
         }
 
         #endregion
 
+        #region Abstract
+
+        protected abstract IDbValueConverter CreateDbValueConverter(ColumnMold column);
+
+        #endregion
+
         #region Protected
-
-        protected virtual object TransformOriginalColumnValue(IParameterInfo parameterInfo, object originalColumnValue)
-        {
-            if (originalColumnValue == null)
-            {
-                return DBNull.Value;
-            }
-
-            object transformed;
-
-            switch (parameterInfo.DbType)
-            {
-                case DbType.Guid:
-                    if (originalColumnValue is Guid)
-                    {
-                        transformed = originalColumnValue;
-                    }
-                    else if (originalColumnValue is string stringValue)
-                    {
-                        transformed = new Guid(stringValue);
-                    }
-                    else
-                    {
-                        transformed = null;
-                    }
-
-                    break;
-
-                case DbType.String:
-                case DbType.StringFixedLength:
-                case DbType.AnsiString:
-                case DbType.AnsiStringFixedLength:
-                    if (originalColumnValue is string)
-                    {
-                        transformed = originalColumnValue;
-                    }
-                    else
-                    {
-                        transformed = null;
-                    }
-
-                    break;
-
-
-                case DbType.Date:
-                case DbType.DateTime:
-                    if (originalColumnValue is DateTime)
-                    {
-                        transformed = originalColumnValue;
-                    }
-                    else if (originalColumnValue is string stringValue)
-                    {
-                        transformed = DateTime.Parse(stringValue);
-                    }
-                    else
-                    {
-                        transformed = null;
-                    }
-                    break;
-
-                case DbType.Boolean:
-                    if (originalColumnValue is bool boolValue)
-                    {
-                        transformed = originalColumnValue;
-                    }
-                    else
-                    {
-                        transformed = null;
-                    }
-                    break;
-
-                case DbType.Binary:
-                    if (originalColumnValue is byte[] byteArray)
-                    {
-                        transformed = originalColumnValue;
-                    }
-                    else if (originalColumnValue is string base64)
-                    {
-                        transformed = Convert.FromBase64String(base64);
-                    }
-                    else
-                    {
-                        transformed = null;
-                    }
-                    break;
-
-                case DbType.Double:
-                case DbType.Single:
-                    if (originalColumnValue is double)
-                    {
-                        transformed = originalColumnValue;
-                    }
-                    else
-                    {
-                        transformed = null;
-                    }
-                    break;
-
-                case DbType.Decimal:
-                    if (originalColumnValue is decimal decimalValue)
-                    {
-                        transformed = originalColumnValue;
-                    }
-                    else if (originalColumnValue is double doubleValue)
-                    {
-                        transformed = (decimal)doubleValue;
-                    }
-                    else
-                    {
-                        transformed = null;
-                    }
-                    break;
-
-                case DbType.Byte:
-                    if (originalColumnValue is byte byteValue)
-                    {
-                        transformed = byteValue;
-                    }
-                    else if (originalColumnValue is long longValue)
-                    {
-                        checked
-                        {
-                            transformed = (byte)longValue;
-                        }
-                    }
-                    else
-                    {
-                        transformed = null;
-                    }
-
-                    break;
-
-                case DbType.Int16:
-                    if (originalColumnValue is short shortValue)
-                    {
-                        transformed = shortValue;
-                    }
-                    else if (originalColumnValue is long longValue)
-                    {
-                        checked
-                        {
-                            transformed = (short)longValue;
-                        }
-                    }
-                    else
-                    {
-                        transformed = null;
-                    }
-
-                    break;
-
-                case DbType.Int32:
-                    if (originalColumnValue is int intValue)
-                    {
-                        transformed = intValue;
-                    }
-                    else if (originalColumnValue is long longValue)
-                    {
-                        checked
-                        {
-                            transformed = (int)longValue;
-                        }
-                    }
-                    else
-                    {
-                        transformed = null;
-                    }
-
-                    break;
-
-                case DbType.Int64:
-                    if (originalColumnValue is long longValue2)
-                    {
-                        transformed = longValue2;
-                    }
-                    else if (originalColumnValue is bool boolValue2)
-                    {
-                        transformed = boolValue2 ? 1 : 0;
-                    }
-                    else
-                    {
-                        transformed = null;
-                    }
-
-                    break;
-
-                default:
-                    transformed = null;
-                    break;
-            }
-
-            return transformed;
-        }
 
         protected virtual IDictionary<string, object> ObjectToDataDictionary(object obj)
         {
@@ -564,12 +379,44 @@ namespace TauCode.Db
             return parameterInfo;
         }
 
+        protected virtual ITableValuesConverter CreateTableValuesConverter(string tableName)
+        {
+            var tableInspector = this.Factory.CreateTableInspector(this.Connection, tableName);
+            var table = tableInspector.GetTable();
+
+            var dictionary = table.Columns
+                .ToDictionary(
+                    x => x.Name.ToLowerInvariant(),
+                    this.CreateDbValueConverter);
+
+            var tableValuesConverter = new TableValuesConverter(dictionary);
+            return tableValuesConverter;
+        }
+
         #endregion
 
         #region ICruder Members
 
         public virtual IScriptBuilder ScriptBuilder =>
             _scriptBuilder ?? (_scriptBuilder = this.Factory.CreateScriptBuilder());
+
+        public ITableValuesConverter GetTableValuesConverter(string tableName)
+        {
+            // todo: checks, lowercase
+            var tableValuesConverter = _tableValuesConverters.GetOrDefault(tableName);
+            if (tableValuesConverter == null)
+            {
+                tableValuesConverter = this.CreateTableValuesConverter(tableName);
+                _tableValuesConverters.Add(tableName, tableValuesConverter);
+            }
+
+            return tableValuesConverter;
+        }
+
+        public void ResetTableValuesConverters()
+        {
+            _tableValuesConverters.Clear();
+        }
 
         public virtual void InsertRow(string tableName, object row)
         {
@@ -661,7 +508,7 @@ namespace TauCode.Db
             {
                 var sql = this.ScriptBuilder.BuildSelectAllScript(table);
                 command.CommandText = sql;
-                var rows = DbUtils.GetCommandRows(command);
+                var rows = DbUtils.GetCommandRows(command, this.GetTableValuesConverter(tableName));
                 return rows;
             }
         }

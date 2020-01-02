@@ -3,14 +3,25 @@ using TauCode.Parsing;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Lexing.StandardTokenExtractors;
 using TauCode.Parsing.Tokens;
+using TauCode.Parsing.Tokens.TextClasses;
+using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Db.SQLite.Parsing.TokenExtractors
 {
     public class SQLiteIdentifierExtractor : TokenExtractorBase
     {
+        private ITextDecoration _textDecoration;
+        private char? _expectedClosingDelimiter;
+
         public SQLiteIdentifierExtractor()
             : base(StandardLexingEnvironment.Instance, x => x.IsIn('[', '`', '"'))
         {
+        }
+
+        protected override void ResetState()
+        {
+            _textDecoration = null;
+            _expectedClosingDelimiter = null;
         }
 
         protected override IToken ProduceResult()
@@ -22,7 +33,7 @@ namespace TauCode.Db.SQLite.Parsing.TokenExtractors
             }
 
             var identifier = str.Substring(1, str.Length - 2);
-            return new IdentifierToken(identifier);
+            return new TextToken(IdentifierTextClass.Instance, _textDecoration, identifier);
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()
@@ -32,6 +43,24 @@ namespace TauCode.Db.SQLite.Parsing.TokenExtractors
 
             if (pos == 0)
             {
+                switch (c)
+                {
+                    case '[':
+                        _expectedClosingDelimiter = ']';
+                        _textDecoration = BracketsTextDecoration.Instance;
+                        break;
+
+                    case '"':
+                        _expectedClosingDelimiter = '"';
+                        _textDecoration = DoubleQuoteTextDecoration.Instance;
+                        break;
+
+                    case '`':
+                        _expectedClosingDelimiter = '`';
+                        _textDecoration = BackQuoteTextDecoration.Instance;
+                        break;
+                }
+
                 return CharChallengeResult.Continue; // how else?
             }
 
@@ -42,8 +71,7 @@ namespace TauCode.Db.SQLite.Parsing.TokenExtractors
 
             if (c.IsIn(']', '`', '"'))
             {
-                var openingDelimiter = this.GetLocalChar(0);
-                if (GetClosingDelimiter(openingDelimiter) == c)
+                if (c == _expectedClosingDelimiter.Value)
                 {
                     this.Advance();
                     return CharChallengeResult.Finish;
@@ -52,25 +80,7 @@ namespace TauCode.Db.SQLite.Parsing.TokenExtractors
 
             return CharChallengeResult.Error; // unexpected char within identifier.
         }
-
-        private char GetClosingDelimiter(char openingDelimiter)
-        {
-            switch (openingDelimiter)
-            {
-                case '[':
-                    return ']';
-
-                case '`':
-                    return '`';
-
-                case '"':
-                    return '"';
-
-                default:
-                    return '\0';
-            }
-        }
-
+        
         protected override CharChallengeResult ChallengeEnd() => CharChallengeResult.Error; // met end while extracting identifier.
     }
 }

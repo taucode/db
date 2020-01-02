@@ -33,7 +33,15 @@ WHERE
     T.name = @p_name
 ";
                 command.AddParameterWithValue("p_name", this.TableName);
-                var objectId = (int)command.ExecuteScalar();
+
+                var objectResult = command.ExecuteScalar();
+
+                if (objectResult == null)
+                {
+                    throw DbUtils.CreateTableNotFoundException(this.TableName);
+                }
+                
+                var objectId = (int)objectResult;
                 return objectId;
             }
         }
@@ -71,7 +79,7 @@ WHERE
 
         private static int? GetDbValueAsInt(object dbValue)
         {
-            if (dbValue == DBNull.Value)
+            if (dbValue == null)
             {
                 return null;
             }
