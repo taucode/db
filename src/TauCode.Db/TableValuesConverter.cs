@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using TauCode.Extensions;
 
 namespace TauCode.Db
 {
@@ -9,18 +11,37 @@ namespace TauCode.Db
 
         public TableValuesConverter(IDictionary<string, IDbValueConverter> dictionary)
         {
-            // todo: check args
+            if (dictionary == null)
+            {
+                throw new ArgumentNullException(nameof(dictionary));
+            }
+
             _dbValueConverters = dictionary.ToDictionary(x => x.Key, x => x.Value);
         }
 
         public IDbValueConverter GetColumnConverter(string columnName)
         {
-            return _dbValueConverters[columnName]; // todo checks
+            var converter = _dbValueConverters.GetOrDefault(columnName);
+
+            if (converter == null)
+            {
+                throw new KeyNotFoundException($"Value converter not found for column '{columnName}'.");
+            }
+
+            return converter;
         }
 
         public void SetColumnConverter(string columnName, IDbValueConverter dbValueConverter)
         {
-            // todo checks
+            if (columnName == null)
+            {
+                throw new ArgumentNullException(nameof(columnName));
+            }
+
+            if (dbValueConverter == null)
+            {
+                throw new ArgumentNullException(nameof(dbValueConverter));
+            }
 
             if (_dbValueConverters.ContainsKey(columnName))
             {

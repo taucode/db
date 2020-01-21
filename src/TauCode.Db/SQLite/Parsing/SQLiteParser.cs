@@ -55,12 +55,6 @@ namespace TauCode.Db.SQLite.Parsing
                 .Cast<ExactTextNode>()
                 .ToList();
 
-            // todo clean
-            //foreach (var exactTextNode in exactTextNodes)
-            //{
-            //    exactTextNode.IsCaseSensitive = false;
-            //}
-
             var reservedWords = exactTextNodes
                 .Select(x => x.ExactText)
                 .Distinct()
@@ -237,14 +231,7 @@ namespace TauCode.Db.SQLite.Parsing
                 var indexColumn = primaryKey.Columns.Last();
 
                 var ascOrDesc = ((TextToken)token).Text.ToLowerInvariant();
-                indexColumn.SortDirection = SqlTestsHelper.SqlToSortDirection(ascOrDesc);
-
-                //indexColumn.SortDirection = ((TextToken)token).Text.ToLowerInvariant().ToEnum<SortDirection>(true);
-
-                // todo clean
-                //indexColumn.SortDirection = Enum.Parse<SortDirection>(
-                //    ((TextToken)token).Text.ToLowerInvariant(),
-                //    true);
+                indexColumn.SortDirection = SQLiteParsingHelper.SqlToSortDirection(ascOrDesc);
             };
 
             var fk = (ActionNode)allSqlNodes.Single(x =>
@@ -374,15 +361,7 @@ namespace TauCode.Db.SQLite.Parsing
                 var columnInfo = index.Columns.Last();
 
                 var ascOrDesc = ((TextToken) token).Text.ToLowerInvariant();
-                columnInfo.SortDirection = SqlTestsHelper.SqlToSortDirection(ascOrDesc);
-
-                //columnInfo.SortDirection = .ToEnum<SortDirection>(true);
-
-                // todo clean
-                //columnInfo.SortDirection = Enum.Parse<SortDirection>(
-                //    ((TextToken)token).Text.ToLowerInvariant(),
-                //    true);
-
+                columnInfo.SortDirection = SQLiteParsingHelper.SqlToSortDirection(ascOrDesc);
             };
 
             #endregion
