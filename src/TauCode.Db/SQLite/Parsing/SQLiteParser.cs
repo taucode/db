@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using TauCode.Db.Model;
+using TauCode.Db.SQLite.Parsing.TextClasses;
 using TauCode.Extensions;
 using TauCode.Parsing;
 using TauCode.Parsing.Building;
@@ -21,7 +22,10 @@ namespace TauCode.Db.SQLite.Parsing
         private SQLiteParser()
         {
             _root = this.BuildRoot();
-            _parser = new Parser();
+            _parser = new Parser
+            {
+                Root = _root,
+            };
         }
 
         private INode BuildRoot()
@@ -34,7 +38,7 @@ namespace TauCode.Db.SQLite.Parsing
             var reader = new TinyLispPseudoReader();
             var list = reader.Read(tokens);
 
-            IBuilder builder = new Builder();
+            ITreeBuilder builder = new TreeBuilder();
             var root = builder.Build(nodeFactory, list);
 
             this.ChargeRoot(root);
@@ -51,10 +55,11 @@ namespace TauCode.Db.SQLite.Parsing
                 .Cast<ExactTextNode>()
                 .ToList();
 
-            foreach (var exactTextNode in exactTextNodes)
-            {
-                exactTextNode.IsCaseSensitive = false;
-            }
+            // todo clean
+            //foreach (var exactTextNode in exactTextNodes)
+            //{
+            //    exactTextNode.IsCaseSensitive = false;
+            //}
 
             var reservedWords = exactTextNodes
                 .Select(x => x.ExactText)
@@ -223,24 +228,23 @@ namespace TauCode.Db.SQLite.Parsing
                 primaryKey.Columns.Add(indexColumn);
             };
 
-            var pkColumnAsc = (ActionNode)allSqlNodes.Single(x =>
-               string.Equals(x.Name, "asc", StringComparison.InvariantCultureIgnoreCase));
-            pkColumnAsc.Action = (node, token, accumulator) =>
+            var pkColumnAscOrDesc = (ActionNode)allSqlNodes.Single(x =>
+                string.Equals(x.Name, "pk-asc-or-desc", StringComparison.InvariantCultureIgnoreCase));
+            pkColumnAscOrDesc.Action = (node, token, accumulator) =>
             {
-                var tableMold = accumulator.GetLastResult<TableMold>();
-                var primaryKey = tableMold.PrimaryKey;
+                var tableInfo = accumulator.GetLastResult<TableMold>();
+                var primaryKey = tableInfo.PrimaryKey;
                 var indexColumn = primaryKey.Columns.Last();
-                indexColumn.SortDirection = SortDirection.Ascending;
-            };
 
-            var pkColumnDesc = (ActionNode)allSqlNodes.Single(x =>
-               string.Equals(x.Name, "desc", StringComparison.InvariantCultureIgnoreCase));
-            pkColumnDesc.Action = (node, token, accumulator) =>
-            {
-                var tableMold = accumulator.GetLastResult<TableMold>();
-                var primaryKey = tableMold.PrimaryKey;
-                var indexColumn = primaryKey.Columns.Last();
-                indexColumn.SortDirection = SortDirection.Descending;
+                var ascOrDesc = ((TextToken)token).Text.ToLowerInvariant();
+                indexColumn.SortDirection = SqlTestsHelper.SqlToSortDirection(ascOrDesc);
+
+                //indexColumn.SortDirection = ((TextToken)token).Text.ToLowerInvariant().ToEnum<SortDirection>(true);
+
+                // todo clean
+                //indexColumn.SortDirection = Enum.Parse<SortDirection>(
+                //    ((TextToken)token).Text.ToLowerInvariant(),
+                //    true);
             };
 
             var fk = (ActionNode)allSqlNodes.Single(x =>
@@ -362,22 +366,23 @@ namespace TauCode.Db.SQLite.Parsing
                 index.Columns.Add(columnMold);
             };
 
-            var indexColumnAsc = (ActionNode)allSqlNodes.Single(x =>
-               string.Equals(x.Name, "index-column-asc", StringComparison.InvariantCultureIgnoreCase));
-            indexColumnAsc.Action = (node, token, accumulator) =>
+            var indexColumnAscOrDesc = (ActionNode)allSqlNodes.Single(x =>
+                string.Equals(x.Name, "index-column-asc-or-desc", StringComparison.InvariantCultureIgnoreCase));
+            indexColumnAscOrDesc.Action = (node, token, accumulator) =>
             {
                 var index = accumulator.GetLastResult<IndexMold>();
-                var columnMold = index.Columns.Last();
-                columnMold.SortDirection = SortDirection.Ascending;
-            };
+                var columnInfo = index.Columns.Last();
 
-            var indexColumnDesc = (ActionNode)allSqlNodes.Single(x =>
-               string.Equals(x.Name, "index-column-desc", StringComparison.InvariantCultureIgnoreCase));
-            indexColumnDesc.Action = (node, token, accumulator) =>
-            {
-                var index = accumulator.GetLastResult<IndexMold>();
-                var columnMold = index.Columns.Last();
-                columnMold.SortDirection = SortDirection.Descending;
+                var ascOrDesc = ((TextToken) token).Text.ToLowerInvariant();
+                columnInfo.SortDirection = SqlTestsHelper.SqlToSortDirection(ascOrDesc);
+
+                //columnInfo.SortDirection = .ToEnum<SortDirection>(true);
+
+                // todo clean
+                //columnInfo.SortDirection = Enum.Parse<SortDirection>(
+                //    ((TextToken)token).Text.ToLowerInvariant(),
+                //    true);
+
             };
 
             #endregion
@@ -397,7 +402,7 @@ namespace TauCode.Db.SQLite.Parsing
             ILexer lexer = new SQLiteLexer();
             var tokens = lexer.Lexize(sql);
 
-            var results = _parser.Parse(_root, tokens);
+            var results = _parser.Parse(tokens);
             return results;
         }
     }

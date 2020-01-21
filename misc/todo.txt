@@ -22,3 +22,6 @@
     1. Check if all resources are needed in test projects.
     2. Remove dummy tests one day.
 
+2020-01-07
+==========
+    1. parsing of NVARCHAR(100) will produce Precision = 100, Scale = null, Size = null, while it should produce Precision = null, Scale = null, Size = 100
