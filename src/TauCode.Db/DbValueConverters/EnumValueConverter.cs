@@ -11,7 +11,7 @@ namespace TauCode.Db.DbValueConverters
             bool validGenericArg = typeof(TEnum).IsEnum;
             if (!validGenericArg)
             {
-                throw new NotImplementedException(); // todo
+                throw new ArgumentException($"'{nameof(TEnum)}' must be an enum type.", nameof(TEnum));
             }
 
             this.Behaviour = behaviour;

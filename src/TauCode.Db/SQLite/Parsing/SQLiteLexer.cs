@@ -1,56 +1,37 @@
-﻿using TauCode.Db.SQLite.Parsing.TokenExtractors;
+﻿using TauCode.Db.SQLite.Parsing.TokenProducers;
+using TauCode.Extensions;
 using TauCode.Parsing.Lexing;
-using TauCode.Parsing.Lexing.StandardTokenExtractors;
+using TauCode.Parsing.Lexing.StandardProducers;
 
 namespace TauCode.Db.SQLite.Parsing
 {
     public class SQLiteLexer : LexerBase
     {
-        public SQLiteLexer()
+        protected override ITokenProducer[] CreateProducers()
         {
+            return new ITokenProducer[]
+            {
+                new WhiteSpaceProducer(),
+                new WordTokenProducer(),
+                new SqlPunctuationTokenProducer(),
+                new IntegerProducer(IsAcceptableIntegerTerminator),
+                new SqlIdentifierTokenProducer(),
+            };
         }
 
-        protected override void InitTokenExtractors()
+        private bool IsAcceptableIntegerTerminator(char c)
         {
-            // word
-            var wordExtractor = new WordExtractor(this.Environment);
-            this.AddTokenExtractor(wordExtractor);
+            if (LexingHelper.IsInlineWhiteSpaceOrCaretControl(c))
+            {
+                return true;
+            }
 
-            // punctuation
-            var punctuationExtractor = new SQLitePunctuationExtractor();
-            this.AddTokenExtractor(punctuationExtractor);
+            if (c.IsIn('(', ')', ','))
+            {
+                return true;
+            }
 
-            // integer
-            var integerExtractor = new IntegerExtractor(this.Environment);
-            this.AddTokenExtractor(integerExtractor);
-
-            // identifier
-            var identifierExtractor = new SQLiteIdentifierExtractor();
-            this.AddTokenExtractor(identifierExtractor);
-
-            // string
-            var stringExtractor = new SQLiteStringExtractor();
-            this.AddTokenExtractor(stringExtractor);
-
-            // *** Links ***
-            wordExtractor.AddSuccessors(
-                punctuationExtractor);
-
-            punctuationExtractor.AddSuccessors(
-                punctuationExtractor,
-                wordExtractor,
-                integerExtractor,
-                identifierExtractor,
-                stringExtractor);
-
-            integerExtractor.AddSuccessors(
-                punctuationExtractor);
-
-            identifierExtractor.AddSuccessors(
-                punctuationExtractor);
-
-            stringExtractor.AddSuccessors(
-                punctuationExtractor);
+            return false;
         }
     }
 }
