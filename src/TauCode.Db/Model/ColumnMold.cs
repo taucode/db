@@ -5,7 +5,7 @@ using System.Text;
 namespace TauCode.Db.Model
 {
     [DebuggerDisplay("{" + nameof(GetDefaultCaption) + "()}")]
-    public class ColumnMold : IDbMold
+    public class ColumnMold : IMold
     {
         public string Name { get; set; }
         public DbTypeMold Type { get; set; } = new DbTypeMold();
@@ -13,6 +13,19 @@ namespace TauCode.Db.Model
         public ColumnIdentityMold Identity { get; set; }
         public string Default { get; set; }
         public IDictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
+
+        public IMold Clone(bool includeProperties = false)
+        {
+            return new ColumnMold
+            {
+                Name = this.Name,
+                Type = this.Type.CloneType(includeProperties),
+                IsNullable = this.IsNullable,
+                Identity = this.Identity?.CloneColumnIdentity(includeProperties),
+                Default = this.Default,
+                Properties = this.ClonePropertiesIfNeeded(includeProperties),
+            };
+        }
 
         public string GetDefaultCaption()
         {

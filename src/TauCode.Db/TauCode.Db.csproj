@@ -10,7 +10,7 @@
     <None Remove="Resources\MySql\sql-mysql-data-type-names.txt" />
     <None Remove="Resources\MySql\sql-mysql-reserved-words.txt" />
     <None Remove="Resources\SQLite\sql-sqlite-data-type-names.txt" />
-    <None Remove="Resources\SQLite\sql-sqlite-grammar.txt" />
+    <None Remove="Resources\SQLite\sql-sqlite-grammar.lisp" />
     <None Remove="Resources\SQLite\sql-sqlite-reserved-words.txt" />
     <None Remove="Resources\SqlServer\sql-sqlserver-data-type-names.txt" />
     <None Remove="Resources\SqlServer\sql-sqlserver-reserved-words.txt" />
@@ -21,20 +21,18 @@
     <EmbeddedResource Include="Resources\Ansi\sql-ansi-reserved-words.txt" />
     <EmbeddedResource Include="Resources\MySql\sql-mysql-data-type-names.txt" />
     <EmbeddedResource Include="Resources\MySql\sql-mysql-reserved-words.txt" />
-    <EmbeddedResource Include="Resources\SQLite\sql-sqlite-grammar.txt" />
     <EmbeddedResource Include="Resources\SQLite\sql-sqlite-data-type-names.txt" />
+    <EmbeddedResource Include="Resources\SQLite\sql-sqlite-grammar.lisp" />
     <EmbeddedResource Include="Resources\SQLite\sql-sqlite-reserved-words.txt" />
     <EmbeddedResource Include="Resources\SqlServer\sql-sqlserver-data-type-names.txt" />
     <EmbeddedResource Include="Resources\SqlServer\sql-sqlserver-reserved-words.txt" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.6.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="TauCode.Algorithms" Version="3.0.1" />
-    <PackageReference Include="TauCode.Data" Version="3.0.0.1" />
-    <PackageReference Include="TauCode.Parsing" Version="3.0.2.2" />
-    <PackageReference Include="TauCode.Utils" Version="3.0.1" />
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.112" />
+    <PackageReference Include="TauCode.Algorithms" Version="1.0.0-dev-2019-12-21-20-57" />
+    <PackageReference Include="TauCode.Parsing" Version="1.0.0-dev-2020-01-20-15-37" />
   </ItemGroup>
 
 </Project>

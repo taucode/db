@@ -1,0 +1,29 @@
+﻿namespace TauCode.Db.DbValueConverters
+{
+    public class SingleValueConverter : DbValueConverterBase
+    {
+        protected override object ToDbValueImpl(object value)
+        {
+            if (value is float floatValue)
+            {
+                return floatValue;
+            }
+            else if (value is double doubleValue)
+            {
+                return doubleValue;
+            }
+
+            return null;
+        }
+
+        protected override object FromDbValueImpl(object dbValue)
+        {
+            if (dbValue is float floatDbValue)
+            {
+                return floatDbValue;
+            }
+
+            return null;
+        }
+    }
+}
