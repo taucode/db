@@ -32,7 +32,7 @@ namespace TauCode.Db.SQLite
                     return new DateTimeValueConverter();
 
                 case "integer":
-                    return new Int64ValueConverter();
+                    return new SQLiteInt64ValueConverter();
 
                 case "blob":
                     return new ByteArrayValueConverter();
@@ -44,7 +44,7 @@ namespace TauCode.Db.SQLite
                     return new DecimalValueConverter();
 
                 default:
-                    throw new NotImplementedException();
+                    throw new NotSupportedException($"Type name '{typeName}' not supported.");
             }
         }
 
