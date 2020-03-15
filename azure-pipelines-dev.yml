@@ -39,6 +39,10 @@ steps:
     packagesToPack: 'nuget\TauCode.Db.nuspec'
     versioningScheme: 'off'
 
+- task: CmdLine@2
+  inputs:
+    script: 'dir'
+
 - task: NuGetCommand@2
   inputs:
     command: 'custom'
