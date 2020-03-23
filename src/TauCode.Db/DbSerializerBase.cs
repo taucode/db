@@ -36,24 +36,23 @@ namespace TauCode.Db
                     .Select(y => y.Name)
                     .ToDictionary(
                         z => z,
-                        z => ((JValue)x[z]).Value))
+                        z => ((JValue) x[z]).Value))
                 .ToList();
-        
+
             this.Cruder.InsertRows(tableMold.Name, rows);
         }
 
         #endregion
 
         #region Protected
-        
-        protected virtual IDbInspector DbInspector =>
-            _dbInspector ?? (_dbInspector = this.Factory.CreateDbInspector(this.Connection));
+
+        protected virtual IDbInspector DbInspector => _dbInspector ??= this.Factory.CreateDbInspector(this.Connection);
 
         #endregion
 
         #region IDbSerializer Members
 
-        public virtual ICruder Cruder => _cruder ?? (_cruder = this.Factory.CreateCruder(this.Connection));
+        public virtual ICruder Cruder => _cruder ??= this.Factory.CreateCruder(this.Connection);
 
         public virtual string SerializeTableData(string tableName)
         {
@@ -67,7 +66,8 @@ namespace TauCode.Db
             var tables = this.DbInspector.GetTables(true, tableNamePredicate);
 
 
-            var dbData = new DynamicRow(); // it is strange to store entire data in 'dynamic' 'row', but why to invent new dynamic ancestor?
+            var dbData =
+                new DynamicRow(); // it is strange to store entire data in 'dynamic' 'row', but why to invent new dynamic ancestor?
 
             using (var command = this.Connection.CreateCommand())
             {
@@ -110,18 +110,29 @@ namespace TauCode.Db
             this.DeserializeTableData(table, tableData);
         }
 
-        public virtual void DeserializeDbData(string json)
+        public virtual void DeserializeDbData(string json, Func<string, bool> tableNamePredicate = null)
         {
+            if (json == null)
+            {
+                throw new ArgumentNullException(nameof(json));
+            }
+
             var dbData = JsonConvert.DeserializeObject(json) as JObject;
             if (dbData == null)
             {
                 throw new ArgumentException("Could not deserialize DB data.", nameof(json));
             }
 
-
             foreach (var property in dbData.Properties())
             {
                 var name = property.Name;
+
+                var need = tableNamePredicate?.Invoke(name) ?? true;
+                if (!need)
+                {
+                    continue;
+                }
+
                 var tableData = property.Value as JArray;
 
                 if (tableData == null)

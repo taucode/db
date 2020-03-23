@@ -42,5 +42,5 @@ steps:
 - task: NuGetCommand@2
   inputs:
     command: 'custom'
-    arguments: 'push $(Build.ArtifactStagingDirectory)\TauCode.Db.1.0.0-dev-2020-03-15-21-40.nupkg -ApiKey $(NUGET_API_KEY) -Source https://api.nuget.org/v3/index.json'
+    arguments: 'push $(Build.ArtifactStagingDirectory)\TauCode.Db.1.0.0-dev-2020-03-23-21-37.nupkg -ApiKey $(NUGET_API_KEY) -Source https://api.nuget.org/v3/index.json'
 

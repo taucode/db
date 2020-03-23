@@ -7,7 +7,7 @@ namespace TauCode.Db.Tests.SqlServer
 {
     internal class TestHelper
     {
-        internal const string ConnectionString = @"Server=.\mssqltest;Database=rho.test;User Id=testadmin;Password=1234;";
+        internal const string ConnectionString = @"Server=.\mssqltest;Database=rho.test;Trusted_Connection=True;";
 
         internal static void WriteDiff(string actual, string expected, string directory, string fileExtension, string reminder)
         {
