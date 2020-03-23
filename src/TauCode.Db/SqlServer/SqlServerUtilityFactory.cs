@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 
 namespace TauCode.Db.SqlServer
 {
@@ -26,5 +27,7 @@ namespace TauCode.Db.SqlServer
         public ICruder CreateCruder(IDbConnection connection) => new SqlServerCruder(connection);
 
         public IDbSerializer CreateDbSerializer(IDbConnection connection) => new SqlServerSerializer(connection);
+
+        public IDbConverter CreateDbConverter() => throw new NotSupportedException();
     }
 }

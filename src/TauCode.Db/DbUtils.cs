@@ -173,6 +173,21 @@ namespace TauCode.Db
             }
         }
 
+        public static string ConvertDbToJson(
+            this IDbConverter dbConverter,
+            DbMold originDb,
+            IReadOnlyDictionary<string, string> options = null)
+        {
+            if (dbConverter == null)
+            {
+                throw new ArgumentNullException(nameof(dbConverter));
+            }
+
+            var convertedDb = dbConverter.ConvertDb(originDb, options);
+            var json = DbUtils.FineSerializeToJson(convertedDb);
+            return json;
+        }
+
         private static IDbConnection TryCreateDbConnection(string dbConnectionTypeFullName)
         {
             var allTypes = AppDomain.CurrentDomain
@@ -302,7 +317,10 @@ namespace TauCode.Db
         {
             var contractResolver = new DefaultContractResolver
             {
-                NamingStrategy = new CamelCaseNamingStrategy(),
+                NamingStrategy = new CamelCaseNamingStrategy
+                {
+                    ProcessDictionaryKeys = false,
+                },
             };
 
             var json = JsonConvert.SerializeObject(

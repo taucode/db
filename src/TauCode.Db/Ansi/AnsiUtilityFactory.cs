@@ -26,5 +26,6 @@ namespace TauCode.Db.Ansi
         public ICruder CreateCruder(IDbConnection connection) => throw new NotSupportedException();
 
         public IDbSerializer CreateDbSerializer(IDbConnection connection) => throw new NotSupportedException();
+        public IDbConverter CreateDbConverter() => throw new NotSupportedException();
     }
 }

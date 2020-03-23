@@ -30,5 +30,6 @@ namespace TauCode.Db.SQLite
         public ICruder CreateCruder(IDbConnection connection) => new SQLiteCruder(connection);
 
         public IDbSerializer CreateDbSerializer(IDbConnection connection) => new SQLiteSerializer(connection);
+        public IDbConverter CreateDbConverter() => new SQLiteConverter();
     }
 }
