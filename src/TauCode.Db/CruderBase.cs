@@ -146,7 +146,7 @@ namespace TauCode.Db
                 var rowDictionary = _cruder.ObjectToDataDictionary(values);
                 foreach (var pair in rowDictionary)
                 {
-                    var columnName = pair.Key;
+                    var columnName = pair.Key.ToLowerInvariant();
                     var originalColumnValue = pair.Value;
 
                     var parameterInfo = _parameterInfosByColumnNames[columnName];
@@ -159,7 +159,7 @@ namespace TauCode.Db
 
                     if (columnValue == null)
                     {
-                        throw new DbException($"Could not transform value '{originalColumnValue}' of type '{originalColumnValue.GetType().FullName}'. Column name is '{columnName}'.");
+                        throw new DbException($"Could not transform value '{originalColumnValue}' of type '{originalColumnValue.GetType().FullName}'. Table name is {_table.Name}. Column name is '{columnName}'.");
                     }
 
                     if (columnValue is string stringColumnValue && parameterInfo.DbType.IsIn(
@@ -203,6 +203,11 @@ namespace TauCode.Db
 
             public int ExecuteWithValues(object values)
             {
+                if (values == null)
+                {
+                    throw new ArgumentNullException(nameof(values));
+                }
+
                 this.ApplyValuesToCommand(values);
                 var result = _command.ExecuteNonQuery();
                 return result;
@@ -457,6 +462,11 @@ namespace TauCode.Db
 
                 foreach (var row in rows)
                 {
+                    if (row == null)
+                    {
+                        throw new ArgumentException($"'{nameof(rows)}' must not contain nulls.");
+                    }
+
                     helper.ExecuteWithValues(row);
                 }
             }
