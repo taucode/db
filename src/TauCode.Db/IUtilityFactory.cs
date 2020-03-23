@@ -12,5 +12,6 @@ namespace TauCode.Db
         ITableInspector CreateTableInspector(IDbConnection connection, string tableName);
         ICruder CreateCruder(IDbConnection connection);
         IDbSerializer CreateDbSerializer(IDbConnection connection);
+        IDbConverter CreateDbConverter();
     }
 }
