@@ -34,8 +34,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{A6E95C07
 		build\azure-pipelines.yml = build\azure-pipelines.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoDateTests", "tests\TodoDateTests\TodoDateTests.csproj", "{02A0777A-C78D-4E7B-8FA6-2EE6ACE24CEB}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -62,10 +60,6 @@ Global
 		{E52D04FD-BFD9-426C-80EE-8E7FC275ACC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E52D04FD-BFD9-426C-80EE-8E7FC275ACC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E52D04FD-BFD9-426C-80EE-8E7FC275ACC0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{02A0777A-C78D-4E7B-8FA6-2EE6ACE24CEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{02A0777A-C78D-4E7B-8FA6-2EE6ACE24CEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{02A0777A-C78D-4E7B-8FA6-2EE6ACE24CEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{02A0777A-C78D-4E7B-8FA6-2EE6ACE24CEB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -76,7 +70,6 @@ Global
 		{886DC4C7-D567-4902-BF13-1A15E461141F} = {EE8B33C7-90A5-4CCF-99D9-BC9CF029F312}
 		{2B2911F9-9288-467C-96D3-F872161C5A60} = {EE8B33C7-90A5-4CCF-99D9-BC9CF029F312}
 		{E52D04FD-BFD9-426C-80EE-8E7FC275ACC0} = {EE8B33C7-90A5-4CCF-99D9-BC9CF029F312}
-		{02A0777A-C78D-4E7B-8FA6-2EE6ACE24CEB} = {EE8B33C7-90A5-4CCF-99D9-BC9CF029F312}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E033216E-1151-4D66-A416-3EBD14511CA8}

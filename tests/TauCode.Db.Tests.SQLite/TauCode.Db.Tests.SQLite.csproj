@@ -26,7 +26,6 @@
     <None Remove="Resources\rho\metadata-language.json" />
     <None Remove="Resources\rho\script-drop-tables.sql" />
     <None Remove="Resources\rho\script-insert-data.sql" />
-    <None Remove="TodoResources\TodoData.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -49,7 +48,6 @@
     <EmbeddedResource Include="Resources\rho\metadata-language.json" />
     <EmbeddedResource Include="Resources\rho\script-drop-tables.sql" />
     <EmbeddedResource Include="Resources\rho\script-insert-data.sql" />
-    <EmbeddedResource Include="TodoResources\TodoData.json" />
   </ItemGroup>
 
   <ItemGroup>

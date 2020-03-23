@@ -90,7 +90,8 @@ namespace TauCode.Db
                 {
                     var columnName = pair.Key;
                     var columnType = pair.Value.Type;
-                    var parameterInfo = _cruder.ColumnToParameterInfo(columnName, columnType, _parameterNamesByColumnNames);
+                    var parameterInfo =
+                        _cruder.ColumnToParameterInfo(columnName, columnType, _parameterNamesByColumnNames);
 
                     if (parameterInfo == null)
                     {
@@ -159,23 +160,26 @@ namespace TauCode.Db
 
                     if (columnValue == null)
                     {
-                        throw new DbException($"Could not transform value '{originalColumnValue}' of type '{originalColumnValue.GetType().FullName}'. Table name is '{_table.Name}'. Column name is '{columnName}'.");
+                        throw new DbException(
+                            $"Could not transform value '{originalColumnValue}' of type '{originalColumnValue.GetType().FullName}'. Table name is '{_table.Name}'. Column name is '{columnName}'.");
                     }
 
                     if (columnValue is string stringColumnValue && parameterInfo.DbType.IsIn(
-                            DbType.AnsiString,
-                            DbType.AnsiStringFixedLength,
-                            DbType.String,
-                            DbType.StringFixedLength))
+                        DbType.AnsiString,
+                        DbType.AnsiStringFixedLength,
+                        DbType.String,
+                        DbType.StringFixedLength))
                     {
-                        if (stringColumnValue.Length > parameter.Size && parameter.Size >= 0) // parameter.Size might be '-1', e.g. for type NVARCHAR(max)
+                        if (stringColumnValue.Length > parameter.Size && parameter.Size >= 0
+                        ) // parameter.Size might be '-1', e.g. for type NVARCHAR(max)
                         {
                             throw _cruder.CreateTruncateException(columnName);
                         }
                     }
                     else if (columnValue is byte[] byteArray)
                     {
-                        if (byteArray.Length > parameter.Size && parameter.Size >= 0) // parameter.Size might be '-1', e.g. for type VARBINARY(max)
+                        if (byteArray.Length > parameter.Size && parameter.Size >= 0
+                        ) // parameter.Size might be '-1', e.g. for type VARBINARY(max)
                         {
                             throw _cruder.CreateTruncateException(columnName);
                         }
@@ -247,7 +251,7 @@ namespace TauCode.Db
 
         private IScriptBuilder _scriptBuilder;
         private readonly IDictionary<string, ITableValuesConverter> _tableValuesConverters;
-        
+
         #endregion
 
         #region Constructor
@@ -402,12 +406,11 @@ namespace TauCode.Db
 
         #region ICruder Members
 
-        public virtual IScriptBuilder ScriptBuilder =>
-            _scriptBuilder ?? (_scriptBuilder = this.Factory.CreateScriptBuilder());
+        public virtual IScriptBuilder ScriptBuilder => _scriptBuilder ??= this.Factory.CreateScriptBuilder();
 
         public ITableValuesConverter GetTableValuesConverter(string tableName)
         {
-            // todo: checks, lowercase
+            // todo: checks, lowercase, everywhere.
             var tableValuesConverter = _tableValuesConverters.GetOrDefault(tableName);
             if (tableValuesConverter == null)
             {
@@ -452,23 +455,21 @@ namespace TauCode.Db
                 return; // nothing to insert
             }
 
-            using (var helper = new CommandHelper(this, table, this.ObjectToDataDictionary(rows[0]).Keys))
+            using var helper = new CommandHelper(this, table, this.ObjectToDataDictionary(rows[0]).Keys);
+            var sql = this.ScriptBuilder.BuildInsertScript(
+                table,
+                helper.GetParameterNames());
+
+            helper.CommandText = sql;
+
+            foreach (var row in rows)
             {
-                var sql = this.ScriptBuilder.BuildInsertScript(
-                    table,
-                    helper.GetParameterNames());
-
-                helper.CommandText = sql;
-
-                foreach (var row in rows)
+                if (row == null)
                 {
-                    if (row == null)
-                    {
-                        throw new ArgumentException($"'{nameof(rows)}' must not contain nulls.");
-                    }
-
-                    helper.ExecuteWithValues(row);
+                    throw new ArgumentException($"'{nameof(rows)}' must not contain nulls.");
                 }
+
+                helper.ExecuteWithValues(row);
             }
         }
 
@@ -490,17 +491,15 @@ namespace TauCode.Db
 
             var idColumnName = table.GetPrimaryKeyColumn().Name.ToLowerInvariant();
 
-            using (var helper = new CommandHelper(this, table, new[] { idColumnName }))
+            using var helper = new CommandHelper(this, table, new[] { idColumnName });
+            var sql = this.ScriptBuilder.BuildSelectByIdScript(table, helper.GetParameterNames().Single().Value);
+            helper.CommandText = sql;
+            var rows = helper.FetchWithValues(new Dictionary<string, object>
             {
-                var sql = this.ScriptBuilder.BuildSelectByIdScript(table, helper.GetParameterNames().Single().Value);
-                helper.CommandText = sql;
-                var rows = helper.FetchWithValues(new Dictionary<string, object>
-                {
-                    {idColumnName, id}
-                });
+                {idColumnName, id}
+            });
 
-                return rows.SingleOrDefault();
-            }
+            return rows.SingleOrDefault();
         }
 
         public virtual IList<dynamic> GetAllRows(string tableName)
@@ -514,13 +513,11 @@ namespace TauCode.Db
                 .CreateTableInspector(this.Connection, tableName)
                 .GetTable();
 
-            using (var command = this.Connection.CreateCommand())
-            {
-                var sql = this.ScriptBuilder.BuildSelectAllScript(table);
-                command.CommandText = sql;
-                var rows = DbUtils.GetCommandRows(command, this.GetTableValuesConverter(tableName));
-                return rows;
-            }
+            using var command = this.Connection.CreateCommand();
+            var sql = this.ScriptBuilder.BuildSelectAllScript(table);
+            command.CommandText = sql;
+            var rows = DbUtils.GetCommandRows(command, this.GetTableValuesConverter(tableName));
+            return rows;
         }
 
         public virtual bool UpdateRow(string tableName, object rowUpdate, object id)
@@ -557,18 +554,16 @@ namespace TauCode.Db
                 table.GetPrimaryKeyColumn().Name,
             };
 
-            using (var helper = new CommandHelper(this, table, columnNames))
-            {
-                var sql = this.ScriptBuilder.BuildUpdateScript(
-                    table,
-                    helper.GetParameterNames());
+            using var helper = new CommandHelper(this, table, columnNames);
+            var sql = this.ScriptBuilder.BuildUpdateScript(
+                table,
+                helper.GetParameterNames());
 
-                dataDictionary.Add(table.GetPrimaryKeyColumn().Name.ToLowerInvariant(), id);
+            dataDictionary.Add(table.GetPrimaryKeyColumn().Name.ToLowerInvariant(), id);
 
-                helper.CommandText = sql;
-                var result = helper.ExecuteWithValues(dataDictionary);
-                return result > 0;
-            }
+            helper.CommandText = sql;
+            var result = helper.ExecuteWithValues(dataDictionary);
+            return result > 0;
         }
 
         public virtual bool DeleteRow(string tableName, object id)
@@ -589,18 +584,16 @@ namespace TauCode.Db
 
             var idColumnName = table.GetPrimaryKeyColumn().Name.ToLowerInvariant();
 
-            using (var helper = new CommandHelper(this, table, new[] { idColumnName }))
+            using var helper = new CommandHelper(this, table, new[] { idColumnName });
+            var sql = this.ScriptBuilder.BuildDeleteByIdScript(table, helper.GetParameterNames().Single().Value);
+            helper.CommandText = sql;
+
+            var result = helper.ExecuteWithValues(new Dictionary<string, object>
             {
-                var sql = this.ScriptBuilder.BuildDeleteByIdScript(table, helper.GetParameterNames().Single().Value);
-                helper.CommandText = sql;
+                {idColumnName, id}
+            });
 
-                var result = helper.ExecuteWithValues(new Dictionary<string, object>
-                {
-                    {idColumnName, id}
-                });
-
-                return result > 0;
-            }
+            return result > 0;
         }
 
         #endregion
