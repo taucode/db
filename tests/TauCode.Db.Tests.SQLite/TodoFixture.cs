@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using System.Data.SQLite;
+using System.IO;
 using TauCode.Extensions;
 
 namespace TauCode.Db.Tests.SQLite
@@ -11,7 +12,7 @@ namespace TauCode.Db.Tests.SQLite
         public void TodoTest()
         {
             var tuple = DbUtils.CreateSQLiteConnectionString();
-            var fileName = tuple.Item1;
+            var filePath = tuple.Item1;
             var connectionString = tuple.Item2;
 
             var factory = DbUtils.GetUtilityFactory(DbProviderNames.SQLite);
@@ -43,6 +44,15 @@ CREATE TABLE VersionInfo(
 
                 var dbSerializer = factory.CreateDbSerializer(connection);
                 dbSerializer.DeserializeDbData(json);
+            }
+
+            try
+            {
+                File.Delete(filePath);
+            }
+            catch
+            {
+                // dismiss
             }
         }
     }

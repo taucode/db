@@ -159,7 +159,7 @@ namespace TauCode.Db
 
                     if (columnValue == null)
                     {
-                        throw new DbException($"Could not transform value '{originalColumnValue}' of type '{originalColumnValue.GetType().FullName}'. Table name is {_table.Name}. Column name is '{columnName}'.");
+                        throw new DbException($"Could not transform value '{originalColumnValue}' of type '{originalColumnValue.GetType().FullName}'. Table name is '{_table.Name}'. Column name is '{columnName}'.");
                     }
 
                     if (columnValue is string stringColumnValue && parameterInfo.DbType.IsIn(

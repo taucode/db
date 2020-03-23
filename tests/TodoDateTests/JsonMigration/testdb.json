@@ -1,0 +1,129 @@
+﻿// currency layer system user id: a637d99f-6af9-40e8-b1c5-865f7ca5e468
+{
+  "user": [
+    {
+      "id": "76171ae7-cc87-4803-86e7-0141480dc1d5" // Acme system user
+    },
+    {
+      "id": "17fefec2-e5f8-40e9-a4eb-d3db1da009e2" // Foo system user
+    },
+    {
+      "id": "ca2c8f0a-00eb-49a3-b495-cd14fe830b0f" // ak
+    },
+    {
+      "id": "54bdcb8b-f3d9-4944-97d6-e5716dc1fe66" // olia
+    }
+  ],
+
+  "system_user": [
+    {
+      "user_id": "76171ae7-cc87-4803-86e7-0141480dc1d5", // Acme system user
+      "code": "acme"
+    },
+    {
+      "user_id": "17fefec2-e5f8-40e9-a4eb-d3db1da009e2", // Foo system user
+      "code": "foo"
+    }
+  ],
+
+  "quote": [
+    // begin: acme initial quotes; portfolio is "USD", "EUR", "UAH", "NOK"
+    {
+      "id": "71aaa4b2-0bd1-4d36-b938-25de290cdc49",
+      "user_id": "76171ae7-cc87-4803-86e7-0141480dc1d5",
+      "currency_id": "ce49c7a1-66f8-494e-b5cd-9b9b925637ee", // USD
+      "date": "1900-01-01",
+      "is_basic": true,
+      "rate": 1.0,
+      "system_user_id": null
+    },
+    {
+      "id": "9493f8db-6236-4780-ad81-298ff8113637",
+      "user_id": "76171ae7-cc87-4803-86e7-0141480dc1d5",
+      "currency_id": "fe781e20-5fd3-4ec6-9350-dd1859649e14", // EUR
+      "date": "1900-01-01",
+      "is_basic": false,
+      "rate": 0.88161,
+      "system_user_id": null
+    },
+    {
+      "id": "a3299257-d898-4f9f-b028-54b92295da1b",
+      "user_id": "76171ae7-cc87-4803-86e7-0141480dc1d5",
+      "currency_id": "c419319b-dfa4-48dc-b42a-bb7d2c58ce5a", // UAH
+      "date": "1900-01-01",
+      "is_basic": false,
+      "rate": 26.976014,
+      "system_user_id": null
+    },
+    {
+      "id": "65085027-8d77-4eae-afae-a6a7c6d5f6e4",
+      "user_id": "76171ae7-cc87-4803-86e7-0141480dc1d5",
+      "currency_id": "b8a080f6-2cf3-48fa-b276-2b990f3456ca", // NOK
+      "date": "1900-01-01",
+      "is_basic": false,
+      "rate": 8.51188,
+      "system_user_id": null
+    },
+    // end: acme initial quotes
+    // begin: foo initial quotes; portfolio is "USD", "SEK", "JPY"
+    {
+      "id": "e0fca69c-d9f5-454f-8b26-3a757a503858",
+      "user_id": "17fefec2-e5f8-40e9-a4eb-d3db1da009e2",
+      "currency_id": "ce49c7a1-66f8-494e-b5cd-9b9b925637ee", // USD
+      "date": "1900-01-01",
+      "is_basic": true,
+      "rate": 1.0,
+      "system_user_id": null
+    },
+    {
+      "id": "e1d16f39-e0c8-4442-88cf-042cad19080c",
+      "user_id": "17fefec2-e5f8-40e9-a4eb-d3db1da009e2",
+      "currency_id": "6a2367e1-0238-4c25-8447-1637c6313e2d", // SEK
+      "date": "1900-01-01",
+      "is_basic": false,
+      "rate": 9.216232,
+      "system_user_id": null
+    },
+    {
+      "id": "38ae55ba-8383-4242-ab8e-bb8ccc9f0dc8",
+      "user_id": "17fefec2-e5f8-40e9-a4eb-d3db1da009e2",
+      "currency_id": "3467d4f0-b292-48be-b1d5-1ecb6fd157ca", // JPY
+      "date": "1900-01-01",
+      "is_basic": false,
+      "rate": 110.093379,
+      "system_user_id": null
+    },
+    // end: acme initial quotes
+    // begin: ak initial quotes; portfolio is "UAH", "EUR"
+    {
+      "id": "53d64877-111c-4e9d-9239-c89f7bfad7f6",
+      "user_id": "ca2c8f0a-00eb-49a3-b495-cd14fe830b0f",
+      "currency_id": "c419319b-dfa4-48dc-b42a-bb7d2c58ce5a", // UAH
+      "date": "1900-01-01",
+      "is_basic": true,
+      "rate": 1.0,
+      "system_user_id": null
+    },
+    {
+      "id": "f96d61b7-7015-4a2c-ada2-d48aca377dae",
+      "user_id": "ca2c8f0a-00eb-49a3-b495-cd14fe830b0f",
+      "currency_id": "fe781e20-5fd3-4ec6-9350-dd1859649e14", // EUR
+      "date": "1900-01-01",
+      "is_basic": false,
+      "rate": null,
+      "system_user_id": "a637d99f-6af9-40e8-b1c5-865f7ca5e468"
+    },
+    // end: ak initial quotes
+    // begin: olia initial quotes; portfolio is "USD"
+    {
+      "id": "cdb45906-b88c-4053-b2a0-5efbcfb802e7",
+      "user_id": "54bdcb8b-f3d9-4944-97d6-e5716dc1fe66",
+      "currency_id": "ce49c7a1-66f8-494e-b5cd-9b9b925637ee", // USD
+      "date": "1900-01-01",
+      "is_basic": true,
+      "rate": 1.0,
+      "system_user_id": null
+    }
+    // end: olia initial quotes
+  ]
+}

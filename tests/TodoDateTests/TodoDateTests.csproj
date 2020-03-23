@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="JsonMigration\data.json" />
+    <None Remove="JsonMigration\metadata.json" />
+    <None Remove="JsonMigration\testdb.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="JsonMigration\data.json" />
+    <EmbeddedResource Include="JsonMigration\metadata.json" />
+    <EmbeddedResource Include="JsonMigration\testdb.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentMigrator.Runner" Version="3.2.1" />
+    <PackageReference Include="nunit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.16.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\TauCode.Db\TauCode.Db.csproj" />
+  </ItemGroup>
+
+</Project>

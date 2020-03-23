@@ -10,6 +10,11 @@ namespace TauCode.Db.DbValueConverters
             {
                 return dateTime;
             }
+            else if (value is string s)
+            {
+                var parsed = DateTime.TryParse(s, out var dateTimeFromString);
+                return parsed ? (object)dateTimeFromString : null;
+            }
 
             return null;
         }
