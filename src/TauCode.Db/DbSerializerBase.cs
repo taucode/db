@@ -4,6 +4,7 @@ using System;
 using System.Data;
 using System.Linq;
 using TauCode.Db.Data;
+using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
 
 namespace TauCode.Db
@@ -31,12 +32,29 @@ namespace TauCode.Db
         protected virtual void DeserializeTableData(TableMold tableMold, JArray tableData)
         {
             var rows = tableData
-                .Select(x => tableMold
+                .Select((x, xIndex) => tableMold
                     .Columns
                     .Select(y => y.Name)
                     .ToDictionary(
                         z => z,
-                        z => ((JValue) x[z]).Value))
+                        z =>
+                        {
+                            var jToken = x[z];
+
+                            if (jToken == null)
+                            {
+                                throw new DbException($"Property '{z}' not found in JSON. Table '{tableMold.Name}', entry index '{xIndex}'.");
+                            }
+
+                            if (jToken is JValue jValue)
+                            {
+                                return jValue.Value;
+                            }
+                            else
+                            {
+                                throw new DbException($"Property '{z}' is not a JValue. Table '{tableMold.Name}', entry index '{xIndex}'.");
+                            }
+                        }))
                 .ToList();
 
             this.Cruder.InsertRows(tableMold.Name, rows);
