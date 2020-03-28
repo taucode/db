@@ -10,7 +10,7 @@
     <projectUrl>https://github.com/taucode/taucode.db</projectUrl>
     <description>Basic functionality for database support</description>
     <releaseNotes>
-     Fixed code.
+      Fixed code.
     </releaseNotes>
     <tags>taucode db database</tags>
     <dependencies>
