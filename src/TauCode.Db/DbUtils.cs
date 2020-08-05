@@ -173,6 +173,21 @@ namespace TauCode.Db
             }
         }
 
+        public static string ConvertDbToJson(
+            this IDbConverter dbConverter,
+            DbMold originDb,
+            IReadOnlyDictionary<string, string> options = null)
+        {
+            if (dbConverter == null)
+            {
+                throw new ArgumentNullException(nameof(dbConverter));
+            }
+
+            var convertedDb = dbConverter.ConvertDb(originDb, options);
+            var json = DbUtils.FineSerializeToJson(convertedDb);
+            return json;
+        }
+
         private static IDbConnection TryCreateDbConnection(string dbConnectionTypeFullName)
         {
             var allTypes = AppDomain.CurrentDomain
@@ -283,17 +298,6 @@ namespace TauCode.Db
             command.Parameters.Add(parameter);
         }
 
-        /// <summary>
-        /// (Justified TODO). Get rid of this method when migrated to .NET Standard 2.1 which has 'ToHashSet'
-        /// </summary>
-        /// <typeparam name="T">Collection element type.</typeparam>
-        /// <param name="collection">Collection to convert to has table.</param>
-        /// <returns>Hash set built from collection.</returns>
-        internal static HashSet<T> ToMyHashSet<T>(this IEnumerable<T> collection)
-        {
-            return new HashSet<T>(collection);
-        }
-
         internal static void MarkAsExplicitPrimaryKey(this ColumnMold columnMold)
         {
             columnMold.SetBoolProperty("is-explicit-primary-key", true);
@@ -313,7 +317,10 @@ namespace TauCode.Db
         {
             var contractResolver = new DefaultContractResolver
             {
-                NamingStrategy = new CamelCaseNamingStrategy(),
+                NamingStrategy = new CamelCaseNamingStrategy
+                {
+                    ProcessDictionaryKeys = false,
+                },
             };
 
             var json = JsonConvert.SerializeObject(

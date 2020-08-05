@@ -59,7 +59,7 @@ namespace TauCode.Db.SQLite.Parsing
                 .Select(x => x.ExactText)
                 .Distinct()
                 .Select(x => x.ToUpperInvariant())
-                .ToMyHashSet();
+                .ToHashSet();
 
             var identifiersAsWords = allSqlNodes
                 .Where(x =>
