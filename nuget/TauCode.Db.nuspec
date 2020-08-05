@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>TauCode.Db</id>
-    <version>1.0.0.0-dev-2020-03-28-17-51</version>
+    <version>1.0.1-dev-2020-08-05-17-44</version>
     <authors>TauCode</authors>
     <owners>TauCode</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -15,9 +15,11 @@
     <tags>taucode db database</tags>
     <dependencies>
       <group targetFramework=".NETStandard2.1">
+        <dependency id="Microsoft.CSharp" version="4.7.0" />
         <dependency id="Newtonsoft.Json" version="12.0.3" />
         <dependency id="System.Data.SQLite.Core" version="1.0.113.1" />
         <dependency id="TauCode.Algorithms" version="1.0.2" />
+        <dependency id="TauCode.Data" version="1.0.1" />
         <dependency id="TauCode.Parsing" version="1.0.1" />
       </group>
     </dependencies>
