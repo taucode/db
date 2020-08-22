@@ -207,6 +207,10 @@ namespace TauCode.Db
             }
         }
 
+        protected virtual string BuildInsertScriptWithDefaultValues(TableMold table)
+        {
+            throw new NotSupportedException($"Default implementation of '{nameof(BuildInsertScriptWithDefaultValues)}' not supported.");
+        }
 
         #endregion
 
@@ -382,6 +386,8 @@ namespace TauCode.Db
 
             if (columnToParameterMappings.Count == 0)
             {
+                return this.BuildInsertScriptWithDefaultValues(table);
+
                 throw new ArgumentException($"'{nameof(columnToParameterMappings)}' must not be empty.");
             }
 
