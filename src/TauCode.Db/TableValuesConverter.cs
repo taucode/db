@@ -21,7 +21,7 @@ namespace TauCode.Db
 
         public IDbValueConverter GetColumnConverter(string columnName)
         {
-            var converter = _dbValueConverters.GetOrDefault(columnName);
+            var converter = _dbValueConverters.GetOrDefault(columnName.ToLowerInvariant());
 
             if (converter == null)
             {
