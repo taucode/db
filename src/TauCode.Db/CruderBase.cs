@@ -32,7 +32,10 @@ namespace TauCode.Db
 
             #region Constructor
 
-            public CommandHelper(CruderBase cruder, TableMold table, IEnumerable<string> columnNames)
+            public CommandHelper(
+                CruderBase cruder,
+                TableMold table,
+                IEnumerable<string> columnNames)
             {
                 if (columnNames == null)
                 {
@@ -150,6 +153,11 @@ namespace TauCode.Db
                     var columnName = pair.Key.ToLowerInvariant();
                     var originalColumnValue = pair.Value;
 
+                    if (!_parameterInfosByColumnNames.ContainsKey(columnName))
+                    {
+                        continue; // row has a value we will not insert into any table's column.
+                    }
+
                     var parameterInfo = _parameterInfosByColumnNames[columnName];
                     var parameterName = parameterInfo.ParameterName;
                     var parameter = _parametersByParameterNames[parameterName];
@@ -213,6 +221,7 @@ namespace TauCode.Db
                 }
 
                 this.ApplyValuesToCommand(values);
+
                 var result = _command.ExecuteNonQuery();
                 return result;
             }
@@ -352,6 +361,7 @@ namespace TauCode.Db
                     break;
 
                 case "datetime":
+                case "datetime2":
                     dbType = DbType.DateTime;
                     break;
 
@@ -426,17 +436,23 @@ namespace TauCode.Db
             _tableValuesConverters.Clear();
         }
 
-        public virtual void InsertRow(string tableName, object row)
+        public virtual void InsertRow(
+            string tableName,
+            object row,
+            IReadOnlyList<string> columnsToOmit = null)
         {
             if (row == null)
             {
                 throw new ArgumentNullException(nameof(row));
             }
 
-            this.InsertRows(tableName, new List<object> { row });
+            this.InsertRows(tableName, new List<object> { row }, columnsToOmit);
         }
 
-        public virtual void InsertRows(string tableName, IReadOnlyList<object> rows)
+        public virtual void InsertRows(
+            string tableName,
+            IReadOnlyList<object> rows,
+            IReadOnlyList<string> columnsToOmit = null)
         {
             if (tableName == null)
             {
@@ -448,6 +464,14 @@ namespace TauCode.Db
                 throw new ArgumentNullException(nameof(rows));
             }
 
+            if (columnsToOmit != null)
+            {
+                if (columnsToOmit.Any(string.IsNullOrWhiteSpace))
+                {
+                    throw new ArgumentException($"'{nameof(columnsToOmit)}' must not contain empty strings or nulls.");
+                }
+            }
+
             var table = this.Factory.CreateTableInspector(this.Connection, tableName).GetTable();
 
             if (rows.Count == 0)
@@ -455,23 +479,37 @@ namespace TauCode.Db
                 return; // nothing to insert
             }
 
-            using var helper = new CommandHelper(this, table, this.ObjectToDataDictionary(rows[0]).Keys);
+            columnsToOmit ??= new List<string>();
+
+            var columnNames = this.ObjectToDataDictionary(rows[0]).Keys
+                .Except(columnsToOmit, StringComparer.InvariantCultureIgnoreCase);
+
+            using var helper = new CommandHelper(
+                this,
+                table,
+                columnNames);
+
             var sql = this.ScriptBuilder.BuildInsertScript(
                 table,
                 helper.GetParameterNames());
 
             helper.CommandText = sql;
 
-            foreach (var row in rows)
+            for (var i = 0; i < rows.Count; i++)
             {
+                var row = rows[i];
+
                 if (row == null)
                 {
                     throw new ArgumentException($"'{nameof(rows)}' must not contain nulls.");
                 }
 
                 helper.ExecuteWithValues(row);
+                this.RowInsertedCallback?.Invoke(tableName, row, i);
             }
         }
+
+        public Action<string, object, int> RowInsertedCallback { get; set; }
 
         public virtual dynamic GetRow(string tableName, object id)
         {

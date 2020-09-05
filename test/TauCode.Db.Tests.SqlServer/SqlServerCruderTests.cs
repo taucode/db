@@ -346,6 +346,36 @@ VALUES(
             Assert.That(deletedRow, Is.Null);
         }
 
+        [Test]
+        public void InsertRow_EmptyData_InsertsDefaultValues()
+        {
+            // Arrange
+            this.Connection.SafeDropTable("my_table");
+            this.Connection.ExecuteSingleSql(@"
+CREATE TABLE my_table(
+    Id int PRIMARY KEY IDENTITY(1, 1),
+    Name nvarchar(100) DEFAULT 'Manuela',
+    Age bigint DEFAULT 21,
+    Gender bit null)
+");
+
+            // Act
+            _cruder.InsertRow("my_table", new object(), new[] { "id, name, age, gender" });
+            var row = _cruder.GetAllRows("my_table").Single();
+
+            // Assert
+            Assert.That(row.Id, Is.TypeOf<int>());
+            Assert.That(row.Id, Is.EqualTo(1));
+
+            Assert.That(row.Name, Is.TypeOf<string>());
+            Assert.That(row.Name, Is.EqualTo("Manuela"));
+
+            Assert.That(row.Age, Is.TypeOf<long>());
+            Assert.That(row.Age, Is.EqualTo((21L)));
+
+            Assert.That(row.Gender, Is.Null);
+        }
+
         protected override void ExecuteDbCreationScript()
         {
             var script = TestHelper.GetResourceText("rho.script-create-tables.sql");

@@ -12,6 +12,14 @@
             {
                 return doubleValue;
             }
+            else if (value is int intValue)
+            {
+                return intValue;
+            }
+            else if (value is long longValue)
+            {
+                return longValue;
+            }
 
             return null;
         }

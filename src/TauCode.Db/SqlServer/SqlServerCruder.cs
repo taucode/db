@@ -41,6 +41,8 @@ namespace TauCode.Db.SqlServer
                     return new Int32ValueConverter();
 
                 case "datetime":
+                case "datetime2":
+                case "date":
                     return new DateTimeValueConverter();
 
                 case "bit":
