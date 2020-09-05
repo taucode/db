@@ -30,6 +30,11 @@ namespace TauCode.Db
 
         protected virtual IDialect Dialect => this.Factory.GetDialect();
 
+        protected virtual string TransformNegativeTypeSize(int size)
+        {
+            throw new NotSupportedException("Negative type size not supported.");
+        }
+
         protected virtual void WriteTypeDefinitionScriptFragment(StringBuilder sb, DbTypeMold type)
         {
             var decoratedTypeName = this.Dialect.DecorateIdentifier(
@@ -45,7 +50,18 @@ namespace TauCode.Db
                     throw new DbException("If type has Size, it must not have Precision and Scale.");
                 }
 
-                sb.Append($"({type.Size.Value})");
+                string sizeString;
+
+                if (type.Size.Value < 0)
+                {
+                    sizeString = this.TransformNegativeTypeSize(type.Size.Value);
+                }
+                else
+                {
+                    sizeString = type.Size.Value.ToString();
+                }
+
+                sb.Append($"({sizeString})");
             }
             else if (type.Precision.HasValue)
             {
@@ -191,6 +207,10 @@ namespace TauCode.Db
             }
         }
 
+        protected virtual string BuildInsertScriptWithDefaultValues(TableMold table)
+        {
+            throw new NotSupportedException($"Default implementation of '{nameof(BuildInsertScriptWithDefaultValues)}' not supported.");
+        }
 
         #endregion
 
@@ -366,6 +386,8 @@ namespace TauCode.Db
 
             if (columnToParameterMappings.Count == 0)
             {
+                return this.BuildInsertScriptWithDefaultValues(table);
+
                 throw new ArgumentException($"'{nameof(columnToParameterMappings)}' must not be empty.");
             }
 

@@ -54,6 +54,11 @@ namespace TauCode.Db.Data
             return _values[name];
         }
 
+        public bool DeleteValue(string name)
+        {
+            return _values.Remove(name);
+        }
+
         public bool IsEquivalentTo(object other)
         {
             if (other == null)

@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Data;
 using System.IO;
+using System.Linq;
 using System.Text;
+using TauCode.Db.SqlServer;
 using TauCode.Extensions;
 
 namespace TauCode.Db.Tests.SqlServer
 {
-    internal class TestHelper
+    internal static class TestHelper
     {
         internal const string ConnectionString = @"Server=.\mssqltest;Database=rho.test;Trusted_Connection=True;";
 
@@ -30,5 +33,17 @@ namespace TauCode.Db.Tests.SqlServer
 
         internal static string GetResourceText(string fileName) =>
             typeof(TestHelper).Assembly.GetResourceText(fileName, true);
+
+        internal static void SafeDropTable(this IDbConnection connection, string tableName)
+        {
+            var dbInspector = new SqlServerInspector(connection);
+            var tableNames = dbInspector.GetTableNames();
+            if (tableNames.Contains(tableName, StringComparer.InvariantCultureIgnoreCase))
+            {
+                var command = connection.CreateCommand();
+                command.CommandText = $"DROP TABLE {tableName}";
+                command.ExecuteNonQuery();
+            }
+        }
     }
 }
