@@ -3,8 +3,8 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
-using TauCode.Db.SqlServer;
 using TauCode.Extensions;
+using TauCode.Lab.Db.SqlClient;
 
 namespace TauCode.Db.Tests.SqlServer
 {

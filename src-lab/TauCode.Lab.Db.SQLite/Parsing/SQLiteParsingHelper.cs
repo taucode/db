@@ -20,7 +20,7 @@ namespace TauCode.Lab.Db.SQLite.Parsing
 
         private static HashSet<string> CreateReservedWords()
         {
-            var grammar = typeof(SQLiteParsingHelper).Assembly.GetResourceText("sql-sqlite-grammar.lisp", true);
+            var grammar = typeof(SQLiteParsingHelper).Assembly.GetResourceText("grammar.lisp", true);
             var tokens = TheLexer.Lexize(grammar);
 
             var reader = new TinyLispPseudoReader();

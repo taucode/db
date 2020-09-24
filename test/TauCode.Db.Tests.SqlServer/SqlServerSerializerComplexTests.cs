@@ -1,8 +1,8 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Linq;
-using TauCode.Db.SqlServer;
 using TauCode.Extensions;
+using TauCode.Lab.Db.SqlClient;
 
 namespace TauCode.Db.Tests.SqlServer
 {

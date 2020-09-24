@@ -30,7 +30,7 @@ namespace TauCode.Lab.Db.SQLite.Parsing
         private INode BuildRoot()
         {
             var nodeFactory = new SQLiteNodeFactory();
-            var input = this.GetType().Assembly.GetResourceText("sql-sqlite-grammar.lisp", true);
+            var input = this.GetType().Assembly.GetResourceText("grammar.lisp", true);
             ILexer lexer = new TinyLispLexer();
             var tokens = lexer.Lexize(input);
 

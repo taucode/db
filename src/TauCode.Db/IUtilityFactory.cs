@@ -5,7 +5,7 @@ namespace TauCode.Db
 {
     public interface IUtilityFactory
     {
-        string DbProviderName { get; }
+        //string DbProviderName { get; }
         //IDbConnection CreateConnection();
         IDialect GetDialect();
         IScriptBuilder CreateScriptBuilder();

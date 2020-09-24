@@ -1,6 +1,7 @@
-﻿using TauCode.Db.Model;
+﻿using TauCode.Db;
+using TauCode.Db.Model;
 
-namespace TauCode.Db.SqlServer
+namespace TauCode.Lab.Db.SqlClient
 {
     public class SqlServerScriptBuilder : ScriptBuilderBase
     {

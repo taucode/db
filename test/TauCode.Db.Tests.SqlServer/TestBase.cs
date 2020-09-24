@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using TauCode.Db.SqlServer;
+using TauCode.Lab.Db.SqlClient;
 
 namespace TauCode.Db.Tests.SqlServer
 {

@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using TauCode.Db;
 using TauCode.Db.Model;
 
-namespace TauCode.Db.SqlServer
+namespace TauCode.Lab.Db.SqlClient
 {
     public class SqlServerTableInspector : TableInspectorBase
     {

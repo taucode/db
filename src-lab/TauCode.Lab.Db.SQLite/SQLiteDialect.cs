@@ -6,8 +6,9 @@ using TauCode.Db.Model;
 namespace TauCode.Lab.Db.SQLite
 {
     [Dialect(
-        "sql-sqlite-reserved-words.txt",
-        "sql-sqlite-data-type-names.txt",
+        typeof(SQLiteDialect),
+        "reserved-words.txt",
+        "data-type-names.txt",
         "[],\"\",``")]
     public class SQLiteDialect : DialectBase
     {

@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using System.Data;
 using System.Data.SqlClient;
-using TauCode.Db.SqlServer;
+using TauCode.Lab.Db.SqlClient;
 
 namespace TauCode.Db.Tests.SqlServer
 {
@@ -15,7 +15,7 @@ namespace TauCode.Db.Tests.SqlServer
             IUtilityFactory utilityFactory = SqlServerUtilityFactory.Instance;
 
             // Act
-            var dbProviderName = utilityFactory.DbProviderName;
+            //var dbProviderName = utilityFactory.DbProviderName;
 
             //IDbConnection connection = utilityFactory.CreateConnection();
             IDbConnection connection = new SqlConnection();
@@ -35,7 +35,7 @@ namespace TauCode.Db.Tests.SqlServer
             IDbSerializer dbSerializer = utilityFactory.CreateDbSerializer(connection);
 
             // Assert
-            Assert.That(dbProviderName, Is.EqualTo("SqlServer"));
+            //Assert.That(dbProviderName, Is.EqualTo("SqlServer"));
             Assert.That(connection, Is.TypeOf<SqlConnection>());
             Assert.That(dialect, Is.SameAs(SqlServerDialect.Instance));
 

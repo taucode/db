@@ -205,7 +205,7 @@ namespace TauCode.Db
 
             var dbMold = new DbMold
             {
-                DbProviderName = this.Factory.DbProviderName,
+                DbProviderName = this.Factory.GetDialect().Name,
                 Tables = tables
                     .Select(x => x.CloneTable(false))
                     .ToList(),

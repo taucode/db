@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using TauCode.Db;
 using TauCode.Db.DbValueConverters;
 using TauCode.Db.Model;
 
-namespace TauCode.Db.SqlServer
+namespace TauCode.Lab.Db.SqlClient
 {
     public class SqlServerCruder : CruderBase
     {

@@ -22,7 +22,7 @@ namespace TauCode.Db.Tests.SQLite
             }
 
             // Act
-            var dbProviderName = utilityFactory.DbProviderName;
+            //var dbProviderName = utilityFactory.DbProviderName;
 
             //IDbConnection connection = utilityFactory.CreateConnection();
             IDbConnection connection = new SQLiteConnection();
@@ -45,7 +45,7 @@ namespace TauCode.Db.Tests.SQLite
             IDbSerializer dbSerializer = utilityFactory.CreateDbSerializer(connection);
 
             // Assert
-            Assert.That(dbProviderName, Is.EqualTo("SQLite"));
+            //Assert.That(dbProviderName, Is.EqualTo("SQLite"));
             Assert.That(connection, Is.TypeOf<SQLiteConnection>());
             Assert.That(dialect, Is.SameAs(SQLiteDialect.Instance));
 

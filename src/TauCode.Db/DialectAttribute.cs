@@ -19,16 +19,17 @@ namespace TauCode.Db
         #region Constructor
 
         public DialectAttribute(
+            Type targetType,
             string reservedWordsResourceName,
             string dataTypeNamesResourceName,
             string identifierDelimitersString)
         {
-            this.ReservedWords = this.GetType().Assembly.GetResourceLines(reservedWordsResourceName, true);
+            this.ReservedWords = targetType.Assembly.GetResourceLines(reservedWordsResourceName, true);
 
             _families = new Dictionary<string, DbTypeFamily>();
             _categories = new Dictionary<string, DbTypeNameCategory>();
 
-            var typeNameLines = this.GetType().Assembly.GetResourceLines(dataTypeNamesResourceName, true)
+            var typeNameLines = targetType.Assembly.GetResourceLines(dataTypeNamesResourceName, true)
                 .Select(x => x.Trim())
                 .Where(x => x != string.Empty);
 

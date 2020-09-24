@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using TauCode.Db.Data;
 using TauCode.Db.Model;
-using TauCode.Db.SqlServer;
+using TauCode.Lab.Db.SqlClient;
 
 namespace TauCode.Db.Tests.SqlServer
 {

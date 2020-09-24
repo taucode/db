@@ -1,8 +1,11 @@
-﻿namespace TauCode.Db.SqlServer
+﻿using TauCode.Db;
+
+namespace TauCode.Lab.Db.SqlClient
 {
     [Dialect(
-        "sql-sqlserver-reserved-words.txt",
-        "sql-sqlserver-data-type-names.txt",
+        typeof(SqlServerDialect),
+        "reserved-words.txt",
+        "data-type-names.txt",
         "[],\"\"")]
     public class SqlServerDialect : DialectBase
     {

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using TauCode.Db;
-using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
 
 namespace TauCode.Lab.Db.SQLite
@@ -40,22 +39,24 @@ namespace TauCode.Lab.Db.SQLite
 
             DbTypeMold convertedType;
 
-            switch (originProviderName)
-            {
-                case DbProviderNames.SqlServer:
-                    convertedType = this.ConvertTypeFromSqlServer(originType);
-                    break;
+            throw new NotImplementedException();
 
-                default:
-                    throw new NotSupportedException($"Conversion from '{originProviderName}' is not supported.");
-            }
+            //switch (originProviderName)
+            //{
+            //    case DbProviderNames.SqlServer:
+            //        convertedType = this.ConvertTypeFromSqlServer(originType);
+            //        break;
 
-            if (convertedType == null)
-            {
-                throw new DbException($"Failed to convert type '{originType.Name}'.");
-            }
+            //    default:
+            //        throw new NotSupportedException($"Conversion from '{originProviderName}' is not supported.");
+            //}
 
-            return convertedType;
+            //if (convertedType == null)
+            //{
+            //    throw new DbException($"Failed to convert type '{originType.Name}'.");
+            //}
+
+            //return convertedType;
         }
 
         protected virtual DbTypeMold ConvertTypeFromSqlServer(DbTypeMold originType)
@@ -223,16 +224,18 @@ namespace TauCode.Lab.Db.SQLite
 
         public DbMold ConvertDb(DbMold originDb, IReadOnlyDictionary<string, string> options = null)
         {
-            var result = new DbMold
-            {
-                DbProviderName = this.Factory.DbProviderName,
-                Tables = originDb
-                    .Tables
-                    .Select(x => this.ConvertTable(x, originDb.DbProviderName))
-                    .ToList(),
-            };
+            throw new NotImplementedException();
 
-            return result;
+            //var result = new DbMold
+            //{
+            //    DbProviderName = this.Factory.DbProviderName,
+            //    Tables = originDb
+            //        .Tables
+            //        .Select(x => this.ConvertTable(x, originDb.DbProviderName))
+            //        .ToList(),
+            //};
+
+            //return result;
         }
 
         #endregion

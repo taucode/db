@@ -12,7 +12,7 @@ namespace TauCode.Lab.Db.SQLite
         {
         }
 
-        public string DbProviderName => DbProviderNames.SQLite;
+        //public string DbProviderName => DbProviderNames.SQLite;
 
         // NB: after creating an SQLite connection, you'd better to execute 2 statements to improve INSERT performance:
         // PRAGMA journal_mode = WAL

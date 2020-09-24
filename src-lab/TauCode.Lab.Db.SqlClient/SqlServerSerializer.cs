@@ -1,6 +1,7 @@
 ﻿using System.Data;
+using TauCode.Db;
 
-namespace TauCode.Db.SqlServer
+namespace TauCode.Lab.Db.SqlClient
 {
     public class SqlServerSerializer : DbSerializerBase
     {

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Data;
+using TauCode.Db;
 
 // todo clean up
-namespace TauCode.Db.SqlServer
+namespace TauCode.Lab.Db.SqlClient
 {
     public class SqlServerUtilityFactory : IUtilityFactory
     {
@@ -12,7 +13,7 @@ namespace TauCode.Db.SqlServer
         {
         }
 
-        public string DbProviderName => DbProviderNames.SqlServer;
+        //public string DbProviderName => DbProviderNames.SqlServer;
 
         //public IDbConnection CreateConnection() => DbUtils.CreateConnection(this.DbProviderName);
 

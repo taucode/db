@@ -62,6 +62,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src-lab\TauCode.Lab.Db.SqlClient\TauCode.Lab.Db.SqlClient.csproj" />
     <ProjectReference Include="..\..\src\TauCode.Db\TauCode.Db.csproj" />
     <ProjectReference Include="..\TauCode.Db.Tests.Common\TauCode.Db.Tests.Common.csproj" />
   </ItemGroup>
