@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.SQLite;
 using System.IO;
 using System.Text;
 using TauCode.Extensions;
@@ -27,6 +28,16 @@ namespace TauCode.Db.Tests.SQLite
 
             File.WriteAllText(actualFilePath, actual, Encoding.UTF8);
             File.WriteAllText(expectedFilePath, expected, Encoding.UTF8);
+        }
+
+        internal static Tuple<string, string> CreateSQLiteConnectionString()
+        {
+            var tempDbFilePath = FileExtensions.CreateTempFilePath("zunit", ".sqlite");
+            SQLiteConnection.CreateFile(tempDbFilePath);
+
+            var connectionString = $"Data Source={tempDbFilePath};Version=3;";
+
+            return Tuple.Create(tempDbFilePath, connectionString);
         }
     }
 }

@@ -1,11 +1,12 @@
 ﻿using System.Data;
 
+// todo clean up
 namespace TauCode.Db
 {
     public interface IUtilityFactory
     {
         string DbProviderName { get; }
-        IDbConnection CreateConnection();
+        //IDbConnection CreateConnection();
         IDialect GetDialect();
         IScriptBuilder CreateScriptBuilder();
         IDbInspector CreateDbInspector(IDbConnection connection);

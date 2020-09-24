@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 
+// todo clean up
 namespace TauCode.Db.SqlServer
 {
     public class SqlServerUtilityFactory : IUtilityFactory
@@ -13,7 +14,7 @@ namespace TauCode.Db.SqlServer
 
         public string DbProviderName => DbProviderNames.SqlServer;
 
-        public IDbConnection CreateConnection() => DbUtils.CreateConnection(this.DbProviderName);
+        //public IDbConnection CreateConnection() => DbUtils.CreateConnection(this.DbProviderName);
 
         public IDialect GetDialect() => SqlServerDialect.Instance;
 
