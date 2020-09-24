@@ -9,12 +9,12 @@ using TauCode.Db.Model;
 
 namespace TauCode.Db
 {
-    public abstract class DbSerializerBase : UtilityBase, IDbSerializer
+    public abstract class DbSerializerBase : DbUtilityBase, IDbSerializer
     {
         #region Fields
 
         private IDbInspector _dbInspector;
-        private ICruder _cruder;
+        private IDbCruder _cruder;
 
         #endregion
 
@@ -70,7 +70,7 @@ namespace TauCode.Db
 
         #region IDbSerializer Members
 
-        public virtual ICruder Cruder => _cruder ??= this.Factory.CreateCruder(this.Connection);
+        public virtual IDbCruder Cruder => _cruder ??= this.Factory.CreateCruder(this.Connection);
 
         public virtual string SerializeTableData(string tableName)
         {

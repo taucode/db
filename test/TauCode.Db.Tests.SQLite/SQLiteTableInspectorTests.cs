@@ -8,7 +8,7 @@ namespace TauCode.Db.Tests.SQLite
     [TestFixture]
     public class SQLiteTableInspectorTests : TestBase
     {
-        private ITableInspector _tableInspector;
+        private IDbTableInspector _tableInspector;
 
         [SetUp]
         public void SetUp()

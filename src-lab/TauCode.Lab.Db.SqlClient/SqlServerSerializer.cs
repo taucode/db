@@ -10,6 +10,6 @@ namespace TauCode.Lab.Db.SqlClient
 
         {
         }
-        public override IUtilityFactory Factory => SqlServerUtilityFactory.Instance;
+        public override IDbUtilityFactory Factory => SqlServerUtilityFactory.Instance;
     }
 }

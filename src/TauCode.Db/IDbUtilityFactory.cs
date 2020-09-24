@@ -3,15 +3,15 @@
 // todo clean up
 namespace TauCode.Db
 {
-    public interface IUtilityFactory
+    public interface IDbUtilityFactory
     {
         //string DbProviderName { get; }
         //IDbConnection CreateConnection();
-        IDialect GetDialect();
-        IScriptBuilder CreateScriptBuilder();
+        IDbDialect GetDialect();
+        IDbScriptBuilder CreateScriptBuilder();
         IDbInspector CreateDbInspector(IDbConnection connection);
-        ITableInspector CreateTableInspector(IDbConnection connection, string tableName);
-        ICruder CreateCruder(IDbConnection connection);
+        IDbTableInspector CreateTableInspector(IDbConnection connection, string tableName);
+        IDbCruder CreateCruder(IDbConnection connection);
         IDbSerializer CreateDbSerializer(IDbConnection connection);
         IDbConverter CreateDbConverter();
     }

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
 
 namespace TauCode.Db
 {
-    public abstract class DialectBase : UtilityBase, IDialect
+    public abstract class DbDialectBase : DbUtilityBase, IDbDialect
     {
         #region Constants
 
@@ -24,9 +25,9 @@ namespace TauCode.Db
         private static readonly List<char> _acceptableIdentifierInnerChars;
 
         private static readonly object _cacheLock;
-        private static readonly Dictionary<Type, DialectAttribute> _cache;
+        private static readonly Dictionary<Type, DbDialectAttribute> _cache;
 
-        static DialectBase()
+        static DbDialectBase()
         {
             // first identifier symbols
             _acceptableIdentifierFirstChars = new List<char>();
@@ -50,10 +51,10 @@ namespace TauCode.Db
             }
 
             _cacheLock = new object();
-            _cache = new Dictionary<Type, DialectAttribute>();
+            _cache = new Dictionary<Type, DbDialectAttribute>();
         }
 
-        private static DialectAttribute GetOrCreateDialectAttribute(Type dialectType)
+        private static DbDialectAttribute GetOrCreateDialectAttribute(Type dialectType)
         {
             lock (_cacheLock)
             {
@@ -64,8 +65,8 @@ namespace TauCode.Db
                 else
                 {
                     var attribute = dialectType
-                        .GetCustomAttributes(typeof(DialectAttribute), false)
-                        .Cast<DialectAttribute>()
+                        .GetCustomAttributes(typeof(DbDialectAttribute), false)
+                        .Cast<DbDialectAttribute>()
                         .Single();
 
                     _cache.Add(dialectType, attribute);
@@ -87,7 +88,7 @@ namespace TauCode.Db
 
         #region Constructor
 
-        protected DialectBase(string name)
+        protected DbDialectBase(string name)
             : base(null, false, true)
         {
             this.Name = name ?? throw new ArgumentNullException(nameof(name));
@@ -111,7 +112,7 @@ namespace TauCode.Db
 
         protected Tuple<char, char>[] BuildIdentifierDelimiters()
         {
-            var attribute = DialectBase.GetOrCreateDialectAttribute(this.GetType());
+            var attribute = DbDialectBase.GetOrCreateDialectAttribute(this.GetType());
             return attribute.IdentifierDelimiters;
         }
 
@@ -181,7 +182,7 @@ namespace TauCode.Db
 
             typeName = typeName.ToLower();
 
-            var attribute = DialectBase.GetOrCreateDialectAttribute(this.GetType());
+            var attribute = DbDialectBase.GetOrCreateDialectAttribute(this.GetType());
             if (attribute.Families.ContainsKey(typeName))
             {
                 return attribute.Families[typeName];
@@ -201,7 +202,7 @@ namespace TauCode.Db
 
             typeName = typeName.ToLower();
 
-            var attribute = DialectBase.GetOrCreateDialectAttribute(this.GetType());
+            var attribute = DbDialectBase.GetOrCreateDialectAttribute(this.GetType());
             if (attribute.Categories.ContainsKey(typeName))
             {
                 return attribute.Categories[typeName];

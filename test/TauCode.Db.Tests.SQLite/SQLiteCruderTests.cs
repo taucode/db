@@ -28,7 +28,7 @@ namespace TauCode.Db.Tests.SQLite
         }
 
 
-        private ICruder _cruder;
+        private IDbCruder _cruder;
 
         [SetUp]
         public void SetUp()

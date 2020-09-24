@@ -2,9 +2,9 @@
 
 namespace TauCode.Db
 {
-    public class ParameterInfoImpl : IParameterInfo
+    public class DbParameterInfo : IDbParameterInfo
     {
-        public ParameterInfoImpl(
+        public DbParameterInfo(
             string parameterName,
             DbType dbType,
             int? size,

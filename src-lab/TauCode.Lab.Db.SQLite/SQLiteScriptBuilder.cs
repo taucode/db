@@ -2,7 +2,7 @@
 
 namespace TauCode.Lab.Db.SQLite
 {
-    public class SQLiteScriptBuilder : ScriptBuilderBase
+    public class SQLiteScriptBuilder : DbScriptBuilderBase
     {
         #region Constructor
 
@@ -14,7 +14,7 @@ namespace TauCode.Lab.Db.SQLite
 
         #region Overridden
 
-        public override IUtilityFactory Factory => SQLiteUtilityFactory.Instance;
+        public override IDbUtilityFactory Factory => SQLiteUtilityFactory.Instance;
 
         #endregion
     }

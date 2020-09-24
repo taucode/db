@@ -2,9 +2,9 @@
 
 namespace TauCode.Db
 {
-    public interface IDbSerializer : IUtility
+    public interface IDbSerializer : IDbUtility
     {
-        ICruder Cruder { get; }
+        IDbCruder Cruder { get; }
         string SerializeTableData(string tableName);
         string SerializeDbData(Func<string, bool> tableNamePredicate = null);
         void DeserializeTableData(string tableName, string json);

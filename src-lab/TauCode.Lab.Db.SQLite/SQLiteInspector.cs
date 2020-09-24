@@ -18,7 +18,7 @@ namespace TauCode.Lab.Db.SQLite
 
         #region Overridden
 
-        public override IUtilityFactory Factory => SQLiteUtilityFactory.Instance;
+        public override IDbUtilityFactory Factory => SQLiteUtilityFactory.Instance;
 
         protected override IReadOnlyList<string> GetTableNamesImpl()
         {

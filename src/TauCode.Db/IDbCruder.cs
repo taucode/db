@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 namespace TauCode.Db
 {
-    public interface ICruder : IUtility
+    public interface IDbCruder : IDbUtility
     {
-        IScriptBuilder ScriptBuilder { get; }
-        ITableValuesConverter GetTableValuesConverter(string tableName);
+        IDbScriptBuilder ScriptBuilder { get; }
+        IDbTableValuesConverter GetTableValuesConverter(string tableName);
         void ResetTableValuesConverters();
         void InsertRow(string tableName, object row, IReadOnlyList<string> columnsToOmit = null);
         void InsertRows(string tableName, IReadOnlyList<object> rows, IReadOnlyList<string> columnsToOmit = null);

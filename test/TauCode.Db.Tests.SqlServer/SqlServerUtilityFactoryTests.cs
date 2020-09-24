@@ -12,7 +12,7 @@ namespace TauCode.Db.Tests.SqlServer
         public void Members_DifferentArguments_HaveExpectedProps()
         {
             // Arrange
-            IUtilityFactory utilityFactory = SqlServerUtilityFactory.Instance;
+            IDbUtilityFactory utilityFactory = SqlServerUtilityFactory.Instance;
 
             // Act
             //var dbProviderName = utilityFactory.DbProviderName;
@@ -22,15 +22,15 @@ namespace TauCode.Db.Tests.SqlServer
             connection.ConnectionString = TestHelper.ConnectionString;
             connection.Open();
 
-            IDialect dialect = utilityFactory.GetDialect();
+            IDbDialect dialect = utilityFactory.GetDialect();
 
-            IScriptBuilder scriptBuilder = utilityFactory.CreateScriptBuilder();
+            IDbScriptBuilder scriptBuilder = utilityFactory.CreateScriptBuilder();
 
             IDbInspector dbInspector = utilityFactory.CreateDbInspector(connection);
 
-            ITableInspector tableInspector = utilityFactory.CreateTableInspector(connection, "language");
+            IDbTableInspector tableInspector = utilityFactory.CreateTableInspector(connection, "language");
 
-            ICruder cruder = utilityFactory.CreateCruder(connection);
+            IDbCruder cruder = utilityFactory.CreateCruder(connection);
 
             IDbSerializer dbSerializer = utilityFactory.CreateDbSerializer(connection);
 

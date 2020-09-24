@@ -2,9 +2,9 @@
 
 namespace TauCode.Db
 {
-    public interface IUtility
+    public interface IDbUtility
     {
         IDbConnection Connection { get; }
-        IUtilityFactory Factory { get; }
+        IDbUtilityFactory Factory { get; }
     }
 }

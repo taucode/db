@@ -10,6 +10,6 @@ namespace TauCode.Lab.Db.SQLite
         {
         }
 
-        public override IUtilityFactory Factory => SQLiteUtilityFactory.Instance;
+        public override IDbUtilityFactory Factory => SQLiteUtilityFactory.Instance;
     }
 }

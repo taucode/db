@@ -3,12 +3,12 @@ using TauCode.Db.Model;
 
 namespace TauCode.Lab.Db.SqlClient
 {
-    public class SqlServerScriptBuilder : ScriptBuilderBase
+    public class SqlServerScriptBuilder : DbScriptBuilderBase
     {
         private const int MAX_SIZE_SURROGATE = -1;
         private const string MAX_SIZE = "max";
 
-        public override IUtilityFactory Factory => SqlServerUtilityFactory.Instance;
+        public override IDbUtilityFactory Factory => SqlServerUtilityFactory.Instance;
 
         protected override string TransformNegativeTypeSize(int size)
         {

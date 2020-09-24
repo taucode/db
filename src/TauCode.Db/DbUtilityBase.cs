@@ -3,9 +3,9 @@ using System.Data;
 
 namespace TauCode.Db
 {
-    public abstract class UtilityBase : IUtility
+    public abstract class DbUtilityBase : IDbUtility
     {
-        protected UtilityBase(IDbConnection connection, bool connectionShouldBeOpened, bool connectionCanBeNull)
+        protected DbUtilityBase(IDbConnection connection, bool connectionShouldBeOpened, bool connectionCanBeNull)
         {
             if (connectionCanBeNull && connectionShouldBeOpened)
             {
@@ -38,6 +38,6 @@ namespace TauCode.Db
 
         public IDbConnection Connection { get; }
 
-        public abstract IUtilityFactory Factory { get; }
+        public abstract IDbUtilityFactory Factory { get; }
     }
 }

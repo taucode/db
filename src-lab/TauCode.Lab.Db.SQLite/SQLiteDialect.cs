@@ -5,12 +5,12 @@ using TauCode.Db.Model;
 
 namespace TauCode.Lab.Db.SQLite
 {
-    [Dialect(
+    [DbDialect(
         typeof(SQLiteDialect),
         "reserved-words.txt",
         "data-type-names.txt",
         "[],\"\",``")]
-    public class SQLiteDialect : DialectBase
+    public class SQLiteDialect : DbDialectBase
     {
         #region Static
 
@@ -30,7 +30,7 @@ namespace TauCode.Lab.Db.SQLite
 
         #region Overridden
 
-        public override IUtilityFactory Factory => SQLiteUtilityFactory.Instance;
+        public override IDbUtilityFactory Factory => SQLiteUtilityFactory.Instance;
 
         public override bool CanDecorateTypeIdentifier => false;
 

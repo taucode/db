@@ -5,7 +5,7 @@ namespace TauCode.Db.Tests.SqlServer
     [TestFixture]
     public class SqlServerScriptBuilderTests : TestBase
     {
-        private IScriptBuilder _scriptBuilder;
+        private IDbScriptBuilder _scriptBuilder;
 
         [SetUp]
         public void SetUp()

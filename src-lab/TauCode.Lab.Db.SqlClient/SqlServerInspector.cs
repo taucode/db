@@ -22,7 +22,7 @@ namespace TauCode.Lab.Db.SqlClient
 
         #endregion
 
-        public override IUtilityFactory Factory => SqlServerUtilityFactory.Instance;
+        public override IDbUtilityFactory Factory => SqlServerUtilityFactory.Instance;
 
         protected override IReadOnlyList<string> GetTableNamesImpl()
         {

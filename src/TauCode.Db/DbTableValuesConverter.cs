@@ -5,11 +5,11 @@ using TauCode.Extensions;
 
 namespace TauCode.Db
 {
-    public class TableValuesConverter : ITableValuesConverter
+    public class DbTableValuesConverter : IDbTableValuesConverter
     {
         private readonly IDictionary<string, IDbValueConverter> _dbValueConverters;
 
-        public TableValuesConverter(IDictionary<string, IDbValueConverter> dictionary)
+        public DbTableValuesConverter(IDictionary<string, IDbValueConverter> dictionary)
         {
             if (dictionary == null)
             {

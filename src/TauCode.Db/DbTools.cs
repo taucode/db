@@ -48,7 +48,7 @@ namespace TauCode.Db
             }
         }
 
-        public static IList<dynamic> GetCommandRows(IDbCommand command, ITableValuesConverter tableValuesConverter = null)
+        public static IList<dynamic> GetCommandRows(IDbCommand command, IDbTableValuesConverter tableValuesConverter = null)
         {
             if (command == null)
             {

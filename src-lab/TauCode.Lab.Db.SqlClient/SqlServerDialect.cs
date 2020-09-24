@@ -2,12 +2,12 @@
 
 namespace TauCode.Lab.Db.SqlClient
 {
-    [Dialect(
+    [DbDialect(
         typeof(SqlServerDialect),
         "reserved-words.txt",
         "data-type-names.txt",
         "[],\"\"")]
-    public class SqlServerDialect : DialectBase
+    public class SqlServerDialect : DbDialectBase
     {
         #region Static
 
@@ -26,7 +26,7 @@ namespace TauCode.Lab.Db.SqlClient
 
         #region Overridden
 
-        public override IUtilityFactory Factory => SqlServerUtilityFactory.Instance;
+        public override IDbUtilityFactory Factory => SqlServerUtilityFactory.Instance;
         
         public override string UnicodeTextLiteralPrefix => "N";
 

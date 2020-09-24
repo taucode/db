@@ -27,7 +27,7 @@ namespace TauCode.Db.Tests.SqlServer
             Developer
         }
 
-        private ICruder _cruder;
+        private IDbCruder _cruder;
 
         [SetUp]
         public void SetUp()

@@ -9,7 +9,7 @@ using TauCode.Lab.Db.SQLite.Parsing;
 
 namespace TauCode.Lab.Db.SQLite
 {
-    public sealed class SQLiteTableInspector : TableInspectorBase
+    public sealed class SQLiteTableInspector : DbTableInspectorBase
     {
         #region Constructor
 
@@ -78,7 +78,7 @@ WHERE
             return table;
         }
 
-        public override IUtilityFactory Factory => SQLiteUtilityFactory.Instance;
+        public override IDbUtilityFactory Factory => SQLiteUtilityFactory.Instance;
 
         protected override List<ColumnInfo> GetColumnInfos() => throw new NotSupportedException(); // shouldn't ever be called
 

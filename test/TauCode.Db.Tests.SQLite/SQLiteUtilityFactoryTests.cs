@@ -14,7 +14,7 @@ namespace TauCode.Db.Tests.SQLite
         public void Members_DifferentArguments_HaveExpectedProps()
         {
             // Arrange
-            IUtilityFactory utilityFactory = SQLiteUtilityFactory.Instance;
+            IDbUtilityFactory utilityFactory = SQLiteUtilityFactory.Instance;
 
             // get SQLite stuff loaded.
             using (new SQLiteConnection())
@@ -32,15 +32,15 @@ namespace TauCode.Db.Tests.SQLite
             connection.ConnectionString = connectionString;
             connection.Open();
 
-            IDialect dialect = utilityFactory.GetDialect();
+            IDbDialect dialect = utilityFactory.GetDialect();
 
-            IScriptBuilder scriptBuilder = utilityFactory.CreateScriptBuilder();
+            IDbScriptBuilder scriptBuilder = utilityFactory.CreateScriptBuilder();
 
             IDbInspector dbInspector = utilityFactory.CreateDbInspector(connection);
 
-            ITableInspector tableInspector = utilityFactory.CreateTableInspector(connection, "language");
+            IDbTableInspector tableInspector = utilityFactory.CreateTableInspector(connection, "language");
 
-            ICruder cruder = utilityFactory.CreateCruder(connection);
+            IDbCruder cruder = utilityFactory.CreateCruder(connection);
 
             IDbSerializer dbSerializer = utilityFactory.CreateDbSerializer(connection);
 

@@ -7,7 +7,7 @@ using TauCode.Extensions;
 namespace TauCode.Db
 {
     [AttributeUsage(AttributeTargets.Class)]
-    public class DialectAttribute : Attribute
+    public class DbDialectAttribute : Attribute
     {
         #region Fields
 
@@ -18,7 +18,7 @@ namespace TauCode.Db
 
         #region Constructor
 
-        public DialectAttribute(
+        public DbDialectAttribute(
             Type targetType,
             string reservedWordsResourceName,
             string dataTypeNamesResourceName,

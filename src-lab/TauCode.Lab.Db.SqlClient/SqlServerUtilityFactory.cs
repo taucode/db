@@ -5,7 +5,7 @@ using TauCode.Db;
 // todo clean up
 namespace TauCode.Lab.Db.SqlClient
 {
-    public class SqlServerUtilityFactory : IUtilityFactory
+    public class SqlServerUtilityFactory : IDbUtilityFactory
     {
         public static SqlServerUtilityFactory Instance { get; } = new SqlServerUtilityFactory();
 
@@ -17,16 +17,16 @@ namespace TauCode.Lab.Db.SqlClient
 
         //public IDbConnection CreateConnection() => DbUtils.CreateConnection(this.DbProviderName);
 
-        public IDialect GetDialect() => SqlServerDialect.Instance;
+        public IDbDialect GetDialect() => SqlServerDialect.Instance;
 
-        public IScriptBuilder CreateScriptBuilder() => new SqlServerScriptBuilder();
+        public IDbScriptBuilder CreateScriptBuilder() => new SqlServerScriptBuilder();
 
         public IDbInspector CreateDbInspector(IDbConnection connection) => new SqlServerInspector(connection);
 
-        public ITableInspector CreateTableInspector(IDbConnection connection, string tableName) =>
+        public IDbTableInspector CreateTableInspector(IDbConnection connection, string tableName) =>
             new SqlServerTableInspector(connection, tableName);
 
-        public ICruder CreateCruder(IDbConnection connection) => new SqlServerCruder(connection);
+        public IDbCruder CreateCruder(IDbConnection connection) => new SqlServerCruder(connection);
 
         public IDbSerializer CreateDbSerializer(IDbConnection connection) => new SqlServerSerializer(connection);
 

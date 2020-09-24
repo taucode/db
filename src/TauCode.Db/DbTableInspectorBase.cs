@@ -6,7 +6,7 @@ using TauCode.Db.Model;
 
 namespace TauCode.Db
 {
-    public abstract class TableInspectorBase : UtilityBase, ITableInspector
+    public abstract class DbTableInspectorBase : DbUtilityBase, IDbTableInspector
     {
         #region Nested
 
@@ -25,7 +25,7 @@ namespace TauCode.Db
 
         #region Constructor
 
-        protected TableInspectorBase(
+        protected DbTableInspectorBase(
             IDbConnection connection,
             string tableName)
             : base(connection, true, false)

@@ -10,7 +10,7 @@ using TauCode.Extensions;
 
 namespace TauCode.Db
 {
-    public abstract class CruderBase : UtilityBase, ICruder
+    public abstract class DbCruderBase : DbUtilityBase, IDbCruder
     {
         #region Nested
 
@@ -19,13 +19,13 @@ namespace TauCode.Db
             #region Fields
 
             private readonly TableMold _table;
-            private readonly CruderBase _cruder;
+            private readonly DbCruderBase _cruder;
             private IDbCommand _command;
             private bool _commandPrepared;
 
             private readonly IReadOnlyDictionary<string, ColumnMold> _columnsByColumnName;
             private readonly IReadOnlyDictionary<string, string> _parameterNamesByColumnNames;
-            private readonly IReadOnlyDictionary<string, IParameterInfo> _parameterInfosByColumnNames;
+            private readonly IReadOnlyDictionary<string, IDbParameterInfo> _parameterInfosByColumnNames;
             private readonly IReadOnlyDictionary<string, IDbDataParameter> _parametersByParameterNames;
 
             #endregion
@@ -33,7 +33,7 @@ namespace TauCode.Db
             #region Constructor
 
             public CommandHelper(
-                CruderBase cruder,
+                DbCruderBase cruder,
                 TableMold table,
                 IEnumerable<string> columnNames)
             {
@@ -85,9 +85,9 @@ namespace TauCode.Db
                         x => $"p_{x.Key}");
             }
 
-            private IReadOnlyDictionary<string, IParameterInfo> BuildParameterInfosByColumnNames()
+            private IReadOnlyDictionary<string, IDbParameterInfo> BuildParameterInfosByColumnNames()
             {
-                var dictionary = new Dictionary<string, IParameterInfo>();
+                var dictionary = new Dictionary<string, IDbParameterInfo>();
 
                 foreach (var pair in _columnsByColumnName)
                 {
@@ -115,7 +115,7 @@ namespace TauCode.Db
                         x => this.CreateParameter(x.Value));
             }
 
-            private IDbDataParameter CreateParameter(IParameterInfo parameterInfo)
+            private IDbDataParameter CreateParameter(IDbParameterInfo parameterInfo)
             {
                 var parameter = _command.CreateParameter();
                 parameter.ParameterName = parameterInfo.ParameterName;
@@ -258,17 +258,17 @@ namespace TauCode.Db
 
         #region Fields
 
-        private IScriptBuilder _scriptBuilder;
-        private readonly IDictionary<string, ITableValuesConverter> _tableValuesConverters;
+        private IDbScriptBuilder _scriptBuilder;
+        private readonly IDictionary<string, IDbTableValuesConverter> _tableValuesConverters;
 
         #endregion
 
         #region Constructor
 
-        protected CruderBase(IDbConnection connection)
+        protected DbCruderBase(IDbConnection connection)
             : base(connection, true, false)
         {
-            _tableValuesConverters = new Dictionary<string, ITableValuesConverter>();
+            _tableValuesConverters = new Dictionary<string, IDbTableValuesConverter>();
         }
 
         #endregion
@@ -301,7 +301,7 @@ namespace TauCode.Db
             return dictionary;
         }
 
-        protected virtual IParameterInfo ColumnToParameterInfo(
+        protected virtual IDbParameterInfo ColumnToParameterInfo(
             string columnName,
             DbTypeMold columnType,
             IReadOnlyDictionary<string, string> parameterNameMappings)
@@ -394,11 +394,11 @@ namespace TauCode.Db
                     return null;
             }
 
-            IParameterInfo parameterInfo = new ParameterInfoImpl(parameterName, dbType, size, precision, scale);
+            IDbParameterInfo parameterInfo = new DbParameterInfo(parameterName, dbType, size, precision, scale);
             return parameterInfo;
         }
 
-        protected virtual ITableValuesConverter CreateTableValuesConverter(string tableName)
+        protected virtual IDbTableValuesConverter CreateTableValuesConverter(string tableName)
         {
             var tableInspector = this.Factory.CreateTableInspector(this.Connection, tableName);
             var table = tableInspector.GetTable();
@@ -408,7 +408,7 @@ namespace TauCode.Db
                     x => x.Name.ToLowerInvariant(),
                     this.CreateDbValueConverter);
 
-            var tableValuesConverter = new TableValuesConverter(dictionary);
+            var tableValuesConverter = new DbTableValuesConverter(dictionary);
             return tableValuesConverter;
         }
 
@@ -416,9 +416,9 @@ namespace TauCode.Db
 
         #region ICruder Members
 
-        public virtual IScriptBuilder ScriptBuilder => _scriptBuilder ??= this.Factory.CreateScriptBuilder();
+        public virtual IDbScriptBuilder ScriptBuilder => _scriptBuilder ??= this.Factory.CreateScriptBuilder();
 
-        public ITableValuesConverter GetTableValuesConverter(string tableName)
+        public IDbTableValuesConverter GetTableValuesConverter(string tableName)
         {
             // todo: checks, lowercase, everywhere.
             var tableValuesConverter = _tableValuesConverters.GetOrDefault(tableName);

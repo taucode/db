@@ -7,7 +7,7 @@ using TauCode.Db.Model;
 
 namespace TauCode.Lab.Db.SqlClient
 {
-    public class SqlServerCruder : CruderBase
+    public class SqlServerCruder : DbCruderBase
     {
         #region Constants
 
@@ -21,7 +21,7 @@ namespace TauCode.Lab.Db.SqlClient
         {
         }
 
-        public override IUtilityFactory Factory => SqlServerUtilityFactory.Instance;
+        public override IDbUtilityFactory Factory => SqlServerUtilityFactory.Instance;
 
         protected override IDbValueConverter CreateDbValueConverter(ColumnMold column)
         {
@@ -78,7 +78,7 @@ namespace TauCode.Lab.Db.SqlClient
             }
         }
 
-        protected override IParameterInfo ColumnToParameterInfo(
+        protected override IDbParameterInfo ColumnToParameterInfo(
             string columnName,
             DbTypeMold columnType,
             IReadOnlyDictionary<string, string> parameterNameMappings)
@@ -107,7 +107,7 @@ namespace TauCode.Lab.Db.SqlClient
                         return null;
                 }
 
-                result = new ParameterInfoImpl(parameterName, dbType, size, precision, scale);
+                result = new DbParameterInfo(parameterName, dbType, size, precision, scale);
             }
 
             return result;

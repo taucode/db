@@ -3,7 +3,7 @@ using TauCode.Db.Model;
 
 namespace TauCode.Db
 {
-    public interface IScriptBuilder : IUtility
+    public interface IDbScriptBuilder : IDbUtility
     {
         char? CurrentOpeningIdentifierDelimiter { get; set; }
         string BuildCreateTableScript(TableMold table, bool includeConstraints);

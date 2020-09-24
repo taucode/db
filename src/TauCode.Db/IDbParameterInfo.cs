@@ -2,7 +2,7 @@
 
 namespace TauCode.Db
 {
-    public interface IParameterInfo
+    public interface IDbParameterInfo
     {
         string ParameterName { get; }
         DbType DbType { get; }

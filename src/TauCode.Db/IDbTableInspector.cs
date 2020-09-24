@@ -3,7 +3,7 @@ using TauCode.Db.Model;
 
 namespace TauCode.Db
 {
-    public interface ITableInspector : IUtility
+    public interface IDbTableInspector : IDbUtility
     {
         string TableName { get; }
 

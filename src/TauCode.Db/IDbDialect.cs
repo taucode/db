@@ -4,7 +4,7 @@ using TauCode.Db.Model;
 
 namespace TauCode.Db
 {
-    public interface IDialect : IUtility
+    public interface IDbDialect : IDbUtility
     {
         string Name { get; }
 

@@ -7,7 +7,7 @@ using TauCode.Db.Model;
 
 namespace TauCode.Db
 {
-    public abstract class ScriptBuilderBase : UtilityBase, IScriptBuilder
+    public abstract class DbScriptBuilderBase : DbUtilityBase, IDbScriptBuilder
     {
         #region Fields
 
@@ -19,7 +19,7 @@ namespace TauCode.Db
 
         #region Constructor
 
-        protected ScriptBuilderBase()
+        protected DbScriptBuilderBase()
             : base(null, false, true)
         {
         }
@@ -28,7 +28,7 @@ namespace TauCode.Db
 
         #region Protected
 
-        protected virtual IDialect Dialect => this.Factory.GetDialect();
+        protected virtual IDbDialect Dialect => this.Factory.GetDialect();
 
         protected virtual string TransformNegativeTypeSize(int size)
         {

@@ -5,7 +5,7 @@ namespace TauCode.Db.Tests.SQLite
     [TestFixture]
     public class SQLiteScriptBuilderTests : TestBase
     {
-        private IScriptBuilder _scriptBuilder;
+        private IDbScriptBuilder _scriptBuilder;
 
         [SetUp]
         public void SetUp()

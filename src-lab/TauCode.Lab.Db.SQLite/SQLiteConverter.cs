@@ -6,7 +6,7 @@ using TauCode.Db.Model;
 
 namespace TauCode.Lab.Db.SQLite
 {
-    public class SQLiteConverter : UtilityBase, IDbConverter
+    public class SQLiteConverter : DbUtilityBase, IDbConverter
     {
         #region Constructor
 
@@ -19,7 +19,7 @@ namespace TauCode.Lab.Db.SQLite
 
         #region Overridden
 
-        public override IUtilityFactory Factory => SQLiteUtilityFactory.Instance;
+        public override IDbUtilityFactory Factory => SQLiteUtilityFactory.Instance;
 
         #endregion
 

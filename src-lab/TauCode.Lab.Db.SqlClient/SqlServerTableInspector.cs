@@ -7,7 +7,7 @@ using TauCode.Db.Model;
 
 namespace TauCode.Lab.Db.SqlClient
 {
-    public class SqlServerTableInspector : TableInspectorBase
+    public class SqlServerTableInspector : DbTableInspectorBase
     {
         #region Constructor
 
@@ -92,7 +92,7 @@ WHERE
 
         #region Overridden
 
-        public override IUtilityFactory Factory => SqlServerUtilityFactory.Instance;
+        public override IDbUtilityFactory Factory => SqlServerUtilityFactory.Instance;
 
         protected override List<ColumnInfo> GetColumnInfos()
         {

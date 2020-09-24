@@ -5,7 +5,7 @@ using TauCode.Db.Model;
 
 namespace TauCode.Db
 {
-    public abstract class JsonMigratorBase : UtilityBase, IDbMigrator
+    public abstract class DbJsonMigratorBase : DbUtilityBase, IDbMigrator
     {
         #region Fields
 
@@ -15,7 +15,7 @@ namespace TauCode.Db
 
         #region Constructor
 
-        protected JsonMigratorBase(
+        protected DbJsonMigratorBase(
             IDbConnection connection,
             Func<string> metadataJsonGetter,
             Func<string> dataJsonGetter)

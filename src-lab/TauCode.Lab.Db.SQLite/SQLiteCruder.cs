@@ -7,7 +7,7 @@ using TauCode.Db.Model;
 
 namespace TauCode.Lab.Db.SQLite
 {
-    public class SQLiteCruder : CruderBase
+    public class SQLiteCruder : DbCruderBase
     {
         private static readonly int GuidRepresentationLength = Guid.Empty.ToString().Length;
 
@@ -16,7 +16,7 @@ namespace TauCode.Lab.Db.SQLite
         {
         }
 
-        public override IUtilityFactory Factory => SQLiteUtilityFactory.Instance;
+        public override IDbUtilityFactory Factory => SQLiteUtilityFactory.Instance;
 
         protected override IDbValueConverter CreateDbValueConverter(ColumnMold column)
         {
@@ -49,7 +49,7 @@ namespace TauCode.Lab.Db.SQLite
             }
         }
 
-        protected override IParameterInfo ColumnToParameterInfo(
+        protected override IDbParameterInfo ColumnToParameterInfo(
             string columnName,
             DbTypeMold columnType,
             IReadOnlyDictionary<string, string> parameterNameMappings)
@@ -87,7 +87,7 @@ namespace TauCode.Lab.Db.SQLite
                     return base.ColumnToParameterInfo(columnName, columnType, parameterNameMappings);
             }
 
-            IParameterInfo parameterInfo = new ParameterInfoImpl(parameterName, dbType, size, precision, scale);
+            IDbParameterInfo parameterInfo = new DbParameterInfo(parameterName, dbType, size, precision, scale);
             return parameterInfo;
         }
     }

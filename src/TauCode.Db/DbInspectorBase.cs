@@ -6,7 +6,7 @@ using TauCode.Db.Model;
 
 namespace TauCode.Db
 {
-    public abstract class DbInspectorBase : UtilityBase, IDbInspector
+    public abstract class DbInspectorBase : DbUtilityBase, IDbInspector
     {
         #region Constructor
 
