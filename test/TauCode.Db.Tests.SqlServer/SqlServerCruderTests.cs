@@ -59,7 +59,7 @@ namespace TauCode.Db.Tests.SqlServer
                 parameter.ParameterName = "p_id";
                 parameter.Value = id;
                 command.Parameters.Add(parameter);
-                var row = DbUtils.GetCommandRows(command).Single();
+                var row = DbTools.GetCommandRows(command).Single();
 
                 Assert.That(row.id, Is.EqualTo(id));
                 Assert.That(row.code, Is.EqualTo("it"));
@@ -90,7 +90,7 @@ namespace TauCode.Db.Tests.SqlServer
             {
                 command.CommandText = @"SELECT [id], [name], [enum_int32], [enum_string] FROM [foo] WHERE [id] = 1";
 
-                var row = DbUtils.GetCommandRows(command).Single();
+                var row = DbTools.GetCommandRows(command).Single();
 
                 Assert.That(row.id, Is.EqualTo(1));
                 Assert.That(row.name, Is.EqualTo("Vasya"));

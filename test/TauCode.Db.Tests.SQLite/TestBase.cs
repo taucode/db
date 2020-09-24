@@ -4,7 +4,7 @@ using System.Data;
 using System.Data.SQLite;
 using System.IO;
 using System.Linq;
-using TauCode.Db.SQLite;
+using TauCode.Lab.Db.SQLite;
 
 namespace TauCode.Db.Tests.SQLite
 {
@@ -89,7 +89,7 @@ namespace TauCode.Db.Tests.SQLite
                 parameter.ParameterName = "p_id";
                 parameter.Value = id;
                 command.Parameters.Add(parameter);
-                var row = DbUtils.GetCommandRows(command).SingleOrDefault();
+                var row = DbTools.GetCommandRows(command).SingleOrDefault();
                 return row;
             }
         }
@@ -99,7 +99,7 @@ namespace TauCode.Db.Tests.SQLite
             using (var command = this.Connection.CreateCommand())
             {
                 command.CommandText = $@"SELECT * FROM [{tableName}]";
-                var rows = DbUtils.GetCommandRows(command);
+                var rows = DbTools.GetCommandRows(command);
                 return rows;
             }
         }

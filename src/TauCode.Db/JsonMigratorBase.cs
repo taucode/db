@@ -54,7 +54,9 @@ namespace TauCode.Db
                 foreach (var table in metadata.Tables)
                 {
                     // create table itself
-                    var script = this.DbSerializer.Cruder.ScriptBuilder.BuildCreateTableScript(table, true);
+                    var script = this.DbSerializer.Cruder.ScriptBuilder.BuildCreateTableScript(
+                        table,
+                        true);
                     command.CommandText = script;
                     command.ExecuteNonQuery();
 

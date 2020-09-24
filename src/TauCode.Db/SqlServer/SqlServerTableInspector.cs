@@ -38,7 +38,7 @@ WHERE
 
                 if (objectResult == null)
                 {
-                    throw DbUtils.CreateTableNotFoundException(this.TableName);
+                    throw DbTools.CreateTableNotFoundException(this.TableName);
                 }
                 
                 var objectId = (int)objectResult;
@@ -116,7 +116,7 @@ ORDER BY
 
                 command.AddParameterWithValue("p_tableName", this.TableName);
 
-                var columnInfos = DbUtils
+                var columnInfos = DbTools
                     .GetCommandRows(command)
                     .Select(x => new ColumnInfo
                     {
@@ -168,7 +168,7 @@ WHERE
 ";
                 command.AddParameterWithValue("p_objectId", objectId);
 
-                return DbUtils
+                return DbTools
                     .GetCommandRows(command)
                     .ToDictionary(
                         x => (string)x.Name,
@@ -247,7 +247,7 @@ ORDER BY
                 command.AddParameterWithValue("p_tableName", this.TableName);
 
 
-                var columns = DbUtils
+                var columns = DbTools
                     .GetCommandRows(command)
                     .Select(x => new IndexColumnMold
                     {
@@ -310,7 +310,7 @@ WHERE
 ";
                 command.AddParameterWithValue("p_tableName", this.TableName);
 
-                return DbUtils
+                return DbTools
                     .GetCommandRows(command)
                     .GroupBy(x => (string)x.ForeignKeyName)
                     .Select(g => new ForeignKeyMold
@@ -368,7 +368,7 @@ WHERE
 ";
                 command.AddParameterWithValue("p_tableName", this.TableName);
 
-                return DbUtils
+                return DbTools
                     .GetCommandRows(command)
                     .GroupBy(x => (int)x.IndexId)
                     .Select(g => new IndexMold

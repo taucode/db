@@ -94,7 +94,7 @@ namespace TauCode.Db
                     var sql = this.Cruder.ScriptBuilder.BuildSelectAllScript(table);
                     command.CommandText = sql;
 
-                    var rows = DbUtils
+                    var rows = DbTools
                         .GetCommandRows(command);
 
                     dbData.SetValue(table.Name, rows);
@@ -178,7 +178,7 @@ namespace TauCode.Db
                 .OrderBy(x => x.Name, StringComparer.InvariantCultureIgnoreCase)
                 .ToList();
 
-            var json = DbUtils.FineSerializeToJson(table);
+            var json = DbTools.FineSerializeToJson(table);
             return json;
         }
 
@@ -211,7 +211,7 @@ namespace TauCode.Db
                     .ToList(),
             };
 
-            var json = DbUtils.FineSerializeToJson(dbMold);
+            var json = DbTools.FineSerializeToJson(dbMold);
             return json;
         }
 

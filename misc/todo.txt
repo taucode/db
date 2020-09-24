@@ -11,11 +11,11 @@
 2019-11-27
 ==========
 +   1. ICruder, IDbSerializer - get rid of IDbConnection parameters, they should have own IDbConnection
-    2. IParameterInfo.
-    3. DB schema serialization/deserialization.
++   2. IParameterInfo.
++   3. DB schema serialization/deserialization.
 +   4. Get rid of SqlServer...Base classes. No more SQL Server CE :(
     5. IDbInspector should check type (actually, type full name) of IDbConnection, not ICruder or whoever else.
-    6. TauCode.Db.SQLite.
++   6. TauCode.Db.SQLite.
 
 2019-12-17
 ==========

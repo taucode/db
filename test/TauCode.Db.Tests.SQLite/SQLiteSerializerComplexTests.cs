@@ -1,8 +1,8 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Linq;
-using TauCode.Db.SQLite;
 using TauCode.Extensions;
+using TauCode.Lab.Db.SQLite;
 
 namespace TauCode.Db.Tests.SQLite
 {

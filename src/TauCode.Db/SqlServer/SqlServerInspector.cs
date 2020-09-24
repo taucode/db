@@ -41,7 +41,7 @@ WHERE
 
                 command.CommandText = sql;
 
-                var tableNames = DbUtils
+                var tableNames = DbTools
                     .GetCommandRows(command)
                     .Select(x => (string)x.TableName)
                     .ToArray();

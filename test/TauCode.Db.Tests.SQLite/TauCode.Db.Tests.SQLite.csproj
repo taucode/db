@@ -61,6 +61,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src-lab\TauCode.Lab.Db.SQLite\TauCode.Lab.Db.SQLite.csproj" />
     <ProjectReference Include="..\..\src\TauCode.Db\TauCode.Db.csproj" />
     <ProjectReference Include="..\TauCode.Db.Tests.Common\TauCode.Db.Tests.Common.csproj" />
   </ItemGroup>

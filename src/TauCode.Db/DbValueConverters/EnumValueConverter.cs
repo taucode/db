@@ -24,7 +24,7 @@ namespace TauCode.Db.DbValueConverters
             switch (this.Behaviour)
             {
                 case EnumValueConverterBehaviour.Integer:
-                    if (DbUtils.IsIntegerType(value.GetType()))
+                    if (DbTools.IsIntegerType(value.GetType()))
                     {
                         return value;
                     }

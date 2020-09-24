@@ -2,7 +2,7 @@
 using System.Data;
 using System.Data.SQLite;
 using System.IO;
-using TauCode.Db.SQLite;
+using TauCode.Lab.Db.SQLite;
 
 // todo clean
 namespace TauCode.Db.Tests.SQLite

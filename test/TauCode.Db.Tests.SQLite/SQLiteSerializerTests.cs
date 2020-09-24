@@ -4,8 +4,8 @@ using System;
 using System.Linq;
 using TauCode.Db.Data;
 using TauCode.Db.Model;
-using TauCode.Db.SQLite;
 using TauCode.Extensions;
+using TauCode.Lab.Db.SQLite;
 
 namespace TauCode.Db.Tests.SQLite
 {

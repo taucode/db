@@ -72,7 +72,7 @@ namespace TauCode.Db.Tests.SqlServer
                 parameter.ParameterName = "p_id";
                 parameter.Value = id;
                 command.Parameters.Add(parameter);
-                var row = DbUtils.GetCommandRows(command).SingleOrDefault();
+                var row = DbTools.GetCommandRows(command).SingleOrDefault();
                 return row;
             }
         }
@@ -82,7 +82,7 @@ namespace TauCode.Db.Tests.SqlServer
             using (var command = this.Connection.CreateCommand())
             {
                 command.CommandText = $@"SELECT * FROM [{tableName}]";
-                var rows = DbUtils.GetCommandRows(command);
+                var rows = DbTools.GetCommandRows(command);
                 return rows;
             }
         }

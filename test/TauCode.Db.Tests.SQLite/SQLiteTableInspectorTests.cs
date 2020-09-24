@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using System.Linq;
 using TauCode.Db.Exceptions;
-using TauCode.Db.SQLite;
+using TauCode.Lab.Db.SQLite;
 
 namespace TauCode.Db.Tests.SQLite
 {
