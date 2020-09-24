@@ -2,7 +2,7 @@
 using System;
 using System.Linq;
 
-namespace TauCode.Db.Tests.SQLite
+namespace TauCode.Lab.Db.SQLite.Tests
 {
     [TestFixture]
     public class SQLiteInspectorTests : TestBase

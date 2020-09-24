@@ -1,7 +1,8 @@
 ﻿using NUnit.Framework;
 using System.Linq;
+using TauCode.Db;
 
-namespace TauCode.Db.Tests.SqlServer
+namespace TauCode.Lab.Db.SqlClient.Tests
 {
     [TestFixture]
     public class SqlServerInspectorTests : TestBase

@@ -127,9 +127,9 @@ namespace TauCode.Db
 
         public string Name { get; }
 
-        public virtual IReadOnlyList<string> ReservedWords => _reservedWords ?? (_reservedWords = this.BuildReservedWords());
+        public virtual IReadOnlyList<string> ReservedWords => _reservedWords ??= this.BuildReservedWords();
 
-        public virtual IReadOnlyList<string> DataTypeNames => _dataTypeNames ?? (_dataTypeNames = this.BuildDataTypeNames());
+        public virtual IReadOnlyList<string> DataTypeNames => _dataTypeNames ??= this.BuildDataTypeNames();
 
         public virtual bool IsSingleWordTypeName(string typeName)
         {

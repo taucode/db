@@ -4,10 +4,13 @@ using System.IO;
 using System.Text;
 using TauCode.Extensions;
 
-namespace TauCode.Db.Tests.SQLite
+namespace TauCode.Lab.Db.SQLite.Tests
 {
     internal static class TestHelper
     {
+        internal const string NonExistingGuidString = "eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee";
+        internal static readonly Guid NonExistingGuid = new Guid(NonExistingGuidString);
+
         internal static string GetResourceText(string fileName) =>
             typeof(TestHelper).Assembly.GetResourceText(fileName, true);
 

@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Reflection;
 
-namespace TauCode.Db.Tests.SQLite
+namespace TauCode.Lab.Db.SQLite.Tests
 {
     internal class TestMigrator
     {

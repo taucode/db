@@ -1,12 +1,12 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Linq;
+using TauCode.Db;
 using TauCode.Db.Data;
 using TauCode.Db.DbValueConverters;
 using TauCode.Db.Exceptions;
-using TauCode.Db.Tests.Common;
 
-namespace TauCode.Db.Tests.SqlServer
+namespace TauCode.Lab.Db.SqlClient.Tests
 {
     [TestFixture]
     public class SqlServerCruderTests : TestBase
@@ -176,7 +176,7 @@ namespace TauCode.Db.Tests.SqlServer
         public void UpdateRow_NonExistingId_DoesNothingAndReturnsFalse()
         {
             // Arrange
-            var id = CommonTestHelper.NonExistingGuid;
+            var id = TestHelper.NonExistingGuid;
 
             // Act
             var updated = _cruder.UpdateRow("language", new { name = "Duzhe Italian!" }, id);

@@ -7,11 +7,11 @@ using TauCode.Db.Model;
 
 namespace TauCode.Lab.Db.SqlClient
 {
-    public class SqlServerTableInspector : DbTableInspectorBase
+    public class SqlTableInspector : DbTableInspectorBase
     {
         #region Constructor
 
-        public SqlServerTableInspector(IDbConnection connection, string tableName)
+        public SqlTableInspector(IDbConnection connection, string tableName)
             : base(connection, tableName)
         {
         }
@@ -92,14 +92,13 @@ WHERE
 
         #region Overridden
 
-        public override IDbUtilityFactory Factory => SqlServerUtilityFactory.Instance;
+        public override IDbUtilityFactory Factory => SqlUtilityFactory.Instance;
 
         protected override List<ColumnInfo> GetColumnInfos()
         {
-            using (var command = this.Connection.CreateCommand())
-            {
-                command.CommandText =
-@"
+            using var command = this.Connection.CreateCommand();
+            command.CommandText =
+                @"
 SELECT
     C.column_name               ColumnName,
     C.is_nullable               IsNullable,
@@ -115,23 +114,22 @@ ORDER BY
     C.ordinal_position
 ";
 
-                command.AddParameterWithValue("p_tableName", this.TableName);
+            command.AddParameterWithValue("p_tableName", this.TableName);
 
-                var columnInfos = DbTools
-                    .GetCommandRows(command)
-                    .Select(x => new ColumnInfo
-                    {
-                        Name = x.ColumnName,
-                        TypeName = x.DataType,
-                        IsNullable = ParseBoolean(x.IsNullable),
-                        Size = GetDbValueAsInt(x.MaxLen),
-                        Precision = GetDbValueAsInt(x.NumericPrecision),
-                        Scale = GetDbValueAsInt(x.NumericScale),
-                    })
-                    .ToList();
+            var columnInfos = DbTools
+                .GetCommandRows(command)
+                .Select(x => new ColumnInfo
+                {
+                    Name = x.ColumnName,
+                    TypeName = x.DataType,
+                    IsNullable = ParseBoolean(x.IsNullable),
+                    Size = GetDbValueAsInt(x.MaxLen),
+                    Precision = GetDbValueAsInt(x.NumericPrecision),
+                    Scale = GetDbValueAsInt(x.NumericScale),
+                })
+                .ToList();
 
-                return columnInfos;
-            }
+            return columnInfos;
         }
 
         protected override ColumnMold ColumnInfoToColumnMold(ColumnInfo columnInfo)
@@ -154,10 +152,9 @@ ORDER BY
         {
             var objectId = this.GetTableObjectId();
 
-            using (var command = this.Connection.CreateCommand())
-            {
-                command.CommandText =
-@"
+            using var command = this.Connection.CreateCommand();
+            command.CommandText =
+                @"
 SELECT
     IC.name             Name,
     IC.seed_value       SeedValue,
@@ -167,18 +164,17 @@ FROM
 WHERE
     IC.object_id = @p_objectId
 ";
-                command.AddParameterWithValue("p_objectId", objectId);
+            command.AddParameterWithValue("p_objectId", objectId);
 
-                return DbTools
-                    .GetCommandRows(command)
-                    .ToDictionary(
-                        x => (string)x.Name,
-                        x => new ColumnIdentityMold
-                        {
-                            Seed = ((object)x.SeedValue).ToString(),
-                            Increment = ((object)x.IncrementValue).ToString(),
-                        });
-            }
+            return DbTools
+                .GetCommandRows(command)
+                .ToDictionary(
+                    x => (string)x.Name,
+                    x => new ColumnIdentityMold
+                    {
+                        Seed = ((object)x.SeedValue).ToString(),
+                        Increment = ((object)x.IncrementValue).ToString(),
+                    });
         }
 
         public override PrimaryKeyMold GetPrimaryKey()
@@ -334,11 +330,10 @@ WHERE
 
         public override IReadOnlyList<IndexMold> GetIndexes()
         {
-            using (var command = this.Connection.CreateCommand())
-            {
-                // indexes list
-                command.CommandText =
-@"
+            using var command = this.Connection.CreateCommand();
+            // indexes list
+            command.CommandText =
+                @"
 SELECT
     I.[index_id]            IndexId,
     I.[name]                IndexName,
@@ -367,28 +362,27 @@ ON
 WHERE
     T.[name] = @p_tableName
 ";
-                command.AddParameterWithValue("p_tableName", this.TableName);
+            command.AddParameterWithValue("p_tableName", this.TableName);
 
-                return DbTools
-                    .GetCommandRows(command)
-                    .GroupBy(x => (int)x.IndexId)
-                    .Select(g => new IndexMold
-                    {
-                        Name = (string)g.First().IndexName,
-                        TableName = this.TableName,
-                        Columns = g
-                            .OrderBy(x => (int)x.KeyOrdinal)
-                            .Select(x => new IndexColumnMold
-                            {
-                                Name = (string)x.ColumnName,
-                                SortDirection = (bool)x.IsDescendingKey ? SortDirection.Descending : SortDirection.Ascending,
-                            })
-                            .ToList(),
-                        IsUnique = (bool)g.First().IndexIsUnique,
-                    })
-                    .OrderBy(x => x.Name)
-                    .ToList();
-            }
+            return DbTools
+                .GetCommandRows(command)
+                .GroupBy(x => (int)x.IndexId)
+                .Select(g => new IndexMold
+                {
+                    Name = (string)g.First().IndexName,
+                    TableName = this.TableName,
+                    Columns = g
+                        .OrderBy(x => (int)x.KeyOrdinal)
+                        .Select(x => new IndexColumnMold
+                        {
+                            Name = (string)x.ColumnName,
+                            SortDirection = (bool)x.IsDescendingKey ? SortDirection.Descending : SortDirection.Ascending,
+                        })
+                        .ToList(),
+                    IsUnique = (bool)g.First().IndexIsUnique,
+                })
+                .OrderBy(x => x.Name)
+                .ToList();
         }
 
         #endregion

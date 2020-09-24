@@ -29,7 +29,7 @@ namespace TauCode.Db
 
         #region Protected
 
-        protected virtual IDbSerializer DbSerializer => _dbSerializer ?? (_dbSerializer = this.Factory.CreateDbSerializer(this.Connection));
+        protected virtual IDbSerializer DbSerializer => _dbSerializer ??= this.Factory.CreateDbSerializer(this.Connection);
 
         #endregion
 

@@ -2,10 +2,10 @@
 using System.Data;
 using System.Data.SQLite;
 using System.IO;
-using TauCode.Lab.Db.SQLite;
+using TauCode.Db;
 
 // todo clean
-namespace TauCode.Db.Tests.SQLite
+namespace TauCode.Lab.Db.SQLite.Tests
 {
     [TestFixture]
     public class SQLiteUtilityFactoryTests

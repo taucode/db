@@ -1,7 +1,8 @@
 ﻿using NUnit.Framework;
+using TauCode.Db;
 using TauCode.Db.Exceptions;
 
-namespace TauCode.Db.Tests.SqlServer
+namespace TauCode.Lab.Db.SqlClient.Tests
 {
     /// <summary>
     /// Happy paths are successfully passed in other ut-s.

@@ -1,9 +1,9 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.Data.SqlClient;
+using NUnit.Framework;
 using System.Data;
-using System.Data.SqlClient;
-using TauCode.Lab.Db.SqlClient;
+using TauCode.Db;
 
-namespace TauCode.Db.Tests.SqlServer
+namespace TauCode.Lab.Db.SqlClient.Tests
 {
     [TestFixture]
     public class SqlServerUtilityFactoryTests
@@ -12,7 +12,7 @@ namespace TauCode.Db.Tests.SqlServer
         public void Members_DifferentArguments_HaveExpectedProps()
         {
             // Arrange
-            IDbUtilityFactory utilityFactory = SqlServerUtilityFactory.Instance;
+            IDbUtilityFactory utilityFactory = SqlUtilityFactory.Instance;
 
             // Act
             //var dbProviderName = utilityFactory.DbProviderName;
@@ -37,15 +37,15 @@ namespace TauCode.Db.Tests.SqlServer
             // Assert
             //Assert.That(dbProviderName, Is.EqualTo("SqlServer"));
             Assert.That(connection, Is.TypeOf<SqlConnection>());
-            Assert.That(dialect, Is.SameAs(SqlServerDialect.Instance));
+            Assert.That(dialect, Is.SameAs(SqlDialect.Instance));
 
-            Assert.That(scriptBuilder, Is.TypeOf<SqlServerScriptBuilder>());
+            Assert.That(scriptBuilder, Is.TypeOf<SqlScriptBuilder>());
             Assert.That(scriptBuilder.CurrentOpeningIdentifierDelimiter, Is.EqualTo('['));
 
-            Assert.That(dbInspector, Is.TypeOf<SqlServerInspector>());
-            Assert.That(tableInspector, Is.TypeOf<SqlServerTableInspector>());
-            Assert.That(cruder, Is.TypeOf<SqlServerCruder>());
-            Assert.That(dbSerializer, Is.TypeOf<SqlServerSerializer>());
+            Assert.That(dbInspector, Is.TypeOf<SqlInspector>());
+            Assert.That(tableInspector, Is.TypeOf<SqlTableInspector>());
+            Assert.That(cruder, Is.TypeOf<SqlCruder>());
+            Assert.That(dbSerializer, Is.TypeOf<SqlSerializer>());
         }
     }
 }

@@ -5,7 +5,7 @@ using TauCode.Db;
 
 namespace TauCode.Lab.Db.SqlClient
 {
-    public class SqlServerInspector : DbInspectorBase
+    public class SqlInspector : DbInspectorBase
     {
         #region Constants
 
@@ -15,14 +15,14 @@ namespace TauCode.Lab.Db.SqlClient
 
         #region Constructor
 
-        public SqlServerInspector(IDbConnection connection)
+        public SqlInspector(IDbConnection connection)
             : base(connection)
         {
         }
 
         #endregion
 
-        public override IDbUtilityFactory Factory => SqlServerUtilityFactory.Instance;
+        public override IDbUtilityFactory Factory => SqlUtilityFactory.Instance;
 
         protected override IReadOnlyList<string> GetTableNamesImpl()
         {

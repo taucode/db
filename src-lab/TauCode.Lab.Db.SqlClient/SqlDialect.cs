@@ -3,22 +3,22 @@
 namespace TauCode.Lab.Db.SqlClient
 {
     [DbDialect(
-        typeof(SqlServerDialect),
+        typeof(SqlDialect),
         "reserved-words.txt",
         "data-type-names.txt",
         "[],\"\"")]
-    public class SqlServerDialect : DbDialectBase
+    public class SqlDialect : DbDialectBase
     {
         #region Static
 
-        public static readonly SqlServerDialect Instance = new SqlServerDialect();
+        public static readonly SqlDialect Instance = new SqlDialect();
 
         #endregion
 
         #region Constructor
 
-        private SqlServerDialect()
-            : base("SQL Server")
+        private SqlDialect()
+            : base(DbProviderNames.SQLServer)
         {
         }
 
@@ -26,7 +26,7 @@ namespace TauCode.Lab.Db.SqlClient
 
         #region Overridden
 
-        public override IDbUtilityFactory Factory => SqlServerUtilityFactory.Instance;
+        public override IDbUtilityFactory Factory => SqlUtilityFactory.Instance;
         
         public override string UnicodeTextLiteralPrefix => "N";
 

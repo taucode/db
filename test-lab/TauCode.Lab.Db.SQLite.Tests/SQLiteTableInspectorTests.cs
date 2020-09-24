@@ -1,9 +1,9 @@
 ﻿using NUnit.Framework;
 using System.Linq;
+using TauCode.Db;
 using TauCode.Db.Exceptions;
-using TauCode.Lab.Db.SQLite;
 
-namespace TauCode.Db.Tests.SQLite
+namespace TauCode.Lab.Db.SQLite.Tests
 {
     [TestFixture]
     public class SQLiteTableInspectorTests : TestBase

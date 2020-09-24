@@ -60,56 +60,54 @@ namespace TauCode.Db
                 throw new ArgumentNullException(nameof(command));
             }
 
-            using (var reader = command.ExecuteReader())
+            using var reader = command.ExecuteReader();
+            var rows = new List<dynamic>();
+
+            while (reader.Read())
             {
-                var rows = new List<dynamic>();
+                var row = new DynamicRow(true);
 
-                while (reader.Read())
+                for (var i = 0; i < reader.FieldCount; i++)
                 {
-                    var row = new DynamicRow(true);
+                    var name = reader.GetName(i);
 
-                    for (var i = 0; i < reader.FieldCount; i++)
+                    var value = reader[i];
+
+                    if (tableValuesConverter == null)
                     {
-                        var name = reader.GetName(i);
-
-                        var value = reader[i];
-
-                        if (tableValuesConverter == null)
+                        // only simplest obvious transformation
+                        if (value == DBNull.Value)
                         {
-                            // only simplest obvious transformation
-                            if (value == DBNull.Value)
-                            {
-                                value = null;
-                            }
+                            value = null;
                         }
-                        else
+                    }
+                    else
+                    {
+                        var dbValueConverter = tableValuesConverter.GetColumnConverter(name);
+                        var convertedValue = dbValueConverter.FromDbValue(value);
+
+                        if (convertedValue == DBNull.Value)
                         {
-                            var dbValueConverter = tableValuesConverter.GetColumnConverter(name);
-                            var convertedValue = dbValueConverter.FromDbValue(value);
-
-                            if (convertedValue == DBNull.Value)
-                            {
-                                throw new NotImplementedException(); // error in your converter logic.
-                            }
-
-                            if (convertedValue == null && value != DBNull.Value)
-                            {
-                                // the only case IDbValueConverter.FromDbValue returns null is value equal to DBNull.Value.
-
-                                throw new NotImplementedException();
-                            }
-
-                            value = convertedValue;
+                            throw new NotImplementedException(); // error in your converter logic.
                         }
 
-                        row.SetValue(name, value);
+                        if (convertedValue == null && value != DBNull.Value)
+                        {
+                            // the only case IDbValueConverter.FromDbValue returns null is value equal to DBNull.Value.
+
+                            throw new NotImplementedException();
+                        }
+
+                        value = convertedValue;
                     }
 
-                    rows.Add(row);
+                    row.SetValue(name, value);
                 }
 
-                return rows;
+                rows.Add(row);
             }
+
+            return rows;
         }
 
         public static ColumnMold GetPrimaryKeyColumn(this TableMold table)
@@ -123,11 +121,9 @@ namespace TauCode.Db
 
             foreach (var sql in sqls)
             {
-                using (var command = connection.CreateCommand())
-                {
-                    command.CommandText = sql;
-                    command.ExecuteNonQuery();
-                }
+                using var command = connection.CreateCommand();
+                command.CommandText = sql;
+                command.ExecuteNonQuery();
             }
         }
 

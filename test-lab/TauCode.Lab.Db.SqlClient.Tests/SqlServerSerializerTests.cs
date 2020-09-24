@@ -2,11 +2,11 @@
 using NUnit.Framework;
 using System;
 using System.Linq;
+using TauCode.Db;
 using TauCode.Db.Data;
 using TauCode.Db.Model;
-using TauCode.Lab.Db.SqlClient;
 
-namespace TauCode.Db.Tests.SqlServer
+namespace TauCode.Lab.Db.SqlClient.Tests
 {
     [TestFixture]
     public class SqlServerSerializerTests : TestBase
@@ -16,7 +16,7 @@ namespace TauCode.Db.Tests.SqlServer
         [SetUp]
         public void SetUp()
         {
-            _dbSerializer = new SqlServerSerializer(this.Connection);
+            _dbSerializer = new SqlSerializer(this.Connection);
         }
 
         [Test]
@@ -74,7 +74,7 @@ namespace TauCode.Db.Tests.SqlServer
             // Assert
             var expectedJson = TestHelper.GetResourceText(".rho.metadata-db.json");
             Assert.That(json, Is.EqualTo(expectedJson));
-            Assert.That(inverted.DbProviderName, Is.EqualTo("SqlServer"));
+            Assert.That(inverted.DbProviderName, Is.EqualTo(DbProviderNames.SQLServer));
         }
 
         [Test]

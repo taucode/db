@@ -1,5 +1,5 @@
 ﻿{
-  "dbProviderName": "SqlServer",
+  "dbProviderName": "SQL Server",
   "tables": [
     {
       "name": "fragment_type",

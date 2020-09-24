@@ -4,12 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using TauCode.Extensions;
-using TauCode.Lab.Db.SqlClient;
 
-namespace TauCode.Db.Tests.SqlServer
+namespace TauCode.Lab.Db.SqlClient.Tests
 {
     internal static class TestHelper
     {
+        internal const string NonExistingGuidString = "eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee";
+        internal static readonly Guid NonExistingGuid = new Guid(NonExistingGuidString);
+
         internal const string ConnectionString = @"Server=.\mssqltest;Database=rho.test;Trusted_Connection=True;";
 
         internal static void WriteDiff(string actual, string expected, string directory, string fileExtension, string reminder)
@@ -36,7 +38,7 @@ namespace TauCode.Db.Tests.SqlServer
 
         internal static void SafeDropTable(this IDbConnection connection, string tableName)
         {
-            var dbInspector = new SqlServerInspector(connection);
+            var dbInspector = new SqlInspector(connection);
             var tableNames = dbInspector.GetTableNames();
             if (tableNames.Contains(tableName, StringComparer.InvariantCultureIgnoreCase))
             {

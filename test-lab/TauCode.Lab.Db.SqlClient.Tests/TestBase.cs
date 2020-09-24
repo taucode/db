@@ -1,11 +1,11 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.Data.SqlClient;
+using NUnit.Framework;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
-using TauCode.Lab.Db.SqlClient;
+using TauCode.Db;
 
-namespace TauCode.Db.Tests.SqlServer
+namespace TauCode.Lab.Db.SqlClient.Tests
 {
     [TestFixture]
     public abstract class TestBase
@@ -17,7 +17,7 @@ namespace TauCode.Db.Tests.SqlServer
         {
             this.Connection = new SqlConnection(TestHelper.ConnectionString);
             this.Connection.Open();
-            this.DbInspector = new SqlServerInspector(Connection);
+            this.DbInspector = new SqlInspector(Connection);
 
             this.DbInspector.DropAllTables();
             this.ExecuteDbCreationScript();
@@ -65,26 +65,24 @@ namespace TauCode.Db.Tests.SqlServer
 
         protected dynamic GetRow(string tableName, object id)
         {
-            using (var command = this.Connection.CreateCommand())
-            {
-                command.CommandText = $@"SELECT * FROM [{tableName}] WHERE [id] = @p_id";
-                var parameter = command.CreateParameter();
-                parameter.ParameterName = "p_id";
-                parameter.Value = id;
-                command.Parameters.Add(parameter);
-                var row = DbTools.GetCommandRows(command).SingleOrDefault();
-                return row;
-            }
+            using var command = this.Connection.CreateCommand();
+
+            command.CommandText = $@"SELECT * FROM [{tableName}] WHERE [id] = @p_id";
+            var parameter = command.CreateParameter();
+            parameter.ParameterName = "p_id";
+            parameter.Value = id;
+            command.Parameters.Add(parameter);
+            var row = DbTools.GetCommandRows(command).SingleOrDefault();
+            return row;
         }
 
         protected IList<dynamic> GetRows(string tableName)
         {
-            using (var command = this.Connection.CreateCommand())
-            {
-                command.CommandText = $@"SELECT * FROM [{tableName}]";
-                var rows = DbTools.GetCommandRows(command);
-                return rows;
-            }
+            using var command = this.Connection.CreateCommand();
+
+            command.CommandText = $@"SELECT * FROM [{tableName}]";
+            var rows = DbTools.GetCommandRows(command);
+            return rows;
         }
     }
 }

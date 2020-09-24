@@ -1,6 +1,6 @@
 ﻿using FluentMigrator;
 
-namespace TauCode.Db.Tests.SQLite
+namespace TauCode.Lab.Db.SQLite.Tests
 {
     [Migration(0)]
     public class M0_Baseline : AutoReversingMigration

@@ -22,7 +22,7 @@ namespace TauCode.Lab.Db.SQLite
         #region Constructor
 
         private SQLiteDialect()
-            : base("SQLite")
+            : base(DbProviderNames.SQLite)
         {
         }
 

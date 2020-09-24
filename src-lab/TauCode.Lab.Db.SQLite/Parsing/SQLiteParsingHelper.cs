@@ -16,7 +16,7 @@ namespace TauCode.Lab.Db.SQLite.Parsing
         private static readonly ILexer TheLexer = new TinyLispLexer();
         private static readonly HashSet<string> ReservedWordsHashSet;
 
-        public static HashSet<string> ReservedWords = ReservedWordsHashSet ?? (ReservedWordsHashSet = CreateReservedWords());
+        public static HashSet<string> ReservedWords = ReservedWordsHashSet ??= CreateReservedWords();
 
         private static HashSet<string> CreateReservedWords()
         {

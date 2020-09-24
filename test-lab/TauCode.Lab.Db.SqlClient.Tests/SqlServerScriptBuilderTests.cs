@@ -1,9 +1,10 @@
 ﻿using NUnit.Framework;
+using TauCode.Db;
 
-namespace TauCode.Db.Tests.SQLite
+namespace TauCode.Lab.Db.SqlClient.Tests
 {
     [TestFixture]
-    public class SQLiteScriptBuilderTests : TestBase
+    public class SqlServerScriptBuilderTests : TestBase
     {
         private IDbScriptBuilder _scriptBuilder;
 
@@ -27,23 +28,24 @@ namespace TauCode.Db.Tests.SQLite
 
             // Assert
             var expectedSql = @"CREATE TABLE [fragment](
-    [id] UNIQUEIDENTIFIER NOT NULL,
-    [note_translation_id] UNIQUEIDENTIFIER NOT NULL,
-    [sub_type_id] UNIQUEIDENTIFIER NOT NULL,
-    [code] TEXT NULL,
-    [order] INTEGER NOT NULL,
-    [content] TEXT NOT NULL,
+    [id] [uniqueidentifier] NOT NULL,
+    [note_translation_id] [uniqueidentifier] NOT NULL,
+    [sub_type_id] [uniqueidentifier] NOT NULL,
+    [code] [nvarchar](255) NULL,
+    [order] [int] NOT NULL,
+    [content] [ntext] NOT NULL,
     CONSTRAINT [PK_fragment] PRIMARY KEY([id] ASC),
     CONSTRAINT [FK_fragment_noteTranslation] FOREIGN KEY([note_translation_id]) REFERENCES [note_translation]([id]),
-    CONSTRAINT [FK_fragment_fragmentSubType] FOREIGN KEY([sub_type_id]) REFERENCES [fragment_sub_type]([id]))";
+    CONSTRAINT [FK_fragment_subType] FOREIGN KEY([sub_type_id]) REFERENCES [fragment_sub_type]([id]))";
 
             Assert.That(sql, Is.EqualTo(expectedSql));
         }
 
         protected override void ExecuteDbCreationScript()
         {
-            var migrator = new TestMigrator(this.ConnectionString, this.GetType().Assembly);
-            migrator.Migrate();
+            var script = TestHelper.GetResourceText("rho.script-create-tables.sql");
+            this.Connection.ExecuteCommentedScript(script);
+
         }
     }
 }

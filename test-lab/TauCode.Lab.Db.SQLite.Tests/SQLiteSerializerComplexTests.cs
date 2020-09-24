@@ -1,10 +1,10 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Linq;
+using TauCode.Db;
 using TauCode.Extensions;
-using TauCode.Lab.Db.SQLite;
 
-namespace TauCode.Db.Tests.SQLite
+namespace TauCode.Lab.Db.SQLite.Tests
 {
     [TestFixture]
     public class SQLiteSerializerComplexTests : TestBase

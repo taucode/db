@@ -4,9 +4,9 @@ using System.Data;
 using System.Data.SQLite;
 using System.IO;
 using System.Linq;
-using TauCode.Lab.Db.SQLite;
+using TauCode.Db;
 
-namespace TauCode.Db.Tests.SQLite
+namespace TauCode.Lab.Db.SQLite.Tests
 {
     [TestFixture]
     public abstract class TestBase
