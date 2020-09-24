@@ -17,7 +17,8 @@ namespace TauCode.Db.Tests.SqlServer
             // Act
             var dbProviderName = utilityFactory.DbProviderName;
 
-            IDbConnection connection = utilityFactory.CreateConnection();
+            //IDbConnection connection = utilityFactory.CreateConnection();
+            IDbConnection connection = new SqlConnection();
             connection.ConnectionString = TestHelper.ConnectionString;
             connection.Open();
 

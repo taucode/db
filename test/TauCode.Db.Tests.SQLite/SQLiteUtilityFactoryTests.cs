@@ -4,6 +4,7 @@ using System.Data.SQLite;
 using System.IO;
 using TauCode.Db.SQLite;
 
+// todo clean
 namespace TauCode.Db.Tests.SQLite
 {
     [TestFixture]
@@ -23,8 +24,9 @@ namespace TauCode.Db.Tests.SQLite
             // Act
             var dbProviderName = utilityFactory.DbProviderName;
 
-            IDbConnection connection = utilityFactory.CreateConnection();
-            var tuple = DbUtils.CreateSQLiteConnectionString();
+            //IDbConnection connection = utilityFactory.CreateConnection();
+            IDbConnection connection = new SQLiteConnection();
+            var tuple = TestHelper.CreateSQLiteConnectionString();
             var filePath = tuple.Item1;
             var connectionString = tuple.Item2;
             connection.ConnectionString = connectionString;

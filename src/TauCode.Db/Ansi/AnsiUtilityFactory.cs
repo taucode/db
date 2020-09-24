@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 
+// todo clean up
 namespace TauCode.Db.Ansi
 {
     public class AnsiUtilityFactory : IUtilityFactory
@@ -13,7 +14,7 @@ namespace TauCode.Db.Ansi
 
         public string DbProviderName => DbProviderNames.Ansi;
 
-        public IDbConnection CreateConnection() => throw new NotSupportedException();
+        //public IDbConnection CreateConnection() => throw new NotSupportedException();
 
         public IDialect GetDialect() => AnsiDialect.Instance;
 

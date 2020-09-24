@@ -25,3 +25,7 @@
 2020-01-07
 ==========
     1. parsing of NVARCHAR(100) will produce Precision = 100, Scale = null, Size = null, while it should produce Precision = null, Scale = null, Size = 100
+
+2020-09-24
+==========
+    1. Incorporate changes from TX.

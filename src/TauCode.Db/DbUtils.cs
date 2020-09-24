@@ -4,7 +4,6 @@ using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SQLite;
 using System.Linq;
 using System.Text.RegularExpressions;
 using TauCode.Db.Data;
@@ -12,8 +11,8 @@ using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
 using TauCode.Db.SQLite;
 using TauCode.Db.SqlServer;
-using TauCode.Extensions;
 
+// todo: clean up
 namespace TauCode.Db
 {
     public static class DbUtils
@@ -188,84 +187,84 @@ namespace TauCode.Db
             return json;
         }
 
-        private static IDbConnection TryCreateDbConnection(string dbConnectionTypeFullName)
-        {
-            var allTypes = AppDomain.CurrentDomain
-                .GetAssemblies()
-                .SelectMany(x => x.Modules)
-                .SelectMany(x => x.GetTypes())
-                .OrderBy(x => x.FullName)
-                .ToList();
+        //private static IDbConnection TryCreateDbConnection(string dbConnectionTypeFullName)
+        //{
+        //    var allTypes = AppDomain.CurrentDomain
+        //        .GetAssemblies()
+        //        .SelectMany(x => x.Modules)
+        //        .SelectMany(x => x.GetTypes())
+        //        .OrderBy(x => x.FullName)
+        //        .ToList();
 
-            var types = allTypes
-                .Where(x => x.FullName == dbConnectionTypeFullName)
-                .ToList();
+        //    var types = allTypes
+        //        .Where(x => x.FullName == dbConnectionTypeFullName)
+        //        .ToList();
 
-            if (!types.Any())
-            {
-                throw new DbException($"Type '{dbConnectionTypeFullName}' was not found in the current AppDomain.");
-            }
+        //    if (!types.Any())
+        //    {
+        //        throw new DbException($"Type '{dbConnectionTypeFullName}' was not found in the current AppDomain.");
+        //    }
 
-            if (types.Count() > 1)
-            {
-                throw new DbException($"Current AppDomain hosts more than one type with full name '{dbConnectionTypeFullName}'.");
-            }
+        //    if (types.Count() > 1)
+        //    {
+        //        throw new DbException($"Current AppDomain hosts more than one type with full name '{dbConnectionTypeFullName}'.");
+        //    }
 
-            var type = types.Single();
+        //    var type = types.Single();
 
-            var ctor = type.GetConstructor(Type.EmptyTypes);
-            if (ctor == null)
-            {
-                throw new DbException($"Type '{dbConnectionTypeFullName}' doesn't have .ctor(string).");
-            }
+        //    var ctor = type.GetConstructor(Type.EmptyTypes);
+        //    if (ctor == null)
+        //    {
+        //        throw new DbException($"Type '{dbConnectionTypeFullName}' doesn't have .ctor(string).");
+        //    }
 
-            object connectionObject;
+        //    object connectionObject;
 
-            try
-            {
-                connectionObject = ctor.Invoke(new object[0]);
-            }
-            catch (Exception ex)
-            {
-                throw new DbException($"Failed to invoke .ctor(string) of '{dbConnectionTypeFullName}'.", ex);
-            }
+        //    try
+        //    {
+        //        connectionObject = ctor.Invoke(new object[0]);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new DbException($"Failed to invoke .ctor(string) of '{dbConnectionTypeFullName}'.", ex);
+        //    }
 
-            if (connectionObject is IDbConnection dbConnection)
-            {
-                return dbConnection;
-            }
-            else
-            {
-                throw new DbException($".ctor(string) of '{dbConnectionTypeFullName}' returned not an instance of '{typeof(IDbConnection).FullName}'.");
-            }
-        }
+        //    if (connectionObject is IDbConnection dbConnection)
+        //    {
+        //        return dbConnection;
+        //    }
+        //    else
+        //    {
+        //        throw new DbException($".ctor(string) of '{dbConnectionTypeFullName}' returned not an instance of '{typeof(IDbConnection).FullName}'.");
+        //    }
+        //}
 
-        public static IDbConnection CreateConnection(string dbProviderName)
-        {
-            if (dbProviderName == null)
-            {
-                throw new ArgumentNullException(nameof(dbProviderName));
-            }
+        //public static IDbConnection CreateConnection(string dbProviderName)
+        //{
+        //    if (dbProviderName == null)
+        //    {
+        //        throw new ArgumentNullException(nameof(dbProviderName));
+        //    }
 
-            string fullTypeName;
+        //    string fullTypeName;
 
-            switch (dbProviderName)
-            {
-                case DbProviderNames.SqlServer:
-                    fullTypeName = "System.Data.SqlClient.SqlConnection";
-                    break;
+        //    switch (dbProviderName)
+        //    {
+        //        case DbProviderNames.SqlServer:
+        //            fullTypeName = "System.Data.SqlClient.SqlConnection";
+        //            break;
 
-                case DbProviderNames.SQLite:
-                    fullTypeName = "System.Data.SQLite.SQLiteConnection";
-                    break;
+        //        case DbProviderNames.SQLite:
+        //            fullTypeName = "System.Data.SQLite.SQLiteConnection";
+        //            break;
 
-                default:
-                    throw new NotSupportedException($"Cannot instantiate connection for type '{dbProviderName}'.");
-            }
+        //        default:
+        //            throw new NotSupportedException($"Cannot instantiate connection for type '{dbProviderName}'.");
+        //    }
 
-            var connection = TryCreateDbConnection(fullTypeName);
-            return connection;
-        }
+        //    var connection = TryCreateDbConnection(fullTypeName);
+        //    return connection;
+        //}
 
         public static IUtilityFactory GetUtilityFactory(string dbProviderName)
         {
@@ -343,7 +342,7 @@ namespace TauCode.Db
         /// https://stackoverflow.com/questions/3852068/sqlite-insert-very-slow
         /// </summary>
         /// <param name="sqLiteConnection">SQLite connection to boost</param>
-        public static void BoostSQLiteInsertions(this SQLiteConnection sqLiteConnection)
+        public static void BoostSQLiteInsertions(this IDbConnection sqLiteConnection)
         {
             if (sqLiteConnection == null)
             {
@@ -360,21 +359,22 @@ namespace TauCode.Db
             }
         }
 
+        // todo: move this to taucode.db
         /// <summary>
         /// Creates temporary .sqlite file and returns a SQLite connection string for this file.
         /// </summary>
         /// <returns>
         /// Tuple with two strings. Item1 is temporary file path, Item2 is connection string.
         /// </returns>
-        public static Tuple<string, string> CreateSQLiteConnectionString()
-        {
-            var tempDbFilePath = FileExtensions.CreateTempFilePath("zunit", ".sqlite");
-            SQLiteConnection.CreateFile(tempDbFilePath);
+        //public static Tuple<string, string> CreateSQLiteConnectionString()
+        //{
+        //    var tempDbFilePath = FileExtensions.CreateTempFilePath("zunit", ".sqlite");
+        //    SQLiteConnection.CreateFile(tempDbFilePath);
 
-            var connectionString = $"Data Source={tempDbFilePath};Version=3;";
+        //    var connectionString = $"Data Source={tempDbFilePath};Version=3;";
 
-            return Tuple.Create(tempDbFilePath, connectionString);
-        }
+        //    return Tuple.Create(tempDbFilePath, connectionString);
+        //}
 
     }
 }

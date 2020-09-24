@@ -1,5 +1,6 @@
 ﻿using System.Data;
 
+// todo clean up
 namespace TauCode.Db.SQLite
 {
     public class SQLiteUtilityFactory : IUtilityFactory
@@ -16,7 +17,7 @@ namespace TauCode.Db.SQLite
         // PRAGMA journal_mode = WAL
         // PRAGMA synchronous = NORMAL
         // see here: https://stackoverflow.com/questions/3852068/sqlite-insert-very-slow
-        public IDbConnection CreateConnection() => DbUtils.CreateConnection(this.DbProviderName);
+        //public IDbConnection CreateConnection() => DbUtils.CreateConnection(this.DbProviderName);
 
         public IDialect GetDialect() => SQLiteDialect.Instance;
 
