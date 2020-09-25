@@ -142,7 +142,44 @@ namespace TauCode.Db.DbValueConverters
 
         protected override object FromDbValueImpl(object dbValue)
         {
-            throw new NotImplementedException();
+            switch (this.DbType)
+            {
+                case DbType.AnsiString:
+                case DbType.AnsiStringFixedLength:
+                case DbType.String:
+                case DbType.StringFixedLength:
+                    if (dbValue is string s)
+                    {
+                        var parsed = Enum.TryParse(typeof(TEnum), s, out var @enum);
+                        if (parsed)
+                        {
+                            return @enum;
+                        }
+                    }
+
+                    break;
+
+                case DbType.Byte:
+                case DbType.SByte:
+                case DbType.Int16:
+                case DbType.UInt16:
+                case DbType.Int32:
+                case DbType.UInt32:
+                case DbType.Int64:
+                case DbType.UInt64:
+                    if (DbTools.IsIntegerType(dbValue.GetType()))
+                    {
+                        var @enum = Enum.ToObject(typeof(TEnum), dbValue);
+                        return @enum;
+                    }
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(); // todo
+            }
+
+            return null;
+
             //switch (this.Behaviour)
             //{
             //    case EnumValueConverterBehaviour.Integer:

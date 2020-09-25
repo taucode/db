@@ -28,7 +28,7 @@ namespace TauCode.Lab.Db.Npgsql
             var typeName = column.Type.Name.ToLowerInvariant();
             switch (typeName)
             {
-                case "uniqueidentifier":
+                case "uuid":
                     return new GuidValueConverter();
 
                 case "char":
@@ -101,6 +101,10 @@ namespace TauCode.Lab.Db.Npgsql
                 case "character varying":
                     dbType = DbType.String;
                     size = columnType.Size;
+                    break;
+
+                case "uuid":
+                    dbType = DbType.Guid;
                     break;
 
                 default:

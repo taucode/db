@@ -38,7 +38,10 @@ namespace TauCode.Lab.Db.Npgsql.Tests
             // Arrange
 
             // Act
-            var tableNames = this.DbInspector.GetTableNames().Except(new[] { "foo" });
+            var tableNames = this.DbInspector
+                .GetOrderedTableNames(true)
+                .Except(new[] {"foo"})
+                .ToList();
 
             // Assert
             CollectionAssert.AreEqual(

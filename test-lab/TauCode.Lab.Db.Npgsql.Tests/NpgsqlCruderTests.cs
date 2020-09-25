@@ -53,19 +53,17 @@ namespace TauCode.Lab.Db.Npgsql.Tests
             _cruder.InsertRow("language", language);
 
             // Assert
-            using (var command = this.Connection.CreateCommand())
-            {
-                command.CommandText = @"SELECT [id], [code], [name] FROM [language] WHERE [id] = @p_id";
-                var parameter = command.CreateParameter();
-                parameter.ParameterName = "p_id";
-                parameter.Value = id;
-                command.Parameters.Add(parameter);
-                var row = DbTools.GetCommandRows(command).Single();
+            using var command = this.Connection.CreateCommand();
+            command.CommandText = @"SELECT id, code, name FROM language WHERE id = @p_id";
+            var parameter = command.CreateParameter();
+            parameter.ParameterName = "p_id";
+            parameter.Value = id;
+            command.Parameters.Add(parameter);
+            var row = DbTools.GetCommandRows(command).Single();
 
-                Assert.That(row.id, Is.EqualTo(id));
-                Assert.That(row.code, Is.EqualTo("it"));
-                Assert.That(row.name, Is.EqualTo("Italian"));
-            }
+            Assert.That(row.id, Is.EqualTo(id));
+            Assert.That(row.code, Is.EqualTo("it"));
+            Assert.That(row.name, Is.EqualTo("Italian"));
         }
 
         [Test]
@@ -279,10 +277,10 @@ namespace TauCode.Lab.Db.Npgsql.Tests
         {
             // Arrange
             this.Connection.ExecuteSingleSql(@"
-INSERT INTO [language](
-    [id],
-    [code],
-    [name])
+INSERT INTO language(
+    id,
+    code,
+    name)
 VALUES(
     '4fca7968-49cf-4c52-b793-e4b27087251b',
     'en',
@@ -331,10 +329,10 @@ VALUES(
         {
             // Arrange
             this.Connection.ExecuteSingleSql(@"
-INSERT INTO [language](
-    [id],
-    [code],
-    [name])
+INSERT INTO language(
+    id,
+    code,
+    name)
 VALUES(
     '4fca7968-49cf-4c52-b793-e4b27087251b',
     'en',
