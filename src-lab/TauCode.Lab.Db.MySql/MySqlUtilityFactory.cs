@@ -21,7 +21,7 @@ namespace TauCode.Lab.Db.MySql
         public IDbTableInspector CreateTableInspector(IDbConnection connection, string schema, string tableName) =>
             new MySqlTableInspector(connection, schema, tableName);
 
-        public IDbCruder CreateCruder(IDbConnection connection, string schema) => new MySqlCruder(connection, schema);
+        public IDbCruder CreateCruder(IDbConnection connection, string schema) => new MySqlCruder(connection);
 
         public IDbSerializer CreateDbSerializer(IDbConnection connection, string schema) => new MySqlSerializer(connection, schema);
 

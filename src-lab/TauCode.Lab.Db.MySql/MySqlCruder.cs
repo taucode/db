@@ -16,8 +16,8 @@ namespace TauCode.Lab.Db.MySql
 
         #endregion
 
-        public MySqlCruder(IDbConnection connection, string schema)
-            : base(connection, schema)
+        public MySqlCruder(IDbConnection connection)
+            : base(connection, null)
         {
         }
 
