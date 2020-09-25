@@ -4,6 +4,10 @@ namespace TauCode.Db
 {
     public interface IDbInspector : IDbUtility
     {
-        IReadOnlyList<string> GetTableNames(bool? independentFirst = null);
+        string Schema { get; }
+
+        IReadOnlyList<string> GetSchemata();
+
+        IReadOnlyList<string> GetTableNames();
     }
 }

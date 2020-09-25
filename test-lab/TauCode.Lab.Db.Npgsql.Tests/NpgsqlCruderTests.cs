@@ -6,10 +6,10 @@ using TauCode.Db.Data;
 using TauCode.Db.DbValueConverters;
 using TauCode.Db.Exceptions;
 
-namespace TauCode.Lab.Db.SqlClient.Tests
+namespace TauCode.Lab.Db.Npgsql.Tests
 {
     [TestFixture]
-    public class SqlServerCruderTests : TestBase
+    public class NpgsqlCruderTests : TestBase
     {
         private class WrongData
         {
@@ -32,7 +32,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests
         [SetUp]
         public void SetUp()
         {
-            _cruder = this.DbInspector.Factory.CreateCruder(this.Connection);
+            _cruder = this.DbInspector.Factory.CreateCruder(this.Connection, null);
         }
 
         [Test]
@@ -300,10 +300,10 @@ VALUES(
         {
             // Arrange
             this.Connection.ExecuteSingleSql(@"
-INSERT INTO [foo](
-    [id],
-    [name],
-    [enum_string])
+INSERT INTO foo(
+    id,
+    name,
+    enum_string)
 VALUES(
     11,    
     null,

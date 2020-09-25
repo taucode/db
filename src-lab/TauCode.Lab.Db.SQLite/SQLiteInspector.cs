@@ -10,7 +10,7 @@ namespace TauCode.Lab.Db.SQLite
         #region Constructor
 
         public SQLiteInspector(IDbConnection connection)
-            : base(connection)
+            : base(connection, null)
         {
         }
 
@@ -20,7 +20,7 @@ namespace TauCode.Lab.Db.SQLite
 
         public override IDbUtilityFactory Factory => SQLiteUtilityFactory.Instance;
 
-        protected override IReadOnlyList<string> GetTableNamesImpl()
+        protected override IReadOnlyList<string> GetTableNamesImpl(string schema)
         {
             using (var command = this.Connection.CreateCommand())
             {

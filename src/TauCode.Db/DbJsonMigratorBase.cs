@@ -17,10 +17,12 @@ namespace TauCode.Db
 
         protected DbJsonMigratorBase(
             IDbConnection connection,
+            string schema,
             Func<string> metadataJsonGetter,
             Func<string> dataJsonGetter)
             : base(connection, true, false)
         {
+            this.Schema = schema;
             this.MetadataJsonGetter = metadataJsonGetter ?? throw new ArgumentNullException(nameof(metadataJsonGetter));
             this.DataJsonGetter = dataJsonGetter ?? throw new ArgumentNullException(nameof(dataJsonGetter));
         }
@@ -29,7 +31,7 @@ namespace TauCode.Db
 
         #region Protected
 
-        protected virtual IDbSerializer DbSerializer => _dbSerializer ??= this.Factory.CreateDbSerializer(this.Connection);
+        protected virtual IDbSerializer DbSerializer => _dbSerializer ??= this.Factory.CreateDbSerializer(this.Connection, this.Schema);
 
         #endregion
 
@@ -42,6 +44,8 @@ namespace TauCode.Db
         #endregion
 
         #region IDbMigrator Members
+
+        public string Schema { get; }
 
         public virtual void Migrate()
         {

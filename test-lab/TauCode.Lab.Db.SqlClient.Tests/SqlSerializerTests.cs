@@ -9,14 +9,14 @@ using TauCode.Db.Model;
 namespace TauCode.Lab.Db.SqlClient.Tests
 {
     [TestFixture]
-    public class SqlServerSerializerTests : TestBase
+    public class SqlSerializerTests : TestBase
     {
         private IDbSerializer _dbSerializer;
 
         [SetUp]
         public void SetUp()
         {
-            _dbSerializer = new SqlSerializer(this.Connection);
+            _dbSerializer = new SqlSerializer(this.Connection, null);
         }
 
         [Test]

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using TauCode.Db.Model;
 
+// todo clean
 namespace TauCode.Db
 {
     public interface IDbDialect : IDbUtility
@@ -10,13 +10,13 @@ namespace TauCode.Db
 
         IReadOnlyList<string> ReservedWords { get; }
 
-        IReadOnlyList<string> DataTypeNames { get; }
+        //IReadOnlyList<string> DataTypeNames { get; }
 
-        bool IsSingleWordTypeName(string typeName);
+        //bool IsSingleWordTypeName(string typeName);
 
-        bool IsSizedTypeName(string typeName);
+        //bool IsSizedTypeName(string typeName);
 
-        bool IsPreciseNumberTypeName(string typeName);
+        //bool IsPreciseNumberTypeName(string typeName);
 
         string ClauseTerminator { get; }
 
@@ -24,9 +24,9 @@ namespace TauCode.Db
 
         bool IsClauseTerminatorMandatory { get; }
 
-        DbTypeFamily GetTypeFamily(string typeName);
+        //DbTypeFamily GetTypeFamily(string typeName);
 
-        DbTypeNameCategory GetTypeNameCategory(string typeName);
+        //DbTypeNameCategory GetTypeNameCategory(string typeName);
 
         IReadOnlyList<Tuple<char, char>> IdentifierDelimiters { get; }
 
@@ -38,6 +38,6 @@ namespace TauCode.Db
 
         string DecorateIdentifier(DbIdentifierType identifierType, string identifier, char? openingDelimiter);
 
-        DbTypeMold ResolveType(string typeName, int? size, int? precision, int? scale);
+        //DbTypeMold ResolveType(string typeName, int? size, int? precision, int? scale);
     }
 }

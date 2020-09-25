@@ -9,14 +9,16 @@ namespace TauCode.Lab.Db.SqlClient
     {
         #region Constants
 
+        public const string DefaultSchema = "dbo";
+
         private const string TableTypeForTable = "BASE TABLE";
 
         #endregion
 
         #region Constructor
 
-        public SqlInspector(IDbConnection connection)
-            : base(connection)
+        public SqlInspector(IDbConnection connection, string schema = null)
+            : base(connection, schema ?? DefaultSchema)
         {
         }
 
@@ -24,31 +26,31 @@ namespace TauCode.Lab.Db.SqlClient
 
         public override IDbUtilityFactory Factory => SqlUtilityFactory.Instance;
 
-        protected override IReadOnlyList<string> GetTableNamesImpl()
+        protected override IReadOnlyList<string> GetTableNamesImpl(string schema)
         {
-            using (var command = this.Connection.CreateCommand())
-            {
-                var sql =
-$@"
+            using var command = this.Connection.CreateCommand();
+            var sql =
+                $@"
 SELECT
     T.table_name TableName
 FROM
     information_schema.tables T
 WHERE
-    T.table_type = @p_tableType
+    T.table_type = @p_tableType AND
+    T.table_schema = @p_schema
 ";
 
-                command.AddParameterWithValue("p_tableType", TableTypeForTable);
+            command.AddParameterWithValue("p_tableType", TableTypeForTable);
+            command.AddParameterWithValue("p_schema", this.Schema);
 
-                command.CommandText = sql;
+            command.CommandText = sql;
 
-                var tableNames = DbTools
-                    .GetCommandRows(command)
-                    .Select(x => (string)x.TableName)
-                    .ToArray();
+            var tableNames = DbTools
+                .GetCommandRows(command)
+                .Select(x => (string)x.TableName)
+                .ToArray();
 
-                return tableNames;
-            }
+            return tableNames;
         }
     }
 }

@@ -20,9 +20,10 @@ namespace TauCode.Db
 
         #region Constructor
 
-        protected DbSerializerBase(IDbConnection connection)
+        protected DbSerializerBase(IDbConnection connection, string schema)
             : base(connection, true, false)
         {
+            this.Schema = schema;
         }
 
         #endregion
@@ -64,13 +65,15 @@ namespace TauCode.Db
 
         #region Protected
 
-        protected virtual IDbInspector DbInspector => _dbInspector ??= this.Factory.CreateDbInspector(this.Connection);
+        protected virtual IDbInspector DbInspector => _dbInspector ??= this.Factory.CreateDbInspector(this.Connection, this.Schema);
 
         #endregion
 
         #region IDbSerializer Members
 
-        public virtual IDbCruder Cruder => _cruder ??= this.Factory.CreateCruder(this.Connection);
+        public string Schema { get; }
+
+        public virtual IDbCruder Cruder => _cruder ??= this.Factory.CreateCruder(this.Connection, this.Schema);
 
         public virtual string SerializeTableData(string tableName)
         {
@@ -124,7 +127,7 @@ namespace TauCode.Db
                 throw new ArgumentException("Could not deserialize table data as array.", nameof(json));
             }
 
-            var table = this.Factory.CreateTableInspector(this.Connection, tableName).GetTable();
+            var table = this.Factory.CreateTableInspector(this.Connection, this.Schema, tableName).GetTable();
             this.DeserializeTableData(table, tableData);
         }
 
@@ -158,7 +161,7 @@ namespace TauCode.Db
                     throw new ArgumentException("Invalid data.", nameof(json));
                 }
 
-                var tableInspector = this.Factory.CreateTableInspector(this.Connection, name);
+                var tableInspector = this.Factory.CreateTableInspector(this.Connection, this.Schema, name);
                 var tableMold = tableInspector.GetTable();
 
                 this.DeserializeTableData(tableMold, tableData);
@@ -167,7 +170,7 @@ namespace TauCode.Db
 
         public virtual string SerializeTableMetadata(string tableName)
         {
-            var tableInspector = this.Factory.CreateTableInspector(this.Connection, tableName);
+            var tableInspector = this.Factory.CreateTableInspector(this.Connection, this.Schema, tableName);
             var table = tableInspector.GetTable().CloneTable(false);
 
             table.ForeignKeys = table.ForeignKeys
@@ -184,11 +187,11 @@ namespace TauCode.Db
 
         public virtual string SerializeDbMetadata(Func<string, bool> tableNamePredicate = null)
         {
-            tableNamePredicate = tableNamePredicate ?? (x => true);
+            tableNamePredicate ??= (x => true);
 
             var tables = this.DbInspector
-                .GetTableNames(true)
-                .Select(x => this.Factory.CreateTableInspector(this.Connection, x).GetTable())
+                .GetTableNames()
+                .Select(x => this.Factory.CreateTableInspector(this.Connection, this.Schema, x).GetTable())
                 .Where(x => tableNamePredicate(x.Name))
                 .ToList();
 

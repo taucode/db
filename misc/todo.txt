@@ -1,6 +1,6 @@
 2019-07-30
 ==========
-    1. Fix issue with SqlCommand.Prepare for all DB types
+x   1. Fix issue with SqlCommand.Prepare for all DB types
 +   2. Remove TauCode.Db.XenoTest project when done.
 
 2019-11-20
@@ -14,12 +14,12 @@
 +   2. IParameterInfo.
 +   3. DB schema serialization/deserialization.
 +   4. Get rid of SqlServer...Base classes. No more SQL Server CE :(
-    5. IDbInspector should check type (actually, type full name) of IDbConnection, not ICruder or whoever else.
+x   5. IDbInspector should check type (actually, type full name) of IDbConnection, not ICruder or whoever else.
 +   6. TauCode.Db.SQLite.
 
 2019-12-17
 ==========
-    1. Check if all resources are needed in test projects.
++   1. Check if all resources are needed in test projects.
     2. Remove dummy tests one day.
 
 2020-01-07
@@ -29,3 +29,5 @@
 2020-09-24
 ==========
     1. Incorporate changes from TX.
+    2. Support schemas.
+    3. Get rid of type-names.txt.

@@ -16,8 +16,8 @@ namespace TauCode.Lab.Db.SqlClient
 
         #endregion
 
-        public SqlCruder(IDbConnection connection)
-            : base(connection)
+        public SqlCruder(IDbConnection connection, string schema)
+            : base(connection, schema)
         {
         }
 

@@ -5,7 +5,7 @@ namespace TauCode.Lab.Db.SqlClient
     [DbDialect(
         typeof(SqlDialect),
         "reserved-words.txt",
-        "data-type-names.txt",
+        //"data-type-names.txt",
         "[],\"\"")]
     public class SqlDialect : DbDialectBase
     {

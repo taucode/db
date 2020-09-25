@@ -79,7 +79,7 @@ namespace TauCode.Lab.Db.SQLite.Tests
             // Act
             var ex = Assert.Throws<DbException>(() =>
             {
-                var tableInspector = this.DbInspector.Factory.CreateTableInspector(this.Connection, "non_existing_table");
+                var tableInspector = this.DbInspector.Factory.CreateTableInspector(this.Connection, null, "non_existing_table");
                 tableInspector.GetTable();
             });
 

@@ -5,6 +5,7 @@ namespace TauCode.Db
 {
     public interface IDbCruder : IDbUtility
     {
+        string Schema { get; }
         IDbScriptBuilder ScriptBuilder { get; }
         IDbTableValuesConverter GetTableValuesConverter(string tableName);
         void ResetTableValuesConverters();

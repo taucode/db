@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using TauCode.Db;
-using TauCode.Db.Model;
+﻿using TauCode.Db;
 
+// todo clean
 namespace TauCode.Lab.Db.SQLite
 {
     [DbDialect(
         typeof(SQLiteDialect),
         "reserved-words.txt",
-        "data-type-names.txt",
+        //"data-type-names.txt",
         "[],\"\",``")]
     public class SQLiteDialect : DbDialectBase
     {
@@ -34,57 +32,57 @@ namespace TauCode.Lab.Db.SQLite
 
         public override bool CanDecorateTypeIdentifier => false;
 
-        public override IReadOnlyList<string> DataTypeNames => EmptyStrings;
+        //public override IReadOnlyList<string> DataTypeNames => EmptyStrings;
 
-        public override bool IsSingleWordTypeName(string typeName)
-        {
-            if (typeName == null)
-            {
-                throw new ArgumentNullException(nameof(typeName));
-            }
+        //public override bool IsSingleWordTypeName(string typeName)
+        //{
+        //    if (typeName == null)
+        //    {
+        //        throw new ArgumentNullException(nameof(typeName));
+        //    }
 
-            return false;
-        }
+        //    return false;
+        //}
 
-        public override bool IsSizedTypeName(string typeName)
-        {
-            if (typeName == null)
-            {
-                throw new ArgumentNullException(nameof(typeName));
-            }
+        //public override bool IsSizedTypeName(string typeName)
+        //{
+        //    if (typeName == null)
+        //    {
+        //        throw new ArgumentNullException(nameof(typeName));
+        //    }
 
-            return false;
-        }
+        //    return false;
+        //}
 
-        public override bool IsPreciseNumberTypeName(string typeName)
-        {
-            if (typeName == null)
-            {
-                throw new ArgumentNullException(nameof(typeName));
-            }
+        //public override bool IsPreciseNumberTypeName(string typeName)
+        //{
+        //    if (typeName == null)
+        //    {
+        //        throw new ArgumentNullException(nameof(typeName));
+        //    }
 
-            return false;
-        }
+        //    return false;
+        //}
 
-        public override DbTypeFamily GetTypeFamily(string typeName)
-        {
-            if (typeName == null)
-            {
-                throw new ArgumentNullException(nameof(typeName));
-            }
+        //public override DbTypeFamily GetTypeFamily(string typeName)
+        //{
+        //    if (typeName == null)
+        //    {
+        //        throw new ArgumentNullException(nameof(typeName));
+        //    }
 
-            return DbTypeFamily.Unknown;
-        }
+        //    return DbTypeFamily.Unknown;
+        //}
 
-        public override DbTypeNameCategory GetTypeNameCategory(string typeName)
-        {
-            if (typeName == null)
-            {
-                throw new ArgumentNullException(nameof(typeName));
-            }
+        //public override DbTypeNameCategory GetTypeNameCategory(string typeName)
+        //{
+        //    if (typeName == null)
+        //    {
+        //        throw new ArgumentNullException(nameof(typeName));
+        //    }
 
-            return DbTypeNameCategory.Unknown;
-        }
+        //    return DbTypeNameCategory.Unknown;
+        //}
 
         #endregion
     }

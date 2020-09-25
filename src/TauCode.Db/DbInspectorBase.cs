@@ -4,27 +4,29 @@ using System.Linq;
 using TauCode.Algorithms.Graphs;
 using TauCode.Db.Model;
 
+// todo clean
 namespace TauCode.Db
 {
     public abstract class DbInspectorBase : DbUtilityBase, IDbInspector
     {
         #region Constructor
 
-        protected DbInspectorBase(IDbConnection connection)
+        protected DbInspectorBase(IDbConnection connection, string schema)
             : base(connection, true, false)
         {
+            this.Schema = schema;
         }
 
         #endregion
 
         #region Abstract & Virtual
 
-        protected abstract IReadOnlyList<string> GetTableNamesImpl();
+        protected abstract IReadOnlyList<string> GetTableNamesImpl(string schema);
 
         protected virtual IReadOnlyList<TableMold> GetSortedTableNames(IReadOnlyList<string> tableNames, bool independentFirst)
         {
             var tableMolds = tableNames
-                .Select(x => this.Factory.CreateTableInspector(this.Connection, x))
+                .Select(x => this.Factory.CreateTableInspector(this.Connection, this.Schema, x))
                 .Select(x => x.GetTable())
                 .ToList();
 
@@ -70,15 +72,22 @@ namespace TauCode.Db
 
         #region IDbInspector Members
 
-        public IReadOnlyList<string> GetTableNames(bool? independentFirst = null)
+        public string Schema { get; }
+
+        public IReadOnlyList<string> GetSchemata()
         {
-            var tableNames = this.GetTableNamesImpl();
-            if (independentFirst.HasValue)
-            {
-                tableNames = this.GetSortedTableNames(tableNames, independentFirst.Value)
-                    .Select(x => x.Name)
-                    .ToList();
-            }
+            throw new System.NotImplementedException();
+        }
+
+        public IReadOnlyList<string> GetTableNames()
+        {
+            var tableNames = this.GetTableNamesImpl(this.Schema);
+            //if (independentFirst.HasValue)
+            //{
+            //    tableNames = this.GetSortedTableNames(tableNames, independentFirst.Value)
+            //        .Select(x => x.Name)
+            //        .ToList();
+            //}
 
             return tableNames;
         }

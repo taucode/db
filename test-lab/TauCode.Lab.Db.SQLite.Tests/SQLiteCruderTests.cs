@@ -33,7 +33,7 @@ namespace TauCode.Lab.Db.SQLite.Tests
         [SetUp]
         public void SetUp()
         {
-            _cruder = this.DbInspector.Factory.CreateCruder(this.Connection);
+            _cruder = this.DbInspector.Factory.CreateCruder(this.Connection, null);
         }
 
         [Test]

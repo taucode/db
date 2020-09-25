@@ -5,14 +5,18 @@ using System.Linq;
 using TauCode.Db;
 using TauCode.Db.Model;
 
+// todo clean
 namespace TauCode.Lab.Db.SqlClient
 {
     public class SqlTableInspector : DbTableInspectorBase
     {
         #region Constructor
 
-        public SqlTableInspector(IDbConnection connection, string tableName)
-            : base(connection, tableName)
+        public SqlTableInspector(IDbConnection connection, string schema, string tableName)
+            : base(
+                connection,
+                schema ?? SqlInspector.DefaultSchema,
+                tableName)
         {
         }
 
@@ -41,7 +45,7 @@ WHERE
                 {
                     throw DbTools.CreateTableNotFoundException(this.TableName);
                 }
-                
+
                 var objectId = (int)objectResult;
                 return objectId;
             }
@@ -137,15 +141,32 @@ ORDER BY
             var column = new ColumnMold
             {
                 Name = columnInfo.Name,
-                Type = this.Factory.GetDialect().ResolveType(
-                    columnInfo.TypeName,
-                    columnInfo.Size,
-                    columnInfo.Precision,
-                    columnInfo.Scale),
+                Type = new DbTypeMold
+                {
+                    Name = columnInfo.TypeName,
+                    Size = columnInfo.Size,
+                    Precision = columnInfo.Precision,
+                    Scale = columnInfo.Scale,
+                },
                 IsNullable = columnInfo.IsNullable,
             };
 
             return column;
+
+
+
+            //var column = new ColumnMold
+            //{
+            //    Name = columnInfo.Name,
+            //    Type = this.Factory.GetDialect().ResolveType(
+            //        columnInfo.TypeName,
+            //        columnInfo.Size,
+            //        columnInfo.Precision,
+            //        columnInfo.Scale),
+            //    IsNullable = columnInfo.IsNullable,
+            //};
+
+            //return column;
         }
 
         protected override Dictionary<string, ColumnIdentityMold> GetIdentities()

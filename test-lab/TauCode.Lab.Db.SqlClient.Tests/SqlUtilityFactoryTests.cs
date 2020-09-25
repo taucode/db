@@ -6,7 +6,7 @@ using TauCode.Db;
 namespace TauCode.Lab.Db.SqlClient.Tests
 {
     [TestFixture]
-    public class SqlServerUtilityFactoryTests
+    public class SqlUtilityFactoryTests
     {
         [Test]
         public void Members_DifferentArguments_HaveExpectedProps()
@@ -24,15 +24,15 @@ namespace TauCode.Lab.Db.SqlClient.Tests
 
             IDbDialect dialect = utilityFactory.GetDialect();
 
-            IDbScriptBuilder scriptBuilder = utilityFactory.CreateScriptBuilder();
+            IDbScriptBuilder scriptBuilder = utilityFactory.CreateScriptBuilder(null);
 
-            IDbInspector dbInspector = utilityFactory.CreateDbInspector(connection);
+            IDbInspector dbInspector = utilityFactory.CreateDbInspector(connection, null);
 
-            IDbTableInspector tableInspector = utilityFactory.CreateTableInspector(connection, "language");
+            IDbTableInspector tableInspector = utilityFactory.CreateTableInspector(connection, null, "language");
 
-            IDbCruder cruder = utilityFactory.CreateCruder(connection);
+            IDbCruder cruder = utilityFactory.CreateCruder(connection, null);
 
-            IDbSerializer dbSerializer = utilityFactory.CreateDbSerializer(connection);
+            IDbSerializer dbSerializer = utilityFactory.CreateDbSerializer(connection, null);
 
             // Assert
             //Assert.That(dbProviderName, Is.EqualTo("SqlServer"));

@@ -7,14 +7,14 @@ using TauCode.Extensions;
 namespace TauCode.Lab.Db.SqlClient.Tests
 {
     [TestFixture]
-    public class SqlServerSerializerComplexTests : TestBase
+    public class SqlSerializerComplexTests : TestBase
     {
         private IDbSerializer _dbSerializer;
 
         [SetUp]
         public void SetUp()
         {
-            _dbSerializer = new SqlSerializer(this.Connection);
+            _dbSerializer = new SqlSerializer(this.Connection, null);
         }
 
         [Test]
@@ -43,7 +43,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests
             _dbSerializer.DeserializeDbData(json);
 
             // Assert
-            var cruder = this.DbInspector.Factory.CreateCruder(this.Connection);
+            var cruder = this.DbInspector.Factory.CreateCruder(this.Connection, null);
             var users = cruder.GetAllRows("user");
             var userInfos = cruder.GetAllRows("user_info");
 

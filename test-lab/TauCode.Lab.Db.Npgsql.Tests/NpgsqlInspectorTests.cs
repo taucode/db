@@ -2,10 +2,10 @@
 using System.Linq;
 using TauCode.Db;
 
-namespace TauCode.Lab.Db.SqlClient.Tests
+namespace TauCode.Lab.Db.Npgsql.Tests
 {
     [TestFixture]
-    public class SqlServerInspectorTests : TestBase
+    public class NpgsqlInspectorTests : TestBase
     {
         [Test]
         public void GetTableNames_IndependentFirstIsNull_ReturnsIndependentTablesFirst()
@@ -38,7 +38,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests
             // Arrange
 
             // Act
-            var tableNames = this.DbInspector.GetTableNames(true).Except(new[] { "foo" });
+            var tableNames = this.DbInspector.GetTableNames().Except(new[] { "foo" });
 
             // Assert
             CollectionAssert.AreEqual(
@@ -63,7 +63,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests
             // Arrange
 
             // Act
-            var tableNames = this.DbInspector.GetTableNames(false).Except(new[] { "foo" });
+            var tableNames = this.DbInspector.GetTableNames().Except(new[] { "foo" });
 
             // Assert
             CollectionAssert.AreEqual(

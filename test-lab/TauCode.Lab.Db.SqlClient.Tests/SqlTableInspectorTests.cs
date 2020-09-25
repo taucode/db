@@ -8,7 +8,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests
     /// Happy paths are successfully passed in other ut-s.
     /// </summary>
     [TestFixture]
-    public class SqlServerTableInspectorTests : TestBase
+    public class SqlTableInspectorTests : TestBase
     {
         [SetUp]
         public void SetUp()
@@ -23,7 +23,10 @@ namespace TauCode.Lab.Db.SqlClient.Tests
             // Act
             var ex = Assert.Throws<DbException>(() =>
                 {
-                    var tableInspector = this.DbInspector.Factory.CreateTableInspector(this.Connection, "non_existing_table");
+                    var tableInspector = this.DbInspector.Factory.CreateTableInspector(
+                        this.Connection,
+                        null,
+                        "non_existing_table");
                     tableInspector.GetTable();
                 });
 

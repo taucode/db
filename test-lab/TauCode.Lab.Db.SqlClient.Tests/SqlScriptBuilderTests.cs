@@ -1,17 +1,18 @@
 ﻿using NUnit.Framework;
 using TauCode.Db;
 
+// todo: get rid of '...SqlServer...' in sln.
 namespace TauCode.Lab.Db.SqlClient.Tests
 {
     [TestFixture]
-    public class SqlServerScriptBuilderTests : TestBase
+    public class SqlScriptBuilderTests : TestBase
     {
         private IDbScriptBuilder _scriptBuilder;
 
         [SetUp]
         public void SetUp()
         {
-            _scriptBuilder = this.DbInspector.Factory.CreateScriptBuilder();
+            _scriptBuilder = this.DbInspector.Factory.CreateScriptBuilder(null);
         }
 
         [Test]
@@ -20,7 +21,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests
             // Arrange
             var table = this.DbInspector
                 .Factory
-                .CreateTableInspector(this.Connection, "fragment")
+                .CreateTableInspector(this.Connection, null, "fragment")
                 .GetTable();
             
             // Act

@@ -16,7 +16,7 @@ namespace TauCode.Lab.Db.SQLite
         public SQLiteTableInspector(
             IDbConnection connection,
             string tableName)
-            : base(connection, tableName)
+            : base(connection, null, tableName)
         {
         }
 

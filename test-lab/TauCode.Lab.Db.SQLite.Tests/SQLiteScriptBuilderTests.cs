@@ -11,7 +11,7 @@ namespace TauCode.Lab.Db.SQLite.Tests
         [SetUp]
         public void SetUp()
         {
-            _scriptBuilder = this.DbInspector.Factory.CreateScriptBuilder();
+            _scriptBuilder = this.DbInspector.Factory.CreateScriptBuilder(null);
         }
 
         [Test]
@@ -20,9 +20,9 @@ namespace TauCode.Lab.Db.SQLite.Tests
             // Arrange
             var table = this.DbInspector
                 .Factory
-                .CreateTableInspector(this.Connection, "fragment")
+                .CreateTableInspector(this.Connection, null, "fragment")
                 .GetTable();
-            
+
             // Act
             var sql = _scriptBuilder.BuildCreateTableScript(table, true);
 

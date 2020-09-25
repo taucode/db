@@ -12,7 +12,7 @@ namespace TauCode.Lab.Db.SQLite
         private static readonly int GuidRepresentationLength = Guid.Empty.ToString().Length;
 
         public SQLiteCruder(IDbConnection connection)
-            : base(connection)
+            : base(connection, null)
         {
         }
 

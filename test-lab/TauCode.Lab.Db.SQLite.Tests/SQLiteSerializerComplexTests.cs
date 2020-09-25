@@ -42,7 +42,7 @@ namespace TauCode.Lab.Db.SQLite.Tests
             _dbSerializer.DeserializeDbData(json);
 
             // Assert
-            var cruder = this.DbInspector.Factory.CreateCruder(this.Connection);
+            var cruder = this.DbInspector.Factory.CreateCruder(this.Connection, null);
             var users = cruder.GetAllRows("user");
             var userInfos = cruder.GetAllRows("user_info");
 

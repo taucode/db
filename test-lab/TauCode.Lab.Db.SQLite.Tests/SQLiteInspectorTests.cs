@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Linq;
+using TauCode.Db;
 
 namespace TauCode.Lab.Db.SQLite.Tests
 {
@@ -41,8 +42,11 @@ namespace TauCode.Lab.Db.SQLite.Tests
 
             // Act
             var tableNames = this.DbInspector
-                .GetTableNames(true)
-                .Except(new[] { "versioninfo", "foo", "hoo" }, StringComparer.InvariantCultureIgnoreCase);
+                .GetOrderedTableNames(true)
+                .Except(
+                    new[] {"versioninfo", "foo", "hoo"},
+                    StringComparer.InvariantCultureIgnoreCase)
+                .ToList();
 
             // Assert
             CollectionAssert.AreEqual(
@@ -68,7 +72,7 @@ namespace TauCode.Lab.Db.SQLite.Tests
 
             // Act
             var tableNames = this.DbInspector
-                .GetTableNames(false)
+                .GetOrderedTableNames(false)
                 .Except(new[] { "versioninfo", "foo", "hoo" }, StringComparer.InvariantCultureIgnoreCase);
 
             // Assert

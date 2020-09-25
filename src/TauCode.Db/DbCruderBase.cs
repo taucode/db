@@ -265,9 +265,10 @@ namespace TauCode.Db
 
         #region Constructor
 
-        protected DbCruderBase(IDbConnection connection)
+        protected DbCruderBase(IDbConnection connection, string schema)
             : base(connection, true, false)
         {
+            this.Schema = schema;
             _tableValuesConverters = new Dictionary<string, IDbTableValuesConverter>();
         }
 
@@ -400,7 +401,7 @@ namespace TauCode.Db
 
         protected virtual IDbTableValuesConverter CreateTableValuesConverter(string tableName)
         {
-            var tableInspector = this.Factory.CreateTableInspector(this.Connection, tableName);
+            var tableInspector = this.Factory.CreateTableInspector(this.Connection, this.Schema, tableName);
             var table = tableInspector.GetTable();
 
             var dictionary = table.Columns
@@ -416,7 +417,8 @@ namespace TauCode.Db
 
         #region ICruder Members
 
-        public virtual IDbScriptBuilder ScriptBuilder => _scriptBuilder ??= this.Factory.CreateScriptBuilder();
+        public string Schema { get; }
+        public virtual IDbScriptBuilder ScriptBuilder => _scriptBuilder ??= this.Factory.CreateScriptBuilder(this.Schema);
 
         public IDbTableValuesConverter GetTableValuesConverter(string tableName)
         {
@@ -472,7 +474,7 @@ namespace TauCode.Db
                 }
             }
 
-            var table = this.Factory.CreateTableInspector(this.Connection, tableName).GetTable();
+            var table = this.Factory.CreateTableInspector(this.Connection, this.Schema, tableName).GetTable();
 
             if (rows.Count == 0)
             {
@@ -524,7 +526,7 @@ namespace TauCode.Db
             }
 
             var table = this.Factory
-                .CreateTableInspector(this.Connection, tableName)
+                .CreateTableInspector(this.Connection, this.Schema, tableName)
                 .GetTable();
 
             var idColumnName = table.GetPrimaryKeyColumn().Name.ToLowerInvariant();
@@ -548,7 +550,7 @@ namespace TauCode.Db
             }
 
             var table = this.Factory
-                .CreateTableInspector(this.Connection, tableName)
+                .CreateTableInspector(this.Connection, this.Schema, tableName)
                 .GetTable();
 
             using var command = this.Connection.CreateCommand();
@@ -576,7 +578,7 @@ namespace TauCode.Db
             }
 
             var table = this.Factory
-                .CreateTableInspector(this.Connection, tableName)
+                .CreateTableInspector(this.Connection, this.Schema, tableName)
                 .GetTable();
 
             var dataDictionary = this.ObjectToDataDictionary(rowUpdate);
@@ -617,7 +619,7 @@ namespace TauCode.Db
             }
 
             var table = this.Factory
-                .CreateTableInspector(this.Connection, tableName)
+                .CreateTableInspector(this.Connection, this.Schema, tableName)
                 .GetTable();
 
             var idColumnName = table.GetPrimaryKeyColumn().Name.ToLowerInvariant();

@@ -4,6 +4,7 @@ using System.Linq;
 using TauCode.Db.Model;
 using TauCode.Extensions;
 
+// todo clean
 namespace TauCode.Db
 {
     [AttributeUsage(AttributeTargets.Class)]
@@ -11,8 +12,8 @@ namespace TauCode.Db
     {
         #region Fields
 
-        private readonly Dictionary<string, DbTypeFamily> _families;
-        private readonly Dictionary<string, DbTypeNameCategory> _categories;
+        //private readonly Dictionary<string, DbTypeFamily> _families;
+        //private readonly Dictionary<string, DbTypeNameCategory> _categories;
 
         #endregion
 
@@ -21,33 +22,33 @@ namespace TauCode.Db
         public DbDialectAttribute(
             Type targetType,
             string reservedWordsResourceName,
-            string dataTypeNamesResourceName,
+            //string dataTypeNamesResourceName,
             string identifierDelimitersString)
         {
             this.ReservedWords = targetType.Assembly.GetResourceLines(reservedWordsResourceName, true);
 
-            _families = new Dictionary<string, DbTypeFamily>();
-            _categories = new Dictionary<string, DbTypeNameCategory>();
+            //_families = new Dictionary<string, DbTypeFamily>();
+            //_categories = new Dictionary<string, DbTypeNameCategory>();
 
-            var typeNameLines = targetType.Assembly.GetResourceLines(dataTypeNamesResourceName, true)
-                .Select(x => x.Trim())
-                .Where(x => x != string.Empty);
+            //var typeNameLines = targetType.Assembly.GetResourceLines(dataTypeNamesResourceName, true)
+            //    .Select(x => x.Trim())
+            //    .Where(x => x != string.Empty);
 
-            foreach (var typeNameLine in typeNameLines)
-            {
-                var parts = typeNameLine.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-                var typeName = parts[0];
-                var category = parts[1].ToEnum<DbTypeNameCategory>();
-                var family = parts[2].ToEnum<DbTypeFamily>();
+            //foreach (var typeNameLine in typeNameLines)
+            //{
+            //    var parts = typeNameLine.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+            //    var typeName = parts[0];
+            //    var category = parts[1].ToEnum<DbTypeNameCategory>();
+            //    var family = parts[2].ToEnum<DbTypeFamily>();
 
-                _families.Add(typeName, family);
-                _categories.Add(typeName, category);
-            }
+            //    _families.Add(typeName, family);
+            //    _categories.Add(typeName, category);
+            //}
 
             this.IdentifierDelimiters = BuildIdentifierDelimiters(identifierDelimitersString);
-            this.DataTypeNames = _families.Keys
-                .OrderBy(x => x)
-                .ToArray();
+            //this.DataTypeNames = _families.Keys
+            //    .OrderBy(x => x)
+            //    .ToArray();
         }
 
         #endregion
@@ -77,10 +78,10 @@ namespace TauCode.Db
         #region Public
 
         public string[] ReservedWords { get; }
-        public string[] DataTypeNames { get; }
+        //public string[] DataTypeNames { get; }
         public Tuple<char, char>[] IdentifierDelimiters { get; }
-        public Dictionary<string, DbTypeFamily> Families => _families;
-        public Dictionary<string, DbTypeNameCategory> Categories => _categories;
+        //public Dictionary<string, DbTypeFamily> Families => _families;
+        //public Dictionary<string, DbTypeNameCategory> Categories => _categories;
 
 
         #endregion

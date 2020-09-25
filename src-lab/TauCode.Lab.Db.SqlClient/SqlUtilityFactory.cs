@@ -14,16 +14,16 @@ namespace TauCode.Lab.Db.SqlClient
 
         public IDbDialect GetDialect() => SqlDialect.Instance;
 
-        public IDbScriptBuilder CreateScriptBuilder() => new SqlScriptBuilder();
+        public IDbScriptBuilder CreateScriptBuilder(string schema) => new SqlScriptBuilder(schema);
 
-        public IDbInspector CreateDbInspector(IDbConnection connection) => new SqlInspector(connection);
+        public IDbInspector CreateDbInspector(IDbConnection connection, string schema) => new SqlInspector(connection, schema);
 
-        public IDbTableInspector CreateTableInspector(IDbConnection connection, string tableName) =>
-            new SqlTableInspector(connection, tableName);
+        public IDbTableInspector CreateTableInspector(IDbConnection connection, string schema, string tableName) =>
+            new SqlTableInspector(connection, schema, tableName);
 
-        public IDbCruder CreateCruder(IDbConnection connection) => new SqlCruder(connection);
+        public IDbCruder CreateCruder(IDbConnection connection, string schema) => new SqlCruder(connection, schema);
 
-        public IDbSerializer CreateDbSerializer(IDbConnection connection) => new SqlSerializer(connection);
+        public IDbSerializer CreateDbSerializer(IDbConnection connection, string schema) => new SqlSerializer(connection, schema);
 
         public IDbConverter CreateDbConverter() => throw new NotSupportedException();
     }

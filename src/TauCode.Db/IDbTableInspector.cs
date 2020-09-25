@@ -5,6 +5,8 @@ namespace TauCode.Db
 {
     public interface IDbTableInspector : IDbUtility
     {
+        string Schema { get; }
+
         string TableName { get; }
 
         IReadOnlyList<ColumnMold> GetColumns();

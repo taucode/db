@@ -27,9 +27,11 @@ namespace TauCode.Db
 
         protected DbTableInspectorBase(
             IDbConnection connection,
+            string schema,
             string tableName)
             : base(connection, true, false)
         {
+            this.Schema = schema;
             this.TableName = tableName ?? throw new ArgumentNullException(nameof(tableName));
         }
 
@@ -46,6 +48,8 @@ namespace TauCode.Db
         #endregion
 
         #region ITableInspector Members
+
+        public string Schema { get; }
 
         public string TableName { get; }
 

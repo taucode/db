@@ -8,11 +8,11 @@ namespace TauCode.Db
         //string DbProviderName { get; }
         //IDbConnection CreateConnection();
         IDbDialect GetDialect();
-        IDbScriptBuilder CreateScriptBuilder();
-        IDbInspector CreateDbInspector(IDbConnection connection);
-        IDbTableInspector CreateTableInspector(IDbConnection connection, string tableName);
-        IDbCruder CreateCruder(IDbConnection connection);
-        IDbSerializer CreateDbSerializer(IDbConnection connection);
+        IDbScriptBuilder CreateScriptBuilder(string schema);
+        IDbInspector CreateDbInspector(IDbConnection connection, string schema);
+        IDbTableInspector CreateTableInspector(IDbConnection connection, string schema, string tableName);
+        IDbCruder CreateCruder(IDbConnection connection, string schema);
+        IDbSerializer CreateDbSerializer(IDbConnection connection, string schema);
         IDbConverter CreateDbConverter();
     }
 }

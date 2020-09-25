@@ -5,7 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using TauCode.Algorithms.Graphs;
 using TauCode.Db.Data;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
@@ -41,14 +43,15 @@ namespace TauCode.Db
 
         public static int ExecuteSingleSql(this IDbConnection connection, string sql)
         {
-            using (var command = connection.CreateCommand())
-            {
-                command.CommandText = sql;
-                return command.ExecuteNonQuery();
-            }
+            using var command = connection.CreateCommand();
+
+            command.CommandText = sql;
+            return command.ExecuteNonQuery();
         }
 
-        public static IList<dynamic> GetCommandRows(IDbCommand command, IDbTableValuesConverter tableValuesConverter = null)
+        public static IList<dynamic> GetCommandRows(
+            IDbCommand command,
+            IDbTableValuesConverter tableValuesConverter = null)
         {
             if (command == null)
             {
@@ -115,6 +118,16 @@ namespace TauCode.Db
             return table.Columns.Single(x => x.Name == table.PrimaryKey.Columns.Single().Name);
         }
 
+        public static IReadOnlyList<string> GetOrderedTableNames(
+            this IDbInspector dbInspector,
+            bool independentFirst,
+            Func<string, bool> tableNamePredicate = null) =>
+            dbInspector.GetTables(
+                    independentFirst,
+                    tableNamePredicate)
+                .Select(x => x.Name)
+                .ToList();
+
         public static void ExecuteCommentedScript(this IDbConnection connection, string script)
         {
             var sqls = SplitScriptByComments(script);
@@ -127,25 +140,86 @@ namespace TauCode.Db
             }
         }
 
-        public static IList<TableMold> GetTables(
+        public static IReadOnlyList<TableMold> GetTables(
             this IDbInspector dbInspector,
             bool? independentFirst = null,
             Func<string, bool> tableNamePredicate = null)
         {
-            return dbInspector
-                .GetTableNames(independentFirst)
-                .Where(tableNamePredicate ?? (x => true))
-                .Select(x => dbInspector
-                    .Factory
-                    .CreateTableInspector(dbInspector.Connection, x)
-                    .GetTable())
+            if (dbInspector == null)
+            {
+                throw new ArgumentNullException(nameof(dbInspector));
+            }
+
+            tableNamePredicate ??= x => true;
+
+            var tableNames = dbInspector.GetTableNames();
+
+            var tableMolds = tableNames
+                .Where(tableNamePredicate)
+                .Select(x => dbInspector.Factory.CreateTableInspector(
+                    dbInspector.Connection,
+                    dbInspector.Schema,
+                    x))
+                .Select(x => x.GetTable())
                 .ToList();
+
+            if (independentFirst.HasValue)
+            {
+                var graph = new Graph<TableMold>();
+
+                foreach (var tableMold in tableMolds)
+                {
+                    graph.AddNode(tableMold);
+                }
+
+                foreach (var node in graph.Nodes)
+                {
+                    var table = node.Value;
+                    foreach (var foreignKey in table.ForeignKeys)
+                    {
+                        var referencedNode = graph.Nodes.Single(x => string.Equals(x.Value.Name, foreignKey.ReferencedTableName, StringComparison.InvariantCultureIgnoreCase));
+
+                        node.DrawEdgeTo(referencedNode);
+                    }
+                }
+
+                var algorithm = new GraphSlicingAlgorithm<TableMold>(graph);
+                var slices = algorithm.Slice();
+                if (!independentFirst.Value)
+                {
+                    slices = slices.Reverse().ToArray();
+                }
+
+                var list = new List<TableMold>();
+
+                foreach (var slice in slices)
+                {
+                    var sliceTables = slice.Nodes
+                        .Select(x => x.Value)
+                        .OrderBy(x => x.Name.ToLowerInvariant());
+
+                    list.AddRange(sliceTables);
+                }
+
+                return list;
+            }
+
+            return tableMolds;
+
+            //return dbInspector
+            //    .GetTableNames()
+            //    .Where(tableNamePredicate ?? (x => true))
+            //    .Select(x => dbInspector
+            //        .Factory
+            //        .CreateTableInspector(dbInspector.Connection, x)
+            //        .GetTable())
+            //    .ToList();
         }
 
         public static void DropAllTables(this IDbInspector dbInspector)
         {
-            var tableNames = dbInspector.GetTableNames(false);
-            var scriptBuilder = dbInspector.Factory.CreateScriptBuilder();
+            var tableNames = dbInspector.GetOrderedTableNames(false);
+            var scriptBuilder = dbInspector.Factory.CreateScriptBuilder(dbInspector.Schema);
             
             foreach (var tableName in tableNames)
             {
@@ -156,8 +230,10 @@ namespace TauCode.Db
 
         public static void DeleteDataFromAllTables(this IDbInspector dbInspector)
         {
-            var tableNames = dbInspector.GetTableNames(false);
-            var scriptBuilder = dbInspector.Factory.CreateScriptBuilder();
+            // todo: check arg, here & anywhere in this class.
+
+            var tableNames = dbInspector.GetTableNames();
+            var scriptBuilder = dbInspector.Factory.CreateScriptBuilder(dbInspector.Schema);
             
             foreach (var tableName in tableNames)
             {
@@ -330,25 +406,5 @@ namespace TauCode.Db
 
             return json;
         }
-
-    
-
-        // todo: move this to taucode.db
-        /// <summary>
-        /// Creates temporary .sqlite file and returns a SQLite connection string for this file.
-        /// </summary>
-        /// <returns>
-        /// Tuple with two strings. Item1 is temporary file path, Item2 is connection string.
-        /// </returns>
-        //public static Tuple<string, string> CreateSQLiteConnectionString()
-        //{
-        //    var tempDbFilePath = FileExtensions.CreateTempFilePath("zunit", ".sqlite");
-        //    SQLiteConnection.CreateFile(tempDbFilePath);
-
-        //    var connectionString = $"Data Source={tempDbFilePath};Version=3;";
-
-        //    return Tuple.Create(tempDbFilePath, connectionString);
-        //}
-
     }
 }

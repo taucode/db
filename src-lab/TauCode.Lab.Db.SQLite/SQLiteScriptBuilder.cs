@@ -7,7 +7,9 @@ namespace TauCode.Lab.Db.SQLite
         #region Constructor
 
         public SQLiteScriptBuilder()
+        :base(null)
         {
+            // todo: schema must be null, ut
         }
 
         #endregion

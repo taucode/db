@@ -8,6 +8,12 @@ namespace TauCode.Lab.Db.SqlClient
         private const int MAX_SIZE_SURROGATE = -1;
         private const string MAX_SIZE = "max";
 
+        public SqlScriptBuilder(string schema)
+            : base(schema)
+        {
+
+        }
+
         public override IDbUtilityFactory Factory => SqlUtilityFactory.Instance;
 
         protected override string TransformNegativeTypeSize(int size)

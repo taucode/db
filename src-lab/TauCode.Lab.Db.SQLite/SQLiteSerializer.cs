@@ -6,7 +6,7 @@ namespace TauCode.Lab.Db.SQLite
     public class SQLiteSerializer : DbSerializerBase
     {
         public SQLiteSerializer(IDbConnection connection)
-            : base(connection)
+            : base(connection, null)
         {
         }
 

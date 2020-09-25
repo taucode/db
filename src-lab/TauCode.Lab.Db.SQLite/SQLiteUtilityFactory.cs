@@ -1,9 +1,10 @@
 ﻿using System.Data;
 using TauCode.Db;
 
-// todo clean up
+// todo clean up, regions
 namespace TauCode.Lab.Db.SQLite
 {
+    // todo: check schema param is null
     public class SQLiteUtilityFactory : IDbUtilityFactory
     {
         public static SQLiteUtilityFactory Instance { get; } = new SQLiteUtilityFactory();
@@ -22,16 +23,16 @@ namespace TauCode.Lab.Db.SQLite
 
         public IDbDialect GetDialect() => SQLiteDialect.Instance;
 
-        public IDbScriptBuilder CreateScriptBuilder() => new SQLiteScriptBuilder();
+        public IDbScriptBuilder CreateScriptBuilder(string schema) => new SQLiteScriptBuilder();
 
-        public IDbInspector CreateDbInspector(IDbConnection connection) => new SQLiteInspector(connection);
+        public IDbInspector CreateDbInspector(IDbConnection connection, string schema) => new SQLiteInspector(connection);
 
-        public IDbTableInspector CreateTableInspector(IDbConnection connection, string tableName) =>
+        public IDbTableInspector CreateTableInspector(IDbConnection connection, string schema, string tableName) =>
             new SQLiteTableInspector(connection, tableName);
 
-        public IDbCruder CreateCruder(IDbConnection connection) => new SQLiteCruder(connection);
+        public IDbCruder CreateCruder(IDbConnection connection, string schema) => new SQLiteCruder(connection);
 
-        public IDbSerializer CreateDbSerializer(IDbConnection connection) => new SQLiteSerializer(connection);
+        public IDbSerializer CreateDbSerializer(IDbConnection connection, string schema) => new SQLiteSerializer(connection);
         public IDbConverter CreateDbConverter() => new SQLiteConverter();
     }
 }
