@@ -83,6 +83,12 @@ namespace TauCode.Db
         {
             var primaryKey = this.GetPrimaryKey();
             var columns = this.GetColumns();
+
+            if (columns.Count == 0)
+            {
+                throw DbTools.CreateTableNotFoundException(this.TableName); // no columns means table does not exist.
+            }
+
             var foreignKeys = this.GetForeignKeys();
             var indexes = this.GetIndexes();
 

@@ -18,7 +18,7 @@ namespace TauCode.Lab.Db.Npgsql
         #region Constructor
 
         private NpgsqlDialect()
-            : base(DbProviderNames.SQLServer)
+            : base(DbProviderNames.PostgreSQL)
         {
         }
 
@@ -29,6 +29,8 @@ namespace TauCode.Lab.Db.Npgsql
         public override IDbUtilityFactory Factory => NpgsqlUtilityFactory.Instance;
         
         public override string UnicodeTextLiteralPrefix => "N";
+
+        public override bool CanDecorateTypeIdentifier => false;
 
         #endregion
     }

@@ -4,7 +4,7 @@
     {
       "name": "id",
       "type": {
-        "name": "uniqueidentifier",
+        "name": "uuid",
         "size": null,
         "precision": null,
         "scale": null,
@@ -18,7 +18,7 @@
     {
       "name": "code",
       "type": {
-        "name": "nvarchar",
+        "name": "character varying",
         "size": 2,
         "precision": null,
         "scale": null,
@@ -32,7 +32,7 @@
     {
       "name": "name",
       "type": {
-        "name": "nvarchar",
+        "name": "character varying",
         "size": 255,
         "precision": null,
         "scale": null,

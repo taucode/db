@@ -15,9 +15,6 @@ namespace TauCode.Lab.Db.Npgsql.Tests
             IDbUtilityFactory utilityFactory = NpgsqlUtilityFactory.Instance;
 
             // Act
-            //var dbProviderName = utilityFactory.DbProviderName;
-
-            //IDbConnection connection = utilityFactory.CreateConnection();
             IDbConnection connection = new NpgsqlConnection();
             connection.ConnectionString = TestHelper.ConnectionString;
             connection.Open();
@@ -35,12 +32,12 @@ namespace TauCode.Lab.Db.Npgsql.Tests
             IDbSerializer dbSerializer = utilityFactory.CreateDbSerializer(connection, null);
 
             // Assert
-            //Assert.That(dbProviderName, Is.EqualTo("SqlServer"));
+            Assert.That(dialect.Name, Is.EqualTo("PostgreSQL"));
             Assert.That(connection, Is.TypeOf<NpgsqlConnection>());
             Assert.That(dialect, Is.SameAs(NpgsqlDialect.Instance));
 
             Assert.That(scriptBuilder, Is.TypeOf<NpgsqlScriptBuilder>());
-            Assert.That(scriptBuilder.CurrentOpeningIdentifierDelimiter, Is.EqualTo('['));
+            Assert.That(scriptBuilder.CurrentOpeningIdentifierDelimiter, Is.EqualTo('"'));
 
             Assert.That(dbInspector, Is.TypeOf<NpgsqlInspector>());
             Assert.That(tableInspector, Is.TypeOf<NpgsqlTableInspector>());

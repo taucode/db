@@ -1,5 +1,5 @@
 ﻿{
-  "dbProviderName": "SQL Server",
+  "dbProviderName": "PostgreSQL",
   "tables": [
     {
       "name": "fragment_type",
@@ -7,7 +7,7 @@
         {
           "name": "id",
           "type": {
-            "name": "uniqueidentifier",
+            "name": "uuid",
             "size": null,
             "precision": null,
             "scale": null,
@@ -21,7 +21,7 @@
         {
           "name": "code",
           "type": {
-            "name": "nvarchar",
+            "name": "character varying",
             "size": 255,
             "precision": null,
             "scale": null,
@@ -35,7 +35,7 @@
         {
           "name": "name",
           "type": {
-            "name": "nvarchar",
+            "name": "character varying",
             "size": 255,
             "precision": null,
             "scale": null,
@@ -109,7 +109,7 @@
         {
           "name": "id",
           "type": {
-            "name": "uniqueidentifier",
+            "name": "uuid",
             "size": null,
             "precision": null,
             "scale": null,
@@ -123,7 +123,7 @@
         {
           "name": "code",
           "type": {
-            "name": "nvarchar",
+            "name": "character varying",
             "size": 2,
             "precision": null,
             "scale": null,
@@ -137,7 +137,7 @@
         {
           "name": "name",
           "type": {
-            "name": "nvarchar",
+            "name": "character varying",
             "size": 255,
             "precision": null,
             "scale": null,
@@ -197,7 +197,7 @@
         {
           "name": "id",
           "type": {
-            "name": "uniqueidentifier",
+            "name": "uuid",
             "size": null,
             "precision": null,
             "scale": null,
@@ -211,7 +211,7 @@
         {
           "name": "code",
           "type": {
-            "name": "nvarchar",
+            "name": "character varying",
             "size": 255,
             "precision": null,
             "scale": null,
@@ -225,7 +225,7 @@
         {
           "name": "created_at",
           "type": {
-            "name": "datetime",
+            "name": "timestamp without time zone",
             "size": null,
             "precision": null,
             "scale": null,
@@ -298,7 +298,7 @@
         {
           "name": "id",
           "type": {
-            "name": "uniqueidentifier",
+            "name": "uuid",
             "size": null,
             "precision": null,
             "scale": null,
@@ -312,7 +312,7 @@
         {
           "name": "code",
           "type": {
-            "name": "nvarchar",
+            "name": "character varying",
             "size": 255,
             "precision": null,
             "scale": null,
@@ -326,7 +326,7 @@
         {
           "name": "name",
           "type": {
-            "name": "nvarchar",
+            "name": "character varying",
             "size": 255,
             "precision": null,
             "scale": null,
@@ -386,7 +386,7 @@
         {
           "name": "id",
           "type": {
-            "name": "uniqueidentifier",
+            "name": "uuid",
             "size": null,
             "precision": null,
             "scale": null,
@@ -400,7 +400,7 @@
         {
           "name": "username",
           "type": {
-            "name": "nvarchar",
+            "name": "character varying",
             "size": 255,
             "precision": null,
             "scale": null,
@@ -414,7 +414,7 @@
         {
           "name": "email",
           "type": {
-            "name": "nvarchar",
+            "name": "character varying",
             "size": 255,
             "precision": null,
             "scale": null,
@@ -428,7 +428,7 @@
         {
           "name": "password_hash",
           "type": {
-            "name": "nvarchar",
+            "name": "character varying",
             "size": 255,
             "precision": null,
             "scale": null,
@@ -501,7 +501,7 @@
         {
           "name": "id",
           "type": {
-            "name": "uniqueidentifier",
+            "name": "uuid",
             "size": null,
             "precision": null,
             "scale": null,
@@ -515,7 +515,7 @@
         {
           "name": "type_id",
           "type": {
-            "name": "uniqueidentifier",
+            "name": "uuid",
             "size": null,
             "precision": null,
             "scale": null,
@@ -529,7 +529,7 @@
         {
           "name": "code",
           "type": {
-            "name": "nvarchar",
+            "name": "character varying",
             "size": 255,
             "precision": null,
             "scale": null,
@@ -543,7 +543,7 @@
         {
           "name": "name",
           "type": {
-            "name": "nvarchar",
+            "name": "character varying",
             "size": 255,
             "precision": null,
             "scale": null,
@@ -634,7 +634,7 @@
         {
           "name": "id",
           "type": {
-            "name": "uniqueidentifier",
+            "name": "uuid",
             "size": null,
             "precision": null,
             "scale": null,
@@ -648,7 +648,7 @@
         {
           "name": "note_id",
           "type": {
-            "name": "uniqueidentifier",
+            "name": "uuid",
             "size": null,
             "precision": null,
             "scale": null,
@@ -662,7 +662,7 @@
         {
           "name": "tag_id",
           "type": {
-            "name": "uniqueidentifier",
+            "name": "uuid",
             "size": null,
             "precision": null,
             "scale": null,
@@ -732,7 +732,7 @@
         {
           "name": "id",
           "type": {
-            "name": "uniqueidentifier",
+            "name": "uuid",
             "size": null,
             "precision": null,
             "scale": null,
@@ -746,7 +746,7 @@
         {
           "name": "note_id",
           "type": {
-            "name": "uniqueidentifier",
+            "name": "uuid",
             "size": null,
             "precision": null,
             "scale": null,
@@ -760,7 +760,7 @@
         {
           "name": "language_id",
           "type": {
-            "name": "uniqueidentifier",
+            "name": "uuid",
             "size": null,
             "precision": null,
             "scale": null,
@@ -802,7 +802,7 @@
         {
           "name": "title",
           "type": {
-            "name": "nvarchar",
+            "name": "character varying",
             "size": 255,
             "precision": null,
             "scale": null,
@@ -816,7 +816,7 @@
         {
           "name": "last_updated",
           "type": {
-            "name": "datetime",
+            "name": "timestamp without time zone",
             "size": null,
             "precision": null,
             "scale": null,
@@ -899,7 +899,7 @@
         {
           "name": "id",
           "type": {
-            "name": "uniqueidentifier",
+            "name": "uuid",
             "size": null,
             "precision": null,
             "scale": null,
@@ -913,7 +913,7 @@
         {
           "name": "note_translation_id",
           "type": {
-            "name": "uniqueidentifier",
+            "name": "uuid",
             "size": null,
             "precision": null,
             "scale": null,
@@ -927,7 +927,7 @@
         {
           "name": "sub_type_id",
           "type": {
-            "name": "uniqueidentifier",
+            "name": "uuid",
             "size": null,
             "precision": null,
             "scale": null,
@@ -941,7 +941,7 @@
         {
           "name": "code",
           "type": {
-            "name": "nvarchar",
+            "name": "character varying",
             "size": 255,
             "precision": null,
             "scale": null,
@@ -955,7 +955,7 @@
         {
           "name": "order",
           "type": {
-            "name": "int",
+            "name": "integer",
             "size": null,
             "precision": null,
             "scale": null,
@@ -969,7 +969,7 @@
         {
           "name": "content",
           "type": {
-            "name": "ntext",
+            "name": "text",
             "size": null,
             "precision": null,
             "scale": null,
@@ -1058,7 +1058,7 @@
               "properties": {}
             },
             {
-              "name": "order",
+              "name": "\"order\"",
               "sortDirection": "ascending",
               "properties": {}
             }

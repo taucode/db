@@ -31,28 +31,19 @@ namespace TauCode.Lab.Db.Npgsql
                 case "uuid":
                     return new GuidValueConverter();
 
-                case "char":
-                case "varchar":
-                case "nchar":
-                case "nvarchar":
+                case "character":
                 case "character varying":
+                case "text":
                     return new StringValueConverter();
 
-                case "int":
                 case "integer":
                     return new Int32ValueConverter();
 
-                case "datetime":
-                case "datetime2":
                 case "date":
                     return new DateTimeValueConverter();
 
                 case "bit":
                     return new BooleanValueConverter();
-
-                case "binary":
-                case "varbinary":
-                    return new ByteArrayValueConverter();
 
                 case "float":
                     return new DoubleValueConverter();
@@ -65,14 +56,23 @@ namespace TauCode.Lab.Db.Npgsql
                 case "numeric":
                     return new DecimalValueConverter();
 
-                case "tinyint":
-                    return new ByteValueConverter();
+                case "double precision":
+                    return new DoubleValueConverter();
 
                 case "smallint":
                     return new Int16ValueConverter();
 
                 case "bigint":
                     return new Int64ValueConverter();
+
+                case "timestamp without time zone":
+                    return new DateTimeValueConverter();
+
+                case "boolean":
+                    return new BooleanValueConverter();
+
+                case "bytea":
+                    return new ByteArrayValueConverter();
 
                 default:
                     throw new NotImplementedException();
@@ -98,6 +98,33 @@ namespace TauCode.Lab.Db.Npgsql
                     dbType = DbType.Int32;
                     break;
 
+                case "smallint":
+                    dbType = DbType.Int16;
+                    break;
+
+                case "bigint":
+                    dbType = DbType.Int64;
+                    break;
+
+                case "text":
+                    dbType = DbType.String;
+                    size = -1;
+                    break;
+
+                case "double precision":
+                    dbType = DbType.Double;
+                    break;
+
+                case "real":
+                    dbType = DbType.Single;
+                    break;
+
+                case "money":
+                case "numeric":
+                    dbType = DbType.Decimal;
+                    break;
+
+                case "character":
                 case "character varying":
                     dbType = DbType.String;
                     size = columnType.Size;
@@ -105,6 +132,19 @@ namespace TauCode.Lab.Db.Npgsql
 
                 case "uuid":
                     dbType = DbType.Guid;
+                    break;
+
+                case "timestamp without time zone":
+                    dbType = DbType.DateTime;
+                    break;
+
+                case "boolean":
+                    dbType = DbType.Boolean;
+                    break;
+
+                case "bytea":
+                    dbType = DbType.Binary;
+                    size = -1;
                     break;
 
                 default:

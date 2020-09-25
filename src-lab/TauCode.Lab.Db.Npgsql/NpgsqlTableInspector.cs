@@ -150,6 +150,12 @@ ORDER BY
                 IsNullable = columnInfo.IsNullable,
             };
 
+            if (columnInfo.TypeName == "integer") // todo: for all types which are indeed have not precision & scale.
+            {
+                column.Type.Precision = null;
+                column.Type.Scale = null;
+            }
+
             return column;
 
 

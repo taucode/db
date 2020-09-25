@@ -23,7 +23,7 @@ CREATE UNIQUE INDEX "UX_language_code" ON "language"("code")
 CREATE TABLE "note"(
     "id" uuid NOT NULL,
     "code" varchar(255) NOT NULL,
-    "created_at" "timestamp" NOT NULL,
+    "created_at" timestamp NOT NULL,
     CONSTRAINT "PK_note" PRIMARY KEY("id"))
 
 /* create unique index UX_note_code: note(code) */

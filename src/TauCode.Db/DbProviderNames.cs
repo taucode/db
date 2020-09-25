@@ -6,7 +6,7 @@ namespace TauCode.Db
     public static class DbProviderNames
     {
         public const string SQLite = "SQLite";
-        public const string SQLServer = "SQL Server";
+        public const string SQLServer = "SQLServer";
         public const string MySQL = "MySQL";
         public const string PostgreSQL = "PostgreSQL";
 

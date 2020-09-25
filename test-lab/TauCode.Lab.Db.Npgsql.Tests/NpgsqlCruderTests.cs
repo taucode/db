@@ -357,8 +357,8 @@ VALUES(
             this.Connection.SafeDropTable("my_table");
             this.Connection.ExecuteSingleSql(@"
 CREATE TABLE my_table(
-    Id int PRIMARY KEY IDENTITY(1, 1),
-    Name nvarchar(100) DEFAULT 'Manuela',
+    Id serial PRIMARY KEY,
+    Name varchar(100) DEFAULT 'Manuela',
     Age bigint DEFAULT 21,
     Gender bit null)
 ");

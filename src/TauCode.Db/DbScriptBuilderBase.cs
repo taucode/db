@@ -390,8 +390,6 @@ namespace TauCode.Db
             if (columnToParameterMappings.Count == 0)
             {
                 return this.BuildInsertScriptWithDefaultValues(table);
-
-                throw new ArgumentException($"'{nameof(columnToParameterMappings)}' must not be empty.");
             }
 
             var tuples = columnToParameterMappings

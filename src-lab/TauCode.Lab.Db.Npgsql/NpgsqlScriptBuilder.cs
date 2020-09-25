@@ -1,4 +1,5 @@
-﻿using TauCode.Db;
+﻿using System.Text;
+using TauCode.Db;
 using TauCode.Db.Model;
 
 namespace TauCode.Lab.Db.Npgsql
@@ -24,6 +25,34 @@ namespace TauCode.Lab.Db.Npgsql
 
         //    return base.TransformNegativeTypeSize(size);
         //}
+
+        protected override void WritePrimaryKeyConstraintScriptFragment(StringBuilder sb, PrimaryKeyMold primaryKey)
+        {
+            var decoratedConstraintName = this.Dialect.DecorateIdentifier(
+                DbIdentifierType.Constraint,
+                primaryKey.Name,
+                this.CurrentOpeningIdentifierDelimiter);
+
+            sb.Append($"CONSTRAINT {decoratedConstraintName} PRIMARY KEY(");
+
+            for (var i = 0; i < primaryKey.Columns.Count; i++)
+            {
+                var indexColumn = primaryKey.Columns[i];
+                var decoratedColumnName = this.Dialect.DecorateIdentifier(
+                    DbIdentifierType.Column,
+                    indexColumn.Name,
+                    this.CurrentOpeningIdentifierDelimiter);
+
+                sb.Append(decoratedColumnName);
+
+                if (i < primaryKey.Columns.Count - 1)
+                {
+                    sb.Append(", ");
+                }
+            }
+
+            sb.Append(")");
+        }
 
         protected override string BuildInsertScriptWithDefaultValues(TableMold table)
         {
