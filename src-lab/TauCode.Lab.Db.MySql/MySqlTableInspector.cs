@@ -12,10 +12,10 @@ namespace TauCode.Lab.Db.MySql
     {
         #region Constructor
 
-        public MySqlTableInspector(IDbConnection connection, string schema, string tableName)
+        public MySqlTableInspector(IDbConnection connection, string tableName)
             : base(
                 connection,
-                schema ?? MySqlInspector.DefaultSchema,
+                null,
                 tableName)
         {
 

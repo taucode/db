@@ -9,16 +9,14 @@ namespace TauCode.Lab.Db.MySql
     {
         #region Constants
 
-        public const string DefaultSchema = "public";
-
         private const string TableTypeForTable = "BASE TABLE";
 
         #endregion
 
         #region Constructor
 
-        public MySqlInspector(IDbConnection connection, string schema)
-            : base(connection, schema ?? DefaultSchema)
+        public MySqlInspector(IDbConnection connection)
+            : base(connection, null)
         {
         }
 

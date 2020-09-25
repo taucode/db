@@ -4,6 +4,7 @@ using TauCode.Db;
 
 namespace TauCode.Lab.Db.MySql
 {
+    // todo: check schema arg is null
     public class MySqlUtilityFactory : IDbUtilityFactory
     {
         public static MySqlUtilityFactory Instance { get; } = new MySqlUtilityFactory();
@@ -16,14 +17,14 @@ namespace TauCode.Lab.Db.MySql
 
         public IDbScriptBuilder CreateScriptBuilder(string schema) => new MySqlScriptBuilder(schema);
 
-        public IDbInspector CreateDbInspector(IDbConnection connection, string schema) => new MySqlInspector(connection, schema);
+        public IDbInspector CreateDbInspector(IDbConnection connection, string schema) => new MySqlInspector(connection);
 
         public IDbTableInspector CreateTableInspector(IDbConnection connection, string schema, string tableName) =>
-            new MySqlTableInspector(connection, schema, tableName);
+            new MySqlTableInspector(connection, tableName);
 
         public IDbCruder CreateCruder(IDbConnection connection, string schema) => new MySqlCruder(connection);
 
-        public IDbSerializer CreateDbSerializer(IDbConnection connection, string schema) => new MySqlSerializer(connection, schema);
+        public IDbSerializer CreateDbSerializer(IDbConnection connection, string schema) => new MySqlSerializer(connection);
 
         public IDbConverter CreateDbConverter() => throw new NotSupportedException();
     }
