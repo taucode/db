@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using TauCode.Db;
 using TauCode.Db.Model;
+using TauCode.Extensions;
 
 // todo clean
 namespace TauCode.Lab.Db.SqlClient
@@ -113,12 +114,14 @@ SELECT
 FROM
     information_schema.columns C
 WHERE
-    C.table_name = @p_tableName
+    C.table_name = @p_tableName AND
+    C.table_schema = @p_schema
 ORDER BY
     C.ordinal_position
 ";
 
             command.AddParameterWithValue("p_tableName", this.TableName);
+            command.AddParameterWithValue("p_schema", this.Schema);
 
             var columnInfos = DbTools
                 .GetCommandRows(command)
@@ -150,6 +153,16 @@ ORDER BY
                 },
                 IsNullable = columnInfo.IsNullable,
             };
+
+            if (column.Type.Name.ToLowerInvariant().IsIn("text", "ntext"))
+            {
+                column.Type.Size = null;
+            }
+            else if (column.Type.Name.ToLowerInvariant() == "int")
+            {
+                column.Type.Precision = null;
+                column.Type.Scale = null;
+            }
 
             return column;
 

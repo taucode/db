@@ -35,6 +35,7 @@ namespace TauCode.Lab.Db.Npgsql
                 case "varchar":
                 case "nchar":
                 case "nvarchar":
+                case "character varying":
                     return new StringValueConverter();
 
                 case "int":
@@ -83,34 +84,70 @@ namespace TauCode.Lab.Db.Npgsql
             DbTypeMold columnType,
             IReadOnlyDictionary<string, string> parameterNameMappings)
         {
-            var result = base.ColumnToParameterInfo(columnName, columnType, parameterNameMappings);
+            var typeName = columnType.Name.ToLowerInvariant();
 
-            if (result == null)
+            DbType dbType;
+            int? size = null;
+            int? precision = null;
+            int? scale = null;
+            var parameterName = parameterNameMappings[columnName];
+
+            switch (typeName)
             {
-                DbType dbType;
-                int? size = null;
-                int? precision = null;
-                int? scale = null;
-                var parameterName = parameterNameMappings[columnName];
+                case "integer":
+                    dbType = DbType.Int32;
+                    break;
 
-                var typeName = columnType.Name.ToLowerInvariant();
+                case "character varying":
+                    dbType = DbType.String;
+                    size = columnType.Size;
+                    break;
 
-                switch (typeName)
-                {
-                    case "money":
-                        dbType = DbType.Currency;
-                        precision = MoneyTypePrecision;
-                        scale = MoneyTypeScale;
-                        break;
-
-                    default:
-                        return null;
-                }
-
-                result = new DbParameterInfo(parameterName, dbType, size, precision, scale);
+                default:
+                    throw new NotImplementedException();
             }
 
+            var result = new DbParameterInfo(parameterName, dbType, size, precision, scale);
             return result;
+
+            //var result = base.ColumnToParameterInfo(columnName, columnType, parameterNameMappings);
+
+            //if (result == null)
+            //{
+            //    DbType dbType;
+
+
+
+            //    NpgsqlDbType dea;
+
+            //    int? size = null;
+            //    int? precision = null;
+            //    int? scale = null;
+            //    var parameterName = parameterNameMappings[columnName];
+
+            //    var typeName = columnType.Name.ToLowerInvariant();
+
+            //    switch (typeName)
+            //    {
+            //        case "character varying":
+            //            dbType = DbType.String;
+            //            size = columnType.Size;
+            //            break;
+
+            //        case "money":
+            //            dbType = DbType.Currency;
+            //            precision = MoneyTypePrecision;
+            //            scale = MoneyTypeScale;
+            //            break;
+
+            //        default:
+            //            return null;
+            //    }
+
+            //    result = new DbParameterInfo(parameterName, dbType, size, precision, scale);
+            //}
+
+            //return result;
         }
     }
 }

@@ -73,6 +73,12 @@ namespace TauCode.Lab.Db.SqlClient.Tests
 
             // Assert
             var expectedJson = TestHelper.GetResourceText(".rho.metadata-db.json");
+
+            if (expectedJson != json)
+            {
+                TestHelper.WriteDiff(json, expectedJson, @"c:\temp\0-opa", "json", "todo");
+            }
+
             Assert.That(json, Is.EqualTo(expectedJson));
             Assert.That(inverted.DbProviderName, Is.EqualTo(DbProviderNames.SQLServer));
         }

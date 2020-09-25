@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using TauCode.Algorithms.Graphs;
 using TauCode.Db.Data;
@@ -232,7 +231,7 @@ namespace TauCode.Db
         {
             // todo: check arg, here & anywhere in this class.
 
-            var tableNames = dbInspector.GetTableNames();
+            var tableNames = dbInspector.GetOrderedTableNames(false);
             var scriptBuilder = dbInspector.Factory.CreateScriptBuilder(dbInspector.Schema);
             
             foreach (var tableName in tableNames)

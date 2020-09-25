@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using System;
+using System.Data;
 using System.Linq;
 using TauCode.Db;
 using TauCode.Db.Data;
@@ -80,23 +81,26 @@ namespace TauCode.Lab.Db.Npgsql.Tests
             });
 
             // Act
-            _cruder.GetTableValuesConverter("foo").SetColumnConverter("enum_int32", new EnumValueConverter<Town>(EnumValueConverterBehaviour.Integer));
-            _cruder.GetTableValuesConverter("foo").SetColumnConverter("enum_string", new EnumValueConverter<UserRole>(EnumValueConverterBehaviour.String));
+            _cruder.GetTableValuesConverter("foo").SetColumnConverter(
+                "enum_int32",
+                new EnumValueConverter<Town>(DbType.Int32));
+
+            _cruder.GetTableValuesConverter("foo").SetColumnConverter(
+                "enum_string",
+                new EnumValueConverter<UserRole>(DbType.String));
 
             _cruder.InsertRow("foo", foo);
 
             // Assert
-            using (var command = this.Connection.CreateCommand())
-            {
-                command.CommandText = @"SELECT [id], [name], [enum_int32], [enum_string] FROM [foo] WHERE [id] = 1";
+            using var command = this.Connection.CreateCommand();
+            command.CommandText = @"SELECT id, name, enum_int32, enum_string FROM foo WHERE id = 1";
 
-                var row = DbTools.GetCommandRows(command).Single();
+            var row = DbTools.GetCommandRows(command).Single();
 
-                Assert.That(row.id, Is.EqualTo(1));
-                Assert.That(row.name, Is.EqualTo("Vasya"));
-                Assert.That(row.enum_int32, Is.EqualTo(1));
-                Assert.That(row.enum_string, Is.EqualTo(UserRole.Admin.ToString()));
-            }
+            Assert.That(row.id, Is.EqualTo(1));
+            Assert.That(row.name, Is.EqualTo("Vasya"));
+            Assert.That(row.enum_int32, Is.EqualTo(1));
+            Assert.That(row.enum_string, Is.EqualTo(UserRole.Admin.ToString()));
         }
 
         [Test]
@@ -309,7 +313,9 @@ VALUES(
     null,
     'Developer')");
 
-            _cruder.GetTableValuesConverter("foo").SetColumnConverter("enum_string", new EnumValueConverter<UserRole>(EnumValueConverterBehaviour.String));
+            _cruder.GetTableValuesConverter("foo").SetColumnConverter(
+                "enum_string",
+                new EnumValueConverter<UserRole>(DbType.String));
 
             // Act
             var row = _cruder.GetRow("foo", 11);

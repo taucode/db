@@ -25,30 +25,30 @@ namespace TauCode.Lab.Db.Npgsql
 
         #region Private
 
-//        private int GetTableObjectId()
-//        {
-//            using var command = this.Connection.CreateCommand();
-//            command.CommandText =
-//                @"
-//SELECT
-//    T.object_id
-//FROM
-//    sys.tables T
-//WHERE
-//    T.name = @p_name
-//";
-//            command.AddParameterWithValue("p_name", this.TableName);
+        //        private int GetTableObjectId()
+        //        {
+        //            using var command = this.Connection.CreateCommand();
+        //            command.CommandText =
+        //                @"
+        //SELECT
+        //    T.object_id
+        //FROM
+        //    sys.tables T
+        //WHERE
+        //    T.name = @p_name
+        //";
+        //            command.AddParameterWithValue("p_name", this.TableName);
 
-//            var objectResult = command.ExecuteScalar();
+        //            var objectResult = command.ExecuteScalar();
 
-//            if (objectResult == null)
-//            {
-//                throw DbTools.CreateTableNotFoundException(this.TableName);
-//            }
-                
-//            var objectId = (int)objectResult;
-//            return objectId;
-//        }
+        //            if (objectResult == null)
+        //            {
+        //                throw DbTools.CreateTableNotFoundException(this.TableName);
+        //            }
+
+        //            var objectId = (int)objectResult;
+        //            return objectId;
+        //        }
 
         private static bool ParseBoolean(object value)
         {
@@ -202,6 +202,9 @@ WHERE
 
         public override PrimaryKeyMold GetPrimaryKey()
         {
+            return NpgsqlTools.LoadPrimaryKey(this.Connection, this.Schema, this.TableName);
+
+            // todo clean below
             using var command = this.Connection.CreateCommand();
 
             command.CommandText =
@@ -226,7 +229,7 @@ ORDER BY
 ";
             command.AddParameterWithValue("p_tableName", this.TableName);
 
-            
+
             var rows = DbTools.GetCommandRows(command);
             if (rows.Count == 0)
             {
@@ -249,65 +252,65 @@ ORDER BY
             return pk;
 
 
-//            // get PK name
-//            command.CommandText =
-//@"
-//SELECT
-//    TC.constraint_name
-//FROM
-//    information_schema.table_constraints TC
-//WHERE
-//    TC.table_name = @p_tableName
-//    AND
-//    TC.constraint_type = 'PRIMARY KEY'";
+            //            // get PK name
+            //            command.CommandText =
+            //@"
+            //SELECT
+            //    TC.constraint_name
+            //FROM
+            //    information_schema.table_constraints TC
+            //WHERE
+            //    TC.table_name = @p_tableName
+            //    AND
+            //    TC.constraint_type = 'PRIMARY KEY'";
 
-//            var parameter = command.CreateParameter();
-//            parameter.ParameterName = "p_tableName";
-//            parameter.Value = this.TableName;
-//            command.Parameters.Add(parameter);
+            //            var parameter = command.CreateParameter();
+            //            parameter.ParameterName = "p_tableName";
+            //            parameter.Value = this.TableName;
+            //            command.Parameters.Add(parameter);
 
-//            var constraintName = (string)command.ExecuteScalar();
+            //            var constraintName = (string)command.ExecuteScalar();
 
-//            if (constraintName == null)
-//            {
-//                return null;
-//            }
+            //            if (constraintName == null)
+            //            {
+            //                return null;
+            //            }
 
-//            // get PK columns
-//            command.Parameters.Clear();
-//            command.CommandText =
-//@"
-//SELECT
-//    S.column_name       ColumnName,
-//    S.ordinal_position  OrdinalPosition
-//FROM
-//    information_schema.key_column_usage S
-//WHERE
-//    S.table_name = @p_tableName AND
-//    S.constraint_name = @p_constraintName
-//ORDER BY
-//    OrdinalPosition
-//";
-//            command.AddParameterWithValue("p_constraintName", constraintName);
-//            command.AddParameterWithValue("p_tableName", this.TableName);
+            //            // get PK columns
+            //            command.Parameters.Clear();
+            //            command.CommandText =
+            //@"
+            //SELECT
+            //    S.column_name       ColumnName,
+            //    S.ordinal_position  OrdinalPosition
+            //FROM
+            //    information_schema.key_column_usage S
+            //WHERE
+            //    S.table_name = @p_tableName AND
+            //    S.constraint_name = @p_constraintName
+            //ORDER BY
+            //    OrdinalPosition
+            //";
+            //            command.AddParameterWithValue("p_constraintName", constraintName);
+            //            command.AddParameterWithValue("p_tableName", this.TableName);
 
 
-//            var columns = DbTools
-//                .GetCommandRows(command)
-//                .Select(x => new IndexColumnMold
-//                {
-//                    Name = (string)x.ColumnName,
-//                    SortDirection = SortDirection.Ascending,
-//                })
-//                .ToList();
+            //            var columns = DbTools
+            //                .GetCommandRows(command)
+            //                .Select(x => new IndexColumnMold
+            //                {
+            //                    Name = (string)x.ColumnName,
+            //                    SortDirection = SortDirection.Ascending,
+            //                })
+            //                .ToList();
 
-//            var primaryKeyMold = new PrimaryKeyMold
-//            {
-//                Name = constraintName,
-//                Columns = columns,
-//            };
+            //            var primaryKeyMold = new PrimaryKeyMold
+            //            {
+            //                Name = constraintName,
+            //                Columns = columns,
+            //            };
 
-//            return primaryKeyMold;
+            //            return primaryKeyMold;
         }
 
         public override IReadOnlyList<ForeignKeyMold> GetForeignKeys()
@@ -317,17 +320,29 @@ ORDER BY
             command.CommandText =
                 @"
 SELECT
-    TC.costraint_name    ConstraintName
+    TC.constraint_name    ConstraintName
 FROM
     information_schema.table_constraints TC
 WHERE
     TC.constraint_schema = @p_schema AND
     TC.table_schema = @p_schema AND
-    TC.table_name = @p_tableName    
+    TC.table_name = @p_tableName AND
+    TC.constraint_type = 'FOREIGN KEY'
 ";
             command.AddParameterWithValue("@p_schema", this.Schema);
             command.AddParameterWithValue("@p_tableName", this.TableName);
 
+            var rows = DbTools.GetCommandRows(command);
+
+            var fkNames = rows
+                .Select(x => (string)x.ConstraintName)
+                .ToList();
+
+            return fkNames
+                .Select(this.LoadForeignKey)
+                .ToList();
+
+            // todo clean
             throw new NotImplementedException();
 
 
@@ -391,61 +406,214 @@ WHERE
                 .ToList();
         }
 
+        private ForeignKeyMold LoadForeignKey(string fkName)
+        {
+            // get referenced table name
+            using var command = this.Connection.CreateCommand();
+            command.CommandText = @"
+SELECT
+    CCU.table_name TableName
+FROM
+    information_schema.constraint_column_usage CCU
+WHERE
+    CCU.table_schema = @p_schema
+    AND
+    CCU.constraint_schema = @p_schema
+    AND
+    CCU.constraint_name = @p_fkName
+";
+            command.AddParameterWithValue("p_schema", this.Schema);
+            command.AddParameterWithValue("p_fkName", fkName);
+
+            var referencedTableName = DbTools.GetCommandRows(command)
+                .Select(x => (string)x.TableName)
+                .Distinct()
+                .Single();
+
+            // get referenced table PK
+            var referencedTablePk = NpgsqlTools.LoadPrimaryKey(this.Connection, this.Schema, referencedTableName);
+
+            // get foreign key columns
+
+            command.Parameters.Clear();
+
+            command.CommandText = @"
+select
+    KCU.column_name 					ColumnName,
+    KCU.ordinal_position 				OrdinalPosition,
+    KCU.position_in_unique_constraint 	PositionInUniqueConstraint
+from
+    information_schema.key_column_usage KCU	
+where
+    KCU.constraint_schema = @p_schema and
+    KCU.table_schema = @p_schema and
+    KCU.table_name = @p_tableName and
+    KCU.constraint_name = @p_fkName
+order by
+    KCU.ordinal_position
+";
+
+            command.AddParameterWithValue("p_schema", this.Schema);
+            command.AddParameterWithValue("p_tableName", this.TableName);
+            command.AddParameterWithValue("p_fkName", fkName);
+
+            var rows = DbTools.GetCommandRows(command);
+
+            var columnNames = new List<string>();
+            var referencedColumnNames = new List<string>();
+
+            foreach (var row in rows)
+            {
+                var columnName = (string)row.ColumnName;
+                var ordinalPosition = (int)row.OrdinalPosition;
+                var positionInUniqueConstraint = (int)row.PositionInUniqueConstraint;
+
+                columnNames.Add(columnName);
+
+                var referencedColumnName = referencedTablePk.Columns[positionInUniqueConstraint - 1].Name;
+
+                referencedColumnNames.Add(referencedColumnName);
+            }
+
+            var fk = new ForeignKeyMold
+            {
+                Name = fkName,
+                ReferencedTableName = referencedTableName,
+                ColumnNames = columnNames,
+                ReferencedColumnNames = referencedColumnNames,
+            };
+
+            return fk;
+        }
+
         public override IReadOnlyList<IndexMold> GetIndexes()
         {
             using var command = this.Connection.CreateCommand();
-            // indexes list
-            command.CommandText =
-                @"
+
+            command.CommandText = @"
 SELECT
-    I.[index_id]            IndexId,
-    I.[name]                IndexName,
-    I.[is_unique]           IndexIsUnique,
-    IC.[key_ordinal]        KeyOrdinal,
-    C.[name]                ColumnName,
-    IC.[is_descending_key]  IsDescendingKey
+    IX.indexname IndexName,
+    IX.indexdef  IndexDef
 FROM
-    sys.indexes I
-INNER JOIN
-    sys.index_columns IC
-ON
-    IC.[index_id] = I.[index_id]
-    AND
-    IC.[object_id] = i.[object_id]
-INNER JOIN
-    sys.columns C
-ON
-    C.[column_id] = IC.[column_id]
-    AND
-    C.[object_id] = IC.[object_id]
-INNER JOIN
-    sys.tables T
-ON
-    T.[object_id] = c.[object_id]
+    pg_indexes IX
 WHERE
-    T.[name] = @p_tableName
+    IX.schemaname = @p_schema AND
+    IX.tablename = @p_tableName
 ";
+            command.AddParameterWithValue("p_schema", this.Schema);
             command.AddParameterWithValue("p_tableName", this.TableName);
 
-            return DbTools
-                .GetCommandRows(command)
-                .GroupBy(x => (int)x.IndexId)
-                .Select(g => new IndexMold
-                {
-                    Name = (string)g.First().IndexName,
-                    TableName = this.TableName,
-                    Columns = g
-                        .OrderBy(x => (int)x.KeyOrdinal)
-                        .Select(x => new IndexColumnMold
-                        {
-                            Name = (string)x.ColumnName,
-                            SortDirection = (bool)x.IsDescendingKey ? SortDirection.Descending : SortDirection.Ascending,
-                        })
-                        .ToList(),
-                    IsUnique = (bool)g.First().IndexIsUnique,
-                })
-                .OrderBy(x => x.Name)
+
+            var rows = DbTools.GetCommandRows(command);
+
+            return rows
+                .Select(x => this.BuildIndexMold((string)x.IndexName, (string)x.IndexDef))
                 .ToList();
+
+
+
+            //            throw new NotImplementedException();
+
+
+            //            // indexes list
+            //            command.CommandText =
+            //                @"
+            //SELECT
+            //    I.[index_id]            IndexId,
+            //    I.[name]                IndexName,
+            //    I.[is_unique]           IndexIsUnique,
+            //    IC.[key_ordinal]        KeyOrdinal,
+            //    C.[name]                ColumnName,
+            //    IC.[is_descending_key]  IsDescendingKey
+            //FROM
+            //    sys.indexes I
+            //INNER JOIN
+            //    sys.index_columns IC
+            //ON
+            //    IC.[index_id] = I.[index_id]
+            //    AND
+            //    IC.[object_id] = i.[object_id]
+            //INNER JOIN
+            //    sys.columns C
+            //ON
+            //    C.[column_id] = IC.[column_id]
+            //    AND
+            //    C.[object_id] = IC.[object_id]
+            //INNER JOIN
+            //    sys.tables T
+            //ON
+            //    T.[object_id] = c.[object_id]
+            //WHERE
+            //    T.[name] = @p_tableName
+            //";
+            //            command.AddParameterWithValue("p_tableName", this.TableName);
+
+            //            return DbTools
+            //                .GetCommandRows(command)
+            //                .GroupBy(x => (int)x.IndexId)
+            //                .Select(g => new IndexMold
+            //                {
+            //                    Name = (string)g.First().IndexName,
+            //                    TableName = this.TableName,
+            //                    Columns = g
+            //                        .OrderBy(x => (int)x.KeyOrdinal)
+            //                        .Select(x => new IndexColumnMold
+            //                        {
+            //                            Name = (string)x.ColumnName,
+            //                            SortDirection = (bool)x.IsDescendingKey ? SortDirection.Descending : SortDirection.Ascending,
+            //                        })
+            //                        .ToList(),
+            //                    IsUnique = (bool)g.First().IndexIsUnique,
+            //                })
+            //                .OrderBy(x => x.Name)
+            //                .ToList();
+        }
+
+        private IndexMold BuildIndexMold(string indexName, string indexDefinition)
+        {
+            var isUnique = indexDefinition.StartsWith("CREATE UNIQUE", StringComparison.InvariantCultureIgnoreCase);
+
+            var left = indexDefinition.IndexOf('(');
+            var right = indexDefinition.IndexOf(')');
+
+            var columnsString = indexDefinition.Substring(left + 1, right - left - 1);
+            var columnDefinitions = columnsString.Split(',').Select(x => x.Trim()).ToList();
+
+            var columns = new List<IndexColumnMold>();
+
+            foreach (var columnDefinition in columnDefinitions)
+            {
+                string columnName;
+                SortDirection sortDirection;
+                if (columnDefinition.EndsWith(" DESC"))
+                {
+                    columnName = columnDefinition.Substring(0, columnDefinition.Length - " DESC".Length);
+                    sortDirection = SortDirection.Descending;
+                }
+                else
+                {
+                    columnName = columnDefinition;
+                    sortDirection = SortDirection.Ascending;
+                }
+
+                var indexColumnMold = new IndexColumnMold
+                {
+                    Name = columnName,
+                    SortDirection = sortDirection,
+                };
+
+                columns.Add(indexColumnMold);
+            }
+
+            var indexMold = new IndexMold
+            {
+                Name = indexName,
+                TableName = this.TableName,
+                Columns = columns,
+                IsUnique = isUnique,
+            };
+
+            return indexMold;
         }
 
         #endregion

@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using System;
+using System.Data;
 using System.Linq;
 using TauCode.Db;
 using TauCode.Db.Data;
@@ -80,8 +81,13 @@ namespace TauCode.Lab.Db.SqlClient.Tests
             });
 
             // Act
-            _cruder.GetTableValuesConverter("foo").SetColumnConverter("enum_int32", new EnumValueConverter<Town>(EnumValueConverterBehaviour.Integer));
-            _cruder.GetTableValuesConverter("foo").SetColumnConverter("enum_string", new EnumValueConverter<UserRole>(EnumValueConverterBehaviour.String));
+            _cruder.GetTableValuesConverter("foo").SetColumnConverter(
+                "enum_int32",
+                new EnumValueConverter<Town>(DbType.Int32));
+
+            _cruder.GetTableValuesConverter("foo").SetColumnConverter(
+                "enum_string",
+                new EnumValueConverter<UserRole>(DbType.String));
 
             _cruder.InsertRow("foo", foo);
 
@@ -309,7 +315,9 @@ VALUES(
     null,
     'Developer')");
 
-            _cruder.GetTableValuesConverter("foo").SetColumnConverter("enum_string", new EnumValueConverter<UserRole>(EnumValueConverterBehaviour.String));
+            _cruder.GetTableValuesConverter("foo").SetColumnConverter(
+                "enum_string",
+                new EnumValueConverter<UserRole>(DbType.String));
 
             // Act
             var row = _cruder.GetRow("foo", 11);

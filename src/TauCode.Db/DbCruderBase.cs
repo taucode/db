@@ -318,6 +318,7 @@ namespace TauCode.Db
             switch (typeName)
             {
                 case "int":
+                case "integer":
                     dbType = DbType.Int32;
                     break;
 
