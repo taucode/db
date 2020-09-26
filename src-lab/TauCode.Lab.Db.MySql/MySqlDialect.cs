@@ -6,7 +6,7 @@ namespace TauCode.Lab.Db.MySql
         typeof(MySqlDialect),
         "reserved-words.txt",
         //"data-type-names.txt",
-        "\"\"")]
+        "``")]
     public class MySqlDialect : DbDialectBase
     {
         #region Static
@@ -29,6 +29,8 @@ namespace TauCode.Lab.Db.MySql
         public override IDbUtilityFactory Factory => MySqlUtilityFactory.Instance;
         
         public override string UnicodeTextLiteralPrefix => "N";
+
+        public override bool CanDecorateTypeIdentifier => false;
 
         #endregion
     }

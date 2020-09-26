@@ -67,7 +67,7 @@ namespace TauCode.Lab.Db.MySql.Tests
         {
             using var command = this.Connection.CreateCommand();
 
-            command.CommandText = $@"SELECT * FROM [{tableName}] WHERE [id] = @p_id";
+            command.CommandText = $@"SELECT * FROM `{tableName}` WHERE `id` = @p_id";
             var parameter = command.CreateParameter();
             parameter.ParameterName = "p_id";
             parameter.Value = id;

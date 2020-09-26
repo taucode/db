@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Linq;
 using TauCode.Db;
 using TauCode.Db.Model;
@@ -7,11 +8,12 @@ namespace TauCode.Lab.Db.MySql
 {
     public static class MySqlTools
     {
-        internal const string TableTypeForTable = "BASE TABLE";
+        internal const string TableTypeForTable = "BASE TABLE"; // todo: don't need this, really
 
-        // todo: consider delete; it is form pgsql
-        public static PrimaryKeyMold LoadPrimaryKey(IDbConnection connection, string schema, string tableName)
+        public static PrimaryKeyMold LoadPrimaryKey(IDbConnection connection, /*string dbName,*/ string tableName)
         {
+            var dbName = connection.GetDatabaseName();
+
             // todo check args
             // todo: schema not used
 
@@ -31,14 +33,19 @@ ON
     KCU.table_name = TC.table_name AND
     KCU.constraint_name = TC.constraint_name
 WHERE
-    TC.table_name = @p_tableName
-    AND
+    TC.constraint_schema = @p_dbName AND
+    TC.table_schema = @p_dbName AND
+
+    KCU.constraint_schema = @p_dbName AND
+    KCU.table_schema = @p_dbName AND
+
+    TC.table_name = @p_tableName AND
     TC.constraint_type = 'PRIMARY KEY'
 ORDER BY
-    OrdinalPosition
+    KCU.ordinal_position
 ";
+            command.AddParameterWithValue("p_dbName", dbName);
             command.AddParameterWithValue("p_tableName", tableName);
-
 
             var rows = DbTools.GetCommandRows(command);
             if (rows.Count == 0)
@@ -58,6 +65,11 @@ ORDER BY
                     })
                     .ToList(),
             };
+
+            if (pk.Columns.Count != 1)
+            {
+                throw new NotImplementedException();
+            }
 
             return pk;
         }

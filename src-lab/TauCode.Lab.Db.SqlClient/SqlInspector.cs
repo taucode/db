@@ -11,7 +11,7 @@ namespace TauCode.Lab.Db.SqlClient
 
         public const string DefaultSchema = "dbo";
 
-        private const string TableTypeForTable = "BASE TABLE";
+        private const string TableTypeForTable = "BASE TABLE"; // todo: don't need this, really
 
         #endregion
 

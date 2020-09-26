@@ -28,23 +28,20 @@ namespace TauCode.Lab.Db.MySql
             var typeName = column.Type.Name.ToLowerInvariant();
             switch (typeName)
             {
-                case "uuid":
-                    return new GuidValueConverter();
-
                 case "char":
                 case "varchar":
                 case "nchar":
                 case "nvarchar":
-                case "character varying":
+                case "text":
                     return new StringValueConverter();
 
                 case "int":
                 case "integer":
                     return new Int32ValueConverter();
 
-                case "datetime":
-                case "datetime2":
+                case "timestamp":
                 case "date":
+                case "datetime":
                     return new DateTimeValueConverter();
 
                 case "bit":
@@ -95,10 +92,12 @@ namespace TauCode.Lab.Db.MySql
             switch (typeName)
             {
                 case "integer":
+                case "int":
                     dbType = DbType.Int32;
                     break;
 
-                case "character varying":
+                case "char":
+                case "varchar":
                     dbType = DbType.String;
                     size = columnType.Size;
                     break;

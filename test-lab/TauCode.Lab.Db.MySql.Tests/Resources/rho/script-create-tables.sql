@@ -116,7 +116,7 @@ CREATE TABLE `fragment`(
     `sub_type_id` char(36) NOT NULL,
     `code` varchar(255) NULL,
     `order` int NOT NULL,
-    `content` ntext NOT NULL,
+    `content` text NOT NULL,
     CONSTRAINT `PK_fragment` PRIMARY KEY(`id`))
 
 /* create unique index UX_fragment_noteTranslationId_code: fragment(note_translation_id, code) */

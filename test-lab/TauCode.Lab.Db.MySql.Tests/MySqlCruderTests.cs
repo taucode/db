@@ -6,6 +6,7 @@ using TauCode.Db;
 using TauCode.Db.Data;
 using TauCode.Db.DbValueConverters;
 using TauCode.Db.Exceptions;
+using TauCode.Lab.Db.MySql.DbValueConverters;
 
 namespace TauCode.Lab.Db.MySql.Tests
 {
@@ -34,6 +35,18 @@ namespace TauCode.Lab.Db.MySql.Tests
         public void SetUp()
         {
             _cruder = this.DbInspector.Factory.CreateCruder(this.Connection, null);
+
+            var tableNames = this.DbInspector.GetTableNames();
+
+            foreach (var tableName in tableNames)
+            {
+                if (tableName == "foo")
+                {
+                    continue;
+                }
+
+                _cruder.GetTableValuesConverter(tableName).SetColumnConverter("id", new MySqlGuidConverter());
+            }
         }
 
         [Test]
@@ -53,19 +66,17 @@ namespace TauCode.Lab.Db.MySql.Tests
             _cruder.InsertRow("language", language);
 
             // Assert
-            using (var command = this.Connection.CreateCommand())
-            {
-                command.CommandText = @"SELECT [id], [code], [name] FROM [language] WHERE [id] = @p_id";
-                var parameter = command.CreateParameter();
-                parameter.ParameterName = "p_id";
-                parameter.Value = id;
-                command.Parameters.Add(parameter);
-                var row = DbTools.GetCommandRows(command).Single();
+            using var command = this.Connection.CreateCommand();
+            command.CommandText = @"SELECT `id`, `code`, `name` FROM `language` WHERE `id` = @p_id";
+            var parameter = command.CreateParameter();
+            parameter.ParameterName = "p_id";
+            parameter.Value = id;
+            command.Parameters.Add(parameter);
+            var row = DbTools.GetCommandRows(command).Single();
 
-                Assert.That(row.id, Is.EqualTo(id));
-                Assert.That(row.code, Is.EqualTo("it"));
-                Assert.That(row.name, Is.EqualTo("Italian"));
-            }
+            Assert.That(row.id, Is.EqualTo(id));
+            Assert.That(row.code, Is.EqualTo("it"));
+            Assert.That(row.name, Is.EqualTo("Italian"));
         }
 
         [Test]
@@ -92,17 +103,15 @@ namespace TauCode.Lab.Db.MySql.Tests
             _cruder.InsertRow("foo", foo);
 
             // Assert
-            using (var command = this.Connection.CreateCommand())
-            {
-                command.CommandText = @"SELECT [id], [name], [enum_int32], [enum_string] FROM [foo] WHERE [id] = 1";
+            using var command = this.Connection.CreateCommand();
+            command.CommandText = @"SELECT `id`, `name`, `enum_int32`, `enum_string` FROM `foo` WHERE `id` = 1";
 
-                var row = DbTools.GetCommandRows(command).Single();
+            var row = DbTools.GetCommandRows(command).Single();
 
-                Assert.That(row.id, Is.EqualTo(1));
-                Assert.That(row.name, Is.EqualTo("Vasya"));
-                Assert.That(row.enum_int32, Is.EqualTo(1));
-                Assert.That(row.enum_string, Is.EqualTo(UserRole.Admin.ToString()));
-            }
+            Assert.That(row.id, Is.EqualTo(1));
+            Assert.That(row.name, Is.EqualTo("Vasya"));
+            Assert.That(row.enum_int32, Is.EqualTo(1));
+            Assert.That(row.enum_string, Is.EqualTo(UserRole.Admin.ToString()));
         }
 
         [Test]
@@ -281,10 +290,10 @@ namespace TauCode.Lab.Db.MySql.Tests
         {
             // Arrange
             this.Connection.ExecuteSingleSql(@"
-INSERT INTO [language](
-    [id],
-    [code],
-    [name])
+INSERT INTO `language`(
+    `id`,
+    `code`,
+    `name`)
 VALUES(
     '4fca7968-49cf-4c52-b793-e4b27087251b',
     'en',
@@ -306,10 +315,10 @@ VALUES(
         {
             // Arrange
             this.Connection.ExecuteSingleSql(@"
-INSERT INTO [foo](
-    [id],
-    [name],
-    [enum_string])
+INSERT INTO `foo`(
+    `id`,
+    `name`,
+    `enum_string`)
 VALUES(
     11,    
     null,
@@ -333,10 +342,10 @@ VALUES(
         {
             // Arrange
             this.Connection.ExecuteSingleSql(@"
-INSERT INTO [language](
-    [id],
-    [code],
-    [name])
+INSERT INTO `language`(
+    `id`,
+    `code`,
+    `name`)
 VALUES(
     '4fca7968-49cf-4c52-b793-e4b27087251b',
     'en',
@@ -361,7 +370,7 @@ VALUES(
             this.Connection.SafeDropTable("my_table");
             this.Connection.ExecuteSingleSql(@"
 CREATE TABLE my_table(
-    Id int PRIMARY KEY IDENTITY(1, 1),
+    Id int PRIMARY KEY AUTO_INCREMENT,
     Name nvarchar(100) DEFAULT 'Manuela',
     Age bigint DEFAULT 21,
     Gender bit null)

@@ -32,12 +32,12 @@ namespace TauCode.Lab.Db.MySql.Tests
             IDbSerializer dbSerializer = utilityFactory.CreateDbSerializer(connection, null);
 
             // Assert
-            Assert.That(dialect.Name, Is.EqualTo("SQLServer"));
+            Assert.That(dialect.Name, Is.EqualTo("MySQL"));
             Assert.That(connection, Is.TypeOf<MySqlConnection>());
             Assert.That(dialect, Is.SameAs(MySqlDialect.Instance));
 
             Assert.That(scriptBuilder, Is.TypeOf<MySqlScriptBuilder>());
-            Assert.That(scriptBuilder.CurrentOpeningIdentifierDelimiter, Is.EqualTo('['));
+            Assert.That(scriptBuilder.CurrentOpeningIdentifierDelimiter, Is.EqualTo('`'));
 
             Assert.That(dbInspector, Is.TypeOf<MySqlInspector>());
             Assert.That(tableInspector, Is.TypeOf<MySqlTableInspector>());

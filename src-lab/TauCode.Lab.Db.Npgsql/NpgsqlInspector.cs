@@ -11,7 +11,7 @@ namespace TauCode.Lab.Db.Npgsql
 
         public const string DefaultSchema = "public";
 
-        private const string TableTypeForTable = "BASE TABLE";
+        private const string TableTypeForTable = "BASE TABLE"; // todo: don't need this, really
 
         #endregion
 
