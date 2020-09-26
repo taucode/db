@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
-// todo clean 
 namespace TauCode.Db
 {
     public abstract class DbDialectBase : DbUtilityBase, IDbDialect
@@ -80,7 +79,6 @@ namespace TauCode.Db
         #region Fields
 
         private string[] _reservedWords;
-        //private string[] _dataTypeNames;
         private Tuple<char, char>[] _identifierDelimiters;
 
         #endregion
@@ -97,12 +95,6 @@ namespace TauCode.Db
 
         #region Protected
 
-        //protected string[] BuildDataTypeNames()
-        //{
-        //    var attribute = GetOrCreateDialectAttribute(this.GetType());
-        //    return attribute.DataTypeNames;
-        //}
-
         protected string[] BuildReservedWords()
         {
             var attribute = GetOrCreateDialectAttribute(this.GetType());
@@ -115,11 +107,6 @@ namespace TauCode.Db
             return attribute.IdentifierDelimiters;
         }
 
-        //protected ArgumentException CreateCouldNotConvertException(object obj, DbTypeFamily desiredFamily)
-        //{
-        //    return new ArgumentException($"Could not convert value of type '{obj.GetType().FullName}' to {desiredFamily}");
-        //}
-
         #endregion
 
         #region IDialect Members
@@ -128,89 +115,11 @@ namespace TauCode.Db
 
         public virtual IReadOnlyList<string> ReservedWords => _reservedWords ??= this.BuildReservedWords();
 
-        //public virtual IReadOnlyList<string> DataTypeNames => _dataTypeNames ??= this.BuildDataTypeNames();
-
-        //public virtual bool IsSingleWordTypeName(string typeName)
-        //{
-        //    if (typeName == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(typeName));
-        //    }
-
-        //    return
-        //        this.DataTypeNames.Contains(typeName) &&
-        //        this.GetTypeNameCategory(typeName) == DbTypeNameCategory.SingleWord;
-        //}
-
-        //public virtual bool IsSizedTypeName(string typeName)
-        //{
-        //    if (typeName == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(typeName));
-        //    }
-
-        //    return
-        //        this.DataTypeNames.Contains(typeName) &&
-        //        this.GetTypeNameCategory(typeName) == DbTypeNameCategory.Sized;
-        //}
-
-        //public virtual bool IsPreciseNumberTypeName(string typeName)
-        //{
-        //    if (typeName == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(typeName));
-        //    }
-
-        //    return
-        //        this.DataTypeNames.Contains(typeName) &&
-        //        this.GetTypeNameCategory(typeName) == DbTypeNameCategory.PreciseNumber;
-        //}
-
         public virtual string ClauseTerminator => ";";
 
         public virtual string UnicodeTextLiteralPrefix => string.Empty;
 
         public virtual bool IsClauseTerminatorMandatory => false;
-
-        //public virtual DbTypeFamily GetTypeFamily(string typeName)
-        //{
-        //    if (typeName == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(typeName));
-        //    }
-
-        //    typeName = typeName.ToLower();
-
-        //    var attribute = DbDialectBase.GetOrCreateDialectAttribute(this.GetType());
-        //    if (attribute.Families.ContainsKey(typeName))
-        //    {
-        //        return attribute.Families[typeName];
-        //    }
-        //    else
-        //    {
-        //        throw new DbException($"Could not get type family for type '{typeName}'.");
-        //    }
-        //}
-
-        //public virtual DbTypeNameCategory GetTypeNameCategory(string typeName)
-        //{
-        //    if (typeName == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(typeName));
-        //    }
-
-        //    typeName = typeName.ToLower();
-
-        //    var attribute = DbDialectBase.GetOrCreateDialectAttribute(this.GetType());
-        //    if (attribute.Categories.ContainsKey(typeName))
-        //    {
-        //        return attribute.Categories[typeName];
-        //    }
-        //    else
-        //    {
-        //        throw new DbException($"Could not get type name category for type '{typeName}'.");
-        //    }
-        //}
 
         public virtual IReadOnlyList<Tuple<char, char>> IdentifierDelimiters => _identifierDelimiters ??= this.BuildIdentifierDelimiters();
 
@@ -247,41 +156,6 @@ namespace TauCode.Db
 
             return $"{openingDelimiter}{identifier}{closingDelimiterString}";
         }
-
-        //public virtual DbTypeMold ResolveType(string typeName, int? size, int? precision, int? scale)
-        //{
-        //    if (typeName == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(typeName));
-        //    }
-
-        //    var dbTypeMold = new DbTypeMold();
-
-        //    var nameCategory = this.GetTypeNameCategory(typeName);
-
-        //    dbTypeMold.Name = typeName;
-
-        //    switch (nameCategory)
-        //    {
-        //        case DbTypeNameCategory.SingleWord:
-        //            // no action
-        //            break;
-
-        //        case DbTypeNameCategory.Sized:
-        //            dbTypeMold.Size = size;
-        //            break;
-
-        //        case DbTypeNameCategory.PreciseNumber:
-        //            dbTypeMold.Precision = precision;
-        //            dbTypeMold.Scale = scale;
-        //            break;
-
-        //        default:
-        //            throw new ArgumentException($"Could not resolve type '{typeName}'", nameof(typeName));
-        //    }
-
-        //    return dbTypeMold;
-        //}
 
         #endregion
     }

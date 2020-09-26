@@ -60,11 +60,6 @@ namespace TauCode.Lab.Db.Npgsql.Tests
             // Assert
             var expectedJson = TestHelper.GetResourceText("rho.metadata-language.json");
 
-            if (json != expectedJson)
-            {
-                TestHelper.WriteDiff(json, expectedJson, @"c:\temp\0-ka", "json", "todo");
-            }
-
             Assert.That(json, Is.EqualTo(expectedJson));
         }
 
@@ -79,11 +74,6 @@ namespace TauCode.Lab.Db.Npgsql.Tests
 
             // Assert
             var expectedJson = TestHelper.GetResourceText(".rho.metadata-db.json");
-
-            if (expectedJson != json)
-            {
-                TestHelper.WriteDiff(json, expectedJson, @"c:\temp\0-ka", "json", "todo");
-            }
 
             Assert.That(json, Is.EqualTo(expectedJson));
             Assert.That(inverted.DbProviderName, Is.EqualTo(DbProviderNames.PostgreSQL));

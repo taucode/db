@@ -1,7 +1,6 @@
 ﻿using NUnit.Framework;
 using TauCode.Db;
 
-// todo: get rid of '...SqlServer...' in sln.
 namespace TauCode.Lab.Db.SqlClient.Tests
 {
     [TestFixture]

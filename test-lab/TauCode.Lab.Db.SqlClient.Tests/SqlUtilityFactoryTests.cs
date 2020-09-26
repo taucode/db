@@ -15,9 +15,6 @@ namespace TauCode.Lab.Db.SqlClient.Tests
             IDbUtilityFactory utilityFactory = SqlUtilityFactory.Instance;
 
             // Act
-            //var dbProviderName = utilityFactory.DbProviderName;
-
-            //IDbConnection connection = utilityFactory.CreateConnection();
             IDbConnection connection = new SqlConnection();
             connection.ConnectionString = TestHelper.ConnectionString;
             connection.Open();
@@ -35,7 +32,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests
             IDbSerializer dbSerializer = utilityFactory.CreateDbSerializer(connection, null);
 
             // Assert
-            //Assert.That(dbProviderName, Is.EqualTo("SqlServer"));
+            Assert.That(dialect.Name, Is.EqualTo("SQLServer"));
             Assert.That(connection, Is.TypeOf<SqlConnection>());
             Assert.That(dialect, Is.SameAs(SqlDialect.Instance));
 

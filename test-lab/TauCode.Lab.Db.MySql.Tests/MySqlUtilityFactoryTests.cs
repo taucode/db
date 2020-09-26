@@ -15,9 +15,6 @@ namespace TauCode.Lab.Db.MySql.Tests
             IDbUtilityFactory utilityFactory = MySqlUtilityFactory.Instance;
 
             // Act
-            //var dbProviderName = utilityFactory.DbProviderName;
-
-            //IDbConnection connection = utilityFactory.CreateConnection();
             IDbConnection connection = new MySqlConnection();
             connection.ConnectionString = TestHelper.ConnectionString;
             connection.Open();
@@ -35,7 +32,7 @@ namespace TauCode.Lab.Db.MySql.Tests
             IDbSerializer dbSerializer = utilityFactory.CreateDbSerializer(connection, null);
 
             // Assert
-            //Assert.That(dbProviderName, Is.EqualTo("SqlServer"));
+            Assert.That(dialect.Name, Is.EqualTo("SQLServer"));
             Assert.That(connection, Is.TypeOf<MySqlConnection>());
             Assert.That(dialect, Is.SameAs(MySqlDialect.Instance));
 

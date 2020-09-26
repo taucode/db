@@ -30,11 +30,6 @@ namespace TauCode.Lab.Db.Npgsql.Tests
             // Assert
             var expectedJson = this.GetType().Assembly.GetResourceText("ocean.data-db.json", true);
 
-            if (json != expectedJson)
-            {
-                TestHelper.WriteDiff(json, expectedJson, @"c:\temp\0-ka", "json", "todo");
-            }
-
             Assert.That(json, Is.EqualTo(expectedJson));
         }
 

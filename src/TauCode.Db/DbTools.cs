@@ -11,7 +11,6 @@ using TauCode.Db.Data;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
 
-// todo: clean up
 namespace TauCode.Db
 {
     public static class DbTools
@@ -204,15 +203,6 @@ namespace TauCode.Db
             }
 
             return tableMolds;
-
-            //return dbInspector
-            //    .GetTableNames()
-            //    .Where(tableNamePredicate ?? (x => true))
-            //    .Select(x => dbInspector
-            //        .Factory
-            //        .CreateTableInspector(dbInspector.Connection, x)
-            //        .GetTable())
-            //    .ToList();
         }
 
         public static void DropAllTables(this IDbInspector dbInspector)
@@ -256,105 +246,6 @@ namespace TauCode.Db
             return json;
         }
 
-        //private static IDbConnection TryCreateDbConnection(string dbConnectionTypeFullName)
-        //{
-        //    var allTypes = AppDomain.CurrentDomain
-        //        .GetAssemblies()
-        //        .SelectMany(x => x.Modules)
-        //        .SelectMany(x => x.GetTypes())
-        //        .OrderBy(x => x.FullName)
-        //        .ToList();
-
-        //    var types = allTypes
-        //        .Where(x => x.FullName == dbConnectionTypeFullName)
-        //        .ToList();
-
-        //    if (!types.Any())
-        //    {
-        //        throw new DbException($"Type '{dbConnectionTypeFullName}' was not found in the current AppDomain.");
-        //    }
-
-        //    if (types.Count() > 1)
-        //    {
-        //        throw new DbException($"Current AppDomain hosts more than one type with full name '{dbConnectionTypeFullName}'.");
-        //    }
-
-        //    var type = types.Single();
-
-        //    var ctor = type.GetConstructor(Type.EmptyTypes);
-        //    if (ctor == null)
-        //    {
-        //        throw new DbException($"Type '{dbConnectionTypeFullName}' doesn't have .ctor(string).");
-        //    }
-
-        //    object connectionObject;
-
-        //    try
-        //    {
-        //        connectionObject = ctor.Invoke(new object[0]);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new DbException($"Failed to invoke .ctor(string) of '{dbConnectionTypeFullName}'.", ex);
-        //    }
-
-        //    if (connectionObject is IDbConnection dbConnection)
-        //    {
-        //        return dbConnection;
-        //    }
-        //    else
-        //    {
-        //        throw new DbException($".ctor(string) of '{dbConnectionTypeFullName}' returned not an instance of '{typeof(IDbConnection).FullName}'.");
-        //    }
-        //}
-
-        //public static IDbConnection CreateConnection(string dbProviderName)
-        //{
-        //    if (dbProviderName == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(dbProviderName));
-        //    }
-
-        //    string fullTypeName;
-
-        //    switch (dbProviderName)
-        //    {
-        //        case DbProviderNames.SqlServer:
-        //            fullTypeName = "System.Data.SqlClient.SqlConnection";
-        //            break;
-
-        //        case DbProviderNames.SQLite:
-        //            fullTypeName = "System.Data.SQLite.SQLiteConnection";
-        //            break;
-
-        //        default:
-        //            throw new NotSupportedException($"Cannot instantiate connection for type '{dbProviderName}'.");
-        //    }
-
-        //    var connection = TryCreateDbConnection(fullTypeName);
-        //    return connection;
-        //}
-
-        //public static IUtilityFactory GetUtilityFactory(string dbProviderName)
-        //{
-        //    if (dbProviderName == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(dbProviderName));
-        //    }
-
-        //    switch (dbProviderName)
-        //    {
-        //        case DbProviderNames.SqlServer:
-        //            return SqlServerUtilityFactory.Instance;
-
-        //        case DbProviderNames.SQLite:
-        //            return SQLiteUtilityFactory.Instance;
-
-        //        default:
-        //            throw new NotSupportedException($"Cannot create utility factory for '{dbProviderName}'.");
-        //    }
-        //}
-
         public static void AddParameterWithValue(
             this IDbCommand command,
             string parameterName,
@@ -364,16 +255,6 @@ namespace TauCode.Db
             parameter.ParameterName = parameterName;
             parameter.Value = parameterValue;
             command.Parameters.Add(parameter);
-        }
-
-        //internal static void MarkAsExplicitPrimaryKey(this ColumnMold columnMold)
-        //{
-        //    columnMold.SetBoolProperty("is-explicit-primary-key", true);
-        //}
-
-        internal static void SetBoolProperty(this IMold mold, string propertyName, bool value)
-        {
-            mold.Properties[propertyName] = value.ToString();
         }
 
         public static DbException CreateTableNotFoundException(string tableName)

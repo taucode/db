@@ -7,7 +7,6 @@ using TauCode.Db.Data;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
 
-// todo clean
 namespace TauCode.Db
 {
     public abstract class DbSerializerBase : DbUtilityBase, IDbSerializer
@@ -189,12 +188,6 @@ namespace TauCode.Db
         public virtual string SerializeDbMetadata(Func<string, bool> tableNamePredicate = null)
         {
             tableNamePredicate ??= (x => true);
-
-            //var tables = this.DbInspector
-            //    .GetTableNames()
-            //    .Select(x => this.Factory.CreateTableInspector(this.Connection, this.Schema, x).GetTable())
-            //    .Where(x => tableNamePredicate(x.Name))
-            //    .ToList();
 
             var tables = this.DbInspector
                 .GetTables(true, tableNamePredicate);
