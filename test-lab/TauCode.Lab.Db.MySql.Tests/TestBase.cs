@@ -80,7 +80,7 @@ namespace TauCode.Lab.Db.MySql.Tests
         {
             using var command = this.Connection.CreateCommand();
 
-            command.CommandText = $@"SELECT * FROM [{tableName}]";
+            command.CommandText = $@"SELECT * FROM `{tableName}`";
             var rows = DbTools.GetCommandRows(command);
             return rows;
         }

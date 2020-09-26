@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using TauCode.Db;
 using TauCode.Db.Model;
+using TauCode.Extensions;
 
 // todo clean
 namespace TauCode.Lab.Db.MySql
@@ -154,6 +155,20 @@ ORDER BY
                 IsNullable = columnInfo.IsNullable,
             };
 
+            if (column.Type.Name.ToLowerInvariant().IsIn(
+                "bit",
+                "int"))
+            {
+                column.Type.Precision = null;
+                column.Type.Scale = null;
+            }
+
+            if (column.Type.Name.ToLowerInvariant().IsIn(
+                "text"))
+            {
+                column.Type.Size = null;
+            }
+
             return column;
         }
 
@@ -183,6 +198,11 @@ WHERE
             command.AddParameterWithValue("p_dbName", dbName);
 
             var rows = DbTools.GetCommandRows(command);
+
+            if (rows.Count == 0)
+            {
+                throw DbTools.CreateTableNotFoundException(this.TableName);
+            }
 
             int? autoIncrement = (int?)rows.Single().AutoIncrement;
 
@@ -507,86 +527,6 @@ WHERE
                 })
                 .OrderBy(x => x.Name)
                 .ToList();
-        }
-
-        private ForeignKeyMold LoadForeignKey(string fkName)
-        {
-            // get referenced table name
-            using var command = this.Connection.CreateCommand();
-            command.CommandText = @"
-SELECT
-    CCU.table_name TableName
-FROM
-    information_schema.constraint_column_usage CCU
-WHERE
-    CCU.table_schema = @p_schema
-    AND
-    CCU.constraint_schema = @p_schema
-    AND
-    CCU.constraint_name = @p_fkName
-";
-            command.AddParameterWithValue("p_schema", this.Schema);
-            command.AddParameterWithValue("p_fkName", fkName);
-
-            var referencedTableName = DbTools.GetCommandRows(command)
-                .Select(x => (string)x.TableName)
-                .Distinct()
-                .Single();
-
-            // get referenced table PK
-            var referencedTablePk = MySqlTools.LoadPrimaryKey(this.Connection, referencedTableName);
-
-            // get foreign key columns
-
-            command.Parameters.Clear();
-
-            command.CommandText = @"
-select
-    KCU.column_name 					ColumnName,
-    KCU.ordinal_position 				OrdinalPosition,
-    KCU.position_in_unique_constraint 	PositionInUniqueConstraint
-from
-    information_schema.key_column_usage KCU	
-where
-    KCU.constraint_schema = @p_schema and
-    KCU.table_schema = @p_schema and
-    KCU.table_name = @p_tableName and
-    KCU.constraint_name = @p_fkName
-order by
-    KCU.ordinal_position
-";
-
-            command.AddParameterWithValue("p_schema", this.Schema);
-            command.AddParameterWithValue("p_tableName", this.TableName);
-            command.AddParameterWithValue("p_fkName", fkName);
-
-            var rows = DbTools.GetCommandRows(command);
-
-            var columnNames = new List<string>();
-            var referencedColumnNames = new List<string>();
-
-            foreach (var row in rows)
-            {
-                var columnName = (string)row.ColumnName;
-                var ordinalPosition = (int)row.OrdinalPosition;
-                var positionInUniqueConstraint = (int)row.PositionInUniqueConstraint;
-
-                columnNames.Add(columnName);
-
-                var referencedColumnName = referencedTablePk.Columns[positionInUniqueConstraint - 1].Name;
-
-                referencedColumnNames.Add(referencedColumnName);
-            }
-
-            var fk = new ForeignKeyMold
-            {
-                Name = fkName,
-                ReferencedTableName = referencedTableName,
-                ColumnNames = columnNames,
-                ReferencedColumnNames = referencedColumnNames,
-            };
-
-            return fk;
         }
 
         public override IReadOnlyList<IndexMold> GetIndexes()

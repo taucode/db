@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using TauCode.Db;
 using TauCode.Extensions;
+using TauCode.Lab.Db.MySql.DbValueConverters;
 
 namespace TauCode.Lab.Db.MySql.Tests
 {
@@ -15,6 +16,12 @@ namespace TauCode.Lab.Db.MySql.Tests
         public void SetUp()
         {
             _dbSerializer = new MySqlSerializer(this.Connection);
+
+            _dbSerializer.Cruder.GetTableValuesConverter("user").SetColumnConverter("gender", new MySqlBooleanConverter());
+            _dbSerializer.Cruder.GetTableValuesConverter("user").SetColumnConverter("picture", new MySqlBinaryConverter());
+
+            
+            _dbSerializer.Cruder.GetTableValuesConverter("user").SetColumnConverter("id", new MySqlGuidConverter());
         }
 
         [Test]
@@ -43,9 +50,9 @@ namespace TauCode.Lab.Db.MySql.Tests
             _dbSerializer.DeserializeDbData(json);
 
             // Assert
-            var cruder = this.DbInspector.Factory.CreateCruder(this.Connection, null);
-            var users = cruder.GetAllRows("user");
-            var userInfos = cruder.GetAllRows("user_info");
+            //var cruder = this.DbInspector.Factory.CreateCruder(this.Connection, null);
+            var users = _dbSerializer.Cruder.GetAllRows("user");
+            var userInfos = _dbSerializer.Cruder.GetAllRows("user_info");
 
             // ak
             var id = new Guid("115777dc-2394-4e14-a587-11afde55588e");

@@ -71,7 +71,6 @@ namespace TauCode.Db
                 for (var i = 0; i < reader.FieldCount; i++)
                 {
                     var name = reader.GetName(i);
-
                     var value = reader[i];
 
                     if (tableValuesConverter == null)

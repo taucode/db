@@ -11,6 +11,14 @@ namespace TauCode.Lab.Db.MySql.DbValueConverters
             {
                 return guid.ToString();
             }
+            else if (value is string s)
+            {
+                var parsed = Guid.TryParse(s, out guid);
+                if (parsed)
+                {
+                    return guid;
+                }
+            }
 
             return null;
         }
@@ -20,6 +28,14 @@ namespace TauCode.Lab.Db.MySql.DbValueConverters
             if (dbValue is Guid guid)
             {
                 return guid;
+            }
+            else if (dbValue is string s)
+            {
+                var parsed = Guid.TryParse(s, out guid);
+                if (parsed)
+                {
+                    return guid;
+                }
             }
 
             return null;

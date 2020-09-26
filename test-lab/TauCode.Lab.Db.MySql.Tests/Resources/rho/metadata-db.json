@@ -1,5 +1,5 @@
 ﻿{
-  "dbProviderName": "SQL Server",
+  "dbProviderName": "MySQL",
   "tables": [
     {
       "name": "fragment_type",
@@ -7,8 +7,8 @@
         {
           "name": "id",
           "type": {
-            "name": "uniqueidentifier",
-            "size": null,
+            "name": "char",
+            "size": 36,
             "precision": null,
             "scale": null,
             "properties": {}
@@ -21,7 +21,7 @@
         {
           "name": "code",
           "type": {
-            "name": "nvarchar",
+            "name": "varchar",
             "size": 255,
             "precision": null,
             "scale": null,
@@ -35,7 +35,7 @@
         {
           "name": "name",
           "type": {
-            "name": "nvarchar",
+            "name": "varchar",
             "size": 255,
             "precision": null,
             "scale": null,
@@ -62,7 +62,7 @@
         }
       ],
       "primaryKey": {
-        "name": "PK_fragmentType",
+        "name": "PRIMARY",
         "columns": [
           {
             "name": "id",
@@ -75,7 +75,7 @@
       "foreignKeys": [],
       "indexes": [
         {
-          "name": "PK_fragmentType",
+          "name": "PRIMARY",
           "tableName": "fragment_type",
           "columns": [
             {
@@ -109,8 +109,8 @@
         {
           "name": "id",
           "type": {
-            "name": "uniqueidentifier",
-            "size": null,
+            "name": "char",
+            "size": 36,
             "precision": null,
             "scale": null,
             "properties": {}
@@ -123,7 +123,7 @@
         {
           "name": "code",
           "type": {
-            "name": "nvarchar",
+            "name": "varchar",
             "size": 2,
             "precision": null,
             "scale": null,
@@ -137,7 +137,7 @@
         {
           "name": "name",
           "type": {
-            "name": "nvarchar",
+            "name": "varchar",
             "size": 255,
             "precision": null,
             "scale": null,
@@ -150,7 +150,7 @@
         }
       ],
       "primaryKey": {
-        "name": "PK_language",
+        "name": "PRIMARY",
         "columns": [
           {
             "name": "id",
@@ -163,7 +163,7 @@
       "foreignKeys": [],
       "indexes": [
         {
-          "name": "PK_language",
+          "name": "PRIMARY",
           "tableName": "language",
           "columns": [
             {
@@ -197,8 +197,8 @@
         {
           "name": "id",
           "type": {
-            "name": "uniqueidentifier",
-            "size": null,
+            "name": "char",
+            "size": 36,
             "precision": null,
             "scale": null,
             "properties": {}
@@ -211,7 +211,7 @@
         {
           "name": "code",
           "type": {
-            "name": "nvarchar",
+            "name": "varchar",
             "size": 255,
             "precision": null,
             "scale": null,
@@ -238,7 +238,7 @@
         }
       ],
       "primaryKey": {
-        "name": "PK_note",
+        "name": "PRIMARY",
         "columns": [
           {
             "name": "id",
@@ -251,7 +251,7 @@
       "foreignKeys": [],
       "indexes": [
         {
-          "name": "PK_note",
+          "name": "PRIMARY",
           "tableName": "note",
           "columns": [
             {
@@ -298,8 +298,8 @@
         {
           "name": "id",
           "type": {
-            "name": "uniqueidentifier",
-            "size": null,
+            "name": "char",
+            "size": 36,
             "precision": null,
             "scale": null,
             "properties": {}
@@ -312,7 +312,7 @@
         {
           "name": "code",
           "type": {
-            "name": "nvarchar",
+            "name": "varchar",
             "size": 255,
             "precision": null,
             "scale": null,
@@ -326,7 +326,7 @@
         {
           "name": "name",
           "type": {
-            "name": "nvarchar",
+            "name": "varchar",
             "size": 255,
             "precision": null,
             "scale": null,
@@ -339,7 +339,7 @@
         }
       ],
       "primaryKey": {
-        "name": "PK_tag",
+        "name": "PRIMARY",
         "columns": [
           {
             "name": "id",
@@ -352,7 +352,7 @@
       "foreignKeys": [],
       "indexes": [
         {
-          "name": "PK_tag",
+          "name": "PRIMARY",
           "tableName": "tag",
           "columns": [
             {
@@ -386,8 +386,8 @@
         {
           "name": "id",
           "type": {
-            "name": "uniqueidentifier",
-            "size": null,
+            "name": "char",
+            "size": 36,
             "precision": null,
             "scale": null,
             "properties": {}
@@ -400,7 +400,7 @@
         {
           "name": "username",
           "type": {
-            "name": "nvarchar",
+            "name": "varchar",
             "size": 255,
             "precision": null,
             "scale": null,
@@ -414,7 +414,7 @@
         {
           "name": "email",
           "type": {
-            "name": "nvarchar",
+            "name": "varchar",
             "size": 255,
             "precision": null,
             "scale": null,
@@ -428,7 +428,7 @@
         {
           "name": "password_hash",
           "type": {
-            "name": "nvarchar",
+            "name": "varchar",
             "size": 255,
             "precision": null,
             "scale": null,
@@ -441,7 +441,7 @@
         }
       ],
       "primaryKey": {
-        "name": "PK_user",
+        "name": "PRIMARY",
         "columns": [
           {
             "name": "id",
@@ -454,7 +454,7 @@
       "foreignKeys": [],
       "indexes": [
         {
-          "name": "PK_user",
+          "name": "PRIMARY",
           "tableName": "user",
           "columns": [
             {
@@ -501,8 +501,8 @@
         {
           "name": "id",
           "type": {
-            "name": "uniqueidentifier",
-            "size": null,
+            "name": "char",
+            "size": 36,
             "precision": null,
             "scale": null,
             "properties": {}
@@ -515,8 +515,8 @@
         {
           "name": "type_id",
           "type": {
-            "name": "uniqueidentifier",
-            "size": null,
+            "name": "char",
+            "size": 36,
             "precision": null,
             "scale": null,
             "properties": {}
@@ -529,7 +529,7 @@
         {
           "name": "code",
           "type": {
-            "name": "nvarchar",
+            "name": "varchar",
             "size": 255,
             "precision": null,
             "scale": null,
@@ -543,7 +543,7 @@
         {
           "name": "name",
           "type": {
-            "name": "nvarchar",
+            "name": "varchar",
             "size": 255,
             "precision": null,
             "scale": null,
@@ -570,7 +570,7 @@
         }
       ],
       "primaryKey": {
-        "name": "PK_fragmentSubType",
+        "name": "PRIMARY",
         "columns": [
           {
             "name": "id",
@@ -595,7 +595,7 @@
       ],
       "indexes": [
         {
-          "name": "PK_fragmentSubType",
+          "name": "PRIMARY",
           "tableName": "fragment_sub_type",
           "columns": [
             {
@@ -634,8 +634,8 @@
         {
           "name": "id",
           "type": {
-            "name": "uniqueidentifier",
-            "size": null,
+            "name": "char",
+            "size": 36,
             "precision": null,
             "scale": null,
             "properties": {}
@@ -648,8 +648,8 @@
         {
           "name": "note_id",
           "type": {
-            "name": "uniqueidentifier",
-            "size": null,
+            "name": "char",
+            "size": 36,
             "precision": null,
             "scale": null,
             "properties": {}
@@ -662,8 +662,8 @@
         {
           "name": "tag_id",
           "type": {
-            "name": "uniqueidentifier",
-            "size": null,
+            "name": "char",
+            "size": 36,
             "precision": null,
             "scale": null,
             "properties": {}
@@ -675,7 +675,7 @@
         }
       ],
       "primaryKey": {
-        "name": "PK_noteTag",
+        "name": "PRIMARY",
         "columns": [
           {
             "name": "id",
@@ -711,7 +711,33 @@
       ],
       "indexes": [
         {
-          "name": "PK_noteTag",
+          "name": "FK_noteTag_note",
+          "tableName": "note_tag",
+          "columns": [
+            {
+              "name": "note_id",
+              "sortDirection": "ascending",
+              "properties": {}
+            }
+          ],
+          "isUnique": false,
+          "properties": {}
+        },
+        {
+          "name": "FK_noteTag_tag",
+          "tableName": "note_tag",
+          "columns": [
+            {
+              "name": "tag_id",
+              "sortDirection": "ascending",
+              "properties": {}
+            }
+          ],
+          "isUnique": false,
+          "properties": {}
+        },
+        {
+          "name": "PRIMARY",
           "tableName": "note_tag",
           "columns": [
             {
@@ -732,8 +758,8 @@
         {
           "name": "id",
           "type": {
-            "name": "uniqueidentifier",
-            "size": null,
+            "name": "char",
+            "size": 36,
             "precision": null,
             "scale": null,
             "properties": {}
@@ -746,8 +772,8 @@
         {
           "name": "note_id",
           "type": {
-            "name": "uniqueidentifier",
-            "size": null,
+            "name": "char",
+            "size": 36,
             "precision": null,
             "scale": null,
             "properties": {}
@@ -760,8 +786,8 @@
         {
           "name": "language_id",
           "type": {
-            "name": "uniqueidentifier",
-            "size": null,
+            "name": "char",
+            "size": 36,
             "precision": null,
             "scale": null,
             "properties": {}
@@ -802,7 +828,7 @@
         {
           "name": "title",
           "type": {
-            "name": "nvarchar",
+            "name": "varchar",
             "size": 255,
             "precision": null,
             "scale": null,
@@ -829,7 +855,7 @@
         }
       ],
       "primaryKey": {
-        "name": "PK_noteTranslation",
+        "name": "PRIMARY",
         "columns": [
           {
             "name": "id",
@@ -865,6 +891,19 @@
       ],
       "indexes": [
         {
+          "name": "FK_noteTranslation_language",
+          "tableName": "note_translation",
+          "columns": [
+            {
+              "name": "language_id",
+              "sortDirection": "ascending",
+              "properties": {}
+            }
+          ],
+          "isUnique": false,
+          "properties": {}
+        },
+        {
           "name": "IX_note_noteId",
           "tableName": "note_translation",
           "columns": [
@@ -878,7 +917,7 @@
           "properties": {}
         },
         {
-          "name": "PK_noteTranslation",
+          "name": "PRIMARY",
           "tableName": "note_translation",
           "columns": [
             {
@@ -899,8 +938,8 @@
         {
           "name": "id",
           "type": {
-            "name": "uniqueidentifier",
-            "size": null,
+            "name": "char",
+            "size": 36,
             "precision": null,
             "scale": null,
             "properties": {}
@@ -913,8 +952,8 @@
         {
           "name": "note_translation_id",
           "type": {
-            "name": "uniqueidentifier",
-            "size": null,
+            "name": "char",
+            "size": 36,
             "precision": null,
             "scale": null,
             "properties": {}
@@ -927,8 +966,8 @@
         {
           "name": "sub_type_id",
           "type": {
-            "name": "uniqueidentifier",
-            "size": null,
+            "name": "char",
+            "size": 36,
             "precision": null,
             "scale": null,
             "properties": {}
@@ -941,7 +980,7 @@
         {
           "name": "code",
           "type": {
-            "name": "nvarchar",
+            "name": "varchar",
             "size": 255,
             "precision": null,
             "scale": null,
@@ -969,7 +1008,7 @@
         {
           "name": "content",
           "type": {
-            "name": "ntext",
+            "name": "text",
             "size": null,
             "precision": null,
             "scale": null,
@@ -982,7 +1021,7 @@
         }
       ],
       "primaryKey": {
-        "name": "PK_fragment",
+        "name": "PRIMARY",
         "columns": [
           {
             "name": "id",
@@ -1018,7 +1057,20 @@
       ],
       "indexes": [
         {
-          "name": "PK_fragment",
+          "name": "FK_fragment_subType",
+          "tableName": "fragment",
+          "columns": [
+            {
+              "name": "sub_type_id",
+              "sortDirection": "ascending",
+              "properties": {}
+            }
+          ],
+          "isUnique": false,
+          "properties": {}
+        },
+        {
+          "name": "PRIMARY",
           "tableName": "fragment",
           "columns": [
             {

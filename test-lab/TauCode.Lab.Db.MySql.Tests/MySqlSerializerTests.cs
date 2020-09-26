@@ -5,6 +5,7 @@ using System.Linq;
 using TauCode.Db;
 using TauCode.Db.Data;
 using TauCode.Db.Model;
+using TauCode.Lab.Db.MySql.DbValueConverters;
 
 namespace TauCode.Lab.Db.MySql.Tests
 {
@@ -17,6 +18,19 @@ namespace TauCode.Lab.Db.MySql.Tests
         public void SetUp()
         {
             _dbSerializer = new MySqlSerializer(this.Connection);
+
+            var tableNames = this.DbInspector.GetTableNames();
+
+            foreach (var tableName in tableNames)
+            {
+                if (tableName == "foo")
+                {
+                    continue;
+                }
+
+                _dbSerializer.Cruder.GetTableValuesConverter(tableName).SetColumnConverter("id", new MySqlGuidConverter());
+            }
+
         }
 
         [Test]
@@ -59,6 +73,12 @@ namespace TauCode.Lab.Db.MySql.Tests
 
             // Assert
             var expectedJson = TestHelper.GetResourceText("rho.metadata-language.json");
+
+            if (expectedJson != json)
+            {
+                TestHelper.WriteDiff(json, expectedJson, @"c:\temp\0-opa", "json", "todo");
+            }
+
             Assert.That(json, Is.EqualTo(expectedJson));
         }
 

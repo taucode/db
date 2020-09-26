@@ -178,6 +178,11 @@ namespace TauCode.Db
                         DbType.String,
                         DbType.StringFixedLength))
                     {
+                        if (parameterInfo.Size.HasValue)
+                        {
+                            parameter.Size = parameterInfo.Size.Value;
+                        }
+
                         if (stringColumnValue.Length > parameter.Size && parameter.Size >= 0
                         ) // parameter.Size might be '-1', e.g. for type NVARCHAR(max)
                         {

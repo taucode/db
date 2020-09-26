@@ -51,10 +51,11 @@ namespace TauCode.Lab.Db.MySql
                 case "varbinary":
                     return new ByteArrayValueConverter();
 
-                case "float":
+                case "double":
                     return new DoubleValueConverter();
 
                 case "real":
+                case "float":
                     return new SingleValueConverter();
 
                 case "money":
@@ -91,9 +92,20 @@ namespace TauCode.Lab.Db.MySql
 
             switch (typeName)
             {
-                case "integer":
                 case "int":
                     dbType = DbType.Int32;
+                    break;
+
+                case "tinyint":
+                    dbType = DbType.SByte;
+                    break;
+
+                case "smallint":
+                    dbType = DbType.Int16;
+                    break;
+
+                case "bigint":
+                    dbType = DbType.Int64;
                     break;
 
                 case "char":
@@ -102,9 +114,36 @@ namespace TauCode.Lab.Db.MySql
                     size = columnType.Size;
                     break;
 
+                case "text":
+                    dbType = DbType.String;
+                    size = -1;
+                    break;
+
                 case "uuid":
                     dbType = DbType.Guid;
                     break;
+
+                case "datetime":
+                    dbType = DbType.DateTime;
+                    break;
+
+                case "float":
+                    dbType = DbType.Single;
+                    break;
+
+                case "double":
+                    dbType = DbType.Double;
+                    break;
+
+                case "decimal":
+                    dbType = DbType.Decimal;
+                    break;
+
+                case "varbinary":
+                    dbType = DbType.SByte;
+                    size = columnType.Size;
+                    break;
+
 
                 default:
                     throw new NotImplementedException();

@@ -1,10 +1,10 @@
 ﻿/* user: ak */
-INSERT INTO [user](
-	[id],
-	[name],
-	[birthday],
-	[gender],
-	[picture]
+INSERT INTO `user`(
+	`id`,
+	`name`,
+	`birthday`,
+	`gender`,
+	`picture`
 )
 VALUES(
 	'115777dc-2394-4e14-a587-11afde55588e',
@@ -15,24 +15,24 @@ VALUES(
 )
 
 /* user info: ak */
-INSERT INTO [user_info](
-	[id],
-	[user_id],
-	[tax_number],
-	[code],
-	[ansi_name],
-	[ansi_description],
-	[unicode_description],
-	[height],
-	[weight],
-	[weight2],
-	[salary],
-	[rating_decimal],
-	[rating_numeric],
-	[num8],
-	[num16],
-	[num32],
-	[num64])
+INSERT INTO `user_info`(
+	`id`,
+	`user_id`,
+	`tax_number`,
+	`code`,
+	`ansi_name`,
+	`ansi_description`,
+	`unicode_description`,
+	`height`,
+	`weight`,
+	`weight2`,
+	`salary`,
+	`rating_decimal`,
+	`rating_numeric`,
+	`num8`,
+	`num16`,
+	`num32`,
+	`num64`)
 VALUES(
 	'118833be-1ac7-4161-90d5-11eaa22d1609',
 	'115777dc-2394-4e14-a587-11afde55588e',
@@ -54,12 +54,12 @@ VALUES(
 )
 
 /* user: deserea */
-INSERT INTO [user](
-	[id],
-	[name],
-	[birthday],
-	[gender],
-	[picture]
+INSERT INTO `user`(
+	`id`,
+	`name`,
+	`birthday`,
+	`gender`,
+	`picture`
 )
 VALUES(
 	'223803c1-0d8e-4425-b092-2214b081315d',
@@ -70,24 +70,24 @@ VALUES(
 )
 
 /* user info: deserea */
-INSERT INTO [user_info](
-	[id],
-	[user_id],
-	[tax_number],
-	[code],
-	[ansi_name],
-	[ansi_description],
-	[unicode_description],
-	[height],
-	[weight],
-	[weight2],
-	[salary],
-	[rating_decimal],
-	[rating_numeric],
-	[num8],
-	[num16],
-	[num32],
-	[num64])
+INSERT INTO `user_info`(
+	`id`,
+	`user_id`,
+	`tax_number`,
+	`code`,
+	`ansi_name`,
+	`ansi_description`,
+	`unicode_description`,
+	`height`,
+	`weight`,
+	`weight2`,
+	`salary`,
+	`rating_decimal`,
+	`rating_numeric`,
+	`num8`,
+	`num16`,
+	`num32`,
+	`num64`)
 VALUES(
 	'22b0809b-26a0-4962-87b0-2244e5a3265d',
 	'223803c1-0d8e-4425-b092-2214b081315d',
@@ -109,12 +109,12 @@ VALUES(
 )
 
 /* user: ira */
-INSERT INTO [user](
-	[id],
-	[name],
-	[birthday],
-	[gender],
-	[picture]
+INSERT INTO `user`(
+	`id`,
+	`name`,
+	`birthday`,
+	`gender`,
+	`picture`
 )
 VALUES(
 	'33f48549-075f-4d53-9548-334393d0c534',
@@ -125,24 +125,24 @@ VALUES(
 )
 
 /* user info: ira */
-INSERT INTO [user_info](
-	[id],
-	[user_id],
-	[tax_number],
-	[code],
-	[ansi_name],
-	[ansi_description],
-	[unicode_description],
-	[height],
-	[weight],
-	[weight2],
-	[salary],
-	[rating_decimal],
-	[rating_numeric],
-	[num8],
-	[num16],
-	[num32],
-	[num64])
+INSERT INTO `user_info`(
+	`id`,
+	`user_id`,
+	`tax_number`,
+	`code`,
+	`ansi_name`,
+	`ansi_description`,
+	`unicode_description`,
+	`height`,
+	`weight`,
+	`weight2`,
+	`salary`,
+	`rating_decimal`,
+	`rating_numeric`,
+	`num8`,
+	`num16`,
+	`num32`,
+	`num64`)
 VALUES(
 	'3367f329-e1cc-4d16-b00d-3347117fa260',
 	'33f48549-075f-4d53-9548-334393d0c534',
@@ -164,12 +164,12 @@ VALUES(
 )
 
 /* user: marina */
-INSERT INTO [user](
-	[id],
-	[name],
-	[birthday],
-	[gender],
-	[picture]
+INSERT INTO `user`(
+	`id`,
+	`name`,
+	`birthday`,
+	`gender`,
+	`picture`
 )
 VALUES(
 	'44725a6c-8a63-40fe-9980-449a6a6be60a',
@@ -180,24 +180,24 @@ VALUES(
 )
 
 /* user info: marina */
-INSERT INTO [user_info](
-	[id],
-	[user_id],
-	[tax_number],
-	[code],
-	[ansi_name],
-	[ansi_description],
-	[unicode_description],
-	[height],
-	[weight],
-	[weight2],
-	[salary],
-	[rating_decimal],
-	[rating_numeric],
-	[num8],
-	[num16],
-	[num32],
-	[num64])
+INSERT INTO `user_info`(
+	`id`,
+	`user_id`,
+	`tax_number`,
+	`code`,
+	`ansi_name`,
+	`ansi_description`,
+	`unicode_description`,
+	`height`,
+	`weight`,
+	`weight2`,
+	`salary`,
+	`rating_decimal`,
+	`rating_numeric`,
+	`num8`,
+	`num16`,
+	`num32`,
+	`num64`)
 VALUES(
 	'44509dc7-dcf3-4e1f-96cc-44e702a4f3b2',
 	'44725a6c-8a63-40fe-9980-449a6a6be60a',
@@ -219,12 +219,12 @@ VALUES(
 )
 
 /* user: olia */
-INSERT INTO [user](
-	[id],
-	[name],
-	[birthday],
-	[gender],
-	[picture]
+INSERT INTO `user`(
+	`id`,
+	`name`,
+	`birthday`,
+	`gender`,
+	`picture`
 )
 VALUES(
 	'5525fb3b-7700-459c-aa39-55a78d1ff584',
@@ -235,24 +235,24 @@ VALUES(
 )
 
 /* user info: olia */
-INSERT INTO [user_info](
-	[id],
-	[user_id],
-	[tax_number],
-	[code],
-	[ansi_name],
-	[ansi_description],
-	[unicode_description],
-	[height],
-	[weight],
-	[weight2],
-	[salary],
-	[rating_decimal],
-	[rating_numeric],
-	[num8],
-	[num16],
-	[num32],
-	[num64])
+INSERT INTO `user_info`(
+	`id`,
+	`user_id`,
+	`tax_number`,
+	`code`,
+	`ansi_name`,
+	`ansi_description`,
+	`unicode_description`,
+	`height`,
+	`weight`,
+	`weight2`,
+	`salary`,
+	`rating_decimal`,
+	`rating_numeric`,
+	`num8`,
+	`num16`,
+	`num32`,
+	`num64`)
 VALUES(
 	'55581fca-2baa-4808-b2f9-55feb45a5a9d',
 	'5525fb3b-7700-459c-aa39-55a78d1ff584',

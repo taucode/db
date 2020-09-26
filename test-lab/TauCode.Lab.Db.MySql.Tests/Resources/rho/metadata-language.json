@@ -4,8 +4,8 @@
     {
       "name": "id",
       "type": {
-        "name": "uniqueidentifier",
-        "size": null,
+        "name": "char",
+        "size": 36,
         "precision": null,
         "scale": null,
         "properties": {}
@@ -18,7 +18,7 @@
     {
       "name": "code",
       "type": {
-        "name": "nvarchar",
+        "name": "varchar",
         "size": 2,
         "precision": null,
         "scale": null,
@@ -32,7 +32,7 @@
     {
       "name": "name",
       "type": {
-        "name": "nvarchar",
+        "name": "varchar",
         "size": 255,
         "precision": null,
         "scale": null,
@@ -45,7 +45,7 @@
     }
   ],
   "primaryKey": {
-    "name": "PK_language",
+    "name": "PRIMARY",
     "columns": [
       {
         "name": "id",
@@ -58,7 +58,7 @@
   "foreignKeys": [],
   "indexes": [
     {
-      "name": "PK_language",
+      "name": "PRIMARY",
       "tableName": "language",
       "columns": [
         {
