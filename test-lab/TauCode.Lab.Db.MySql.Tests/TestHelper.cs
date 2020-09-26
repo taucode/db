@@ -12,7 +12,7 @@ namespace TauCode.Lab.Db.MySql.Tests
         internal const string NonExistingGuidString = "eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee";
         internal static readonly Guid NonExistingGuid = new Guid(NonExistingGuidString);
 
-        internal const string ConnectionString = @"Server=.\mssqltest;Database=rho.test;Trusted_Connection=True;";
+        internal const string ConnectionString = @"Server=localhost;Database=my_tests;Uid=root;Pwd=1234;";
 
         internal static void WriteDiff(string actual, string expected, string directory, string fileExtension, string reminder)
         {

@@ -10,7 +10,7 @@ namespace TauCode.Lab.Db.Npgsql
         public static PrimaryKeyMold LoadPrimaryKey(IDbConnection connection, string schema, string tableName)
         {
             // todo check args
-            // todo: schema not used
+            // todo: schema not used!
 
             using var command = connection.CreateCommand();
 

@@ -7,6 +7,9 @@ namespace TauCode.Lab.Db.MySql
 {
     public static class MySqlTools
     {
+        internal const string TableTypeForTable = "BASE TABLE";
+
+        // todo: consider delete; it is form pgsql
         public static PrimaryKeyMold LoadPrimaryKey(IDbConnection connection, string schema, string tableName)
         {
             // todo check args
@@ -57,6 +60,15 @@ ORDER BY
             };
 
             return pk;
+        }
+
+        internal static string GetDatabaseName(this IDbConnection connection)
+        {
+            using var command = connection.CreateCommand();
+            command.CommandText = "SELECT DATABASE() FROM DUAL;";
+
+            var name = (string)command.ExecuteScalar();
+            return name;
         }
     }
 }

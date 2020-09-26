@@ -151,53 +151,89 @@ ORDER BY
             };
 
             return column;
-
-
-            //var column = new ColumnMold
-            //{
-            //    Name = columnInfo.Name,
-            //    Type = this.Factory.GetDialect().ResolveType(
-            //        columnInfo.TypeName,
-            //        columnInfo.Size,
-            //        columnInfo.Precision,
-            //        columnInfo.Scale),
-            //    IsNullable = columnInfo.IsNullable,
-            //};
-
-            //return column;
         }
 
         protected override Dictionary<string, ColumnIdentityMold> GetIdentities()
         {
-            //var objectId = this.GetTableObjectId();
+            var dbName = this.Connection.GetDatabaseName();
 
             using var command = this.Connection.CreateCommand();
+
+            // find out if table supports auto_increment
+
             command.CommandText =
 @"
-SELECT 
-    S.column_name           ColumnName, 
-    S.is_identity           IsIdentity,
-    S.identity_start        SeedValue,
-    S.identity_increment    IncrementValue
-FROM 
-    information_schema.columns S
-WHERE 
-    S.table_name = @p_tableName AND
-    S.is_identity = 'YES'
+SELECT
+    T.auto_increment    AutoIncrement
+FROM
+    information_schema.tables T
+WHERE
+    T.table_name = @p_tableName
+    AND
+    T.table_type = @p_tableType
+    AND
+    T.table_schema = @p_dbName
 ";
             command.AddParameterWithValue("p_tableName", this.TableName);
+            command.AddParameterWithValue("p_tableType", MySqlTools.TableTypeForTable);
+            command.AddParameterWithValue("p_dbName", dbName);
 
+            var rows = DbTools.GetCommandRows(command);
+
+            int? autoIncrement = (int?)rows.Single().AutoIncrement;
+
+            if (autoIncrement.HasValue)
+            {
+                command.Parameters.Clear();
+
+                command.CommandText = @"
+SELECT 
+    S.column_name ColumnName
+FROM 
+    information_schema.columns S
+WHERE
+    S.table_schema = @p_dbName
+    AND
+    S.table_name = @p_tableName
+    AND
+    S.extra like '%auto_increment%'
+";
+
+                command.AddParameterWithValue("p_dbName", dbName);
+                command.AddParameterWithValue("p_tableName", this.TableName);
+
+                var rows2 = DbTools.GetCommandRows(command);
+                var columnName = (string)rows2.Single().ColumnName;
+
+                return new Dictionary<string, ColumnIdentityMold>
+                {
+                    {
+                        columnName,
+                        new ColumnIdentityMold
+                        {
+                            Seed = autoIncrement.Value.ToString(),
+                            Increment = (1).ToString(),
+                        }
+                    },
+                };
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+
+            // todo clean below
             //command.AddParameterWithValue("p_objectId", objectId);
 
-            return DbTools
-                .GetCommandRows(command)
-                .ToDictionary(
-                    x => (string)x.Name,
-                    x => new ColumnIdentityMold
-                    {
-                        Seed = ((object)x.SeedValue).ToString(),
-                        Increment = ((object)x.IncrementValue).ToString(),
-                    });
+            //return DbTools
+            //    .GetCommandRows(command)
+            //    .ToDictionary(
+            //        x => (string)x.Name,
+            //        x => new ColumnIdentityMold
+            //        {
+            //            Seed = ((object)x.SeedValue).ToString(),
+            //            Increment = ((object)x.IncrementValue).ToString(),
+            //        });
         }
 
         public override PrimaryKeyMold GetPrimaryKey()

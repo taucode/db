@@ -9,7 +9,7 @@ namespace TauCode.Lab.Db.MySql
     {
         #region Constants
 
-        private const string TableTypeForTable = "BASE TABLE";
+        
 
         #endregion
 
@@ -26,20 +26,23 @@ namespace TauCode.Lab.Db.MySql
 
         protected override IReadOnlyList<string> GetTableNamesImpl(string schema)
         {
+            var dbName = this.Connection.GetDatabaseName();
+
             using var command = this.Connection.CreateCommand();
             var sql =
-                $@"
+                @"
 SELECT
     T.table_name TableName
 FROM
     information_schema.tables T
 WHERE
-    T.table_type = @p_tableType AND
-    T.table_schema = @p_schema
+    T.table_type = @p_tableType
+    AND
+    T.table_schema = @p_dbName;
 ";
 
-            command.AddParameterWithValue("p_tableType", TableTypeForTable);
-            command.AddParameterWithValue("p_schema", this.Schema);
+            command.AddParameterWithValue("p_tableType", MySqlTools.TableTypeForTable);
+            command.AddParameterWithValue("p_dbName", dbName);
 
             command.CommandText = sql;
 
