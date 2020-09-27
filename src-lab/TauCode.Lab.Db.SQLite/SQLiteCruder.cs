@@ -1,10 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
+using System.Data.SQLite;
 using TauCode.Db;
 using TauCode.Db.DbValueConverters;
 using TauCode.Db.Model;
 
+// todo clean up
 namespace TauCode.Lab.Db.SQLite
 {
     public class SQLiteCruder : DbCruderBase
@@ -49,46 +50,79 @@ namespace TauCode.Lab.Db.SQLite
             }
         }
 
-        protected override IDbParameterInfo ColumnToParameterInfo(
-            string columnName,
-            DbTypeMold columnType,
-            IReadOnlyDictionary<string, string> parameterNameMappings)
+        protected override IDbDataParameter CreateParameter(string tableName, ColumnMold column, string parameterName)
         {
-            DbType dbType;
-            int? size = null;
-            int? precision = null;
-            int? scale = null;
-            var parameterName = parameterNameMappings[columnName];
-
-            var typeName = columnType.Name.ToLowerInvariant();
+            var typeName = column.Type.Name.ToLowerInvariant();
 
             switch (typeName)
             {
                 case "uniqueidentifier":
-                    dbType = DbType.AnsiStringFixedLength;
-                    size = GuidRepresentationLength;
-                    break;
+                    return new SQLiteParameter(parameterName, DbType.AnsiStringFixedLength, GuidRepresentationLength);
 
                 case "text":
-                    dbType = DbType.String;
-                    size = -1;
-                    break;
+                    return new SQLiteParameter(parameterName, DbType.String, -1);
+
+                case "datetime":
+                    return new SQLiteParameter(parameterName, DbType.DateTime);
 
                 case "integer":
-                    dbType = DbType.Int64;
-                    break;
+                    return new SQLiteParameter(parameterName, DbType.Int64);
+
+                case "numeric":
+                    return new SQLiteParameter(parameterName, DbType.Decimal);
+
+                case "real":
+                    return new SQLiteParameter(parameterName, DbType.Double);
 
                 case "blob":
-                    dbType = DbType.Binary;
-                    size = -1;
-                    break;
+                    return new SQLiteParameter(parameterName, DbType.Binary, -1);
 
                 default:
-                    return base.ColumnToParameterInfo(columnName, columnType, parameterNameMappings);
+                    throw new NotImplementedException();
             }
-
-            IDbParameterInfo parameterInfo = new DbParameterInfo(parameterName, dbType, size, precision, scale);
-            return parameterInfo;
         }
+
+
+        //protected override IDbParameterInfo ColumnToParameterInfo(
+        //    string columnName,
+        //    DbTypeMold columnType,
+        //    IReadOnlyDictionary<string, string> parameterNameMappings)
+        //{
+        //    DbType dbType;
+        //    int? size = null;
+        //    int? precision = null;
+        //    int? scale = null;
+        //    var parameterName = parameterNameMappings[columnName];
+
+        //    var typeName = columnType.Name.ToLowerInvariant();
+
+        //    switch (typeName)
+        //    {
+        //        case "uniqueidentifier":
+        //            dbType = DbType.AnsiStringFixedLength;
+        //            size = GuidRepresentationLength;
+        //            break;
+
+        //        case "text":
+        //            dbType = DbType.String;
+        //            size = -1;
+        //            break;
+
+        //        case "integer":
+        //            dbType = DbType.Int64;
+        //            break;
+
+        //        case "blob":
+        //            dbType = DbType.Binary;
+        //            size = -1;
+        //            break;
+
+        //        default:
+        //            return base.ColumnToParameterInfo(columnName, columnType, parameterNameMappings);
+        //    }
+
+        //    IDbParameterInfo parameterInfo = new DbParameterInfo(parameterName, dbType, size, precision, scale);
+        //    return parameterInfo;
+        //}
     }
 }

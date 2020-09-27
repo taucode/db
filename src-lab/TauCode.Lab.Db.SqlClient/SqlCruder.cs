@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.Data.SqlClient;
+using System;
 using System.Data;
 using TauCode.Db;
 using TauCode.Db.DbValueConverters;
 using TauCode.Db.Model;
 
+// todo clean up
 namespace TauCode.Lab.Db.SqlClient
 {
     public class SqlCruder : DbCruderBase
@@ -78,39 +79,103 @@ namespace TauCode.Lab.Db.SqlClient
             }
         }
 
-        protected override IDbParameterInfo ColumnToParameterInfo(
-            string columnName,
-            DbTypeMold columnType,
-            IReadOnlyDictionary<string, string> parameterNameMappings)
+        protected override IDbDataParameter CreateParameter(string tableName, ColumnMold column, string parameterName)
         {
-            var result = base.ColumnToParameterInfo(columnName, columnType, parameterNameMappings);
+            SqlParameter parameter;
 
-            if (result == null)
+            switch (column.Type.Name)
             {
-                DbType dbType;
-                int? size = null;
-                int? precision = null;
-                int? scale = null;
-                var parameterName = parameterNameMappings[columnName];
+                case "uniqueidentifier":
+                    return new SqlParameter(parameterName, SqlDbType.UniqueIdentifier);
 
-                var typeName = columnType.Name.ToLowerInvariant();
+                case "int":
+                    return new SqlParameter(parameterName, SqlDbType.Int);
 
-                switch (typeName)
-                {
-                    case "money":
-                        dbType = DbType.Currency;
-                        precision = MoneyTypePrecision;
-                        scale = MoneyTypeScale;
-                        break;
+                case "tinyint":
+                    return new SqlParameter(parameterName, SqlDbType.TinyInt);
 
-                    default:
-                        return null;
-                }
+                case "smallint":
+                    return new SqlParameter(parameterName, SqlDbType.SmallInt);
 
-                result = new DbParameterInfo(parameterName, dbType, size, precision, scale);
+                case "bigint":
+                    return new SqlParameter(parameterName, SqlDbType.BigInt);
+
+                case "float":
+                    return new SqlParameter(parameterName, SqlDbType.Float);
+
+                case "real":
+                    return new SqlParameter(parameterName, SqlDbType.Real);
+
+                case "money":
+                    return new SqlParameter(parameterName, SqlDbType.Money);
+
+                case "decimal":
+                case "numeric":
+                    parameter = new SqlParameter(parameterName, SqlDbType.Decimal);
+                    parameter.Scale = (byte)(column.Type.Scale ?? 0);
+                    parameter.Precision = (byte)(column.Type.Precision ?? 0);
+                    return parameter;
+
+                case "nchar":
+                    return new SqlParameter(parameterName, SqlDbType.NChar, column.Type.Size ?? 0);
+
+                case "nvarchar":
+                    return new SqlParameter(parameterName, SqlDbType.NVarChar, column.Type.Size ?? 0);
+
+                case "char":
+                    return new SqlParameter(parameterName, SqlDbType.Char, column.Type.Size ?? 0);
+
+                case "varchar":
+                    return new SqlParameter(parameterName, SqlDbType.VarChar, column.Type.Size ?? 0);
+
+                case "datetime":
+                    return new SqlParameter(parameterName, SqlDbType.DateTime);
+
+                case "bit":
+                    return new SqlParameter(parameterName, SqlDbType.Bit);
+
+                case "varbinary":
+                    return new SqlParameter(parameterName, SqlDbType.VarBinary, column.Type.Size ?? -1);
+
+                default:
+                    throw new NotImplementedException();
             }
-
-            return result;
         }
+
+
+        //protected override IDbParameterInfo ColumnToParameterInfo(
+        //    string columnName,
+        //    DbTypeMold columnType,
+        //    IReadOnlyDictionary<string, string> parameterNameMappings)
+        //{
+        //    var result = base.ColumnToParameterInfo(columnName, columnType, parameterNameMappings);
+
+        //    if (result == null)
+        //    {
+        //        DbType dbType;
+        //        int? size = null;
+        //        int? precision = null;
+        //        int? scale = null;
+        //        var parameterName = parameterNameMappings[columnName];
+
+        //        var typeName = columnType.Name.ToLowerInvariant();
+
+        //        switch (typeName)
+        //        {
+        //            case "money":
+        //                dbType = DbType.Currency;
+        //                precision = MoneyTypePrecision;
+        //                scale = MoneyTypeScale;
+        //                break;
+
+        //            default:
+        //                return null;
+        //        }
+
+        //        result = new DbParameterInfo(parameterName, dbType, size, precision, scale);
+        //    }
+
+        //    return result;
+        //}
     }
 }

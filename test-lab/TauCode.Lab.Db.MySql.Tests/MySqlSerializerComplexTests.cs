@@ -18,10 +18,11 @@ namespace TauCode.Lab.Db.MySql.Tests
             _dbSerializer = new MySqlSerializer(this.Connection);
 
             _dbSerializer.Cruder.GetTableValuesConverter("user").SetColumnConverter("gender", new MySqlBooleanConverter());
-            _dbSerializer.Cruder.GetTableValuesConverter("user").SetColumnConverter("picture", new MySqlBinaryConverter());
-
             
             _dbSerializer.Cruder.GetTableValuesConverter("user").SetColumnConverter("id", new MySqlGuidConverter());
+
+            _dbSerializer.Cruder.GetTableValuesConverter("user_info").SetColumnConverter("id", new MySqlGuidConverter());
+            _dbSerializer.Cruder.GetTableValuesConverter("user_info").SetColumnConverter("user_id", new MySqlGuidConverter());
         }
 
         [Test]
@@ -37,6 +38,11 @@ namespace TauCode.Lab.Db.MySql.Tests
             // Assert
             var expectedJson = this.GetType().Assembly.GetResourceText("ocean.data-db.json", true);
 
+            if (json != expectedJson)
+            {
+                TestHelper.WriteDiff(json, expectedJson, @"C:\temp\0-opa", "json", "todo");
+            }
+
             Assert.That(json, Is.EqualTo(expectedJson));
         }
 
@@ -50,7 +56,6 @@ namespace TauCode.Lab.Db.MySql.Tests
             _dbSerializer.DeserializeDbData(json);
 
             // Assert
-            //var cruder = this.DbInspector.Factory.CreateCruder(this.Connection, null);
             var users = _dbSerializer.Cruder.GetAllRows("user");
             var userInfos = _dbSerializer.Cruder.GetAllRows("user_info");
 
@@ -64,14 +69,14 @@ namespace TauCode.Lab.Db.MySql.Tests
 
             var userInfo = userInfos.Single(x => x.user_id == id);
             Assert.That(userInfo.id, Is.EqualTo(new Guid("118833be-1ac7-4161-90d5-11eaa22d1609")));
-            Assert.That(userInfo.tax_number, Is.EqualTo("TXNM-111  "));
-            Assert.That(userInfo.code, Is.EqualTo("COD-Андрей          "));
+            Assert.That(userInfo.tax_number, Is.EqualTo("TXNM-111"));
+            Assert.That(userInfo.code, Is.EqualTo("COD-Андрей"));
             Assert.That(userInfo.ansi_name, Is.EqualTo("ANSI NAME Andrey"));
             Assert.That(userInfo.ansi_description, Is.EqualTo("ANSI DESCR Andrey Kovalenko"));
             Assert.That(userInfo.unicode_description, Is.EqualTo("UNICODE Андрей Коваленко"));
-            Assert.That(userInfo.height, Is.EqualTo(1.79));
+            Assert.That(userInfo.height, Is.EqualTo(1.79).Within(0.00001));
             Assert.That(userInfo.weight, Is.EqualTo(68.9));
-            Assert.That(userInfo.weight2, Is.EqualTo(92.1f));
+            Assert.That(userInfo.weight2, Is.EqualTo(92.1f).Within(0.00001));
             Assert.That(userInfo.salary, Is.EqualTo(6000.3m));
             Assert.That(userInfo.rating_decimal, Is.EqualTo(19.5m));
             Assert.That(userInfo.rating_numeric, Is.EqualTo(7.67717m));
@@ -90,14 +95,14 @@ namespace TauCode.Lab.Db.MySql.Tests
 
             userInfo = userInfos.Single(x => x.user_id == id);
             Assert.That(userInfo.id, Is.EqualTo(new Guid("22b0809b-26a0-4962-87b0-2244e5a3265d")));
-            Assert.That(userInfo.tax_number, Is.EqualTo("TXNM-222  "));
-            Assert.That(userInfo.code, Is.EqualTo("COD-Десер           "));
+            Assert.That(userInfo.tax_number, Is.EqualTo("TXNM-222"));
+            Assert.That(userInfo.code, Is.EqualTo("COD-Десер"));
             Assert.That(userInfo.ansi_name, Is.EqualTo("ANSI NAME Deserea"));
             Assert.That(userInfo.ansi_description, Is.EqualTo("ANSI DESCR Deserea Goddess"));
             Assert.That(userInfo.unicode_description, Is.EqualTo("UNICODE Десереа Богиня"));
-            Assert.That(userInfo.height, Is.EqualTo(1.81));
+            Assert.That(userInfo.height, Is.EqualTo(1.81).Within(0.00001));
             Assert.That(userInfo.weight, Is.EqualTo(69.1));
-            Assert.That(userInfo.weight2, Is.EqualTo(69.1f));
+            Assert.That(userInfo.weight2, Is.EqualTo(69.1f).Within(0.00001));
             Assert.That(userInfo.salary, Is.EqualTo(2000.1m));
             Assert.That(userInfo.rating_decimal, Is.EqualTo(29.5m));
             Assert.That(userInfo.rating_numeric, Is.EqualTo(2.67717m));
@@ -116,14 +121,14 @@ namespace TauCode.Lab.Db.MySql.Tests
 
             userInfo = userInfos.Single(x => x.user_id == id);
             Assert.That(userInfo.id, Is.EqualTo(new Guid("3367f329-e1cc-4d16-b00d-3347117fa260")));
-            Assert.That(userInfo.tax_number, Is.EqualTo("TXNM-333  "));
-            Assert.That(userInfo.code, Is.EqualTo("COD-Ира             "));
+            Assert.That(userInfo.tax_number, Is.EqualTo("TXNM-333"));
+            Assert.That(userInfo.code, Is.EqualTo("COD-Ира"));
             Assert.That(userInfo.ansi_name, Is.EqualTo("ANSI NAME Ira"));
             Assert.That(userInfo.ansi_description, Is.EqualTo("ANSI DESCR Ira Triad"));
             Assert.That(userInfo.unicode_description, Is.EqualTo("UNICODE Ира Триад"));
-            Assert.That(userInfo.height, Is.EqualTo(1.68));
+            Assert.That(userInfo.height, Is.EqualTo(1.68).Within(0.00001));
             Assert.That(userInfo.weight, Is.EqualTo(59.1));
-            Assert.That(userInfo.weight2, Is.EqualTo(59.1f));
+            Assert.That(userInfo.weight2, Is.EqualTo(59.1f).Within(0.00001));
             Assert.That(userInfo.salary, Is.EqualTo(3000.3m));
             Assert.That(userInfo.rating_decimal, Is.EqualTo(39.5m));
             Assert.That(userInfo.rating_numeric, Is.EqualTo(3.67717m));
@@ -142,14 +147,14 @@ namespace TauCode.Lab.Db.MySql.Tests
 
             userInfo = userInfos.Single(x => x.user_id == id);
             Assert.That(userInfo.id, Is.EqualTo(new Guid("44509dc7-dcf3-4e1f-96cc-44e702a4f3b2")));
-            Assert.That(userInfo.tax_number, Is.EqualTo("TXNM-444  "));
-            Assert.That(userInfo.code, Is.EqualTo("COD-Мари            "));
+            Assert.That(userInfo.tax_number, Is.EqualTo("TXNM-444"));
+            Assert.That(userInfo.code, Is.EqualTo("COD-Мари"));
             Assert.That(userInfo.ansi_name, Is.EqualTo("ANSI NAME Marina"));
             Assert.That(userInfo.ansi_description, Is.EqualTo("ANSI DESCR Marina Shukina"));
             Assert.That(userInfo.unicode_description, Is.EqualTo("UNICODE Марина Щукина"));
-            Assert.That(userInfo.height, Is.EqualTo(1.58));
+            Assert.That(userInfo.height, Is.EqualTo(1.58).Within(0.00001));
             Assert.That(userInfo.weight, Is.EqualTo(57.1));
-            Assert.That(userInfo.weight2, Is.EqualTo(57.1f));
+            Assert.That(userInfo.weight2, Is.EqualTo(57.1f).Within(0.00001));
             Assert.That(userInfo.salary, Is.EqualTo(4000.3m));
             Assert.That(userInfo.rating_decimal, Is.EqualTo(49.5m));
             Assert.That(userInfo.rating_numeric, Is.EqualTo(4.67717m));
@@ -168,14 +173,14 @@ namespace TauCode.Lab.Db.MySql.Tests
 
             userInfo = userInfos.Single(x => x.user_id == id);
             Assert.That(userInfo.id, Is.EqualTo(new Guid("55581fca-2baa-4808-b2f9-55feb45a5a9d")));
-            Assert.That(userInfo.tax_number, Is.EqualTo("TXNM-555  "));
-            Assert.That(userInfo.code, Is.EqualTo("COD-Оля             "));
+            Assert.That(userInfo.tax_number, Is.EqualTo("TXNM-555"));
+            Assert.That(userInfo.code, Is.EqualTo("COD-Оля"));
             Assert.That(userInfo.ansi_name, Is.EqualTo("ANSI NAME Olia"));
             Assert.That(userInfo.ansi_description, Is.EqualTo("ANSI DESCR Olia Chernyshova"));
             Assert.That(userInfo.unicode_description, Is.EqualTo("UNICODE Оля Чернышева"));
-            Assert.That(userInfo.height, Is.EqualTo(1.69));
+            Assert.That(userInfo.height, Is.EqualTo(1.69).Within(0.00001));
             Assert.That(userInfo.weight, Is.EqualTo(53.1));
-            Assert.That(userInfo.weight2, Is.EqualTo(53.1f));
+            Assert.That(userInfo.weight2, Is.EqualTo(53.1f).Within(0.00001));
             Assert.That(userInfo.salary, Is.EqualTo(5000.3m));
             Assert.That(userInfo.rating_decimal, Is.EqualTo(59.5m));
             Assert.That(userInfo.rating_numeric, Is.EqualTo(5.67717m));
