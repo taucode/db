@@ -17,7 +17,7 @@ namespace TauCode.Db
             if (value == DBNull.Value)
             {
                 throw new ArgumentException(
-                    "Cannot convert 'DBNull.Value' to DB value. Should be 'null' instead of 'DBNull.Value'?");
+                    "Cannot convert 'DBNull.Value' to DB value. Should be 'null' instead of 'DBNull.Value'.");
             }
 
             return this.ToDbValueImpl(value);

@@ -1,0 +1,88 @@
+﻿{
+  "name": "language",
+  "columns": [
+    {
+      "name": "id",
+      "type": {
+        "name": "char",
+        "size": 36,
+        "precision": null,
+        "scale": null,
+        "properties": {}
+      },
+      "isNullable": false,
+      "identity": null,
+      "default": null,
+      "properties": {}
+    },
+    {
+      "name": "code",
+      "type": {
+        "name": "varchar",
+        "size": 2,
+        "precision": null,
+        "scale": null,
+        "properties": {}
+      },
+      "isNullable": false,
+      "identity": null,
+      "default": null,
+      "properties": {}
+    },
+    {
+      "name": "name",
+      "type": {
+        "name": "varchar",
+        "size": 255,
+        "precision": null,
+        "scale": null,
+        "properties": {}
+      },
+      "isNullable": false,
+      "identity": null,
+      "default": null,
+      "properties": {}
+    }
+  ],
+  "primaryKey": {
+    "name": "PRIMARY",
+    "columns": [
+      {
+        "name": "id",
+        "sortDirection": "ascending",
+        "properties": {}
+      }
+    ],
+    "properties": {}
+  },
+  "foreignKeys": [],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "tableName": "language",
+      "columns": [
+        {
+          "name": "id",
+          "sortDirection": "ascending",
+          "properties": {}
+        }
+      ],
+      "isUnique": true,
+      "properties": {}
+    },
+    {
+      "name": "UX_language_code",
+      "tableName": "language",
+      "columns": [
+        {
+          "name": "code",
+          "sortDirection": "ascending",
+          "properties": {}
+        }
+      ],
+      "isUnique": true,
+      "properties": {}
+    }
+  ],
+  "properties": {}
+}

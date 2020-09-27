@@ -1,7 +1,8 @@
 ﻿namespace TauCode.Db
 {
-    public interface IDbMigrator : IUtility
+    public interface IDbMigrator : IDbUtility
     {
+        string Schema { get; }
         void Migrate();
     }
 }
