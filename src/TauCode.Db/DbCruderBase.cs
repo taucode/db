@@ -98,11 +98,22 @@ namespace TauCode.Db
 
             private IReadOnlyDictionary<string, IDbDataParameter> BuildParametersByParameterNames()
             {
-                // todo: check parameter name
-                return _parameterNamesByColumnNames
-                    .ToDictionary(
-                        x => x.Value,
-                        x => _cruder.CreateParameter(_table.Name, _columnsByColumnName[x.Key], x.Value));
+                var result = new Dictionary<string, IDbDataParameter>();
+
+                foreach (var pair in _parameterNamesByColumnNames)
+                {
+                    var columnName = pair.Key;
+                    var parameterName = pair.Value;
+
+                    var column = _columnsByColumnName[columnName];
+
+                    var parameter = _cruder.CreateParameter(_table.Name, column);
+                    parameter.ParameterName = parameterName;
+
+                    result.Add(parameterName, parameter);
+                }
+
+                return result;
             }
 
             private void ApplyValuesToCommand(object values)
@@ -217,7 +228,7 @@ namespace TauCode.Db
 
         protected abstract IDbValueConverter CreateDbValueConverter(ColumnMold column);
 
-        protected abstract IDbDataParameter CreateParameter(string tableName, ColumnMold column, string parameterName);
+        protected abstract IDbDataParameter CreateParameter(string tableName, ColumnMold column);
 
         #endregion
 

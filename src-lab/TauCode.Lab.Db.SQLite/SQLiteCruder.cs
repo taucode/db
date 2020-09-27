@@ -49,8 +49,10 @@ namespace TauCode.Lab.Db.SQLite
             }
         }
 
-        protected override IDbDataParameter CreateParameter(string tableName, ColumnMold column, string parameterName)
+        protected override IDbDataParameter CreateParameter(string tableName, ColumnMold column)
         {
+            const string parameterName = "parameter_name_placeholder";
+
             var typeName = column.Type.Name.ToLowerInvariant();
 
             switch (typeName)

@@ -70,8 +70,10 @@ namespace TauCode.Lab.Db.MySql
             }
         }
 
-        protected override IDbDataParameter CreateParameter(string tableName, ColumnMold column, string parameterName)
+        protected override IDbDataParameter CreateParameter(string tableName, ColumnMold column)
         {
+            const string parameterName = "parameter_name_placeholder";
+
             switch (column.Type.Name)
             {
                 case "tinyint":
