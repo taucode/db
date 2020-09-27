@@ -53,7 +53,7 @@ namespace TauCode.Lab.Db.SQLite
 
             if (convertedType == null)
             {
-                throw new DbException($"Failed to convert type '{originType.Name}'.");
+                throw new TauDbException($"Failed to convert type '{originType.Name}'.");
             }
 
             return convertedType;

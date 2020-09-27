@@ -31,3 +31,7 @@ x   5. IDbInspector should check type (actually, type full name) of IDbConnectio
     1. Incorporate changes from TX.
     2. Support schemas.
     3. Get rid of type-names.txt. data-type-names.txt
+
+2020-09-27
+==========
+x   1. Get rid of 'own' DbException.

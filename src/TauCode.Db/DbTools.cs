@@ -4,6 +4,7 @@ using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Text.RegularExpressions;
 using TauCode.Algorithms.Graphs;
@@ -258,7 +259,7 @@ namespace TauCode.Db
 
         public static DbException CreateTableNotFoundException(string tableName)
         {
-            return new DbException($"Table '{tableName}' not found.");
+            return new TauDbException($"Table '{tableName}' not found.");
         }
 
         public static string FineSerializeToJson(object obj)

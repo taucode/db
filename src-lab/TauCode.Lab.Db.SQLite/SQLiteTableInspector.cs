@@ -52,7 +52,7 @@ WHERE
 
                 if (rows.Count > 1)
                 {
-                    throw new DbException($"Internal error: more than one metadata row returned.");
+                    throw new TauDbException($"Internal error: more than one metadata row returned.");
                 }
 
                 return rows
@@ -61,7 +61,7 @@ WHERE
             }
         }
 
-        private DbException UseGetTableMethodException() => new DbException($"Use '{nameof(GetTable)}' method instead.");
+        private TauDbException UseGetTableMethodException() => new TauDbException($"Use '{nameof(GetTable)}' method instead.");
 
         #endregion
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Linq;
 using TauCode.Data;
 using TauCode.Db.Data;
@@ -80,7 +81,7 @@ namespace TauCode.Db
 
                         if (column == null)
                         {
-                            throw new DbException($"Column not found: '{x}'.");
+                            throw new TauDbException($"Column not found: '{x}'.");
                         }
 
                         return column;
@@ -143,7 +144,7 @@ namespace TauCode.Db
 
                     if (columnValue == null)
                     {
-                        throw new DbException(
+                        throw new TauDbException(
                             $"Could not transform value '{originalColumnValue}' of type '{originalColumnValue.GetType().FullName}'. Table name is '{_table.Name}'. Column name is '{columnName}'.");
                     }
 
@@ -441,7 +442,7 @@ namespace TauCode.Db
             if (dataDictionary.Keys.Contains(table.GetPrimaryKeyColumn().Name,
                 StringComparer.InvariantCultureIgnoreCase))
             {
-                throw new DbException("Update object must not contain ID column.");
+                throw new TauDbException("Update object must not contain ID column.");
             }
 
             var columnNames = new List<string>(dataDictionary.Keys)

@@ -44,7 +44,7 @@ namespace TauCode.Db
 
                             if (jToken == null)
                             {
-                                throw new DbException($"Property '{z}' not found in JSON. Table '{tableMold.Name}', entry index '{xIndex}'.");
+                                throw new TauDbException($"Property '{z}' not found in JSON. Table '{tableMold.Name}', entry index '{xIndex}'.");
                             }
 
                             if (jToken is JValue jValue)
@@ -53,7 +53,7 @@ namespace TauCode.Db
                             }
                             else
                             {
-                                throw new DbException($"Property '{z}' is not a JValue. Table '{tableMold.Name}', entry index '{xIndex}'.");
+                                throw new TauDbException($"Property '{z}' is not a JValue. Table '{tableMold.Name}', entry index '{xIndex}'.");
                             }
                         }))
                 .ToList();
