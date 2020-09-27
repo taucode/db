@@ -28,14 +28,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{A6E95C07
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.Db.Tests", "test\TauCode.Db.Tests\TauCode.Db.Tests.csproj", "{CF45169C-5D87-4708-8DD2-C95BDCF13768}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src-lab", "src-lab", "{22440056-61EE-4758-9EF3-31C1FBE9C0F0}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.Lab.Db.MySql", "src-lab\TauCode.Lab.Db.MySql\TauCode.Lab.Db.MySql.csproj", "{EEF80F2F-5D6B-4A54-8F17-C54BF5E1296B}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test-lab", "test-lab", "{551637F2-D144-402B-A50E-D31B419C61CF}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.Lab.Db.MySql.Tests", "test-lab\TauCode.Lab.Db.MySql.Tests\TauCode.Lab.Db.MySql.Tests.csproj", "{B716A7F5-F310-4DEC-A4EE-46F853E104CA}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,14 +42,6 @@ Global
 		{CF45169C-5D87-4708-8DD2-C95BDCF13768}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF45169C-5D87-4708-8DD2-C95BDCF13768}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CF45169C-5D87-4708-8DD2-C95BDCF13768}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EEF80F2F-5D6B-4A54-8F17-C54BF5E1296B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EEF80F2F-5D6B-4A54-8F17-C54BF5E1296B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EEF80F2F-5D6B-4A54-8F17-C54BF5E1296B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EEF80F2F-5D6B-4A54-8F17-C54BF5E1296B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B716A7F5-F310-4DEC-A4EE-46F853E104CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B716A7F5-F310-4DEC-A4EE-46F853E104CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B716A7F5-F310-4DEC-A4EE-46F853E104CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B716A7F5-F310-4DEC-A4EE-46F853E104CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -65,8 +49,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{202DC44E-5880-4A3E-A265-CA5CEFD5E085} = {89412E0C-9F93-4FB0-ACB6-DC95174759A0}
 		{CF45169C-5D87-4708-8DD2-C95BDCF13768} = {EE8B33C7-90A5-4CCF-99D9-BC9CF029F312}
-		{EEF80F2F-5D6B-4A54-8F17-C54BF5E1296B} = {22440056-61EE-4758-9EF3-31C1FBE9C0F0}
-		{B716A7F5-F310-4DEC-A4EE-46F853E104CA} = {551637F2-D144-402B-A50E-D31B419C61CF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E033216E-1151-4D66-A416-3EBD14511CA8}
