@@ -6,7 +6,6 @@ using TauCode.Db;
 using TauCode.Db.Model;
 using TauCode.Extensions;
 
-// todo clean
 namespace TauCode.Lab.Db.SqlClient
 {
     public class SqlTableInspector : DbTableInspectorBase
@@ -27,10 +26,9 @@ namespace TauCode.Lab.Db.SqlClient
 
         private int GetTableObjectId()
         {
-            using (var command = this.Connection.CreateCommand())
-            {
-                command.CommandText =
-@"
+            using var command = this.Connection.CreateCommand();
+            command.CommandText =
+                @"
 SELECT
     T.object_id
 FROM
@@ -38,18 +36,17 @@ FROM
 WHERE
     T.name = @p_name
 ";
-                command.AddParameterWithValue("p_name", this.TableName);
+            command.AddParameterWithValue("p_name", this.TableName);
 
-                var objectResult = command.ExecuteScalar();
+            var objectResult = command.ExecuteScalar();
 
-                if (objectResult == null)
-                {
-                    throw DbTools.CreateTableNotFoundException(this.TableName);
-                }
-
-                var objectId = (int)objectResult;
-                return objectId;
+            if (objectResult == null)
+            {
+                throw DbTools.CreateTableNotFoundException(this.TableName);
             }
+
+            var objectId = (int)objectResult;
+            return objectId;
         }
 
         private static bool ParseBoolean(object value)
@@ -165,21 +162,6 @@ ORDER BY
             }
 
             return column;
-
-
-
-            //var column = new ColumnMold
-            //{
-            //    Name = columnInfo.Name,
-            //    Type = this.Factory.GetDialect().ResolveType(
-            //        columnInfo.TypeName,
-            //        columnInfo.Size,
-            //        columnInfo.Precision,
-            //        columnInfo.Scale),
-            //    IsNullable = columnInfo.IsNullable,
-            //};
-
-            //return column;
         }
 
         protected override Dictionary<string, ColumnIdentityMold> GetIdentities()
@@ -213,11 +195,10 @@ WHERE
 
         public override PrimaryKeyMold GetPrimaryKey()
         {
-            using (var command = this.Connection.CreateCommand())
-            {
-                // get PK name
-                command.CommandText =
-@"
+            using var command = this.Connection.CreateCommand();
+            // get PK name
+            command.CommandText =
+                @"
 SELECT
     TC.constraint_name
 FROM
@@ -227,22 +208,22 @@ WHERE
     AND
     TC.constraint_type = 'PRIMARY KEY'";
 
-                var parameter = command.CreateParameter();
-                parameter.ParameterName = "p_tableName";
-                parameter.Value = this.TableName;
-                command.Parameters.Add(parameter);
+            var parameter = command.CreateParameter();
+            parameter.ParameterName = "p_tableName";
+            parameter.Value = this.TableName;
+            command.Parameters.Add(parameter);
 
-                var constraintName = (string)command.ExecuteScalar();
+            var constraintName = (string)command.ExecuteScalar();
 
-                if (constraintName == null)
-                {
-                    return null;
-                }
+            if (constraintName == null)
+            {
+                return null;
+            }
 
-                // get PK columns
-                command.Parameters.Clear();
-                command.CommandText =
-@"
+            // get PK columns
+            command.Parameters.Clear();
+            command.CommandText =
+                @"
 
 SELECT
     I.[index_id]            IndexId,
@@ -274,35 +255,33 @@ WHERE
 ORDER BY
     IC.[key_ordinal]
 ";
-                command.AddParameterWithValue("p_constraintName", constraintName);
-                command.AddParameterWithValue("p_tableName", this.TableName);
+            command.AddParameterWithValue("p_constraintName", constraintName);
+            command.AddParameterWithValue("p_tableName", this.TableName);
 
 
-                var columns = DbTools
-                    .GetCommandRows(command)
-                    .Select(x => new IndexColumnMold
-                    {
-                        Name = (string)x.ColumnName,
-                        SortDirection = (bool)x.IsDescendingKey ? SortDirection.Descending : SortDirection.Ascending,
-                    })
-                    .ToList();
-
-                var primaryKeyMold = new PrimaryKeyMold
+            var columns = DbTools
+                .GetCommandRows(command)
+                .Select(x => new IndexColumnMold
                 {
-                    Name = constraintName,
-                    Columns = columns,
-                };
+                    Name = (string)x.ColumnName,
+                    SortDirection = (bool)x.IsDescendingKey ? SortDirection.Descending : SortDirection.Ascending,
+                })
+                .ToList();
 
-                return primaryKeyMold;
-            }
+            var primaryKeyMold = new PrimaryKeyMold
+            {
+                Name = constraintName,
+                Columns = columns,
+            };
+
+            return primaryKeyMold;
         }
 
         public override IReadOnlyList<ForeignKeyMold> GetForeignKeys()
         {
-            using (var command = this.Connection.CreateCommand())
-            {
-                command.CommandText =
-                    @"
+            using var command = this.Connection.CreateCommand();
+            command.CommandText =
+                @"
 SELECT
     FK.[name]                   ForeignKeyName,
     T.[name]                    TableName,
@@ -339,27 +318,26 @@ ON
 WHERE
     T.[name] = @p_tableName
 ";
-                command.AddParameterWithValue("p_tableName", this.TableName);
+            command.AddParameterWithValue("p_tableName", this.TableName);
 
-                return DbTools
-                    .GetCommandRows(command)
-                    .GroupBy(x => (string)x.ForeignKeyName)
-                    .Select(g => new ForeignKeyMold
-                    {
-                        Name = (string)g.First().ForeignKeyName,
-                        ReferencedTableName = (string)g.First().ReferencedTableName,
-                        ColumnNames = g
-                            .OrderBy(x => (int)x.ColumnOrder)
-                            .Select(x => (string)x.ColumnName)
-                            .ToList(),
-                        ReferencedColumnNames = g
-                            .OrderBy(x => (int)x.ColumnOrder)
-                            .Select(x => (string)x.ReferencedColumnName)
-                            .ToList(),
-                    })
-                    .OrderBy(x => x.Name)
-                    .ToList();
-            }
+            return DbTools
+                .GetCommandRows(command)
+                .GroupBy(x => (string)x.ForeignKeyName)
+                .Select(g => new ForeignKeyMold
+                {
+                    Name = (string)g.First().ForeignKeyName,
+                    ReferencedTableName = (string)g.First().ReferencedTableName,
+                    ColumnNames = g
+                        .OrderBy(x => (int)x.ColumnOrder)
+                        .Select(x => (string)x.ColumnName)
+                        .ToList(),
+                    ReferencedColumnNames = g
+                        .OrderBy(x => (int)x.ColumnOrder)
+                        .Select(x => (string)x.ReferencedColumnName)
+                        .ToList(),
+                })
+                .OrderBy(x => x.Name)
+                .ToList();
         }
 
         public override IReadOnlyList<IndexMold> GetIndexes()

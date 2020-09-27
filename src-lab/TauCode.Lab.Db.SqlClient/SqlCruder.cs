@@ -5,18 +5,10 @@ using TauCode.Db;
 using TauCode.Db.DbValueConverters;
 using TauCode.Db.Model;
 
-// todo clean up
 namespace TauCode.Lab.Db.SqlClient
 {
     public class SqlCruder : DbCruderBase
     {
-        #region Constants
-
-        protected const int MoneyTypePrecision = 19;
-        protected const int MoneyTypeScale = 4;
-
-        #endregion
-
         public SqlCruder(IDbConnection connection, string schema)
             : base(connection, schema)
         {
@@ -141,41 +133,5 @@ namespace TauCode.Lab.Db.SqlClient
                     throw new NotImplementedException();
             }
         }
-
-
-        //protected override IDbParameterInfo ColumnToParameterInfo(
-        //    string columnName,
-        //    DbTypeMold columnType,
-        //    IReadOnlyDictionary<string, string> parameterNameMappings)
-        //{
-        //    var result = base.ColumnToParameterInfo(columnName, columnType, parameterNameMappings);
-
-        //    if (result == null)
-        //    {
-        //        DbType dbType;
-        //        int? size = null;
-        //        int? precision = null;
-        //        int? scale = null;
-        //        var parameterName = parameterNameMappings[columnName];
-
-        //        var typeName = columnType.Name.ToLowerInvariant();
-
-        //        switch (typeName)
-        //        {
-        //            case "money":
-        //                dbType = DbType.Currency;
-        //                precision = MoneyTypePrecision;
-        //                scale = MoneyTypeScale;
-        //                break;
-
-        //            default:
-        //                return null;
-        //        }
-
-        //        result = new DbParameterInfo(parameterName, dbType, size, precision, scale);
-        //    }
-
-        //    return result;
-        //}
     }
 }

@@ -4,7 +4,6 @@ using System.Data.SQLite;
 using System.IO;
 using TauCode.Db;
 
-// todo clean
 namespace TauCode.Lab.Db.SQLite.Tests
 {
     [TestFixture]
@@ -22,9 +21,6 @@ namespace TauCode.Lab.Db.SQLite.Tests
             }
 
             // Act
-            //var dbProviderName = utilityFactory.DbProviderName;
-
-            //IDbConnection connection = utilityFactory.CreateConnection();
             IDbConnection connection = new SQLiteConnection();
             var tuple = TestHelper.CreateSQLiteConnectionString();
             var filePath = tuple.Item1;
@@ -45,7 +41,6 @@ namespace TauCode.Lab.Db.SQLite.Tests
             IDbSerializer dbSerializer = utilityFactory.CreateDbSerializer(connection, null);
 
             // Assert
-            //Assert.That(dbProviderName, Is.EqualTo("SQLite"));
             Assert.That(connection, Is.TypeOf<SQLiteConnection>());
             Assert.That(dialect, Is.SameAs(SQLiteDialect.Instance));
 

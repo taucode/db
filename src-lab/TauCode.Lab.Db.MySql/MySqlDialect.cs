@@ -5,7 +5,6 @@ namespace TauCode.Lab.Db.MySql
     [DbDialect(
         typeof(MySqlDialect),
         "reserved-words.txt",
-        //"data-type-names.txt",
         "``")]
     public class MySqlDialect : DbDialectBase
     {

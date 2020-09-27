@@ -7,18 +7,10 @@ using TauCode.Db.DbValueConverters;
 using TauCode.Db.Model;
 using TauCode.Lab.Db.Npgsql.DbValueConverters;
 
-// todo clean up
 namespace TauCode.Lab.Db.Npgsql
 {
     public class NpgsqlCruder : DbCruderBase
     {
-        #region Constants
-
-        protected const int MoneyTypePrecision = 19;
-        protected const int MoneyTypeScale = 4;
-
-        #endregion
-
         public NpgsqlCruder(IDbConnection connection, string schema)
             : base(connection, schema)
         {
@@ -143,120 +135,5 @@ namespace TauCode.Lab.Db.Npgsql
                     throw new NotImplementedException();
             }
         }
-
-        //protected override IDbParameterInfo ColumnToParameterInfo(
-        //    string columnName,
-        //    DbTypeMold columnType,
-        //    IReadOnlyDictionary<string, string> parameterNameMappings)
-        //{
-        //    var typeName = columnType.Name.ToLowerInvariant();
-
-        //    DbType dbType;
-        //    int? size = null;
-        //    int? precision = null;
-        //    int? scale = null;
-        //    var parameterName = parameterNameMappings[columnName];
-
-        //    switch (typeName)
-        //    {
-        //        case "integer":
-        //            dbType = DbType.Int32;
-        //            break;
-
-        //        case "smallint":
-        //            dbType = DbType.Int16;
-        //            break;
-
-        //        case "bigint":
-        //            dbType = DbType.Int64;
-        //            break;
-
-        //        case "text":
-        //            dbType = DbType.String;
-        //            size = -1;
-        //            break;
-
-        //        case "double precision":
-        //            dbType = DbType.Double;
-        //            break;
-
-        //        case "real":
-        //            dbType = DbType.Single;
-        //            break;
-
-        //        case "money":
-        //        case "numeric":
-        //            dbType = DbType.Decimal;
-        //            break;
-
-        //        case "character":
-        //        case "character varying":
-        //            dbType = DbType.String;
-        //            size = columnType.Size;
-        //            break;
-
-        //        case "uuid":
-        //            dbType = DbType.Guid;
-        //            break;
-
-        //        case "timestamp without time zone":
-        //            dbType = DbType.DateTime;
-        //            break;
-
-        //        case "boolean":
-        //            dbType = DbType.Boolean;
-        //            break;
-
-        //        case "bytea":
-        //            dbType = DbType.Binary;
-        //            size = -1;
-        //            break;
-
-        //        default:
-        //            throw new NotImplementedException();
-        //    }
-
-        //    var result = new DbParameterInfo(parameterName, dbType, size, precision, scale);
-        //    return result;
-
-        //    //var result = base.ColumnToParameterInfo(columnName, columnType, parameterNameMappings);
-
-        //    //if (result == null)
-        //    //{
-        //    //    DbType dbType;
-
-
-
-        //    //    NpgsqlDbType dea;
-
-        //    //    int? size = null;
-        //    //    int? precision = null;
-        //    //    int? scale = null;
-        //    //    var parameterName = parameterNameMappings[columnName];
-
-        //    //    var typeName = columnType.Name.ToLowerInvariant();
-
-        //    //    switch (typeName)
-        //    //    {
-        //    //        case "character varying":
-        //    //            dbType = DbType.String;
-        //    //            size = columnType.Size;
-        //    //            break;
-
-        //    //        case "money":
-        //    //            dbType = DbType.Currency;
-        //    //            precision = MoneyTypePrecision;
-        //    //            scale = MoneyTypeScale;
-        //    //            break;
-
-        //    //        default:
-        //    //            return null;
-        //    //    }
-
-        //    //    result = new DbParameterInfo(parameterName, dbType, size, precision, scale);
-        //    //}
-
-        //    //return result;
-        //}
     }
 }

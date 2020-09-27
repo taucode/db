@@ -8,7 +8,6 @@ using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
 using TauCode.Extensions;
 
-// todo clean
 namespace TauCode.Db
 {
     public abstract class DbCruderBase : DbUtilityBase, IDbCruder
@@ -26,7 +25,6 @@ namespace TauCode.Db
 
             private readonly IReadOnlyDictionary<string, ColumnMold> _columnsByColumnName;
             private readonly IReadOnlyDictionary<string, string> _parameterNamesByColumnNames;
-            //private readonly IReadOnlyDictionary<string, IDbParameterInfo> _parameterInfosByColumnNames;
             private readonly IReadOnlyDictionary<string, IDbDataParameter> _parametersByParameterNames;
 
             /// <summary>
@@ -56,7 +54,6 @@ namespace TauCode.Db
 
                 _columnsByColumnName = this.BuildColumnsByColumnName(table, columnNames);
                 _parameterNamesByColumnNames = this.BuildParameterNamesByColumnNames();
-                //_parameterInfosByColumnNames = this.BuildParameterInfosByColumnNames();
                 _parametersByParameterNames = this.BuildParametersByParameterNames();
                 _parameterSizes = _parametersByParameterNames
                     .ToDictionary(x => x.Key, x => x.Value.Size);
@@ -99,60 +96,14 @@ namespace TauCode.Db
                         x => $"p_{x.Key}");
             }
 
-            //private IReadOnlyDictionary<string, IDbParameterInfo> BuildParameterInfosByColumnNames()
-            //{
-            //    var dictionary = new Dictionary<string, IDbParameterInfo>();
-
-            //    foreach (var pair in _columnsByColumnName)
-            //    {
-            //        var columnName = pair.Key;
-            //        var columnType = pair.Value.Type;
-            //        var parameterInfo =
-            //            _cruder.ColumnToParameterInfo(columnName, columnType, _parameterNamesByColumnNames);
-
-            //        if (parameterInfo == null)
-            //        {
-            //            throw new DbException($"Could not build parameter info for column '{columnName}'.");
-            //        }
-
-            //        dictionary.Add(columnName, parameterInfo);
-            //    }
-
-            //    return dictionary;
-            //}
-
             private IReadOnlyDictionary<string, IDbDataParameter> BuildParametersByParameterNames()
             {
+                // todo: check parameter name
                 return _parameterNamesByColumnNames
                     .ToDictionary(
                         x => x.Value,
                         x => _cruder.CreateParameter(_table.Name, _columnsByColumnName[x.Key], x.Value));
             }
-
-            //private IDbDataParameter CreateParameter(IDbParameterInfo parameterInfo)
-            //{
-            //    var parameter = _command.CreateParameter();
-            //    parameter.ParameterName = parameterInfo.ParameterName;
-            //    parameter.DbType = parameterInfo.DbType;
-
-            //    if (parameterInfo.Size.HasValue)
-            //    {
-            //        parameter.Size = parameterInfo.Size.Value;
-            //    }
-
-            //    if (parameterInfo.Precision.HasValue)
-            //    {
-            //        parameter.Precision = (byte)parameterInfo.Precision.Value;
-            //    }
-
-            //    if (parameterInfo.Scale.HasValue)
-            //    {
-            //        parameter.Scale = (byte)parameterInfo.Scale.Value;
-            //    }
-
-            //    _command.Parameters.Add(parameter);
-            //    return parameter;
-            //}
 
             private void ApplyValuesToCommand(object values)
             {
@@ -172,15 +123,6 @@ namespace TauCode.Db
                         continue; // row has a value we will not insert into any table's column.
                     }
 
-
-
-                    //if (!_parameterInfosByColumnNames.ContainsKey(columnName))
-                    //{
-                    //    continue; // row has a value we will not insert into any table's column.
-                    //}
-
-                    //var parameterInfo = _parameterInfosByColumnNames[columnName];
-                    //var parameterName = parameterInfo.ParameterName;
                     var parameterName = _parameterNamesByColumnNames[columnName];
                     var parameter = _parametersByParameterNames[parameterName];
 
@@ -193,36 +135,6 @@ namespace TauCode.Db
                         throw new DbException(
                             $"Could not transform value '{originalColumnValue}' of type '{originalColumnValue.GetType().FullName}'. Table name is '{_table.Name}'. Column name is '{columnName}'.");
                     }
-
-                    //if (columnValue is string stringColumnValue && /*parameterInfo*/parameter.DbType.IsIn(
-                    //    DbType.AnsiString,
-                    //    DbType.AnsiStringFixedLength,
-                    //    DbType.String,
-                    //    DbType.StringFixedLength))
-                    //{
-                    //    // todo...
-
-                    //    //throw new NotImplementedException();
-
-                    //    //if (parameterInfo.Size.HasValue)
-                    //    //{
-                    //    //    parameter.Size = parameterInfo.Size.Value;
-                    //    //}
-
-                    //    //if (stringColumnValue.Length > parameter.Size && parameter.Size >= 0
-                    //    //) // parameter.Size might be '-1', e.g. for type NVARCHAR(max)
-                    //    //{
-                    //    //    throw _cruder.CreateTruncateException(columnName);
-                    //    //}
-                    //}
-                    //else if (columnValue is byte[] byteArray)
-                    //{
-                    //    if (byteArray.Length > parameter.Size && parameter.Size >= 0
-                    //    ) // parameter.Size might be '-1', e.g. for type VARBINARY(max)
-                    //    {
-                    //        throw _cruder.CreateTruncateException(columnName);
-                    //    }
-                    //}
 
                     parameter.Size = _parameterSizes[parameter.ParameterName];
                     parameter.Value = columnValue;
@@ -237,7 +149,7 @@ namespace TauCode.Db
 
             #endregion
 
-            #region Public
+            #region Internal
 
             internal string CommandText
             {
@@ -279,11 +191,6 @@ namespace TauCode.Db
             }
 
             #endregion
-        }
-
-        protected DbException CreateTruncateException(string columnName)
-        {
-            return new DbException($"Data will be truncated for column '{columnName}'.");
         }
 
         #endregion
@@ -335,104 +242,6 @@ namespace TauCode.Db
 
             return dictionary;
         }
-
-        //protected virtual IDbParameterInfo ColumnToParameterInfo(
-        //    string columnName,
-        //    DbTypeMold columnType,
-        //    IReadOnlyDictionary<string, string> parameterNameMappings)
-        //{
-        //    DbType dbType;
-        //    int? size = null;
-        //    int? precision = null;
-        //    int? scale = null;
-        //    var parameterName = parameterNameMappings[columnName];
-
-        //    var typeName = columnType.Name.ToLowerInvariant();
-
-        //    switch (typeName)
-        //    {
-        //        case "int":
-        //        case "integer":
-        //            dbType = DbType.Int32;
-        //            break;
-
-        //        case "tinyint":
-        //            dbType = DbType.Byte;
-        //            break;
-
-        //        case "smallint":
-        //            dbType = DbType.Int16;
-        //            break;
-
-        //        case "bigint":
-        //            dbType = DbType.Int64;
-        //            break;
-
-        //        case "uniqueidentifier":
-        //            dbType = DbType.Guid;
-        //            break;
-
-        //        case "char":
-        //            dbType = DbType.AnsiStringFixedLength;
-        //            size = columnType.Size;
-        //            break;
-
-        //        case "varchar":
-        //            dbType = DbType.AnsiString;
-        //            size = columnType.Size;
-        //            break;
-
-        //        case "nchar":
-        //            dbType = DbType.StringFixedLength;
-        //            size = columnType.Size;
-        //            break;
-
-        //        case "nvarchar":
-        //            dbType = DbType.String;
-        //            size = columnType.Size;
-        //            break;
-
-        //        case "date":
-        //            dbType = DbType.Date;
-        //            break;
-
-        //        case "datetime":
-        //        case "datetime2":
-        //            dbType = DbType.DateTime;
-        //            break;
-
-        //        case "bit":
-        //            dbType = DbType.Boolean;
-        //            break;
-
-        //        case "binary":
-        //        case "varbinary":
-        //            dbType = DbType.Binary;
-        //            size = columnType.Size;
-        //            break;
-
-        //        case "float":
-        //            dbType = DbType.Double;
-        //            break;
-
-        //        case "real":
-        //            dbType = DbType.Single;
-        //            break;
-
-        //        case "decimal":
-        //        case "numeric":
-        //            dbType = DbType.Decimal;
-        //            precision = columnType.Precision;
-        //            scale = columnType.Scale;
-        //            break;
-
-        //        default:
-        //            return null;
-        //    }
-
-        //    IDbParameterInfo parameterInfo = new DbParameterInfo(parameterName, dbType, size, precision, scale);
-        //    return parameterInfo;
-        //}
 
         protected virtual IDbTableValuesConverter CreateTableValuesConverter(string tableName)
         {

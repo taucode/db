@@ -5,12 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\data-type-names.txt" />
     <None Remove="Resources\reserved-words.txt" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resources\data-type-names.txt" />
     <EmbeddedResource Include="Resources\reserved-words.txt" />
   </ItemGroup>
 
