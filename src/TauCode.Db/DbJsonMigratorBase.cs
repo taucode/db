@@ -39,13 +39,11 @@ namespace TauCode.Db
 
         public Func<string> MetadataJsonGetter { get; }
         public Func<string> DataJsonGetter { get; }
-
+        public string Schema { get; }
 
         #endregion
 
         #region IDbMigrator Members
-
-        public string Schema { get; }
 
         public virtual void Migrate()
         {
