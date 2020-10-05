@@ -8,7 +8,7 @@ namespace TauCode.Db.Tests
         [Test]
         public void DbDummyTest()
         {
-            Assert.Pass("Added for Jenkins.");
+            Assert.Pass("Added for Azure DevOps compliance.");
         }
     }
 }

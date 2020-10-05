@@ -65,7 +65,7 @@ namespace TauCode.Db
 
         #region Protected
 
-        protected virtual IDbInspector DbInspector => _dbInspector ??= this.Factory.CreateDbInspector(this.Connection, this.Schema);
+        protected virtual IDbInspector DbInspector => _dbInspector ??= this.Factory.CreateInspector(this.Connection, this.Schema);
 
         #endregion
 

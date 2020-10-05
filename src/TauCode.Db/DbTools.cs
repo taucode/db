@@ -12,6 +12,7 @@ using TauCode.Db.Data;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
 
+// todo: clean up, review. some methods might be not needed.
 namespace TauCode.Db
 {
     public static class DbTools
