@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
@@ -40,10 +41,11 @@ SELECT
 FROM
     information_schema.schemata
 ";
+
             var schemata = DbTools
                 .GetCommandRows(command)
                 .Select(x => (string)x.SchemaName)
-                .Except(systemSchemata)
+                .Except(systemSchemata, StringComparer.InvariantCultureIgnoreCase)
                 .ToList();
 
             return schemata;
