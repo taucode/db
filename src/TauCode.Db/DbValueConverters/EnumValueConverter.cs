@@ -12,7 +12,6 @@ namespace TauCode.Db.DbValueConverters
             CheckGenericArg();
 
             this.DbType = dbType; // todo: check.
-            //this.Behaviour = EnumValueConverterBehaviour.Integer;
         }
 
         private static void CheckGenericArg()
@@ -24,16 +23,7 @@ namespace TauCode.Db.DbValueConverters
             }
         }
 
-        //public EnumValueConverter(EnumValueConverterBehaviour behaviour)
-        //{
-        //    this.Behaviour = behaviour;
-        //}
-
         public DbType DbType { get; }
-
-        //public DbType 
-
-        //public EnumValueConverterBehaviour Behaviour { get; }
 
         protected override object ToDbValueImpl(object value)
         {
@@ -118,23 +108,6 @@ namespace TauCode.Db.DbValueConverters
                     throw new ArgumentOutOfRangeException(); // todo
             }
 
-            //switch (this.Behaviour)
-            //{
-            //    case EnumValueConverterBehaviour.Integer:
-            //        if (DbTools.IsIntegerType(value.GetType()))
-            //        {
-            //            return value;
-            //        }
-            //        break;
-
-            //    case EnumValueConverterBehaviour.String:
-            //        if (value is TEnum)
-            //        {
-            //            return value.ToString();
-            //        }
-            //        break;
-            //}
-
             return null;
         }
 
@@ -179,18 +152,6 @@ namespace TauCode.Db.DbValueConverters
             }
 
             return null;
-
-            //switch (this.Behaviour)
-            //{
-            //    case EnumValueConverterBehaviour.Integer:
-            //        return this.FromDbValueAsInteger(dbValue);
-
-            //    case EnumValueConverterBehaviour.String:
-            //        return this.FromDbValueAsString(dbValue);
-
-            //    default:
-            //        throw new ArgumentOutOfRangeException();
-            //}
         }
 
         protected virtual object FromDbValueAsInteger(object dbValue)

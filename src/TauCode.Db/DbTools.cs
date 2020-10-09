@@ -86,18 +86,23 @@ namespace TauCode.Db
                     else
                     {
                         var dbValueConverter = tableValuesConverter.GetColumnConverter(name);
+
+                        if (dbValueConverter == null)
+                        {
+                            throw new TauDbException(
+                                $"Method '{tableValuesConverter.GetType().FullName}.{nameof(IDbTableValuesConverter.GetColumnConverter)}' returned null for field '{name}'.");
+                        }
+
                         var convertedValue = dbValueConverter.FromDbValue(value);
 
                         if (convertedValue == DBNull.Value)
                         {
-                            throw new NotImplementedException(); // error in your converter logic.
+                            throw new TauDbException($"Method '{dbValueConverter.GetType().FullName}.{nameof(IDbValueConverter.FromDbValue)}' returned 'DBNull.Value' for field '{name}'.");
                         }
 
                         if (convertedValue == null && value != DBNull.Value)
                         {
-                            // the only case IDbValueConverter.FromDbValue returns null is value equal to DBNull.Value.
-
-                            throw new NotImplementedException();
+                            throw new TauDbException($"Method '{dbValueConverter.GetType().FullName}.{nameof(IDbValueConverter.FromDbValue)}' returned null for field '{name}' while original DB  value was not <NULL>.");
                         }
 
                         value = convertedValue;
@@ -176,7 +181,10 @@ namespace TauCode.Db
                     var table = node.Value;
                     foreach (var foreignKey in table.ForeignKeys)
                     {
-                        var referencedNode = graph.Nodes.Single(x => string.Equals(x.Value.Name, foreignKey.ReferencedTableName, StringComparison.InvariantCultureIgnoreCase));
+                        var referencedNode = graph.Nodes.Single(x => string.Equals(
+                            x.Value.Name,
+                            foreignKey.ReferencedTableName,
+                            StringComparison.InvariantCultureIgnoreCase));
 
                         node.DrawEdgeTo(referencedNode);
                     }
@@ -210,7 +218,7 @@ namespace TauCode.Db
         {
             var tableNames = dbInspector.GetOrderedTableNames(false);
             var scriptBuilder = dbInspector.Factory.CreateScriptBuilder(dbInspector.Schema);
-            
+
             foreach (var tableName in tableNames)
             {
                 var sql = scriptBuilder.BuildDropTableScript(tableName);
@@ -224,7 +232,7 @@ namespace TauCode.Db
 
             var tableNames = dbInspector.GetOrderedTableNames(false);
             var scriptBuilder = dbInspector.Factory.CreateScriptBuilder(dbInspector.Schema);
-            
+
             foreach (var tableName in tableNames)
             {
                 var sql = scriptBuilder.BuildDeleteScript(tableName);

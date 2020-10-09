@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 
 namespace TauCode.Db
 {
@@ -19,15 +20,33 @@ namespace TauCode.Db
 
         protected abstract IReadOnlyList<string> GetTableNamesImpl(string schema);
 
+        protected abstract HashSet<string> GetSystemSchemata();
+
         #endregion
 
         #region IDbInspector Members
 
         public string Schema { get; }
 
-        public IReadOnlyList<string> GetSchemata()
+        public virtual IReadOnlyList<string> GetSchemata()
         {
-            throw new System.NotImplementedException();
+            var systemSchemata = this.GetSystemSchemata();
+
+            using var command = this.Connection.CreateCommand();
+            command.CommandText =
+                @"
+SELECT
+    schema_name SchemaName
+FROM
+    information_schema.schemata
+";
+            var schemata = DbTools
+                .GetCommandRows(command)
+                .Select(x => (string)x.SchemaName)
+                .Except(systemSchemata)
+                .ToList();
+
+            return schemata;
         }
 
         public IReadOnlyList<string> GetTableNames()
