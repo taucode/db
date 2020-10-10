@@ -20,10 +20,10 @@ namespace TauCode.Db
 
         #region Constructor
 
-        protected DbSerializerBase(IDbConnection connection, string schema)
+        protected DbSerializerBase(IDbConnection connection, string schemaName)
             : base(connection, true, false)
         {
-            this.Schema = schema;
+            this.SchemaName = schemaName;
         }
 
         #endregion
@@ -44,7 +44,8 @@ namespace TauCode.Db
 
                             if (jToken == null)
                             {
-                                throw new TauDbException($"Property '{z}' not found in JSON. Table '{tableMold.Name}', entry index '{xIndex}'.");
+                                throw new TauDbException(
+                                    $"Property '{z}' not found in JSON. Table '{tableMold.Name}', entry index '{xIndex}'.");
                             }
 
                             if (jToken is JValue jValue)
@@ -53,27 +54,29 @@ namespace TauCode.Db
                             }
                             else
                             {
-                                throw new TauDbException($"Property '{z}' is not a JValue. Table '{tableMold.Name}', entry index '{xIndex}'.");
+                                throw new TauDbException(
+                                    $"Property '{z}' is not a JValue. Table '{tableMold.Name}', entry index '{xIndex}'.");
                             }
                         }))
                 .ToList();
 
-            this.Cruder.InsertRows(tableMold.Name, rows);
+            this.Cruder.InsertRows(tableMold.Name, rows, propName => true);
         }
 
         #endregion
 
         #region Protected
 
-        protected virtual IDbInspector DbInspector => _dbInspector ??= this.Factory.CreateInspector(this.Connection, this.Schema);
+        protected virtual IDbInspector DbInspector =>
+            _dbInspector ??= this.Factory.CreateInspector(this.Connection, this.SchemaName);
 
         #endregion
 
         #region IDbSerializer Members
 
-        public string Schema { get; }
+        public string SchemaName { get; }
 
-        public virtual IDbCruder Cruder => _cruder ??= this.Factory.CreateCruder(this.Connection, this.Schema);
+        public virtual IDbCruder Cruder => _cruder ??= this.Factory.CreateCruder(this.Connection, this.SchemaName);
 
         public virtual string SerializeTableData(string tableName)
         {
@@ -127,7 +130,7 @@ namespace TauCode.Db
                 throw new ArgumentException("Could not deserialize table data as array.", nameof(json));
             }
 
-            var table = this.Factory.CreateTableInspector(this.Connection, this.Schema, tableName).GetTable();
+            var table = this.Factory.CreateTableInspector(this.Connection, this.SchemaName, tableName).GetTable();
             this.DeserializeTableData(table, tableData);
         }
 
@@ -161,7 +164,7 @@ namespace TauCode.Db
                     throw new ArgumentException("Invalid data.", nameof(json));
                 }
 
-                var tableInspector = this.Factory.CreateTableInspector(this.Connection, this.Schema, name);
+                var tableInspector = this.Factory.CreateTableInspector(this.Connection, this.SchemaName, name);
                 var tableMold = tableInspector.GetTable();
 
                 this.DeserializeTableData(tableMold, tableData);
@@ -170,7 +173,7 @@ namespace TauCode.Db
 
         public virtual string SerializeTableMetadata(string tableName)
         {
-            var tableInspector = this.Factory.CreateTableInspector(this.Connection, this.Schema, tableName);
+            var tableInspector = this.Factory.CreateTableInspector(this.Connection, this.SchemaName, tableName);
             var table = tableInspector.GetTable().CloneTable(false);
 
             table.ForeignKeys = table.ForeignKeys

@@ -4,9 +4,9 @@ namespace TauCode.Db
 {
     public interface IDbInspector : IDbUtility
     {
-        string Schema { get; }
+        string SchemaName { get; }
 
-        IReadOnlyList<string> GetSchemata();
+        IReadOnlyList<string> GetSchemaNames();
 
         IReadOnlyList<string> GetTableNames();
     }

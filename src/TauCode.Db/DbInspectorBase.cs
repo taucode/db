@@ -9,17 +9,17 @@ namespace TauCode.Db
     {
         #region Constructor
 
-        protected DbInspectorBase(IDbConnection connection, string schema)
+        protected DbInspectorBase(IDbConnection connection, string schemaName)
             : base(connection, true, false)
         {
-            this.Schema = schema;
+            this.SchemaName = schemaName;
         }
 
         #endregion
 
         #region Abstract & Virtual
 
-        protected abstract IReadOnlyList<string> GetTableNamesImpl(string schema);
+        protected abstract IReadOnlyList<string> GetTableNamesImpl(string schemaName);
 
         protected abstract HashSet<string> GetSystemSchemata();
 
@@ -27,9 +27,9 @@ namespace TauCode.Db
 
         #region IDbInspector Members
 
-        public string Schema { get; }
+        public string SchemaName { get; }
 
-        public virtual IReadOnlyList<string> GetSchemata()
+        public virtual IReadOnlyList<string> GetSchemaNames()
         {
             var systemSchemata = this.GetSystemSchemata();
 
@@ -53,7 +53,7 @@ FROM
 
         public IReadOnlyList<string> GetTableNames()
         {
-            var tableNames = this.GetTableNamesImpl(this.Schema);
+            var tableNames = this.GetTableNamesImpl(this.SchemaName);
 
             return tableNames;
         }

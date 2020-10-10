@@ -3,7 +3,7 @@ using TauCode.Db.Model;
 
 namespace TauCode.Db
 {
-    public interface IDbConverter : IDbUtility
+    public interface IDbMetadataConverter : IDbUtility
     {
         DbTypeMold ConvertType(DbTypeMold originType, string originProviderName);
         ColumnIdentityMold ConvertIdentity(ColumnIdentityMold originIdentity, string originProviderName);

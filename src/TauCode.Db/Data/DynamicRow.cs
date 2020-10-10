@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Dynamic;
-using System.Linq;
 using TauCode.Data;
 
 namespace TauCode.Db.Data
 {
+    // todo: ignore case
     public class DynamicRow : DynamicObject
     {
         private readonly IDictionary<string, object> _values;
@@ -41,8 +41,6 @@ namespace TauCode.Db.Data
         }
 
         public override IEnumerable<string> GetDynamicMemberNames() => _values.Keys;
-
-        public string[] GetNames() => this.GetDynamicMemberNames().ToArray();
 
         public void SetValue(string name, object value)
         {

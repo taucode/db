@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Linq;
 using TauCode.Data;
 using TauCode.Db.Data;
@@ -9,6 +8,7 @@ using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
 using TauCode.Extensions;
 
+// todo clean up
 namespace TauCode.Db
 {
     public abstract class DbCruderBase : DbUtilityBase, IDbCruder
@@ -216,10 +216,10 @@ namespace TauCode.Db
 
         #region Constructor
 
-        protected DbCruderBase(IDbConnection connection, string schema)
+        protected DbCruderBase(IDbConnection connection, string schemaName)
             : base(connection, true, false)
         {
-            this.Schema = schema;
+            this.SchemaName = schemaName;
             _tableValuesConverters = new Dictionary<string, IDbTableValuesConverter>();
         }
 
@@ -257,7 +257,7 @@ namespace TauCode.Db
 
         protected virtual IDbTableValuesConverter CreateTableValuesConverter(string tableName)
         {
-            var tableInspector = this.Factory.CreateTableInspector(this.Connection, this.Schema, tableName);
+            var tableInspector = this.Factory.CreateTableInspector(this.Connection, this.SchemaName, tableName);
             var table = tableInspector.GetTable();
 
             var dictionary = table.Columns
@@ -271,10 +271,10 @@ namespace TauCode.Db
 
         #endregion
 
-        #region ICruder Members
+        #region IDbCruder Members
 
-        public string Schema { get; }
-        public virtual IDbScriptBuilder ScriptBuilder => _scriptBuilder ??= this.Factory.CreateScriptBuilder(this.Schema);
+        public string SchemaName { get; }
+        public virtual IDbScriptBuilder ScriptBuilder => _scriptBuilder ??= this.Factory.CreateScriptBuilder(this.SchemaName);
 
         public IDbTableValuesConverter GetTableValuesConverter(string tableName)
         {
@@ -297,20 +297,20 @@ namespace TauCode.Db
         public virtual void InsertRow(
             string tableName,
             object row,
-            IReadOnlyList<string> columnsToOmit = null)
+            Func<string, bool> propertySelector)
         {
             if (row == null)
             {
                 throw new ArgumentNullException(nameof(row));
             }
 
-            this.InsertRows(tableName, new List<object> { row }, columnsToOmit);
+            this.InsertRows(tableName, new List<object> { row }, propertySelector);
         }
 
         public virtual void InsertRows(
             string tableName,
             IReadOnlyList<object> rows,
-            IReadOnlyList<string> columnsToOmit = null)
+            Func<string, bool> propertySelector)
         {
             if (tableName == null)
             {
@@ -322,25 +322,26 @@ namespace TauCode.Db
                 throw new ArgumentNullException(nameof(rows));
             }
 
-            if (columnsToOmit != null)
-            {
-                if (columnsToOmit.Any(string.IsNullOrWhiteSpace))
-                {
-                    throw new ArgumentException($"'{nameof(columnsToOmit)}' must not contain empty strings or nulls.");
-                }
-            }
+            //if (columnsToOmit != null)
+            //{
+            //    if (columnsToOmit.Any(string.IsNullOrWhiteSpace))
+            //    {
+            //        throw new ArgumentException($"'{nameof(columnsToOmit)}' must not contain empty strings or nulls.");
+            //    }
+            //}
 
-            var table = this.Factory.CreateTableInspector(this.Connection, this.Schema, tableName).GetTable();
+            var table = this.Factory.CreateTableInspector(this.Connection, this.SchemaName, tableName).GetTable();
 
             if (rows.Count == 0)
             {
                 return; // nothing to insert
             }
 
-            columnsToOmit ??= new List<string>();
+            //columnsToOmit ??= new List<string>();
 
-            var columnNames = this.ObjectToDataDictionary(rows[0]).Keys
-                .Except(columnsToOmit, StringComparer.InvariantCultureIgnoreCase);
+            var columnNames = this.ObjectToDataDictionary(rows[0])
+                .Keys
+                .Where(propertySelector);
 
             using var helper = new CommandHelper(
                 this,
@@ -382,7 +383,7 @@ namespace TauCode.Db
             }
 
             var table = this.Factory
-                .CreateTableInspector(this.Connection, this.Schema, tableName)
+                .CreateTableInspector(this.Connection, this.SchemaName, tableName)
                 .GetTable();
 
             var idColumnName = table.GetPrimaryKeyColumn().Name.ToLowerInvariant();
@@ -406,7 +407,7 @@ namespace TauCode.Db
             }
 
             var table = this.Factory
-                .CreateTableInspector(this.Connection, this.Schema, tableName)
+                .CreateTableInspector(this.Connection, this.SchemaName, tableName)
                 .GetTable();
 
             using var command = this.Connection.CreateCommand();
@@ -434,7 +435,7 @@ namespace TauCode.Db
             }
 
             var table = this.Factory
-                .CreateTableInspector(this.Connection, this.Schema, tableName)
+                .CreateTableInspector(this.Connection, this.SchemaName, tableName)
                 .GetTable();
 
             var dataDictionary = this.ObjectToDataDictionary(rowUpdate);
@@ -475,7 +476,7 @@ namespace TauCode.Db
             }
 
             var table = this.Factory
-                .CreateTableInspector(this.Connection, this.Schema, tableName)
+                .CreateTableInspector(this.Connection, this.SchemaName, tableName)
                 .GetTable();
 
             var idColumnName = table.GetPrimaryKeyColumn().Name.ToLowerInvariant();

@@ -19,10 +19,10 @@ namespace TauCode.Db
 
         #region Constructor
 
-        protected DbScriptBuilderBase(string schema)
+        protected DbScriptBuilderBase(string schemaName)
             : base(null, false, true)
         {
-            this.Schema = schema;
+            this.SchemaName = schemaName;
         }
 
         #endregion
@@ -217,7 +217,7 @@ namespace TauCode.Db
 
         #region IScriptBuilder Members
 
-        public string Schema { get; }
+        public string SchemaName { get; }
 
         public char? CurrentOpeningIdentifierDelimiter
         {
