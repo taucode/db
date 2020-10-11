@@ -5,7 +5,7 @@ namespace TauCode.Db
 {
     public interface IDbTableInspector : IDbUtility
     {
-        string Schema { get; }
+        string SchemaName { get; }
 
         string TableName { get; }
 

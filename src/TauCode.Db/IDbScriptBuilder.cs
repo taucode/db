@@ -5,7 +5,7 @@ namespace TauCode.Db
 {
     public interface IDbScriptBuilder : IDbUtility
     {
-        string Schema { get; }
+        string SchemaName { get; }
         char? CurrentOpeningIdentifierDelimiter { get; set; }
         string BuildCreateTableScript(TableMold table, bool includeConstraints);
         string BuildCreateIndexScript(IndexMold index);

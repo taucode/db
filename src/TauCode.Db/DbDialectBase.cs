@@ -141,7 +141,7 @@ namespace TauCode.Db
                 return identifier;
             }
 
-            string closingDelimiterString = string.Empty;
+            var closingDelimiterString = string.Empty;
 
             if (openingDelimiter.HasValue)
             {

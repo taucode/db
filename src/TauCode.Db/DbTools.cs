@@ -162,7 +162,7 @@ namespace TauCode.Db
                 .Where(tableNamePredicate)
                 .Select(x => dbInspector.Factory.CreateTableInspector(
                     dbInspector.Connection,
-                    dbInspector.Schema,
+                    dbInspector.SchemaName,
                     x))
                 .Select(x => x.GetTable())
                 .ToList();
@@ -217,7 +217,7 @@ namespace TauCode.Db
         public static void DropAllTables(this IDbInspector dbInspector)
         {
             var tableNames = dbInspector.GetOrderedTableNames(false);
-            var scriptBuilder = dbInspector.Factory.CreateScriptBuilder(dbInspector.Schema);
+            var scriptBuilder = dbInspector.Factory.CreateScriptBuilder(dbInspector.SchemaName);
 
             foreach (var tableName in tableNames)
             {
@@ -231,7 +231,7 @@ namespace TauCode.Db
             // todo: check arg, here & anywhere in this class.
 
             var tableNames = dbInspector.GetOrderedTableNames(false);
-            var scriptBuilder = dbInspector.Factory.CreateScriptBuilder(dbInspector.Schema);
+            var scriptBuilder = dbInspector.Factory.CreateScriptBuilder(dbInspector.SchemaName);
 
             foreach (var tableName in tableNames)
             {
@@ -241,7 +241,7 @@ namespace TauCode.Db
         }
 
         public static string ConvertDbToJson(
-            this IDbConverter dbConverter,
+            this IDbMetadataConverter dbConverter,
             DbMold originDb,
             IReadOnlyDictionary<string, string> options = null)
         {

@@ -4,7 +4,7 @@ namespace TauCode.Db
 {
     public interface IDbSerializer : IDbUtility
     {
-        string Schema { get; }
+        string SchemaName { get; }
         IDbCruder Cruder { get; }
         string SerializeTableData(string tableName);
         string SerializeDbData(Func<string, bool> tableNamePredicate = null);
