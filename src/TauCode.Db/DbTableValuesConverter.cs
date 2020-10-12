@@ -7,7 +7,7 @@ namespace TauCode.Db
 {
     public class DbTableValuesConverter : IDbTableValuesConverter
     {
-        private readonly IDictionary<string, IDbValueConverter> _dbValueConverters;
+        private readonly Dictionary<string, IDbValueConverter> _dbValueConverters;
 
         public DbTableValuesConverter(IDictionary<string, IDbValueConverter> dictionary)
         {
@@ -21,7 +21,7 @@ namespace TauCode.Db
 
         public IDbValueConverter GetColumnConverter(string columnName)
         {
-            var converter = _dbValueConverters.GetOrDefault(columnName.ToLowerInvariant());
+            var converter = _dbValueConverters.GetValueOrDefault(columnName.ToLowerInvariant());
 
             if (converter == null)
             {

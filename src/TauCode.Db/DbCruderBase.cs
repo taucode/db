@@ -210,7 +210,7 @@ namespace TauCode.Db
         #region Fields
 
         private IDbScriptBuilder _scriptBuilder;
-        private readonly IDictionary<string, IDbTableValuesConverter> _tableValuesConverters;
+        private readonly Dictionary<string, IDbTableValuesConverter> _tableValuesConverters;
 
         #endregion
 
@@ -279,7 +279,7 @@ namespace TauCode.Db
         public IDbTableValuesConverter GetTableValuesConverter(string tableName)
         {
             // todo: checks, lowercase, everywhere.
-            var tableValuesConverter = _tableValuesConverters.GetOrDefault(tableName);
+            var tableValuesConverter = _tableValuesConverters.GetValueOrDefault(tableName);
             if (tableValuesConverter == null)
             {
                 tableValuesConverter = this.CreateTableValuesConverter(tableName);
