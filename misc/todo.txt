@@ -20,7 +20,7 @@ x   5. IDbInspector should check type (actually, type full name) of IDbConnectio
 2019-12-17
 ==========
 +   1. Check if all resources are needed in test projects.
-    2. Remove dummy tests one day.
++   2. Remove dummy tests one day.
 
 2020-01-07
 ==========
