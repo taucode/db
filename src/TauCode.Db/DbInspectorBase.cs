@@ -36,9 +36,11 @@ namespace TauCode.Db
             command.CommandText =
                 @"
 SELECT
-    schema_name SchemaName
+    S.schema_name SchemaName
 FROM
-    information_schema.schemata
+    information_schema.schemata S
+ORDER BY
+    S.schema_name
 ";
 
             var schemata = DbTools

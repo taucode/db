@@ -7,10 +7,13 @@ using TauCode.Db;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
 
+// todo: remove unused methods
 namespace TauCode.Lab.Db.SqlClient
 {
     public static class SqlToolsLab
     {
+        public const string DefaultSchemaName = "dbo";
+
         internal static readonly HashSet<string> SystemSchemata = new HashSet<string>(new[]
         {
             "guest",
@@ -44,14 +47,17 @@ FROM
 
             var schemata = DbTools
                 .GetCommandRows(command)
-                .Select(x => (string)x.SchemaName)
+                .Select(x => (string) x.SchemaName)
                 .Except(SystemSchemata)
                 .ToList();
 
             return schemata;
         }
 
-        public static IReadOnlyList<string> GetTableNames(this SqlConnection connection, string schemaName, bool? independentFirst)
+        public static IReadOnlyList<string> GetTableNames(
+            this SqlConnection connection,
+            string schemaName,
+            bool? independentFirst)
         {
             if (connection == null)
             {
@@ -72,13 +78,15 @@ FROM
 WHERE
     T.table_type = 'BASE TABLE' AND
     T.table_schema = @p_schemaName
+ORDER BY
+    T.table_name
 ";
 
             command.Parameters.AddWithValue("p_schemaName", schemaName);
 
             var tableNames = DbTools
                 .GetCommandRows(command)
-                .Select(x => (string)x.TableName)
+                .Select(x => (string) x.TableName)
                 .ToList();
 
             if (independentFirst.HasValue)
@@ -111,7 +119,8 @@ WHERE
                         var referencedTableNode = dictionary.GetValueOrDefault(foreignKey.ReferencedTableName);
                         if (referencedTableNode == null)
                         {
-                            throw new TauDbException($"Table '{foreignKey.ReferencedTableName}' not found."); // todo: standard exception 'object not found' to avoid copy/paste
+                            throw new TauDbException(
+                                $"Table '{foreignKey.ReferencedTableName}' not found."); // todo: standard exception 'object not found' to avoid copy/paste
                         }
 
                         tableNode.DrawEdgeTo(referencedTableNode);
@@ -136,7 +145,7 @@ WHERE
 
             return tableNames;
         }
-        
+
         public static void DropTable(this SqlConnection connection, string schemaName, string tableName)
         {
             if (connection == null)
@@ -156,6 +165,45 @@ WHERE
 
             using var command = connection.CreateCommand();
             command.CommandText = $"DROP TABLE [{schemaName}].[{tableName}]";
+            command.ExecuteNonQuery();
+        }
+
+        public static void DropSchema(this SqlConnection connection, string schemaName)
+        {
+            if (connection == null)
+            {
+                throw new ArgumentNullException(nameof(connection));
+            }
+
+            if (schemaName == null)
+            {
+                throw new ArgumentNullException(nameof(schemaName));
+            }
+
+            if (string.Equals(schemaName, DefaultSchemaName, StringComparison.InvariantCultureIgnoreCase))
+            {
+                throw new TauDbException($"Cannot drop default schema '{DefaultSchemaName}'.");
+            }
+
+            using var command = connection.CreateCommand();
+            command.CommandText = $"DROP SCHEMA [{schemaName}]";
+            command.ExecuteNonQuery();
+        }
+
+        public static void CreateSchema(this SqlConnection connection, string schemaName)
+        {
+            if (connection == null)
+            {
+                throw new ArgumentNullException(nameof(connection));
+            }
+
+            if (schemaName == null)
+            {
+                throw new ArgumentNullException(nameof(schemaName));
+            }
+
+            using var command = connection.CreateCommand();
+            command.CommandText = $@"CREATE SCHEMA [{schemaName}]";
             command.ExecuteNonQuery();
         }
 
@@ -259,7 +307,11 @@ WHERE
             return names;
         }
 
-        public static void DropForeignKey(this SqlConnection connection, string schemaName, string tableName, string foreignKeyName)
+        public static void DropForeignKey(
+            this SqlConnection connection,
+            string schemaName,
+            string tableName,
+            string foreignKeyName)
         {
             throw new NotImplementedException();
         }

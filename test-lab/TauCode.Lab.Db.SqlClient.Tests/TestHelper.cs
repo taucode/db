@@ -24,6 +24,11 @@ namespace TauCode.Lab.Db.SqlClient.Tests
                 {
                     connection.DropTable(schema, tableName);
                 }
+
+                if (schema != SqlToolsLab.DefaultSchemaName)
+                {
+                    connection.DropSchema(schema);
+                }
             }
         }
     }
