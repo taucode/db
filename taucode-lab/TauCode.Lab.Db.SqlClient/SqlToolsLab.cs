@@ -49,7 +49,7 @@ FROM
 
             var schemata = DbTools
                 .GetCommandRows(command)
-                .Select(x => (string) x.SchemaName)
+                .Select(x => (string)x.SchemaName)
                 .Except(SystemSchemata)
                 .ToList();
 
@@ -88,7 +88,7 @@ ORDER BY
 
             var tableNames = DbTools
                 .GetCommandRows(command)
-                .Select(x => (string) x.TableName)
+                .Select(x => (string)x.TableName)
                 .ToList();
 
             if (independentFirst.HasValue)
@@ -318,7 +318,7 @@ WHERE
 
             var names = DbTools
                 .GetCommandRows(command)
-                .Select(x => (string) x.ConstraintName)
+                .Select(x => (string)x.ConstraintName)
                 .ToList();
 
             return names;
@@ -375,6 +375,70 @@ WHERE
 
             using var reader = command.ExecuteReader();
             return reader.Read();
+        }
+
+        public static PrimaryKeyMold GetTablePrimaryKey(this SqlConnection connection, string schemaName, string tableName)
+        {
+            if (connection == null)
+            {
+                throw new ArgumentNullException(nameof(connection));
+            }
+
+            if (schemaName == null)
+            {
+                throw new ArgumentNullException(nameof(schemaName));
+            }
+
+            if (tableName == null)
+            {
+                throw new ArgumentNullException(nameof(tableName));
+            }
+
+            using var command = connection.CreateCommand();
+
+            command.CommandText = @"
+SELECT
+    TC.constraint_name ConstraintName,
+    KCU.column_name ColumnName
+FROM
+    information_schema.table_constraints TC
+INNER JOIN
+    information_schema.key_column_usage KCU
+ON
+    KCU.constraint_name = TC.constraint_name
+WHERE
+    TC.CONSTRAINT_SCHEMA = @p_schemaName AND
+    TC.TABLE_SCHEMA = @p_schemaName AND
+    TC.CONSTRAINT_TYPE = 'PRIMARY KEY' AND
+    TC.TABLE_NAME = @p_tableName AND
+
+    KCU.CONSTRAINT_SCHEMA = @p_schemaName AND
+    KCU.TABLE_SCHEMA = @p_schemaName
+ORDER BY
+    KCU.ordinal_position
+";
+            command.Parameters.AddWithValue("p_schemaName", schemaName);
+            command.Parameters.AddWithValue("p_tableName", tableName);
+
+            var rows = DbTools.GetCommandRows(command);
+
+            if (rows.Count == 0)
+            {
+                return null; // no PK
+            }
+
+            var constraintName = (string)rows[0].ConstraintName;
+            var columnNames = rows
+                .Select(x => (string)x.ColumnName)
+                .ToList();
+
+            var pk = new PrimaryKeyMold
+            {
+                Name = constraintName,
+                Columns = columnNames,
+            };
+
+            return pk;
         }
     }
 }

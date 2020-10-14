@@ -136,10 +136,8 @@ WHERE
         protected override bool TableExists(string tableName) =>
             this.SqlConnection.TableExists(this.SchemaName, this.TableName);
 
-        public override PrimaryKeyMold GetPrimaryKey()
-        {
-            throw new System.NotImplementedException();
-        }
+        protected override PrimaryKeyMold GetPrimaryKeyImpl() =>
+            this.SqlConnection.GetTablePrimaryKey(this.SchemaName, this.TableName);
 
         public override IReadOnlyList<ForeignKeyMold> GetForeignKeys()
         {

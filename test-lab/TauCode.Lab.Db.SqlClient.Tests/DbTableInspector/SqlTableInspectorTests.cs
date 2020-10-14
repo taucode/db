@@ -309,11 +309,80 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbTableInspector
 
         #region GetPrimaryKey
 
-        // todo:
-        // - returns valid primary key
-        // - returns valid multi-column primary key
-        // - schema not exists => throws
-        // - table not exists => throws
+        [Test]
+        public void GetPrimaryKey_ValidInput_ReturnsPrimaryKey()
+        {
+            // Arrange
+            var tableNames = this.Connection.GetTableNames("zeta", null);
+
+            // Act
+            var dictionary = tableNames
+                .Select(x => new SqlTableInspectorLab(this.Connection, "zeta", x))
+                .ToDictionary(x => x.TableName, x => x.GetPrimaryKey());
+
+            // Assert
+
+            PrimaryKeyMold pk;
+
+            // Person
+            pk = dictionary["Person"];
+            Assert.That(pk.Name, Is.EqualTo("PK_person"));
+            CollectionAssert.AreEqual(
+                new []
+                {
+                    "Id",
+                    "MetaKey",
+                    "OrdNumber",
+                },
+                pk.Columns);
+
+            // PersonData
+            pk = dictionary["PersonData"];
+            Assert.That(pk.Name, Is.EqualTo("PK_personData"));
+            CollectionAssert.AreEqual(
+                new[]
+                {
+                    "Id",
+                },
+                pk.Columns);
+
+            // NumericData
+            pk = dictionary["NumericData"];
+            Assert.That(pk.Name, Is.EqualTo("PK_numericData"));
+            CollectionAssert.AreEqual(
+                new[]
+                {
+                    "Id",
+                },
+                pk.Columns);
+
+        }
+
+        [Test]
+        public void GetPrimaryKey_SchemaDoesNotExist_ThrowsTauDbException()
+        {
+            // Arrange
+            IDbTableInspector inspector = new SqlTableInspectorLab(this.Connection, "bad_schema", "tab1");
+
+            // Act
+            var ex = Assert.Throws<TauDbException>(() => inspector.GetPrimaryKey());
+
+            // Assert
+            Assert.That(ex.Message, Is.EqualTo("Schema 'bad_schema' does not exist."));
+        }
+
+        [Test]
+        public void GetPrimaryKey_TableDoesNotExist_ThrowsTauDbException()
+        {
+            // Arrange
+            IDbTableInspector inspector = new SqlTableInspectorLab(this.Connection, "zeta", "bad_table");
+
+            // Act
+            var ex = Assert.Throws<TauDbException>(() => inspector.GetPrimaryKey());
+
+            // Assert
+            Assert.That(ex.Message, Is.EqualTo("Table 'bad_table' does not exist in schema 'zeta'."));
+        }
 
         #endregion
 

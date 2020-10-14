@@ -90,7 +90,8 @@ namespace TauCode.Db
                 var column = columns.SingleOrDefault(x => x.Name == identityColumnName);
                 if (column == null)
                 {
-                    throw new NotImplementedException(); // todo
+                    // should not happen.
+                    throw DbTools.CreateInternalErrorException();
                 }
 
                 column.Identity = identities[identityColumnName];
@@ -98,6 +99,8 @@ namespace TauCode.Db
 
             return columns;
         }
+
+        protected abstract PrimaryKeyMold GetPrimaryKeyImpl();
 
         #endregion
 
@@ -116,7 +119,14 @@ namespace TauCode.Db
             return columns;
         }
 
-        public abstract PrimaryKeyMold GetPrimaryKey();
+        public PrimaryKeyMold GetPrimaryKey()
+        {
+            this.CheckSchemaIfNeeded();
+            this.CheckTable();
+
+            var primaryKey = this.GetPrimaryKeyImpl();
+            return primaryKey;
+        }
 
         public abstract IReadOnlyList<ForeignKeyMold> GetForeignKeys();
 

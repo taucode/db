@@ -119,7 +119,8 @@ namespace TauCode.Db
 
         public static ColumnMold GetPrimaryKeyColumn(this TableMold table)
         {
-            return table.Columns.Single(x => x.Name == table.PrimaryKey.Columns.Single().Name);
+            throw new NotImplementedException();
+            //return table.Columns.Single(x => x.Name == table.PrimaryKey.Columns.Single().Name);
         }
 
         public static IReadOnlyList<string> GetOrderedTableNames(

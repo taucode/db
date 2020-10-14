@@ -9,16 +9,14 @@ namespace TauCode.Db.Model
     public class PrimaryKeyMold : IMold, IConstraint
     {
         public string Name { get; set; }
-        public IList<IndexColumnMold> Columns { get; set; } = new List<IndexColumnMold>();
+        public IList<string> Columns { get; set; } = new List<string>();
         public IDictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
         public IMold Clone(bool includeProperties = false)
         {
             return new PrimaryKeyMold
             {
                 Name = this.Name,
-                Columns = this.Columns
-                    .Select(x => x.CloneIndexColumn(includeProperties))
-                    .ToList(),
+                Columns = this.Columns.ToList(),
                 Properties = this.ClonePropertiesIfNeeded(includeProperties),
             };
         }
@@ -27,12 +25,11 @@ namespace TauCode.Db.Model
         {
             var sb = new StringBuilder();
 
-            var coliumns = string.Join(
+            var columns = string.Join(
                 ", ",
-                this.Columns
-                    .Select(x => x.Name + " " + (x.SortDirection == SortDirection.Ascending ? "ASC" : "DESC")));
+                this.Columns);
 
-            sb.Append($"CONSTRAINT {this.Name} PRIMARY KEY({coliumns})");
+            sb.Append($"CONSTRAINT {this.Name} PRIMARY KEY({columns})");
             return sb.ToString();
         }
     }

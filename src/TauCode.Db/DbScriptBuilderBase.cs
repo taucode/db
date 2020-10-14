@@ -140,14 +140,15 @@ namespace TauCode.Db
             StringBuilder sb,
             PrimaryKeyMold primaryKey)
         {
-            var decoratedConstraintName = this.Dialect.DecorateIdentifier(
-                DbIdentifierType.Constraint,
-                primaryKey.Name,
-                this.CurrentOpeningIdentifierDelimiter);
+            throw new NotImplementedException();
+            //var decoratedConstraintName = this.Dialect.DecorateIdentifier(
+            //    DbIdentifierType.Constraint,
+            //    primaryKey.Name,
+            //    this.CurrentOpeningIdentifierDelimiter);
 
-            sb.Append($"CONSTRAINT {decoratedConstraintName} PRIMARY KEY(");
-            this.WriteDecoratedIndexColumnsOverCommaScriptFragment(sb, primaryKey.Columns);
-            sb.Append(")");
+            //sb.Append($"CONSTRAINT {decoratedConstraintName} PRIMARY KEY(");
+            //this.WriteDecoratedIndexColumnsOverCommaScriptFragment(sb, primaryKey.Columns);
+            //sb.Append(")");
         }
 
         protected virtual void WriteDecoratedColumnsOverCommaScriptFragment(
