@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using System;
 using TauCode.Db;
+using TauCode.Db.Exceptions;
 
 namespace TauCode.Lab.Db.SqlClient.Tests.DbInspector
 {
@@ -154,14 +155,13 @@ CREATE TABLE [zeta].[tab1]([id] int PRIMARY KEY)
 CREATE TABLE [dbo].[tab3]([id] int PRIMARY KEY)
 ");
 
-
-            IDbInspector inspector = new SqlInspectorLab(this.Connection, "eta");
+            IDbInspector inspector = new SqlInspectorLab(this.Connection, "kappa");
 
             // Act
-            var tableNames = inspector.GetTableNames();
-
+            var ex = Assert.Throws<TauDbException>(() => inspector.GetTableNames());
+            
             // Assert
-            Assert.That(tableNames, Is.Empty);
+            Assert.That(ex, Has.Message.EqualTo("Schema 'kappa' does not exist."));
         }
 
         #endregion

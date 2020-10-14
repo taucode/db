@@ -14,6 +14,8 @@ namespace TauCode.Lab.Db.SqlClient
     {
         public const string DefaultSchemaName = "dbo";
 
+        public const int DefaultDecimalPrecision = 18;
+
         internal static readonly HashSet<string> SystemSchemata = new HashSet<string>(new[]
         {
             "guest",
@@ -213,6 +215,21 @@ ORDER BY
             string tableName,
             bool loadColumns)
         {
+            if (connection == null)
+            {
+                throw new ArgumentNullException(nameof(connection));
+            }
+
+            if (schemaName == null)
+            {
+                throw new ArgumentNullException(nameof(schemaName));
+            }
+
+            if (tableName == null)
+            {
+                throw new ArgumentNullException(nameof(tableName));
+            }
+
             using var command = connection.CreateCommand();
             command.CommandText = @"
 SELECT
@@ -314,6 +331,50 @@ WHERE
             string foreignKeyName)
         {
             throw new NotImplementedException();
+        }
+
+        public static bool SchemaExists(this SqlConnection connection, string schemaName)
+        {
+            if (schemaName == null)
+            {
+                throw new ArgumentNullException(nameof(schemaName));
+            }
+
+            return GetSchemata(connection).Contains(schemaName); // todo optimize
+        }
+
+        public static bool TableExists(this SqlConnection connection, string schemaName, string tableName)
+        {
+            if (connection == null)
+            {
+                throw new ArgumentNullException(nameof(connection));
+            }
+
+            if (schemaName == null)
+            {
+                throw new ArgumentNullException(nameof(schemaName));
+            }
+
+            if (tableName == null)
+            {
+                throw new ArgumentNullException(nameof(tableName));
+            }
+
+            using var command = connection.CreateCommand();
+            command.CommandText = @"
+SELECT
+    T.table_name
+FROM
+    information_schema.tables T
+WHERE
+    T.table_schema = @p_schemaName AND
+    T.table_name = @p_tableName
+";
+            command.Parameters.AddWithValue("p_schemaName", schemaName);
+            command.Parameters.AddWithValue("p_tableName", tableName);
+
+            using var reader = command.ExecuteReader();
+            return reader.Read();
         }
     }
 }

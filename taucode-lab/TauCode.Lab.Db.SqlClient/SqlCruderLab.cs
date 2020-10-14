@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using Microsoft.Data.SqlClient;
+using System.Data;
 using TauCode.Db;
 using TauCode.Db.Model;
 
@@ -6,7 +7,8 @@ namespace TauCode.Lab.Db.SqlClient
 {
     public class SqlCruderLab : DbCruderBase
     {
-        public SqlCruderLab(IDbConnection connection, string schemaName) : base(connection, schemaName)
+        public SqlCruderLab(SqlConnection connection, string schemaName)
+            : base(connection, schemaName)
         {
         }
 

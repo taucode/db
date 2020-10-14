@@ -6,6 +6,7 @@ using TauCode.Db.Model;
 
 namespace TauCode.Db
 {
+    // todo clean
     public abstract class DbTableInspectorBase : DbUtilityBase, IDbTableInspector
     {
         #region Nested
@@ -37,6 +38,30 @@ namespace TauCode.Db
 
         #endregion
 
+        #region Private
+
+        private void CheckSchemaIfNeeded()
+        {
+            if (this.NeedCheckSchemaExistence)
+            {
+                if (!this.SchemaExists(this.SchemaName))
+                {
+                    throw DbTools.CreateSchemaDoesNotExistException(this.SchemaName);
+                }
+            }
+        }
+
+        private void CheckTable()
+        {
+            var exists = this.TableExists(this.TableName);
+            if (!exists)
+            {
+                throw DbTools.CreateTableDoesNotExistException(this.SchemaName, this.TableName);
+            }
+        }
+
+        #endregion
+
         #region Polymorph
 
         protected abstract List<ColumnInfo> GetColumnInfos();
@@ -45,15 +70,13 @@ namespace TauCode.Db
 
         protected abstract Dictionary<string, ColumnIdentityMold> GetIdentities();
 
-        #endregion
+        protected abstract bool NeedCheckSchemaExistence { get; }
 
-        #region ITableInspector Members
+        protected abstract bool SchemaExists(string schemaName);
 
-        public string SchemaName { get; }
+        protected abstract bool TableExists(string tableName);
 
-        public string TableName { get; }
-
-        public virtual IReadOnlyList<ColumnMold> GetColumns()
+        public virtual IReadOnlyList<ColumnMold> GetColumnsImpl()
         {
             var columnInfos = this.GetColumnInfos();
             var columns = columnInfos
@@ -76,6 +99,23 @@ namespace TauCode.Db
             return columns;
         }
 
+        #endregion
+
+        #region ITableInspector Members
+
+        public string SchemaName { get; }
+
+        public string TableName { get; }
+
+        public IReadOnlyList<ColumnMold> GetColumns()
+        {
+            this.CheckSchemaIfNeeded();
+            this.CheckTable();
+
+            var columns = this.GetColumnsImpl();
+            return columns;
+        }
+
         public abstract PrimaryKeyMold GetPrimaryKey();
 
         public abstract IReadOnlyList<ForeignKeyMold> GetForeignKeys();
@@ -84,27 +124,28 @@ namespace TauCode.Db
 
         public virtual TableMold GetTable()
         {
-            var primaryKey = this.GetPrimaryKey();
-            var columns = this.GetColumns();
+            throw new NotImplementedException();
+            //var primaryKey = this.GetPrimaryKey();
+            //var columns = this.GetColumns();
 
-            if (columns.Count == 0)
-            {
-                throw DbTools.CreateTableNotFoundException(this.TableName); // no columns means table does not exist.
-            }
+            //if (columns.Count == 0)
+            //{
+            //    throw DbTools.CreateTableDoesNotExistException(this.TableName); // no columns means table does not exist.
+            //}
 
-            var foreignKeys = this.GetForeignKeys();
-            var indexes = this.GetIndexes();
+            //var foreignKeys = this.GetForeignKeys();
+            //var indexes = this.GetIndexes();
 
-            var table = new TableMold
-            {
-                Name = this.TableName,
-                PrimaryKey = primaryKey,
-                Columns = columns.ToList(),
-                ForeignKeys = foreignKeys.ToList(),
-                Indexes = indexes.ToList(),
-            };
+            //var table = new TableMold
+            //{
+            //    Name = this.TableName,
+            //    PrimaryKey = primaryKey,
+            //    Columns = columns.ToList(),
+            //    ForeignKeys = foreignKeys.ToList(),
+            //    Indexes = indexes.ToList(),
+            //};
 
-            return table;
+            //return table;
         }
 
         #endregion

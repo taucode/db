@@ -16,7 +16,7 @@ namespace TauCode.Db.DbValueConverters
 
         private static void CheckGenericArg()
         {
-            bool validGenericArg = typeof(TEnum).IsEnum;
+            var validGenericArg = typeof(TEnum).IsEnum;
             if (!validGenericArg)
             {
                 throw new ArgumentException($"'{nameof(TEnum)}' must be an enum type.", nameof(TEnum));

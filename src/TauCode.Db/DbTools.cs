@@ -4,8 +4,8 @@ using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using TauCode.Algorithms.Graphs;
 using TauCode.Db.Data;
@@ -268,11 +268,6 @@ namespace TauCode.Db
             command.Parameters.Add(parameter);
         }
 
-        public static DbException CreateTableNotFoundException(string tableName)
-        {
-            return new TauDbException($"Table '{tableName}' not found.");
-        }
-
         public static string FineSerializeToJson(object obj)
         {
             var contractResolver = new DefaultContractResolver
@@ -296,6 +291,33 @@ namespace TauCode.Db
                 });
 
             return json;
+        }
+
+        public static TauDbException CreateSchemaDoesNotExistException(string schemaName)
+        {
+            return new TauDbException($"Schema '{schemaName}' does not exist.");
+        }
+
+        public static TauDbException CreateTableDoesNotExistException(string schemaName, string tableName)
+        {
+            var sb = new StringBuilder();
+            sb.Append($"Table '{tableName}' does not exist");
+
+            if (schemaName == null)
+            {
+                sb.Append(".");
+            }
+            else
+            {
+                sb.Append($" in schema '{schemaName}'.");
+            }
+
+            return new TauDbException(sb.ToString());
+        }
+
+        public static TauDbException CreateInternalErrorException()
+        {
+            return new TauDbException("Internal error.");
         }
     }
 }
