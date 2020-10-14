@@ -12,4 +12,8 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\taucode-lab\TauCode.Lab.Db.SqlClient\TauCode.Lab.Db.SqlClient.csproj" />
+  </ItemGroup>
+
 </Project>

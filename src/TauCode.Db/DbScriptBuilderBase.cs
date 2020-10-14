@@ -468,7 +468,7 @@ namespace TauCode.Db
 
             sb.AppendLine($"UPDATE {decoratedTableName} SET");
 
-            var idColumnName = table.GetPrimaryKeyColumn().Name.ToLowerInvariant();
+            var idColumnName = table.GetPrimaryKeyColumn().Name;
             var decoratedIdColumnName = this.Dialect.DecorateIdentifier(
                 DbIdentifierType.Column,
                 idColumnName,

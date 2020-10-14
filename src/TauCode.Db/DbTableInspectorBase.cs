@@ -64,8 +64,11 @@ namespace TauCode.Db
 
             foreach (var identityColumnName in identities.Keys)
             {
-                var column = columns.Single(x =>
-                    string.Equals(x.Name, identityColumnName, StringComparison.InvariantCultureIgnoreCase));
+                var column = columns.SingleOrDefault(x => x.Name == identityColumnName);
+                if (column == null)
+                {
+                    throw new NotImplementedException(); // todo
+                }
 
                 column.Identity = identities[identityColumnName];
             }

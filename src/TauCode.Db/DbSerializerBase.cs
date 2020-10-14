@@ -177,11 +177,11 @@ namespace TauCode.Db
             var table = tableInspector.GetTable().CloneTable(false);
 
             table.ForeignKeys = table.ForeignKeys
-                .OrderBy(x => x.Name, StringComparer.InvariantCultureIgnoreCase)
+                .OrderBy(x => x.Name)
                 .ToList();
 
             table.Indexes = table.Indexes
-                .OrderBy(x => x.Name, StringComparer.InvariantCultureIgnoreCase)
+                .OrderBy(x => x.Name)
                 .ToList();
 
             var json = DbTools.FineSerializeToJson(table);
@@ -198,11 +198,11 @@ namespace TauCode.Db
             foreach (var table in tables)
             {
                 table.ForeignKeys = table.ForeignKeys
-                    .OrderBy(x => x.Name, StringComparer.InvariantCultureIgnoreCase)
+                    .OrderBy(x => x.Name)
                     .ToList();
 
                 table.Indexes = table.Indexes
-                    .OrderBy(x => x.Name, StringComparer.InvariantCultureIgnoreCase)
+                    .OrderBy(x => x.Name)
                     .ToList();
             }
 

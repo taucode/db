@@ -181,10 +181,12 @@ namespace TauCode.Db
                     var table = node.Value;
                     foreach (var foreignKey in table.ForeignKeys)
                     {
-                        var referencedNode = graph.Nodes.Single(x => string.Equals(
-                            x.Value.Name,
-                            foreignKey.ReferencedTableName,
-                            StringComparison.InvariantCultureIgnoreCase));
+                        var referencedNode = graph.Nodes.SingleOrDefault(x => x.Value.Name == foreignKey.ReferencedTableName);
+
+                        if (referencedNode == null)
+                        {
+                            throw new NotImplementedException();
+                        }
 
                         node.DrawEdgeTo(referencedNode);
                     }
@@ -203,7 +205,7 @@ namespace TauCode.Db
                 {
                     var sliceTables = slice.Nodes
                         .Select(x => x.Value)
-                        .OrderBy(x => x.Name.ToLowerInvariant());
+                        .OrderBy(x => x.Name);
 
                     list.AddRange(sliceTables);
                 }
