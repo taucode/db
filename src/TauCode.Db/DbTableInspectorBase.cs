@@ -152,28 +152,24 @@ namespace TauCode.Db
 
         public virtual TableMold GetTable()
         {
-            throw new NotImplementedException();
-            //var primaryKey = this.GetPrimaryKey();
-            //var columns = this.GetColumns();
+            this.CheckSchemaIfNeeded();
+            this.CheckTable();
 
-            //if (columns.Count == 0)
-            //{
-            //    throw DbTools.CreateTableDoesNotExistException(this.TableName); // no columns means table does not exist.
-            //}
+            var primaryKey = this.GetPrimaryKeyImpl();
+            var columns = this.GetColumnsImpl();
+            var foreignKeys = this.GetForeignKeysImpl();
+            var indexes = this.GetIndexesImpl();
 
-            //var foreignKeys = this.GetForeignKeys();
-            //var indexes = this.GetIndexes();
+            var table = new TableMold
+            {
+                Name = this.TableName,
+                PrimaryKey = primaryKey,
+                Columns = columns.ToList(),
+                ForeignKeys = foreignKeys.ToList(),
+                Indexes = indexes.ToList(),
+            };
 
-            //var table = new TableMold
-            //{
-            //    Name = this.TableName,
-            //    PrimaryKey = primaryKey,
-            //    Columns = columns.ToList(),
-            //    ForeignKeys = foreignKeys.ToList(),
-            //    Indexes = indexes.ToList(),
-            //};
-
-            //return table;
+            return table;
         }
 
         #endregion

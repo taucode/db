@@ -560,10 +560,144 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbTableInspector
 
         #region GetTable
 
-        // todo:
-        // - returns table with all metadata
-        // - schema not exists => throws
-        // - table not exists => throws
+        [Test]
+        public void GetTable_ValidInput_ReturnsIndexes()
+        {
+            // Arrange
+            IDbTableInspector inspector = new SqlTableInspectorLab(this.Connection, "zeta", "HealthInfo");
+
+            // Act
+            var table = inspector.GetTable();
+
+            // Assert
+
+            Assert.That(table.Name, Is.EqualTo("HealthInfo"));
+
+            #region primary keys
+
+            var primaryKey = table.PrimaryKey;
+
+            Assert.That(primaryKey.Name, Is.EqualTo("PK_healthInfo"));
+
+            Assert.That(primaryKey.Columns, Has.Count.EqualTo(1));
+
+            var column = primaryKey.Columns.Single();
+            Assert.That(column, Is.EqualTo("Id"));
+
+            #endregion
+
+            #region columns
+
+            var columns = table.Columns;
+            Assert.That(columns, Has.Count.EqualTo(9));
+
+            this.AssertColumn(columns[0], "Id", new DbTypeMoldInfo("uniqueidentifier"), false, null, null);
+            this.AssertColumn(columns[1], "PersonId", new DbTypeMoldInfo("bigint"), false, null, null);
+            this.AssertColumn(
+                columns[2],
+                "Weight",
+                new DbTypeMoldInfo("decimal", precision: SqlToolsLab.DefaultDecimalPrecision, scale: 0),
+                false,
+                null,
+                null);
+            this.AssertColumn(columns[3], "PersonMetaKey", new DbTypeMoldInfo("smallint"), false, null, null);
+            this.AssertColumn(columns[4], "IQ", new DbTypeMoldInfo("numeric", precision: 8, scale: 2), true, null, null);
+            this.AssertColumn(columns[5], "Temper", new DbTypeMoldInfo("smallint"), true, null, null);
+            this.AssertColumn(columns[6], "PersonOrdNumber", new DbTypeMoldInfo("tinyint"), false, null, null);
+            this.AssertColumn(columns[7], "MetricB", new DbTypeMoldInfo("int"), true, null, null);
+            this.AssertColumn(columns[8], "MetricA", new DbTypeMoldInfo("int"), true, null, null);
+
+            #endregion
+
+            #region foreign keys
+
+            var foreignKeys = table.ForeignKeys;
+
+            Assert.That(foreignKeys, Has.Count.EqualTo(1));
+            var fk = foreignKeys.Single();
+
+            Assert.That(fk.Name, Is.EqualTo("FK_healthInfo_Person"));
+            CollectionAssert.AreEqual(
+                new string[]
+                {
+                    "PersonId",
+                    "PersonMetaKey",
+                    "PersonOrdNumber",
+                },
+                fk.ColumnNames);
+
+            Assert.That(fk.ReferencedTableName, Is.EqualTo("Person"));
+            CollectionAssert.AreEqual(
+                new string[]
+                {
+                    "Id",
+                    "MetaKey",
+                    "OrdNumber",
+                },
+                fk.ReferencedColumnNames);
+
+            #endregion
+
+            #region indexes
+
+            var indexes = table.Indexes;
+
+            Assert.That(indexes, Has.Count.EqualTo(2));
+
+            // index: IX_healthInfo_metricAmetricB
+            var index = indexes[0];
+            Assert.That(index.Name, Is.EqualTo("IX_healthInfo_metricAmetricB"));
+            Assert.That(index.TableName, Is.EqualTo("HealthInfo"));
+            Assert.That(index.IsUnique, Is.False);
+            Assert.That(index.Columns, Has.Count.EqualTo(2));
+
+            var indexColumn = index.Columns[0];
+            Assert.That(indexColumn.Name, Is.EqualTo("MetricA"));
+            Assert.That(indexColumn.SortDirection, Is.EqualTo(SortDirection.Ascending));
+
+            indexColumn = index.Columns[1];
+            Assert.That(indexColumn.Name, Is.EqualTo("MetricB"));
+            Assert.That(indexColumn.SortDirection, Is.EqualTo(SortDirection.Descending));
+
+            // index: PK_healthInfo
+            index = indexes[1];
+            Assert.That(index.Name, Is.EqualTo("PK_healthInfo"));
+            Assert.That(index.TableName, Is.EqualTo("HealthInfo"));
+            Assert.That(index.IsUnique, Is.True);
+            Assert.That(index.Columns, Has.Count.EqualTo(1));
+
+            indexColumn = index.Columns.Single();
+            Assert.That(indexColumn.Name, Is.EqualTo("Id"));
+            Assert.That(indexColumn.SortDirection, Is.EqualTo(SortDirection.Ascending));
+
+            #endregion
+        }
+
+        [Test]
+        public void GetTable_SchemaDoesNotExist_ThrowsTauDbException()
+        {
+            // Arrange
+            IDbTableInspector inspector = new SqlTableInspectorLab(this.Connection, "bad_schema", "tab1");
+
+            // Act
+            var ex = Assert.Throws<TauDbException>(() => inspector.GetTable());
+
+            // Assert
+            Assert.That(ex.Message, Is.EqualTo("Schema 'bad_schema' does not exist."));
+        }
+
+        [Test]
+        public void GetTable_TableDoesNotExist_ThrowsTauDbException()
+        {
+            // Arrange
+            IDbTableInspector inspector = new SqlTableInspectorLab(this.Connection, "zeta", "bad_table");
+
+            // Act
+            var ex = Assert.Throws<TauDbException>(() => inspector.GetTable());
+
+            // Assert
+            Assert.That(ex.Message, Is.EqualTo("Table 'bad_table' does not exist in schema 'zeta'."));
+        }
 
         #endregion
     }
