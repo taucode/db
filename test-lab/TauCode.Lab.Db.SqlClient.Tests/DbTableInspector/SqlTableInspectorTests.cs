@@ -291,7 +291,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbTableInspector
             // Assert
             Assert.That(ex.Message, Is.EqualTo("Schema 'bad_schema' does not exist."));
         }
-        
+
         [Test]
         public void GetColumns_TableDoesNotExist_ThrowsTauDbException()
         {
@@ -328,7 +328,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbTableInspector
             pk = dictionary["Person"];
             Assert.That(pk.Name, Is.EqualTo("PK_person"));
             CollectionAssert.AreEqual(
-                new []
+                new[]
                 {
                     "Id",
                     "MetaKey",
@@ -388,21 +388,173 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbTableInspector
 
         #region GetForeignKeys
 
-        // todo:
-        // - returns valid foreign key
-        // - returns valid multi-column foreign key
-        // - schema not exists => throws
-        // - table not exists => throws
+        [Test]
+        public void GetForeignKeys_ValidInput_ReturnsForeignKeys()
+        {
+            // Arrange
+            IDbTableInspector inspector = new SqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+
+            // Act
+            var foreignKeys = inspector.GetForeignKeys();
+
+            // Assert
+            Assert.That(foreignKeys, Has.Count.EqualTo(1));
+            var fk = foreignKeys.Single();
+
+            Assert.That(fk.Name, Is.EqualTo("FK_personData_Person"));
+            CollectionAssert.AreEqual(
+                new string[] { "PersonId", "PersonMetaKey", "PersonOrdNumber" },
+                fk.ColumnNames);
+            Assert.That(fk.ReferencedTableName, Is.EqualTo("Person"));
+            CollectionAssert.AreEqual(
+                new string[] { "Id", "MetaKey", "OrdNumber" },
+                fk.ReferencedColumnNames);
+        }
+
+        [Test]
+        public void GetForeignKeys_SchemaDoesNotExist_ThrowsTauDbException()
+        {
+            // Arrange
+            IDbTableInspector inspector = new SqlTableInspectorLab(this.Connection, "bad_schema", "tab1");
+
+            // Act
+            var ex = Assert.Throws<TauDbException>(() => inspector.GetForeignKeys());
+
+            // Assert
+            Assert.That(ex.Message, Is.EqualTo("Schema 'bad_schema' does not exist."));
+        }
+
+        [Test]
+        public void GetForeignKeys_TableDoesNotExist_ThrowsTauDbException()
+        {
+            // Arrange
+            IDbTableInspector inspector = new SqlTableInspectorLab(this.Connection, "zeta", "bad_table");
+
+            // Act
+            var ex = Assert.Throws<TauDbException>(() => inspector.GetForeignKeys());
+
+            // Assert
+            Assert.That(ex.Message, Is.EqualTo("Table 'bad_table' does not exist in schema 'zeta'."));
+        }
 
         #endregion
 
         #region GetIndexes
 
-        // todo:
-        // - returns valid index
-        // - returns valid multi-column index
-        // - schema not exists => throws
-        // - table not exists => throws
+        [Test]
+        public void GetIndexes_ValidInput_ReturnsIndexes()
+        {
+            // Arrange
+            IDbTableInspector inspector1 = new SqlTableInspectorLab(this.Connection, "zeta", "Person");
+            IDbTableInspector inspector2 = new SqlTableInspectorLab(this.Connection, "zeta", "WorkInfo");
+            IDbTableInspector inspector3 = new SqlTableInspectorLab(this.Connection, "zeta", "HealthInfo");
+
+            // Act
+            var indexes1 = inspector1.GetIndexes();
+            var indexes2 = inspector2.GetIndexes();
+            var indexes3 = inspector3.GetIndexes();
+
+            // Assert
+
+            // Person
+            var index = indexes1.Single();
+            Assert.That(index.Name, Is.EqualTo("PK_person"));
+            Assert.That(index.TableName, Is.EqualTo("Person"));
+            Assert.That(index.IsUnique, Is.True);
+            Assert.That(index.Columns, Has.Count.EqualTo(3));
+
+            var column = index.Columns[0];
+            Assert.That(column.Name, Is.EqualTo("Id"));
+            Assert.That(column.SortDirection, Is.EqualTo(SortDirection.Ascending));
+
+            column = index.Columns[1];
+            Assert.That(column.Name, Is.EqualTo("MetaKey"));
+            Assert.That(column.SortDirection, Is.EqualTo(SortDirection.Ascending));
+
+            column = index.Columns[2];
+            Assert.That(column.Name, Is.EqualTo("OrdNumber"));
+            Assert.That(column.SortDirection, Is.EqualTo(SortDirection.Ascending));
+
+            // WorkInfo
+            Assert.That(indexes2, Has.Count.EqualTo(2));
+
+            // index: PK_workInfo
+            index = indexes2[0];
+            Assert.That(index.Name, Is.EqualTo("PK_workInfo"));
+            Assert.That(index.TableName, Is.EqualTo("WorkInfo"));
+            Assert.That(index.IsUnique, Is.True);
+            Assert.That(index.Columns, Has.Count.EqualTo(1));
+
+            column = index.Columns.Single();
+            Assert.That(column.Name, Is.EqualTo("Id"));
+            Assert.That(column.SortDirection, Is.EqualTo(SortDirection.Ascending));
+
+            // index: UX_workInfo_Hash
+            index = indexes2[1];
+            Assert.That(index.Name, Is.EqualTo("UX_workInfo_Hash"));
+            Assert.That(index.TableName, Is.EqualTo("WorkInfo"));
+            Assert.That(index.IsUnique, Is.True);
+            Assert.That(index.Columns, Has.Count.EqualTo(1));
+
+            column = index.Columns.Single();
+            Assert.That(column.Name, Is.EqualTo("Hash"));
+            Assert.That(column.SortDirection, Is.EqualTo(SortDirection.Ascending));
+
+            // HealthInfo
+            Assert.That(indexes3, Has.Count.EqualTo(2));
+
+            // index: IX_healthInfo_metricAmetricB
+            index = indexes3[0];
+            Assert.That(index.Name, Is.EqualTo("IX_healthInfo_metricAmetricB"));
+            Assert.That(index.TableName, Is.EqualTo("HealthInfo"));
+            Assert.That(index.IsUnique, Is.False);
+            Assert.That(index.Columns, Has.Count.EqualTo(2));
+
+            column = index.Columns[0];
+            Assert.That(column.Name, Is.EqualTo("MetricA"));
+            Assert.That(column.SortDirection, Is.EqualTo(SortDirection.Ascending));
+
+            column = index.Columns[1];
+            Assert.That(column.Name, Is.EqualTo("MetricB"));
+            Assert.That(column.SortDirection, Is.EqualTo(SortDirection.Descending));
+
+            // index: PK_healthInfo
+            index = indexes3[1];
+            Assert.That(index.Name, Is.EqualTo("PK_healthInfo"));
+            Assert.That(index.TableName, Is.EqualTo("HealthInfo"));
+            Assert.That(index.IsUnique, Is.True);
+            Assert.That(index.Columns, Has.Count.EqualTo(1));
+
+            column = index.Columns.Single();
+            Assert.That(column.Name, Is.EqualTo("Id"));
+            Assert.That(column.SortDirection, Is.EqualTo(SortDirection.Ascending));
+        }
+
+        [Test]
+        public void GetIndexes_SchemaDoesNotExist_ThrowsTauDbException()
+        {
+            // Arrange
+            IDbTableInspector inspector = new SqlTableInspectorLab(this.Connection, "bad_schema", "tab1");
+
+            // Act
+            var ex = Assert.Throws<TauDbException>(() => inspector.GetForeignKeys());
+
+            // Assert
+            Assert.That(ex.Message, Is.EqualTo("Schema 'bad_schema' does not exist."));
+        }
+
+        [Test]
+        public void GetIndexes_TableDoesNotExist_ThrowsTauDbException()
+        {
+            // Arrange
+            IDbTableInspector inspector = new SqlTableInspectorLab(this.Connection, "zeta", "bad_table");
+
+            // Act
+            var ex = Assert.Throws<TauDbException>(() => inspector.GetForeignKeys());
+
+            // Assert
+            Assert.That(ex.Message, Is.EqualTo("Table 'bad_table' does not exist in schema 'zeta'."));
+        }
 
         #endregion
 

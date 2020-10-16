@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using TauCode.Algorithms.Graphs;
 using TauCode.Db;
@@ -274,10 +275,141 @@ WHERE
 
             if (loadColumns)
             {
-                throw new NotImplementedException();
+                command.CommandText = @"
+SELECT
+    CU.constraint_name  ConstraintName,
+    CU.column_name      ColumnName,
+    CU2.column_name     ReferencedColumnName
+FROM
+    information_schema.key_column_usage CU
+INNER JOIN
+    information_schema.referential_constraints RC
+ON
+    CU.constraint_name = RC.constraint_name
+INNER JOIN
+    information_schema.key_column_usage CU2
+ON
+    RC.unique_constraint_name = CU2.constraint_name AND
+    CU.ordinal_position = CU2.ordinal_position
+WHERE
+    CU.constraint_name = @p_fkName AND
+    CU.constraint_schema = @p_schemaName AND
+    CU.table_schema = @p_schemaName AND
+
+    CU2.CONSTRAINT_SCHEMA = @p_schemaName AND
+    CU2.TABLE_SCHEMA = @p_schemaName
+ORDER BY
+    CU.ordinal_position
+";
+
+                command.Parameters.Clear();
+
+                var fkParam = command.Parameters.Add("p_fkName", SqlDbType.NVarChar, 100);
+                var schemaParam = command.Parameters.Add("p_schemaName", SqlDbType.NVarChar, 100);
+                schemaParam.Value = schemaName;
+
+                command.Prepare();
+
+                foreach (var fk in foreignKeyMolds)
+                {
+                    fkParam.Value = fk.Name;
+
+                    var rows = DbTools.GetCommandRows(command);
+
+                    fk.ColumnNames = rows
+                        .Select(x => (string)x.ColumnName)
+                        .ToList();
+
+                    fk.ReferencedColumnNames = rows
+                        .Select(x => (string)x.ReferencedColumnName)
+                        .ToList();
+                }
             }
 
             return foreignKeyMolds;
+        }
+
+        public static IList<IndexMold> GetTableIndexes(
+            this SqlConnection connection,
+            string schemaName,
+            string tableName)
+        {
+            if (connection == null)
+            {
+                throw new ArgumentNullException(nameof(connection));
+            }
+
+            if (schemaName == null)
+            {
+                throw new ArgumentNullException(nameof(schemaName));
+            }
+
+            if (tableName == null)
+            {
+                throw new ArgumentNullException(nameof(tableName));
+            }
+
+            using var command = connection.CreateCommand();
+            command.CommandText = @"
+SELECT
+    I.[index_id]            IndexId,
+    I.[name]                IndexName,
+    I.[is_unique]           IndexIsUnique,
+    IC.[key_ordinal]        KeyOrdinal,
+    C.[name]                ColumnName,
+    IC.[is_descending_key]  IsDescendingKey
+FROM
+    sys.indexes I
+INNER JOIN
+    sys.index_columns IC
+ON
+    IC.[index_id] = I.[index_id]
+    AND
+    IC.[object_id] = I.[object_id]
+INNER JOIN
+    sys.columns C
+ON
+    C.[column_id] = IC.[column_id]
+    AND
+    C.[object_id] = IC.[object_id]
+INNER JOIN
+    sys.tables T
+ON
+    T.[object_id] = C.[object_id]
+INNER JOIN
+    sys.schemas S
+ON
+    T.[schema_id] = S.[schema_id]
+WHERE
+    T.[name] = @p_tableName and
+    S.[name] = @p_schemaName
+ORDER BY
+    I.[name],
+    IC.[key_ordinal]
+";
+
+            command.Parameters.AddWithValue("p_tableName", tableName);
+            command.Parameters.AddWithValue("p_schemaName", schemaName);
+
+            return DbTools
+                .GetCommandRows(command)
+                .GroupBy(x => (int)x.IndexId)
+                .Select(g => new IndexMold
+                {
+                    Name = (string)g.First().IndexName,
+                    TableName = tableName,
+                    Columns = g
+                        .OrderBy(x => (int)x.KeyOrdinal)
+                        .Select(x => new IndexColumnMold
+                        {
+                            Name = (string)x.ColumnName,
+                            SortDirection = (bool)x.IsDescendingKey ? SortDirection.Descending : SortDirection.Ascending,
+                        })
+                        .ToList(),
+                    IsUnique = (bool)g.First().IndexIsUnique,
+                })
+                .OrderBy(x => x.Name)
+                .ToList();
         }
 
         public static IReadOnlyList<string> GetTableForeignKeyNames(

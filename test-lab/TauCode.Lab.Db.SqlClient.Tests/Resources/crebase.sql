@@ -100,7 +100,7 @@ CREATE TABLE [zeta].[HealthInfo](
 )
 
 /*** HealthInfo - index on [MetricA], [MetricB] ***/
-CREATE INDEX [IX_healthInfo_metricAmetricB] ON [zeta].[HealthInfo]([MetricA], [MetricB])
+CREATE INDEX [IX_healthInfo_metricAmetricB] ON [zeta].[HealthInfo]([MetricA] ASC, [MetricB] DESC)
 
 /*** NumericData ***/
 CREATE TABLE [zeta].[NumericData](

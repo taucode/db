@@ -102,6 +102,10 @@ namespace TauCode.Db
 
         protected abstract PrimaryKeyMold GetPrimaryKeyImpl();
 
+        protected abstract IReadOnlyList<ForeignKeyMold> GetForeignKeysImpl();
+
+        protected abstract IReadOnlyList<IndexMold> GetIndexesImpl();
+
         #endregion
 
         #region ITableInspector Members
@@ -128,9 +132,23 @@ namespace TauCode.Db
             return primaryKey;
         }
 
-        public abstract IReadOnlyList<ForeignKeyMold> GetForeignKeys();
+        public IReadOnlyList<ForeignKeyMold> GetForeignKeys()
+        {
+            this.CheckSchemaIfNeeded();
+            this.CheckTable();
 
-        public abstract IReadOnlyList<IndexMold> GetIndexes();
+            var foreignKeys = this.GetForeignKeysImpl();
+            return foreignKeys;
+        }
+
+        public IReadOnlyList<IndexMold> GetIndexes()
+        {
+            this.CheckSchemaIfNeeded();
+            this.CheckTable();
+
+            var indexes = this.GetIndexesImpl();
+            return indexes;
+        }
 
         public virtual TableMold GetTable()
         {

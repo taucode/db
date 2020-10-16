@@ -139,15 +139,11 @@ WHERE
         protected override PrimaryKeyMold GetPrimaryKeyImpl() =>
             this.SqlConnection.GetTablePrimaryKey(this.SchemaName, this.TableName);
 
-        public override IReadOnlyList<ForeignKeyMold> GetForeignKeys()
-        {
-            throw new System.NotImplementedException();
-        }
+        protected override IReadOnlyList<ForeignKeyMold> GetForeignKeysImpl()
+            => this.SqlConnection.GetTableForeignKeys(this.SchemaName, this.TableName, true).ToList();
 
-        public override IReadOnlyList<IndexMold> GetIndexes()
-        {
-            throw new System.NotImplementedException();
-        }
+        protected override IReadOnlyList<IndexMold> GetIndexesImpl()
+            => this.SqlConnection.GetTableIndexes(this.SchemaName, this.TableName).ToList();
 
         private static bool ParseBoolean(object value)
         {
@@ -177,7 +173,8 @@ WHERE
                 }
             }
 
-            throw new ArgumentException($"Could not parse value '{value}' of type '{value.GetType().FullName}' as boolean.");
+            throw new ArgumentException(
+                $"Could not parse value '{value}' of type '{value.GetType().FullName}' as boolean.");
         }
 
         private static int? GetDbValueAsInt(object dbValue)
