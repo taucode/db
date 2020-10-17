@@ -387,7 +387,7 @@ namespace TauCode.Db
             var idColumnName = table.GetPrimaryKeyColumn().Name;
 
             using var helper = new CommandHelper(this, table, new[] { idColumnName });
-            var sql = this.ScriptBuilder.BuildSelectByIdScript(table, helper.GetParameterNames().Single().Value);
+            var sql = this.ScriptBuilder.BuildSelectByPrimaryKeyScript(table, helper.GetParameterNames().Single().Value);
             helper.CommandText = sql;
             var rows = helper.FetchWithValues(new Dictionary<string, object>
             {
@@ -479,7 +479,7 @@ namespace TauCode.Db
             var idColumnName = table.GetPrimaryKeyColumn().Name;
 
             using var helper = new CommandHelper(this, table, new[] { idColumnName });
-            var sql = this.ScriptBuilder.BuildDeleteByIdScript(table, helper.GetParameterNames().Single().Value);
+            var sql = this.ScriptBuilder.BuildDeleteByPrimaryKeyScript(table, helper.GetParameterNames().Single().Value);
             helper.CommandText = sql;
 
             var result = helper.ExecuteWithValues(new Dictionary<string, object>

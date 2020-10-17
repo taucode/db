@@ -25,3 +25,7 @@
 2019-11-25
 ==========
     1. Took advantage of TauCode.Parsing for SQLite.
+
+2020-10-17
+==========
+    1. Added schema concept.

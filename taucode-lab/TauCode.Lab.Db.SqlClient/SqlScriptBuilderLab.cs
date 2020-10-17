@@ -9,7 +9,7 @@ namespace TauCode.Lab.Db.SqlClient
         private const string MAX_SIZE = "max";
 
         public SqlScriptBuilderLab(string schema)
-            : base(schema)
+            : base(schema ?? SqlToolsLab.DefaultSchemaName)
         {
 
         }

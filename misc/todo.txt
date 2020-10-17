@@ -28,9 +28,9 @@ x   5. IDbInspector should check type (actually, type full name) of IDbConnectio
 
 2020-09-24
 ==========
-    1. Incorporate changes from TX.
-    2. Support schemas.
-    3. Get rid of type-names.txt. data-type-names.txt
+x   1. Incorporate changes from TX.
++   2. Support schemas.
++   3. Get rid of type-names.txt. data-type-names.txt
 
 2020-09-27
 ==========

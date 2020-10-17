@@ -29,6 +29,19 @@ namespace TauCode.Db
 
         #region Protected
 
+        protected void WriteSchemaPrefixIfNeeded(StringBuilder sb)
+        {
+            if (this.SchemaName != null)
+            {
+                sb.Append(this.Dialect.DecorateIdentifier(
+                    DbIdentifierType.Schema,
+                    this.SchemaName,
+                    this.CurrentOpeningIdentifierDelimiter));
+
+                sb.Append(".");
+            }
+        }
+
         protected virtual IDbDialect Dialect => this.Factory.GetDialect();
 
         protected virtual string TransformNegativeTypeSize(int size)
@@ -125,6 +138,8 @@ namespace TauCode.Db
             this.WriteDecoratedColumnsOverCommaScriptFragment(sb, foreignKey.ColumnNames);
             sb.Append(") REFERENCES ");
 
+            this.WriteSchemaPrefixIfNeeded(sb);
+
             var decoratedReferencedTableName = this.Dialect.DecorateIdentifier(
                 DbIdentifierType.Table,
                 foreignKey.ReferencedTableName,
@@ -140,15 +155,14 @@ namespace TauCode.Db
             StringBuilder sb,
             PrimaryKeyMold primaryKey)
         {
-            throw new NotImplementedException();
-            //var decoratedConstraintName = this.Dialect.DecorateIdentifier(
-            //    DbIdentifierType.Constraint,
-            //    primaryKey.Name,
-            //    this.CurrentOpeningIdentifierDelimiter);
+            var decoratedConstraintName = this.Dialect.DecorateIdentifier(
+                DbIdentifierType.Constraint,
+                primaryKey.Name,
+                this.CurrentOpeningIdentifierDelimiter);
 
-            //sb.Append($"CONSTRAINT {decoratedConstraintName} PRIMARY KEY(");
-            //this.WriteDecoratedIndexColumnsOverCommaScriptFragment(sb, primaryKey.Columns);
-            //sb.Append(")");
+            sb.Append($"CONSTRAINT {decoratedConstraintName} PRIMARY KEY(");
+            this.WriteDecoratedColumnsOverCommaScriptFragment(sb, primaryKey.Columns);
+            sb.Append(")");
         }
 
         protected virtual void WriteDecoratedColumnsOverCommaScriptFragment(
@@ -211,7 +225,8 @@ namespace TauCode.Db
 
         protected virtual string BuildInsertScriptWithDefaultValues(TableMold table)
         {
-            throw new NotSupportedException($"Default implementation of '{nameof(BuildInsertScriptWithDefaultValues)}' not supported.");
+            throw new NotSupportedException(
+                $"Default implementation of '{nameof(BuildInsertScriptWithDefaultValues)}' not supported.");
         }
 
         #endregion
@@ -244,7 +259,7 @@ namespace TauCode.Db
                     var tuple = this.Dialect.IdentifierDelimiters.SingleOrDefault(x => x.Item1 == value.Value);
                     if (tuple == null)
                     {
-                        throw new ArgumentException($"Unknown opening identifier delimiter: {value}", nameof(value));
+                        throw new TauDbException($"Invalid opening identifier delimiter: '{value}'.");
                     }
 
                     _currentOpeningIdentifierDelimiter = value;
@@ -265,8 +280,10 @@ namespace TauCode.Db
                 table.Name,
                 this.CurrentOpeningIdentifierDelimiter);
 
+            sb.Append("CREATE TABLE ");
+            this.WriteSchemaPrefixIfNeeded(sb);
 
-            sb.AppendLine($@"CREATE TABLE {decoratedTableName}(");
+            sb.AppendLine($@"{decoratedTableName}(");
 
             for (var i = 0; i < table.Columns.Count; i++)
             {
@@ -504,7 +521,10 @@ namespace TauCode.Db
             return sql;
         }
 
-        public virtual string BuildSelectByIdScript(TableMold table, string idParameterName)
+        public virtual string BuildSelectByPrimaryKeyScript(
+            TableMold table,
+            string idParameterName,
+            Func<string, bool> columnSelector = null)
         {
             var sb = new StringBuilder();
 
@@ -512,7 +532,7 @@ namespace TauCode.Db
                 DbIdentifierType.Table,
                 table.Name,
                 this.CurrentOpeningIdentifierDelimiter);
-            
+
             sb.AppendLine($"SELECT");
             for (var i = 0; i < table.Columns.Count; i++)
             {
@@ -542,7 +562,9 @@ namespace TauCode.Db
             return sql;
         }
 
-        public virtual string BuildSelectAllScript(TableMold table)
+        public virtual string BuildSelectAllScript(
+            TableMold table,
+            Func<string, bool> columnSelector = null)
         {
             var sb = new StringBuilder();
 
@@ -574,16 +596,16 @@ namespace TauCode.Db
             return sql;
         }
 
-        public virtual string BuildDeleteByIdScript(TableMold table, string idParameterName)
+        public virtual string BuildDeleteByPrimaryKeyScript(TableMold table, string pkColumnParameterName)
         {
             if (table == null)
             {
                 throw new ArgumentNullException(nameof(table));
             }
 
-            if (idParameterName == null)
+            if (pkColumnParameterName == null)
             {
-                throw new ArgumentNullException(nameof(idParameterName));
+                throw new ArgumentNullException(nameof(pkColumnParameterName));
             }
 
             var sb = new StringBuilder();
@@ -598,7 +620,7 @@ namespace TauCode.Db
                 table.GetPrimaryKeyColumn().Name,
                 this.CurrentOpeningIdentifierDelimiter);
 
-            sb.Append($"DELETE FROM {decoratedTableName} WHERE {decoratedIdColumnName} = @{idParameterName}");
+            sb.Append($"DELETE FROM {decoratedTableName} WHERE {decoratedIdColumnName} = @{pkColumnParameterName}");
             var sql = sb.ToString();
             return sql;
         }

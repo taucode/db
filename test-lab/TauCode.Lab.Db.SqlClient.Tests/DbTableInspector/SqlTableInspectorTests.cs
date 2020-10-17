@@ -223,7 +223,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbTableInspector
             this.AssertColumn(columns[6], "RecordDate", new DbTypeMoldInfo("datetime"), true, null, null);
             this.AssertColumn(columns[7], "CreatedAt", new DbTypeMoldInfo("datetimeoffset"), false, null, null);
             this.AssertColumn(columns[8], "PersonOrdNumber", new DbTypeMoldInfo("tinyint"), false, null, null);
-            this.AssertColumn(columns[9], "DuteDate", new DbTypeMoldInfo("datetime2"), true, null, null);
+            this.AssertColumn(columns[9], "DueDate", new DbTypeMoldInfo("datetime2"), true, null, null);
 
             #endregion
 
