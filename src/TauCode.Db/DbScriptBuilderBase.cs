@@ -395,7 +395,13 @@ namespace TauCode.Db
                 tableName,
                 this.CurrentOpeningIdentifierDelimiter);
 
-            return $"DROP TABLE {decoratedTableName}";
+            var sb = new StringBuilder();
+
+            sb.Append("DROP TABLE ");
+            this.WriteSchemaPrefixIfNeeded(sb);
+            sb.Append(decoratedTableName);
+
+            return sb.ToString();
         }
 
         public virtual string BuildInsertScript(

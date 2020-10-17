@@ -597,10 +597,46 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbScriptBuilder
 
         #region BuildDropTableScript
 
-        // todo
-        // - happy path
-        // - respects delimiter
-        // - arg is null => throws
+        [Test]
+        [TestCase('[')]
+        [TestCase('"')]
+        public void BuildDropTableScript_ValidArgument_ReturnsValidScript(char delimiter)
+        {
+            // Arrange
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta")
+            {
+                CurrentOpeningIdentifierDelimiter = delimiter,
+            };
+
+            // Act
+            var sql = scriptBuilder.BuildDropTableScript("MyTable");
+
+            // Assert
+            var expectedSql = "DROP TABLE [zeta].[MyTable]";
+
+            if (delimiter == '"')
+            {
+                expectedSql = expectedSql
+                    .Replace('[', '"')
+                    .Replace(']', '"');
+            }
+
+            Assert.That(sql, Is.EqualTo(expectedSql));
+        }
+
+        [Test]
+        public void BuildDropTableScript_TableNameIsNull_ThrowsArgumentNullException()
+        {
+            // Arrange
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta");
+
+            // Act
+            var ex = Assert.Throws<ArgumentNullException>(() => scriptBuilder.BuildDropTableScript(null));
+
+            // Assert
+            Assert.That(ex.ParamName, Is.EqualTo("tableName"));
+        }
+
 
         #endregion
 

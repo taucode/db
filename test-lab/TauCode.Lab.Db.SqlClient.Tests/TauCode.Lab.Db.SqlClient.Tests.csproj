@@ -20,14 +20,14 @@
 
   <ItemGroup>
     <EmbeddedResource Include="CommonResources\crebase.sql" />
-    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateIndexScript_NonUniqueIndex_Brackets.sql" />
-    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateIndexScript_NonUniqueIndex_DoubleQuotes.sql" />
-    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateIndexScript_UniqueIndex_DoubleQuotes.sql" />
-    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateIndexScript_UniqueIndex_Brackets.sql" />
-    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateTableScript_Brackets_NoConstraints.sql" />
-    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateTableScript_DoubleQuotes_NoConstraints.sql" />
-    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateTableScript_DoubleQuotes.sql" />
-    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateTableScript_Brackets.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateIndexScript\BuildCreateIndexScript_NonUniqueIndex_Brackets.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateIndexScript\BuildCreateIndexScript_NonUniqueIndex_DoubleQuotes.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateIndexScript\BuildCreateIndexScript_UniqueIndex_DoubleQuotes.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateIndexScript\BuildCreateIndexScript_UniqueIndex_Brackets.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateTableScript\BuildCreateTableScript_Brackets_NoConstraints.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateTableScript\BuildCreateTableScript_DoubleQuotes_NoConstraints.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateTableScript\BuildCreateTableScript_DoubleQuotes.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateTableScript\BuildCreateTableScript_Brackets.sql" />
   </ItemGroup>
 
   <ItemGroup>
