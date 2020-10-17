@@ -343,6 +343,13 @@ namespace TauCode.Db
 
         public virtual string BuildCreateIndexScript(IndexMold index)
         {
+            if (index == null)
+            {
+                throw new ArgumentNullException(nameof(index));
+            }
+
+            index.CheckNotCorrupted(nameof(index));
+
             var sb = new StringBuilder();
 
             sb.Append("CREATE");
@@ -359,6 +366,8 @@ namespace TauCode.Db
 
             sb.Append(decoratedIndexName);
             sb.Append(" ON ");
+
+            this.WriteSchemaPrefixIfNeeded(sb);
 
             var decoratedTableName = this.Dialect.DecorateIdentifier(
                 DbIdentifierType.Table,

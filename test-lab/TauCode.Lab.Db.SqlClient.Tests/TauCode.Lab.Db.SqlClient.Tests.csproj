@@ -8,6 +8,10 @@
 
   <ItemGroup>
     <None Remove="CommonResources\crebase.sql" />
+    <None Remove="DbScriptBuilder\TestResources\BuildCreateIndexScript_NonUniqueIndex_Brackets.sql" />
+    <None Remove="DbScriptBuilder\TestResources\BuildCreateIndexScript_NonUniqueIndex_DoubleQuotes.sql" />
+    <None Remove="DbScriptBuilder\TestResources\BuildCreateIndexScript_UniqueIndex_Brackets.sql" />
+    <None Remove="DbScriptBuilder\TestResources\BuildCreateIndexScript_UniqueIndex_DoubleQuotes.sql" />
     <None Remove="DbScriptBuilder\TestResources\BuildCreateTableScript_Brackets.sql" />
     <None Remove="DbScriptBuilder\TestResources\BuildCreateTableScript_Brackets_NoConstraints.sql" />
     <None Remove="DbScriptBuilder\TestResources\BuildCreateTableScript_DoubleQuotes.sql" />
@@ -16,6 +20,10 @@
 
   <ItemGroup>
     <EmbeddedResource Include="CommonResources\crebase.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateIndexScript_NonUniqueIndex_Brackets.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateIndexScript_NonUniqueIndex_DoubleQuotes.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateIndexScript_UniqueIndex_DoubleQuotes.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateIndexScript_UniqueIndex_Brackets.sql" />
     <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateTableScript_Brackets_NoConstraints.sql" />
     <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateTableScript_DoubleQuotes_NoConstraints.sql" />
     <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateTableScript_DoubleQuotes.sql" />

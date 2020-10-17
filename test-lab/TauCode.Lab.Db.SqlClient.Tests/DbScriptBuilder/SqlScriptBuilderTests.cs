@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
+using System.Linq;
 using TauCode.Db;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
@@ -420,19 +421,177 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbScriptBuilder
             Assert.That(ex33, Has.Message.StartsWith("Index columns cannot be empty."));
             Assert.That(ex34, Has.Message.StartsWith("Index columns cannot contain nulls."));
             Assert.That(ex35, Has.Message.StartsWith("Index column name cannot be null."));
+
+            #region check arg name
+
+            ArgumentException[] exceptions = new[]
+            {
+                ex1,
+                ex2,
+                ex3,
+                ex4,
+                ex5,
+                ex6,
+                ex7,
+                ex8,
+                ex9,
+                ex10,
+                ex11,
+                ex12,
+                ex13,
+                ex14,
+                ex15,
+                ex16,
+                ex17,
+                ex18,
+                ex19,
+                ex20,
+                ex21,
+                ex22,
+                ex23,
+                ex24,
+                ex25,
+                ex26,
+                ex27,
+                ex28,
+                ex29,
+                ex30,
+                ex31,
+                ex32,
+                ex33,
+                ex34,
+                ex35,
+            };
+
+            Assert.That(exceptions.All(x => x.ParamName == "table"), Is.True);
+
+            #endregion
         }
 
         #endregion
 
         #region BuildCreateIndexScript
 
-        // todo
-        // - unique index
-        // - non-unique index
-        // - multi-column index with asc/desc
-        // - index is null => throws
-        // - index is corrupted => throws
-        // - respects delimiter
+        [Test]
+        [TestCase('[')]
+        [TestCase('"')]
+        public void BuildCreateIndexScript_UniqueIndex_ReturnsValidScript(char delimiter)
+        {
+            // Arrange
+            IDbTableInspector tableInspector = new SqlTableInspectorLab(this.Connection, "zeta", "WorkInfo");
+            var table = tableInspector.GetTable();
+            var index = table.Indexes.Single(x => x.Name == "UX_workInfo_Hash");
+
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta")
+            {
+                CurrentOpeningIdentifierDelimiter = delimiter,
+            };
+
+            // Act
+            var sql = scriptBuilder.BuildCreateIndexScript(index);
+
+            // Assert
+            var expectedSql = this.GetType().Assembly.GetResourceText("BuildCreateIndexScript_UniqueIndex_Brackets.sql", true);
+
+            if (delimiter == '"')
+            {
+                expectedSql = this.GetType().Assembly.GetResourceText("BuildCreateIndexScript_UniqueIndex_DoubleQuotes.sql", true);
+            }
+
+            Assert.That(sql, Is.EqualTo(expectedSql));
+        }
+
+        [Test]
+        [TestCase('[')]
+        [TestCase('"')]
+        public void BuildCreateIndexScript_NonUniqueIndex_ReturnsValidScript(char delimiter)
+        {
+            // Arrange
+            IDbTableInspector tableInspector = new SqlTableInspectorLab(this.Connection, "zeta", "HealthInfo");
+            var table = tableInspector.GetTable();
+            var index = table.Indexes.Single(x => x.Name == "IX_healthInfo_metricAmetricB");
+
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta")
+            {
+                CurrentOpeningIdentifierDelimiter = delimiter,
+            };
+
+            // Act
+            var sql = scriptBuilder.BuildCreateIndexScript(index);
+
+            // Assert
+            var expectedSql = this.GetType().Assembly.GetResourceText("BuildCreateIndexScript_NonUniqueIndex_Brackets.sql", true);
+
+            if (delimiter == '"')
+            {
+                expectedSql = this.GetType().Assembly.GetResourceText("BuildCreateIndexScript_NonUniqueIndex_DoubleQuotes.sql", true);
+            }
+
+            Assert.That(sql, Is.EqualTo(expectedSql));
+        }
+
+        [Test]
+        public void BuildCreateIndexScript_IndexIsNull_ThrowsArgumentNullException()
+        {
+            // Arrange
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta");
+
+            // Act
+            var ex = Assert.Throws<ArgumentNullException>(() => scriptBuilder.BuildCreateIndexScript(null));
+
+            // Assert
+            Assert.That(ex.ParamName, Is.EqualTo("index"));
+        }
+
+        [Test]
+        public void BuildCreateIndexScript_IndexIsCorrupted_ThrowsArgumentException()
+        {
+            // Arrange
+            IDbTableInspector tableInspector = new SqlTableInspectorLab(this.Connection, "zeta", "HealthInfo");
+            var table = tableInspector.GetTable();
+            var index = table.Indexes.Single(x => x.Name == "IX_healthInfo_metricAmetricB");
+
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta");
+
+            // Act
+            // corrupted: index name is null
+            var index1 = (IndexMold)index.Clone();
+            index1.Name = null;
+            var ex1 = Assert.Throws<ArgumentException>(() => scriptBuilder.BuildCreateIndexScript(index1));
+
+            // corrupted: index index name is null
+            var index2 = (IndexMold)index.Clone();
+            index2.TableName = null;
+            var ex2 = Assert.Throws<ArgumentException>(() => scriptBuilder.BuildCreateIndexScript(index2));
+
+            // corrupted: index columns is null
+            var index3 = (IndexMold)index.Clone();
+            index3.Columns = null;
+            var ex3 = Assert.Throws<ArgumentException>(() => scriptBuilder.BuildCreateIndexScript(index3));
+
+            // corrupted: index columns is empty
+            var index4 = (IndexMold)index.Clone();
+            index4.Columns.Clear();
+            var ex4 = Assert.Throws<ArgumentException>(() => scriptBuilder.BuildCreateIndexScript(index4));
+
+            // corrupted: index columns contains null
+            var index5 = (IndexMold)index.Clone();
+            index5.Columns[0] = null;
+            var ex5 = Assert.Throws<ArgumentException>(() => scriptBuilder.BuildCreateIndexScript(index5));
+
+            // corrupted: index column name is null
+            var index6 = (IndexMold)index.Clone();
+            index6.Columns[0].Name = null;
+            var ex6 = Assert.Throws<ArgumentException>(() => scriptBuilder.BuildCreateIndexScript(index6));
+
+            // Assert
+            Assert.That(ex1, Has.Message.StartsWith("Index name cannot be null."));
+            Assert.That(ex2, Has.Message.StartsWith("Index table name cannot be null."));
+            Assert.That(ex3, Has.Message.StartsWith("Index columns cannot be null."));
+            Assert.That(ex4, Has.Message.StartsWith("Index columns cannot be empty."));
+            Assert.That(ex5, Has.Message.StartsWith("Index columns cannot contain nulls."));
+            Assert.That(ex6, Has.Message.StartsWith("Index column name cannot be null."));
+        }
 
         #endregion
 
