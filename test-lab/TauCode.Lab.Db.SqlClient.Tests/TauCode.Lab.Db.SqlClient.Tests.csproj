@@ -7,11 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\crebase.sql" />
+    <None Remove="CommonResources\crebase.sql" />
+    <None Remove="DbScriptBuilder\TestResources\BuildCreateTableScript_Brackets.sql" />
+    <None Remove="DbScriptBuilder\TestResources\BuildCreateTableScript_Brackets_NoConstraints.sql" />
+    <None Remove="DbScriptBuilder\TestResources\BuildCreateTableScript_DoubleQuotes.sql" />
+    <None Remove="DbScriptBuilder\TestResources\BuildCreateTableScript_DoubleQuotes_NoConstraints.sql" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resources\crebase.sql" />
+    <EmbeddedResource Include="CommonResources\crebase.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateTableScript_Brackets_NoConstraints.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateTableScript_DoubleQuotes_NoConstraints.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateTableScript_DoubleQuotes.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateTableScript_Brackets.sql" />
   </ItemGroup>
 
   <ItemGroup>

@@ -273,6 +273,8 @@ namespace TauCode.Db
 
         public virtual string BuildCreateTableScript(TableMold table, bool includeConstraints)
         {
+            table.CheckNotNullOrCorrupted();
+
             var sb = new StringBuilder();
 
             var decoratedTableName = this.Dialect.DecorateIdentifier(
@@ -331,10 +333,6 @@ namespace TauCode.Db
                         {
                             sb.AppendLine(",");
                         }
-                    }
-
-                    foreach (var constraint in constraints)
-                    {
                     }
                 }
             }

@@ -320,5 +320,264 @@ namespace TauCode.Db
         {
             return new TauDbException("Internal error.");
         }
+
+        internal static void CheckNotNullOrCorrupted(this TableMold table)
+        {
+            if (table == null)
+            {
+                throw new ArgumentNullException(nameof(table));
+            }
+
+            // name
+            if (table.Name == null)
+            {
+                throw new ArgumentException("Table name cannot be null.", nameof(table)); 
+            }
+
+            // columns
+            if (table.Columns == null)
+            {
+                throw new ArgumentException("Table columns cannot be null.", nameof(table));
+            }
+
+            if (table.Columns.Any(x => x == null))
+            {
+                throw new ArgumentException("Table columns cannot contain nulls.", nameof(table));
+            }
+
+            if (table.Columns.Count == 0)
+            {
+                throw new ArgumentException("Table columns cannot be empty.", nameof(table));
+            }
+
+            foreach (var column in table.Columns)
+            {
+                column.CheckNotCorrupted(nameof(table));
+            }
+
+            // pk
+            table.PrimaryKey.CheckNotCorrupted("table", true);
+
+            // fk-s
+            if (table.ForeignKeys == null)
+            {
+                throw new ArgumentException("Table foreign keys list cannot be null.", nameof(table));
+            }
+
+            if (table.ForeignKeys.Any(x => x == null))
+            {
+                throw new ArgumentException("Table foreign keys cannot contain nulls.", nameof(table));
+            }
+
+            foreach (var foreignKey in table.ForeignKeys)
+            {
+                foreignKey.CheckNotCorrupted(nameof(table));
+            }
+
+            // indexes
+            if (table.Indexes == null)
+            {
+                throw new ArgumentException("Table indexes list cannot be null.", nameof(table));
+            }
+
+            if (table.Indexes.Any(x => x == null))
+            {
+                throw new ArgumentException("Table indexes cannot contain nulls.", nameof(table));
+            }
+
+            foreach (var index in table.Indexes)
+            {
+                index.CheckNotCorrupted(nameof(table));
+            }
+        }
+
+        internal static void CheckNotCorrupted(this ColumnMold column, string argumentName)
+        {
+            if (argumentName == null)
+            {
+                throw new ArgumentNullException(nameof(argumentName));
+            }
+
+            if (column.Name == null)
+            {
+                throw new ArgumentException("Column name cannot be null.", argumentName);
+            }
+
+            if (column.Type == null)
+            {
+                throw new ArgumentException("Column type cannot be null.", argumentName);
+            }
+
+            column.Type.CheckNotCorrupted(argumentName);
+            column.Identity?.CheckNotCorrupted(argumentName);
+        }
+
+        internal static void CheckNotCorrupted(this DbTypeMold type, string argumentName)
+        {
+            if (argumentName == null)
+            {
+                throw new ArgumentNullException(nameof(argumentName));
+            }
+
+            if (type.Name == null)
+            {
+                throw new ArgumentException("Type name cannot be null.", argumentName);
+            }
+
+            if (type.Size.HasValue)
+            {
+                if (type.Precision.HasValue || type.Scale.HasValue)
+                {
+                    throw new ArgumentException("If type size is provided, neither precision nor scale cannot be provided.", argumentName);
+                }
+            }
+
+            if (type.Scale.HasValue && !type.Precision.HasValue)
+            {
+                throw new ArgumentException("If type scale is provided, precision must be provided as well.", argumentName);
+            }
+        }
+
+        internal static void CheckNotCorrupted(this ColumnIdentityMold columnIdentity, string argumentName)
+        {
+            if (argumentName == null)
+            {
+                throw new ArgumentNullException(nameof(argumentName));
+            }
+
+            if (columnIdentity.Seed == null)
+            {
+                throw new ArgumentException("Identity seed cannot be null.", argumentName);
+            }
+
+            if (columnIdentity.Increment == null)
+            {
+                throw new ArgumentException("Identity increment cannot be null.", argumentName);
+            }
+        }
+
+        internal static void CheckNotCorrupted(this IndexMold index, string argumentName)
+        {
+            if (argumentName == null)
+            {
+                throw new ArgumentNullException(nameof(argumentName));
+            }
+
+            if (index.Name == null)
+            {
+                throw new ArgumentException("Index name cannot be null.", argumentName);
+            }
+
+            if (index.TableName == null)
+            {
+                throw new ArgumentException("Index table name cannot be null.", argumentName);
+            }
+
+            if (index.Columns == null)
+            {
+                throw new ArgumentException("Index columns cannot be null.", argumentName);
+            }
+
+            if (index.Columns.Count == 0)
+            {
+                throw new ArgumentException("Index columns cannot be empty.", argumentName);
+            }
+
+            if (index.Columns.Any(x => x == null))
+            {
+                throw new ArgumentException("Index columns cannot contain nulls.", argumentName);
+            }
+
+            if (index.Columns.Any(x => x.Name == null))
+            {
+                throw new ArgumentException("Index column name cannot be null.", argumentName);
+            }
+        }
+
+        internal static void CheckNotCorrupted(this ForeignKeyMold foreignKey, string argumentName)
+        {
+            if (argumentName == null)
+            {
+                throw new ArgumentNullException(nameof(argumentName));
+            }
+
+            if (foreignKey.Name == null)
+            {
+                throw new ArgumentException("Foreign key name cannot be null.", argumentName);
+            }
+
+            if (foreignKey.ColumnNames == null)
+            {
+                throw new ArgumentException("Foreign key column names collection cannot be null.", argumentName);
+            }
+
+            if (foreignKey.ColumnNames.Count == 0)
+            {
+                throw new ArgumentException("Foreign key column names collection cannot be empty.", argumentName);
+            }
+
+            if (foreignKey.ColumnNames.Any(x => x == null))
+            {
+                throw new ArgumentException("Foreign key column names cannot contain nulls.", argumentName);
+            }
+
+            if (foreignKey.ReferencedTableName == null)
+            {
+                throw new ArgumentException("Foreign key's referenced table name cannot be null.", argumentName);
+            }
+
+            if (foreignKey.ReferencedColumnNames == null)
+            {
+                throw new ArgumentException("Foreign key referenced column names collection cannot be null.", argumentName);
+            }
+
+            if (foreignKey.ReferencedColumnNames.Any(x => x == null))
+            {
+                throw new ArgumentException("Foreign key referenced column names cannot contain nulls.", argumentName);
+            }
+
+            if (foreignKey.ColumnNames.Count != foreignKey.ReferencedColumnNames.Count)
+            {
+                throw new ArgumentException("Foreign key's column name count does not match referenced column name count.", argumentName);
+            }
+        }
+
+        internal static void CheckNotCorrupted(this PrimaryKeyMold primaryKey, string argumentName, bool canBeNull)
+        {
+            if (argumentName == null)
+            {
+                throw new ArgumentNullException(nameof(argumentName));
+            }
+
+            if (primaryKey == null)
+            {
+                if (!canBeNull)
+                {
+                    throw new ArgumentNullException(argumentName);
+                }
+
+                return;
+            }
+
+            if (primaryKey.Name == null)
+            {
+                throw new ArgumentException("Primary key's name cannot be null.", argumentName);
+            }
+
+            if (primaryKey.Columns == null)
+            {
+                throw new ArgumentException("Primary key's columns cannot be null.", argumentName);
+            }
+
+            if (primaryKey.Columns.Count == 0)
+            {
+                throw new ArgumentException("Primary key's columns cannot be empty.", argumentName);
+            }
+
+            if (primaryKey.Columns.Any(x => x == null))
+            {
+                throw new ArgumentException("Primary key's columns cannot contain nulls.", argumentName);
+            }
+        }
     }
 }
