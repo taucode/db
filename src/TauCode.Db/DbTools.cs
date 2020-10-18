@@ -321,38 +321,38 @@ namespace TauCode.Db
             return new TauDbException("Internal error.");
         }
 
-        internal static void CheckNotNullOrCorrupted(this TableMold table)
+        internal static void CheckNotNullOrCorrupted(this TableMold table, string tableArgumentName)
         {
             if (table == null)
             {
-                throw new ArgumentNullException(nameof(table));
+                throw new ArgumentNullException(tableArgumentName);
             }
 
             // name
             if (table.Name == null)
             {
-                throw new ArgumentException("Table name cannot be null.", nameof(table)); 
+                throw new ArgumentException("Table name cannot be null.", tableArgumentName); 
             }
 
             // columns
             if (table.Columns == null)
             {
-                throw new ArgumentException("Table columns cannot be null.", nameof(table));
+                throw new ArgumentException("Table columns cannot be null.", tableArgumentName);
             }
 
             if (table.Columns.Any(x => x == null))
             {
-                throw new ArgumentException("Table columns cannot contain nulls.", nameof(table));
+                throw new ArgumentException("Table columns cannot contain nulls.", tableArgumentName);
             }
 
             if (table.Columns.Count == 0)
             {
-                throw new ArgumentException("Table columns cannot be empty.", nameof(table));
+                throw new ArgumentException("Table columns cannot be empty.", tableArgumentName);
             }
 
             foreach (var column in table.Columns)
             {
-                column.CheckNotCorrupted(nameof(table));
+                column.CheckNotCorrupted(tableArgumentName);
             }
 
             // pk
@@ -361,33 +361,33 @@ namespace TauCode.Db
             // fk-s
             if (table.ForeignKeys == null)
             {
-                throw new ArgumentException("Table foreign keys list cannot be null.", nameof(table));
+                throw new ArgumentException("Table foreign keys list cannot be null.", tableArgumentName);
             }
 
             if (table.ForeignKeys.Any(x => x == null))
             {
-                throw new ArgumentException("Table foreign keys cannot contain nulls.", nameof(table));
+                throw new ArgumentException("Table foreign keys cannot contain nulls.", tableArgumentName);
             }
 
             foreach (var foreignKey in table.ForeignKeys)
             {
-                foreignKey.CheckNotCorrupted(nameof(table));
+                foreignKey.CheckNotCorrupted(tableArgumentName);
             }
 
             // indexes
             if (table.Indexes == null)
             {
-                throw new ArgumentException("Table indexes list cannot be null.", nameof(table));
+                throw new ArgumentException("Table indexes list cannot be null.", tableArgumentName);
             }
 
             if (table.Indexes.Any(x => x == null))
             {
-                throw new ArgumentException("Table indexes cannot contain nulls.", nameof(table));
+                throw new ArgumentException("Table indexes cannot contain nulls.", tableArgumentName);
             }
 
             foreach (var index in table.Indexes)
             {
-                index.CheckNotCorrupted(nameof(table));
+                index.CheckNotCorrupted(tableArgumentName);
             }
         }
 

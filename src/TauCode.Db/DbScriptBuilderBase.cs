@@ -273,7 +273,7 @@ namespace TauCode.Db
 
         public virtual string BuildCreateTableScript(TableMold table, bool includeConstraints)
         {
-            table.CheckNotNullOrCorrupted();
+            table.CheckNotNullOrCorrupted(nameof(table));
 
             var sb = new StringBuilder();
 
@@ -408,18 +408,20 @@ namespace TauCode.Db
             TableMold table,
             IReadOnlyDictionary<string, string> columnToParameterMappings)
         {
-            if (table == null)
-            {
-                throw new ArgumentNullException(nameof(table));
-            }
+            table.CheckNotNullOrCorrupted(nameof(table));
 
             if (columnToParameterMappings == null)
             {
                 throw new ArgumentNullException(nameof(columnToParameterMappings));
             }
 
+            if (columnToParameterMappings.Values.Any(x => x == null))
+            {
+                throw new ArgumentException($"'{nameof(columnToParameterMappings)}' cannot contain null values.", nameof(columnToParameterMappings));
+            }
+
             var validColumnNames = table.Columns.Select(x => x.Name).ToHashSet();
-            var badColumn = columnToParameterMappings.Keys.SingleOrDefault(x => !validColumnNames.Contains(x));
+            var badColumn = columnToParameterMappings.Keys.FirstOrDefault(x => !validColumnNames.Contains(x));
             if (badColumn != null)
             {
                 throw new ArgumentException($"Invalid column: '{badColumn}'.", nameof(columnToParameterMappings));
