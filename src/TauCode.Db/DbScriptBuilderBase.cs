@@ -27,6 +27,12 @@ namespace TauCode.Db
 
         #endregion
 
+        #region Private
+
+        private bool ColumnTruer(string columnName) => true;
+
+        #endregion
+
         #region Protected
 
         protected void WriteSchemaPrefixIfNeeded(StringBuilder sb)
@@ -574,9 +580,27 @@ namespace TauCode.Db
 
         public virtual string BuildSelectByPrimaryKeyScript(
             TableMold table,
-            string idParameterName,
+            string pkParameterName,
             Func<string, bool> columnSelector = null)
         {
+            table.CheckNotNullOrCorrupted(nameof(table));
+            if (pkParameterName == null)
+            {
+                throw new ArgumentNullException(nameof(pkParameterName));
+            }
+
+            columnSelector ??= ColumnTruer;
+
+            var columnsToInclude =
+                table.Columns
+                    .Where(x => columnSelector(x.Name))
+                    .ToList();
+
+            if (columnsToInclude.Count == 0)
+            {
+                throw new ArgumentException("No columns were selected.", nameof(columnSelector));
+            }
+
             var sb = new StringBuilder();
 
             var decoratedTableName = this.Dialect.DecorateIdentifier(
@@ -584,30 +608,37 @@ namespace TauCode.Db
                 table.Name,
                 this.CurrentOpeningIdentifierDelimiter);
 
+            var decoratedIdPkColumnName = this.Dialect.DecorateIdentifier(
+                DbIdentifierType.Column,
+                table.GetPrimaryKeySingleColumn().Name,
+                this.CurrentOpeningIdentifierDelimiter);
+
             sb.AppendLine($"SELECT");
-            for (var i = 0; i < table.Columns.Count; i++)
+            for (var i = 0; i < columnsToInclude.Count; i++)
             {
-                var column = table.Columns[i];
+                var column = columnsToInclude[i];
                 var decoratedColumnName = this.Dialect.DecorateIdentifier(
                     DbIdentifierType.Column,
                     column.Name,
                     this.CurrentOpeningIdentifierDelimiter);
 
                 sb.Append($"    {decoratedColumnName}");
-                if (i < table.Columns.Count - 1)
+                if (i < columnsToInclude.Count - 1)
                 {
                     sb.AppendLine(",");
                 }
             }
 
             sb.AppendLine();
-            sb.AppendLine($"FROM {decoratedTableName}");
+
+            sb.AppendLine("FROM");
+
+            sb.Append("    ");
+            this.WriteSchemaPrefixIfNeeded(sb);
+            sb.AppendLine(decoratedTableName);
+
             sb.AppendLine("WHERE");
-            var decoratedIdColumnName = this.Dialect.DecorateIdentifier(
-                DbIdentifierType.Column,
-                table.GetPrimaryKeySingleColumn().Name,
-                this.CurrentOpeningIdentifierDelimiter);
-            sb.Append($"    {decoratedIdColumnName} = @{idParameterName}");
+            sb.Append($"    {decoratedIdPkColumnName} = @{pkParameterName}");
 
             var sql = sb.ToString();
             return sql;

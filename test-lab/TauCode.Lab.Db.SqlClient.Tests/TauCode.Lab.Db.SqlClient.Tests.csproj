@@ -18,12 +18,20 @@
     <None Remove="DbScriptBuilder\TestResources\BuildCreateTableScript_DoubleQuotes_NoConstraints.sql" />
     <None Remove="DbScriptBuilder\TestResources\BuildInsertScript\BuildInsertScript_AllColumns_Brackets.sql" />
     <None Remove="DbScriptBuilder\TestResources\BuildInsertScript\BuildInsertScript_AllColumns_DoubleQuotes.sql" />
+    <None Remove="DbScriptBuilder\TestResources\BuildSelectByPrimaryKeyScript\BuildSelectByPrimaryKeyScript_AllColumns_Brackets.sql" />
+    <None Remove="DbScriptBuilder\TestResources\BuildSelectByPrimaryKeyScript\BuildSelectByPrimaryKeyScript_AllColumns_DoubleQuotes.sql" />
+    <None Remove="DbScriptBuilder\TestResources\BuildSelectByPrimaryKeyScript\BuildSelectByPrimaryKeyScript_Brackets.sql" />
+    <None Remove="DbScriptBuilder\TestResources\BuildSelectByPrimaryKeyScript\BuildSelectByPrimaryKeyScript_DoubleQuotes.sql" />
     <None Remove="DbScriptBuilder\TestResources\BuildUpdateScript\BuildUpdateScript_AllColumns_Brackets.sql" />
     <None Remove="DbScriptBuilder\TestResources\BuildUpdateScript\BuildUpdateScript_AllColumns_DoubleQuotes.sql" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="CommonResources\crebase.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildSelectByPrimaryKeyScript\BuildSelectByPrimaryKeyScript_AllColumns_Brackets.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildSelectByPrimaryKeyScript\BuildSelectByPrimaryKeyScript_Brackets.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildSelectByPrimaryKeyScript\BuildSelectByPrimaryKeyScript_AllColumns_DoubleQuotes.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildSelectByPrimaryKeyScript\BuildSelectByPrimaryKeyScript_DoubleQuotes.sql" />
     <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildUpdateScript\BuildUpdateScript_AllColumns_Brackets.sql" />
     <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildUpdateScript\BuildUpdateScript_AllColumns_DoubleQuotes.sql" />
     <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildInsertScript\BuildInsertScript_AllColumns_DoubleQuotes.sql" />

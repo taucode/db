@@ -931,7 +931,8 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbScriptBuilder
                 x => x.Value);
             columnToParameterMappings1.Remove("Id");
 
-            var ex1 = Assert.Throws<ArgumentException>((() => scriptBuilder.BuildUpdateScript(table, columnToParameterMappings1)));
+            var ex1 = Assert.Throws<ArgumentException>((() =>
+                scriptBuilder.BuildUpdateScript(table, columnToParameterMappings1)));
 
             // pk column only
             var columnToParameterMappings2 = columnToParameterMappings.ToDictionary(
@@ -941,14 +942,19 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbScriptBuilder
             {
                 columnToParameterMappings2.Remove(columnName);
             }
-            var ex2 = Assert.Throws<ArgumentException>((() => scriptBuilder.BuildUpdateScript(table, columnToParameterMappings2)));
+
+            var ex2 = Assert.Throws<ArgumentException>((() =>
+                scriptBuilder.BuildUpdateScript(table, columnToParameterMappings2)));
 
 
             // Assert
-            Assert.That(ex1, Has.Message.StartsWith("'columnToParameterMappings' must contain primary key column mapping."));
+            Assert.That(ex1,
+                Has.Message.StartsWith("'columnToParameterMappings' must contain primary key column mapping."));
             Assert.That(ex1.ParamName, Is.EqualTo("columnToParameterMappings"));
 
-            Assert.That(ex2, Has.Message.StartsWith("'columnToParameterMappings' must contain at least one column mapping besides primary key column."));
+            Assert.That(ex2,
+                Has.Message.StartsWith(
+                    "'columnToParameterMappings' must contain at least one column mapping besides primary key column."));
             Assert.That(ex2.ParamName, Is.EqualTo("columnToParameterMappings"));
         }
 
@@ -969,7 +975,8 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbScriptBuilder
 
             // Act
 
-            var ex = Assert.Throws<ArgumentException>((() => scriptBuilder.BuildUpdateScript(table, columnToParameterMappings)));
+            var ex = Assert.Throws<ArgumentException>((() =>
+                scriptBuilder.BuildUpdateScript(table, columnToParameterMappings)));
 
             // Assert
             Assert.That(ex, Has.Message.StartsWith("Table does not have a primary key."));
@@ -995,7 +1002,8 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbScriptBuilder
 
             // Act
 
-            var ex = Assert.Throws<ArgumentException>((() => scriptBuilder.BuildUpdateScript(table, columnToParameterMappings)));
+            var ex = Assert.Throws<ArgumentException>((() =>
+                scriptBuilder.BuildUpdateScript(table, columnToParameterMappings)));
 
             // Assert
             Assert.That(ex, Has.Message.StartsWith("Failed to retrieve single primary key column name."));
@@ -1019,7 +1027,8 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbScriptBuilder
 
             // Act
 
-            var ex = Assert.Throws<ArgumentNullException>((() => scriptBuilder.BuildUpdateScript(null, columnToParameterMappings)));
+            var ex = Assert.Throws<ArgumentNullException>((() =>
+                scriptBuilder.BuildUpdateScript(null, columnToParameterMappings)));
 
             // Assert
             Assert.That(ex.ParamName, Is.EqualTo("table"));
@@ -1096,14 +1105,170 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbScriptBuilder
 
         #region BuildSelectByPrimaryKeyScript
 
-        // todo
-        // - happy path : respects columnSelector
-        // - columnSelector is null => delivers all
-        // - pk is absent => throws
-        // - pk is multi-column => throws
-        // - play around with columnSelector
-        // - columnSelector returned 0 columns => throws
-        // - respects delimiter
+        [Test]
+        [TestCase('[')]
+        [TestCase('"')]
+        public void BuildSelectByPrimaryKeyScript_ValidArguments_ReturnsValidScript(char delimiter)
+        {
+            // Arrange
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta")
+            {
+                CurrentOpeningIdentifierDelimiter = delimiter,
+            };
+
+            IDbTableInspector tableInspector = new SqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            var table = tableInspector.GetTable();
+
+            var columns = new[]
+            {
+                "Height",
+                "EnglishDescription",
+                "UnicodeDescription",
+                "PersonMetaKey",
+                "PersonOrdNumber",
+                "PersonId",
+            }.ToHashSet();
+
+            bool Selector(string x) => columns.Contains(x);
+
+            // Act
+            var sql = scriptBuilder.BuildSelectByPrimaryKeyScript(table, "p_id", Selector);
+
+            // Assert
+            var expectedSql = this.GetType()
+                .Assembly
+                .GetResourceText("BuildSelectByPrimaryKeyScript_Brackets.sql", true);
+
+            if (delimiter == '"')
+            {
+                expectedSql = this.GetType()
+                    .Assembly
+                    .GetResourceText("BuildSelectByPrimaryKeyScript_DoubleQuotes.sql", true);
+            }
+
+            TodoCompare(sql, expectedSql);
+
+            Assert.That(sql, Is.EqualTo(expectedSql));
+        }
+
+        [Test]
+        [TestCase('[')]
+        [TestCase('"')]
+        public void BuildSelectByPrimaryKeyScript_ColumnSelectorIsNull_ReturnsValidScript(char delimiter)
+        {
+            // Arrange
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta")
+            {
+                CurrentOpeningIdentifierDelimiter = delimiter,
+            };
+
+            IDbTableInspector tableInspector = new SqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            var table = tableInspector.GetTable();
+
+            // Act
+            var sql = scriptBuilder.BuildSelectByPrimaryKeyScript(table, "p_id", null);
+
+            // Assert
+            var expectedSql = this.GetType()
+                .Assembly
+                .GetResourceText("BuildSelectByPrimaryKeyScript_AllColumns_Brackets.sql", true);
+
+            if (delimiter == '"')
+            {
+                expectedSql = this.GetType()
+                    .Assembly
+                    .GetResourceText("BuildSelectByPrimaryKeyScript_AllColumns_DoubleQuotes.sql", true);
+            }
+
+            TodoCompare(sql, expectedSql);
+
+            Assert.That(sql, Is.EqualTo(expectedSql));
+        }
+
+        [Test]
+        public void BuildSelectByPrimaryKeyScript_TableDoesNotContainPrimaryKey_ThrowsArgumentException()
+        {
+            // Arrange
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta");
+
+            this.Connection.ExecuteSingleSql("CREATE TABLE [zeta].[dummy](Foo int)"); // no PK
+            IDbTableInspector tableInspector = new SqlTableInspectorLab(this.Connection, "zeta", "dummy");
+            var table = tableInspector.GetTable();
+
+            // Act
+
+            var ex = Assert.Throws<ArgumentException>((() =>
+                scriptBuilder.BuildSelectByPrimaryKeyScript(table, "p_id", x => true)));
+
+            // Assert
+            Assert.That(ex, Has.Message.StartsWith("Table does not have a primary key."));
+            Assert.That(ex.ParamName, Is.EqualTo("table"));
+        }
+
+        [Test]
+        public void BuildSelectByPrimaryKeyScript_PrimaryKeyIsMultiColumn_ThrowsArgumentException()
+        {
+            // Arrange
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta");
+            IDbTableInspector tableInspector = new SqlTableInspectorLab(this.Connection, "zeta", "Person");
+            var table = tableInspector.GetTable();
+
+            // Act
+
+            var ex = Assert.Throws<ArgumentException>((() =>
+                scriptBuilder.BuildSelectByPrimaryKeyScript(table, "p_id", x => true)));
+
+            // Assert
+            Assert.That(ex, Has.Message.StartsWith("Failed to retrieve single primary key column name."));
+            Assert.That(ex.ParamName, Is.EqualTo("table"));
+        }
+
+        [Test]
+        public void BuildSelectByPrimaryKeyScript_PrimaryKeyParameterNameIsNull_ThrowsArgumentNullException()
+        {
+            // Arrange
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta");
+
+            IDbTableInspector tableInspector = new SqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            var table = tableInspector.GetTable();
+
+            var columns = new[]
+            {
+                "Height",
+                "EnglishDescription",
+                "UnicodeDescription",
+                "PersonMetaKey",
+                "PersonOrdNumber",
+                "PersonId",
+            }.ToHashSet();
+
+            bool Selector(string x) => columns.Contains(x);
+
+            // Act
+            var ex = Assert.Throws<ArgumentNullException>(() =>
+                scriptBuilder.BuildSelectByPrimaryKeyScript(table, null, Selector));
+
+            // Assert
+            Assert.That(ex.ParamName, Is.EqualTo("pkParameterName"));
+        }
+
+        [Test]
+        public void BuildSelectByPrimaryKeyScript_NoColumnsSelected_ThrowsArgumentException()
+        {
+            // Arrange
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta");
+
+            IDbTableInspector tableInspector = new SqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            var table = tableInspector.GetTable();
+
+            // Act
+            var ex = Assert.Throws<ArgumentException>(() =>
+                scriptBuilder.BuildSelectByPrimaryKeyScript(table, "p_id", x => false));
+
+            // Assert
+            Assert.That(ex.ParamName, Is.EqualTo("columnSelector"));
+            Assert.That(ex, Has.Message.StartsWith("No columns were selected."));
+        }
 
         #endregion
 
