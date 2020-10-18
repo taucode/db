@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using TauCode.Db;
 using TauCode.Db.Exceptions;
@@ -637,20 +638,136 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbScriptBuilder
             Assert.That(ex.ParamName, Is.EqualTo("tableName"));
         }
 
-
         #endregion
 
         #region BuildInsertScript
 
+        [Test]
+        [TestCase('[')]
+        [TestCase('"')]
+        public void BuildInsertScript_ValidArguments_ReturnsValidScript(char delimiter)
+        {
+            // Arrange
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta")
+            {
+                CurrentOpeningIdentifierDelimiter = delimiter,
+            };
+
+            IDbTableInspector tableInspector = new SqlTableInspectorLab(this.Connection, "zeta", "Person");
+            var table = tableInspector.GetTable();
+
+            var columnToParameterMappings = new Dictionary<string, string>
+            {
+                { "MetaKey", "p_metaKey" },
+                { "OrdNumber", "p_ordNumber" },
+                { "Id", "p_id" },
+                { "FirstName", "p_firstName" },
+                { "LastName", "p_lastName" },
+                { "Birthday", "p_birthday" },
+                { "Gender", "p_gender" },
+                { "Initials", "p_initials" },
+            };
+
+            // Act
+            var sql = scriptBuilder.BuildInsertScript(table, columnToParameterMappings);
+
+            // Assert
+            var expectedSql = this.GetType().Assembly.GetResourceText("BuildInsertScript_AllColumns_Brackets.sql", true);
+            if (delimiter == '"')
+            {
+                expectedSql = this.GetType().Assembly.GetResourceText("BuildInsertScript_AllColumns_DoubleQuotes.sql", true);
+            }
+
+            TodoCompare(sql, expectedSql);
+
+            Assert.That(sql, Is.EqualTo(expectedSql));
+        }
+
+        [Test]
+        [TestCase('[')]
+        [TestCase('"')]
+        public void BuildInsertScript_ColumnToParameterMappingsIsEmpty_ReturnsValidScript(char delimiter)
+        {
+            // Arrange
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta")
+            {
+                CurrentOpeningIdentifierDelimiter = delimiter,
+            };
+
+            IDbTableInspector tableInspector = new SqlTableInspectorLab(this.Connection, "zeta", "Person");
+            var table = tableInspector.GetTable();
+
+            var columnToParameterMappings = new Dictionary<string, string>();
+
+            // Act
+            var sql = scriptBuilder.BuildInsertScript(table, columnToParameterMappings);
+
+            // Assert
+            var expectedSql = "INSERT INTO [zeta].[Person] DEFAULT VALUES";
+            if (delimiter == '"')
+            {
+                expectedSql = expectedSql
+                    .Replace('[', '"')
+                    .Replace(']', '"');
+            }
+
+            TodoCompare(sql, expectedSql);
+
+            Assert.That(sql, Is.EqualTo(expectedSql));
+        }
+
+        [Test]
+        [TestCase('[')]
+        [TestCase('"')]
+        public void BuildInsertScript_ColumnToParameterMappingsContainsBadColumns_ThrowsTodo(char delimiter)
+        {
+            // Arrange
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta")
+            {
+                CurrentOpeningIdentifierDelimiter = delimiter,
+            };
+
+            IDbTableInspector tableInspector = new SqlTableInspectorLab(this.Connection, "zeta", "Person");
+            var table = tableInspector.GetTable();
+
+            var columnToParameterMappings = new Dictionary<string, string>
+            {
+                { "MetaKey", "p_metaKey" },
+                { "OrdNumber", "p_ordNumber" },
+                { "Id", "p_id" },
+                { "FirstName", "p_firstName" },
+                { "LastName", "p_lastName" },
+                { "Birthday", "p_birthday" },
+                { "Gender", "p_gender" },
+                { "Initials", "p_initials" },
+                { "BadColumn", "p_badColumn" },
+            };
+
+            // Act
+            var ex = Assert.Throws<ArgumentException>(() => scriptBuilder.BuildInsertScript(table, columnToParameterMappings));
+
+            // Assert
+            Assert.That(ex, Has.Message.StartsWith($"Invalid column: 'BadColumn'."));
+            Assert.That(ex.ParamName, Is.EqualTo(nameof(columnToParameterMappings)));
+        }
+
+        [Test]
+        public void BuildInsertScript_TableMoldIsNull_ThrowsArgumentNullException()
+        {
+            // Arrange
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta");
+
+            // Act
+            var ex = Assert.Throws<ArgumentNullException>(() => scriptBuilder.BuildInsertScript(null, new Dictionary<string, string>()));
+
+            // Assert
+            Assert.That(ex.ParamName, Is.EqualTo("table"));
+        }
+
         // todo
-        // - happy path
-        // - happy path: columnToParameterMappings is empty (=> default values)
-        // - columnToParameterMappings has unknown columns => throws
-        // - table is null => throws
         // - table is corrupted => throws
         // - columnToParameterMappings is null => throws
         // - columnToParameterMappings is corrupted => throws
-        // - respects delimiter
 
         #endregion
 

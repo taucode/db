@@ -418,6 +418,13 @@ namespace TauCode.Db
                 throw new ArgumentNullException(nameof(columnToParameterMappings));
             }
 
+            var validColumnNames = table.Columns.Select(x => x.Name).ToHashSet();
+            var badColumn = columnToParameterMappings.Keys.SingleOrDefault(x => !validColumnNames.Contains(x));
+            if (badColumn != null)
+            {
+                throw new ArgumentException($"Invalid column: '{badColumn}'.", nameof(columnToParameterMappings));
+            }
+
             if (columnToParameterMappings.Count == 0)
             {
                 return this.BuildInsertScriptWithDefaultValues(table);
@@ -438,7 +445,10 @@ namespace TauCode.Db
                 table.Name,
                 this.CurrentOpeningIdentifierDelimiter);
 
-            sb.AppendLine($"INSERT INTO {decoratedTableName} (");
+            sb.Append("INSERT INTO ");
+            this.WriteSchemaPrefixIfNeeded(sb);
+            sb.AppendLine($"{decoratedTableName}(");
+
             for (var i = 0; i < tuples.Count; i++)
             {
                 var tuple = tuples[i];
@@ -452,7 +462,7 @@ namespace TauCode.Db
             }
 
             sb.AppendLine(")");
-            sb.AppendLine("VALUES (");
+            sb.AppendLine("VALUES(");
 
             for (var i = 0; i < tuples.Count; i++)
             {

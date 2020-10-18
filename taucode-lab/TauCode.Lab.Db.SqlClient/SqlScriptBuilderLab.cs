@@ -1,4 +1,5 @@
-﻿using TauCode.Db;
+﻿using System.Text;
+using TauCode.Db;
 using TauCode.Db.Model;
 
 namespace TauCode.Lab.Db.SqlClient
@@ -33,8 +34,12 @@ namespace TauCode.Lab.Db.SqlClient
                 table.Name,
                 this.CurrentOpeningIdentifierDelimiter);
 
-            var result = $"INSERT INTO {decoratedTableName} DEFAULT VALUES";
-            return result;
+            var sb = new StringBuilder();
+            sb.Append("INSERT INTO ");
+            this.WriteSchemaPrefixIfNeeded(sb);
+            sb.Append($"{decoratedTableName} DEFAULT VALUES");
+
+            return sb.ToString();
         }
     }
 }
