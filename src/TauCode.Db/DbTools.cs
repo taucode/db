@@ -117,10 +117,26 @@ namespace TauCode.Db
             return rows;
         }
 
-        public static ColumnMold GetPrimaryKeyColumn(this TableMold table)
+        public static ColumnMold GetPrimaryKeySingleColumn(this TableMold table)
         {
-            throw new NotImplementedException();
-            //return table.Columns.Single(x => x.Name == table.PrimaryKey.Columns.Single().Name);
+            if (table == null)
+            {
+                throw new ArgumentNullException(nameof(table));
+            }
+
+            if (table.PrimaryKey == null)
+            {
+                throw new ArgumentException("Table does not have a primary key.", nameof(table));
+            }
+
+            try
+            {
+                return table.Columns.Single(x => x.Name == table.PrimaryKey.Columns.Single());
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException("Failed to retrieve single primary key column name.", nameof(table), ex);
+            }
         }
 
         public static IReadOnlyList<string> GetOrderedTableNames(

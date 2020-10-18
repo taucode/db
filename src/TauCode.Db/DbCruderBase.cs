@@ -384,7 +384,7 @@ namespace TauCode.Db
                 .CreateTableInspector(this.Connection, this.SchemaName, tableName)
                 .GetTable();
 
-            var idColumnName = table.GetPrimaryKeyColumn().Name;
+            var idColumnName = table.GetPrimaryKeySingleColumn().Name;
 
             using var helper = new CommandHelper(this, table, new[] { idColumnName });
             var sql = this.ScriptBuilder.BuildSelectByPrimaryKeyScript(table, helper.GetParameterNames().Single().Value);
@@ -438,14 +438,14 @@ namespace TauCode.Db
 
             var dataDictionary = this.ObjectToDataDictionary(rowUpdate);
 
-            if (dataDictionary.Keys.Contains(table.GetPrimaryKeyColumn().Name))
+            if (dataDictionary.Keys.Contains(table.GetPrimaryKeySingleColumn().Name))
             {
                 throw new TauDbException("Update object must not contain ID column.");
             }
 
             var columnNames = new List<string>(dataDictionary.Keys)
             {
-                table.GetPrimaryKeyColumn().Name,
+                table.GetPrimaryKeySingleColumn().Name,
             };
 
             using var helper = new CommandHelper(this, table, columnNames);
@@ -453,7 +453,7 @@ namespace TauCode.Db
                 table,
                 helper.GetParameterNames());
 
-            dataDictionary.Add(table.GetPrimaryKeyColumn().Name, id);
+            dataDictionary.Add(table.GetPrimaryKeySingleColumn().Name, id);
 
             helper.CommandText = sql;
             var result = helper.ExecuteWithValues(dataDictionary);
@@ -476,7 +476,7 @@ namespace TauCode.Db
                 .CreateTableInspector(this.Connection, this.SchemaName, tableName)
                 .GetTable();
 
-            var idColumnName = table.GetPrimaryKeyColumn().Name;
+            var idColumnName = table.GetPrimaryKeySingleColumn().Name;
 
             using var helper = new CommandHelper(this, table, new[] { idColumnName });
             var sql = this.ScriptBuilder.BuildDeleteByPrimaryKeyScript(table, helper.GetParameterNames().Single().Value);

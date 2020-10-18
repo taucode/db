@@ -234,9 +234,15 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbScriptBuilder
             Assert.That(ex6, Has.Message.StartsWith("Column type cannot be null."));
             Assert.That(ex7, Has.Message.StartsWith("Type name cannot be null."));
             Assert.That(ex8, Has.Message.StartsWith("If type scale is provided, precision must be provided as well."));
-            Assert.That(ex9, Has.Message.StartsWith("If type size is provided, neither precision nor scale cannot be provided."));
-            Assert.That(ex10, Has.Message.StartsWith("If type size is provided, neither precision nor scale cannot be provided."));
-            Assert.That(ex11, Has.Message.StartsWith("If type size is provided, neither precision nor scale cannot be provided."));
+            Assert.That(
+                ex9,
+                Has.Message.StartsWith("If type size is provided, neither precision nor scale cannot be provided."));
+            Assert.That(
+                ex10,
+                Has.Message.StartsWith("If type size is provided, neither precision nor scale cannot be provided."));
+            Assert.That(
+                ex11,
+                Has.Message.StartsWith("If type size is provided, neither precision nor scale cannot be provided."));
             Assert.That(ex12, Has.Message.StartsWith("Identity seed cannot be null."));
             Assert.That(ex13, Has.Message.StartsWith("Identity increment cannot be null."));
             Assert.That(ex14, Has.Message.StartsWith("Primary key's name cannot be null."));
@@ -252,7 +258,9 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbScriptBuilder
             Assert.That(ex24, Has.Message.StartsWith("Foreign key's referenced table name cannot be null."));
             Assert.That(ex25, Has.Message.StartsWith("Foreign key referenced column names collection cannot be null."));
             Assert.That(ex26, Has.Message.StartsWith("Foreign key referenced column names cannot contain nulls."));
-            Assert.That(ex27, Has.Message.StartsWith("Foreign key's column name count does not match referenced column name count."));
+            Assert.That(
+                ex27,
+                Has.Message.StartsWith("Foreign key's column name count does not match referenced column name count."));
             Assert.That(ex28, Has.Message.StartsWith("Table indexes list cannot be null."));
             Assert.That(ex29, Has.Message.StartsWith("Table indexes cannot contain nulls."));
             Assert.That(ex30, Has.Message.StartsWith("Index name cannot be null."));
@@ -499,11 +507,15 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbScriptBuilder
             var sql = scriptBuilder.BuildCreateIndexScript(index);
 
             // Assert
-            var expectedSql = this.GetType().Assembly.GetResourceText("BuildCreateIndexScript_UniqueIndex_Brackets.sql", true);
+            var expectedSql = this.GetType()
+                .Assembly
+                .GetResourceText("BuildCreateIndexScript_UniqueIndex_Brackets.sql", true);
 
             if (delimiter == '"')
             {
-                expectedSql = this.GetType().Assembly.GetResourceText("BuildCreateIndexScript_UniqueIndex_DoubleQuotes.sql", true);
+                expectedSql = this.GetType()
+                    .Assembly
+                    .GetResourceText("BuildCreateIndexScript_UniqueIndex_DoubleQuotes.sql", true);
             }
 
             Assert.That(sql, Is.EqualTo(expectedSql));
@@ -528,11 +540,15 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbScriptBuilder
             var sql = scriptBuilder.BuildCreateIndexScript(index);
 
             // Assert
-            var expectedSql = this.GetType().Assembly.GetResourceText("BuildCreateIndexScript_NonUniqueIndex_Brackets.sql", true);
+            var expectedSql = this.GetType()
+                .Assembly
+                .GetResourceText("BuildCreateIndexScript_NonUniqueIndex_Brackets.sql", true);
 
             if (delimiter == '"')
             {
-                expectedSql = this.GetType().Assembly.GetResourceText("BuildCreateIndexScript_NonUniqueIndex_DoubleQuotes.sql", true);
+                expectedSql = this.GetType()
+                    .Assembly
+                    .GetResourceText("BuildCreateIndexScript_NonUniqueIndex_DoubleQuotes.sql", true);
             }
 
             Assert.That(sql, Is.EqualTo(expectedSql));
@@ -665,24 +681,28 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbScriptBuilder
 
             var columnToParameterMappings = new Dictionary<string, string>
             {
-                { "MetaKey", "p_metaKey" },
-                { "OrdNumber", "p_ordNumber" },
-                { "Id", "p_id" },
-                { "FirstName", "p_firstName" },
-                { "LastName", "p_lastName" },
-                { "Birthday", "p_birthday" },
-                { "Gender", "p_gender" },
-                { "Initials", "p_initials" },
+                {"MetaKey", "p_metaKey"},
+                {"OrdNumber", "p_ordNumber"},
+                {"Id", "p_id"},
+                {"FirstName", "p_firstName"},
+                {"LastName", "p_lastName"},
+                {"Birthday", "p_birthday"},
+                {"Gender", "p_gender"},
+                {"Initials", "p_initials"},
             };
 
             // Act
             var sql = scriptBuilder.BuildInsertScript(table, columnToParameterMappings);
 
             // Assert
-            var expectedSql = this.GetType().Assembly.GetResourceText("BuildInsertScript_AllColumns_Brackets.sql", true);
+            var expectedSql = this.GetType()
+                .Assembly
+                .GetResourceText("BuildInsertScript_AllColumns_Brackets.sql", true);
             if (delimiter == '"')
             {
-                expectedSql = this.GetType().Assembly.GetResourceText("BuildInsertScript_AllColumns_DoubleQuotes.sql", true);
+                expectedSql = this.GetType()
+                    .Assembly
+                    .GetResourceText("BuildInsertScript_AllColumns_DoubleQuotes.sql", true);
             }
 
             TodoCompare(sql, expectedSql);
@@ -726,7 +746,8 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbScriptBuilder
         [Test]
         [TestCase('[')]
         [TestCase('"')]
-        public void BuildInsertScript_ColumnToParameterMappingsContainsBadColumns_ThrowsArgumentException(char delimiter)
+        public void BuildInsertScript_ColumnToParameterMappingsContainsBadColumns_ThrowsArgumentException(
+            char delimiter)
         {
             // Arrange
             IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta")
@@ -739,19 +760,20 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbScriptBuilder
 
             var columnToParameterMappings = new Dictionary<string, string>
             {
-                { "MetaKey", "p_metaKey" },
-                { "OrdNumber", "p_ordNumber" },
-                { "Id", "p_id" },
-                { "FirstName", "p_firstName" },
-                { "LastName", "p_lastName" },
-                { "Birthday", "p_birthday" },
-                { "Gender", "p_gender" },
-                { "Initials", "p_initials" },
-                { "BadColumn", "p_badColumn" },
+                {"MetaKey", "p_metaKey"},
+                {"OrdNumber", "p_ordNumber"},
+                {"Id", "p_id"},
+                {"FirstName", "p_firstName"},
+                {"LastName", "p_lastName"},
+                {"Birthday", "p_birthday"},
+                {"Gender", "p_gender"},
+                {"Initials", "p_initials"},
+                {"BadColumn", "p_badColumn"},
             };
 
             // Act
-            var ex = Assert.Throws<ArgumentException>(() => scriptBuilder.BuildInsertScript(table, columnToParameterMappings));
+            var ex = Assert.Throws<ArgumentException>(() =>
+                scriptBuilder.BuildInsertScript(table, columnToParameterMappings));
 
             // Assert
             Assert.That(ex, Has.Message.StartsWith($"Invalid column: 'BadColumn'."));
@@ -765,7 +787,8 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbScriptBuilder
             IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta");
 
             // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => scriptBuilder.BuildInsertScript(null, new Dictionary<string, string>()));
+            var ex = Assert.Throws<ArgumentNullException>(() =>
+                scriptBuilder.BuildInsertScript(null, new Dictionary<string, string>()));
 
             // Assert
             Assert.That(ex.ParamName, Is.EqualTo("table"));
@@ -806,23 +829,24 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbScriptBuilder
 
             var columnToParameterMappings = new Dictionary<string, string>
             {
-                { "MetaKey", "p_metaKey" },
-                { "OrdNumber", "p_ordNumber" },
-                { "Id", "p_id" },
-                { "FirstName", "p_firstName" },
-                { "LastName", "p_lastName" },
-                { "Birthday", "p_birthday" },
-                { "Gender", "p_gender" },
-                { "Initials", "p_initials" },
+                {"MetaKey", "p_metaKey"},
+                {"OrdNumber", "p_ordNumber"},
+                {"Id", "p_id"},
+                {"FirstName", "p_firstName"},
+                {"LastName", "p_lastName"},
+                {"Birthday", "p_birthday"},
+                {"Gender", "p_gender"},
+                {"Initials", "p_initials"},
             };
-            
+
             // Act
             var columnToParameterMappings1 = columnToParameterMappings.ToDictionary(
                 x => x.Key,
                 x => x.Value);
             columnToParameterMappings1["Id"] = null;
 
-            var ex = Assert.Throws<ArgumentException>(() => scriptBuilder.BuildInsertScript(table, columnToParameterMappings1));
+            var ex = Assert.Throws<ArgumentException>(() =>
+                scriptBuilder.BuildInsertScript(table, columnToParameterMappings1));
 
             // Assert
             Assert.That(ex.ParamName, Is.EqualTo("columnToParameterMappings"));
@@ -833,17 +857,240 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbScriptBuilder
 
         #region BuildUpdateScript
 
-        // todo
-        // - happy path
-        // - columnToParameterMappings is empty => throws
-        // - no pk => throws
-        // - PK is multi-column => throws
-        // - columnToParameterMappings does not contain PK column => throws
-        // - table is null => throws
-        // - table is corrupted => throws
-        // - columnToParameterMappings is null => throws
-        // - columnToParameterMappings is corrupted => throws
-        // - respects delimiter
+        [Test]
+        [TestCase('[')]
+        [TestCase('"')]
+        public void BuildUpdateScript_ValidArguments_ReturnsValidScript(char delimiter)
+        {
+            // Arrange
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta")
+            {
+                CurrentOpeningIdentifierDelimiter = delimiter,
+            };
+
+            IDbTableInspector tableInspector = new SqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            var table = tableInspector.GetTable();
+
+            var columnToParameterMappings = new Dictionary<string, string>
+            {
+                {"Height", "p_height"},
+                {"Photo", "p_photo"},
+                {"EnglishDescription", "p_englishDescription"},
+                {"UnicodeDescription", "p_unicodeDescription"},
+                {"PersonMetaKey", "p_personMetaKey"},
+                {"PersonOrdNumber", "p_personOrdNumber"},
+                {"PersonId", "p_personId"},
+
+                {"Id", "p_id"},
+            };
+
+            // Act
+            var sql = scriptBuilder.BuildUpdateScript(table, columnToParameterMappings);
+
+            // Assert
+            var expectedSql = this.GetType().Assembly
+                .GetResourceText("BuildUpdateScript_AllColumns_Brackets.sql", true);
+            if (delimiter == '"')
+            {
+                expectedSql = this.GetType().Assembly
+                    .GetResourceText("BuildUpdateScript_AllColumns_DoubleQuotes.sql", true);
+            }
+
+            TodoCompare(sql, expectedSql);
+
+            Assert.That(sql, Is.EqualTo(expectedSql));
+        }
+
+        [Test]
+        public void BuildUpdateScript_MappingsIncomplete_ThrowsArgumentException()
+        {
+            // Arrange
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta");
+
+            IDbTableInspector tableInspector = new SqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            var table = tableInspector.GetTable();
+
+            var columnToParameterMappings = new Dictionary<string, string>
+            {
+                {"Height", "p_height"},
+                {"Photo", "p_photo"},
+                {"EnglishDescription", "p_englishDescription"},
+                {"UnicodeDescription", "p_unicodeDescription"},
+                {"PersonMetaKey", "p_personMetaKey"},
+                {"PersonOrdNumber", "p_personOrdNumber"},
+                {"PersonId", "p_personId"},
+
+                {"Id", "p_id"},
+            };
+
+            // Act
+
+            // no pk column
+            var columnToParameterMappings1 = columnToParameterMappings.ToDictionary(
+                x => x.Key,
+                x => x.Value);
+            columnToParameterMappings1.Remove("Id");
+
+            var ex1 = Assert.Throws<ArgumentException>((() => scriptBuilder.BuildUpdateScript(table, columnToParameterMappings1)));
+
+            // pk column only
+            var columnToParameterMappings2 = columnToParameterMappings.ToDictionary(
+                x => x.Key,
+                x => x.Value);
+            foreach (var columnName in columnToParameterMappings2.Keys.Except(new[] { "Id" }))
+            {
+                columnToParameterMappings2.Remove(columnName);
+            }
+            var ex2 = Assert.Throws<ArgumentException>((() => scriptBuilder.BuildUpdateScript(table, columnToParameterMappings2)));
+
+
+            // Assert
+            Assert.That(ex1, Has.Message.StartsWith("'columnToParameterMappings' must contain primary key column mapping."));
+            Assert.That(ex1.ParamName, Is.EqualTo("columnToParameterMappings"));
+
+            Assert.That(ex2, Has.Message.StartsWith("'columnToParameterMappings' must contain at least one column mapping besides primary key column."));
+            Assert.That(ex2.ParamName, Is.EqualTo("columnToParameterMappings"));
+        }
+
+        [Test]
+        public void BuildUpdateScript_TableDoesNotContainPrimaryKey_ThrowsArgumentException()
+        {
+            // Arrange
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta");
+
+            this.Connection.ExecuteSingleSql("CREATE TABLE [zeta].[dummy](Foo int)"); // no PK
+            IDbTableInspector tableInspector = new SqlTableInspectorLab(this.Connection, "zeta", "dummy");
+            var table = tableInspector.GetTable();
+
+            var columnToParameterMappings = new Dictionary<string, string>
+            {
+                {"Foo", "p_foo"},
+            };
+
+            // Act
+
+            var ex = Assert.Throws<ArgumentException>((() => scriptBuilder.BuildUpdateScript(table, columnToParameterMappings)));
+
+            // Assert
+            Assert.That(ex, Has.Message.StartsWith("Table does not have a primary key."));
+            Assert.That(ex.ParamName, Is.EqualTo("table"));
+        }
+
+        [Test]
+        public void BuildUpdateScript_PrimaryKeyIsMultiColumn_ThrowsArgumentException()
+        {
+            // Arrange
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta");
+            IDbTableInspector tableInspector = new SqlTableInspectorLab(this.Connection, "zeta", "Person");
+            var table = tableInspector.GetTable();
+
+            var columnToParameterMappings = new Dictionary<string, string>
+            {
+                {"FirstName", "p_firstName"},
+
+                {"MetaKey", "p_metaKey"},
+                {"OrdNumber", "p_ordNumber"},
+                {"Id", "p_id"},
+            };
+
+            // Act
+
+            var ex = Assert.Throws<ArgumentException>((() => scriptBuilder.BuildUpdateScript(table, columnToParameterMappings)));
+
+            // Assert
+            Assert.That(ex, Has.Message.StartsWith("Failed to retrieve single primary key column name."));
+            Assert.That(ex.ParamName, Is.EqualTo("table"));
+        }
+
+        [Test]
+        public void BuildUpdateScript_TableIsNull_ThrowsArgumentNullException()
+        {
+            // Arrange
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta");
+
+            var columnToParameterMappings = new Dictionary<string, string>
+            {
+                {"FirstName", "p_firstName"},
+
+                {"MetaKey", "p_metaKey"},
+                {"OrdNumber", "p_ordNumber"},
+                {"Id", "p_id"},
+            };
+
+            // Act
+
+            var ex = Assert.Throws<ArgumentNullException>((() => scriptBuilder.BuildUpdateScript(null, columnToParameterMappings)));
+
+            // Assert
+            Assert.That(ex.ParamName, Is.EqualTo("table"));
+        }
+
+        [Test]
+        public void BuildUpdateScript_TableIsCorrupted_ThrowsArgumentNullException()
+        {
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta");
+
+            var columnToParameterMappings = new Dictionary<string, string>
+            {
+                {"Id", "p_id"},
+
+                {"Weight", "p_weight"},
+            };
+
+            this.AssertCorruptedTableAction(mold => scriptBuilder.BuildUpdateScript(mold, columnToParameterMappings));
+        }
+
+        [Test]
+        public void BuildUpdateScript_ColumnToParameterMappingsIsNull_ThrowsArgumentNullException()
+        {
+            // Arrange
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta");
+
+            IDbTableInspector tableInspector = new SqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            var table = tableInspector.GetTable();
+
+            // Act
+            var ex = Assert.Throws<ArgumentNullException>(() => scriptBuilder.BuildUpdateScript(table, null));
+
+            // Assert
+            Assert.That(ex.ParamName, Is.EqualTo("columnToParameterMappings"));
+        }
+
+        [Test]
+        public void BuildUpdateScript_ColumnToParameterMappingsIsCorrupted_ThrowsArgumentNullException()
+        {
+            // Arrange
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta");
+
+            IDbTableInspector tableInspector = new SqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            var table = tableInspector.GetTable();
+
+            var columnToParameterMappings = new Dictionary<string, string>
+            {
+                {"Height", "p_height"},
+                {"Photo", "p_photo"},
+                {"EnglishDescription", "p_englishDescription"},
+                {"UnicodeDescription", "p_unicodeDescription"},
+                {"PersonMetaKey", "p_personMetaKey"},
+                {"PersonOrdNumber", "p_personOrdNumber"},
+                {"PersonId", "p_personId"},
+
+                {"Id", "p_id"},
+            };
+
+            // Act
+            var columnToParameterMappings1 = columnToParameterMappings.ToDictionary(
+                x => x.Key,
+                x => x.Value);
+            columnToParameterMappings1["PersonMetaKey"] = null;
+
+            var ex = Assert.Throws<ArgumentException>(() =>
+                scriptBuilder.BuildUpdateScript(table, columnToParameterMappings1));
+
+            // Assert
+            Assert.That(ex.ParamName, Is.EqualTo("columnToParameterMappings"));
+            Assert.That(ex, Has.Message.StartsWith("'columnToParameterMappings' cannot contain null values."));
+        }
 
         #endregion
 

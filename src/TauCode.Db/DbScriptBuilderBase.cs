@@ -417,7 +417,9 @@ namespace TauCode.Db
 
             if (columnToParameterMappings.Values.Any(x => x == null))
             {
-                throw new ArgumentException($"'{nameof(columnToParameterMappings)}' cannot contain null values.", nameof(columnToParameterMappings));
+                throw new ArgumentException(
+                    $"'{nameof(columnToParameterMappings)}' cannot contain null values.",
+                    nameof(columnToParameterMappings));
             }
 
             var validColumnNames = table.Columns.Select(x => x.Name).ToHashSet();
@@ -488,19 +490,40 @@ namespace TauCode.Db
             TableMold table,
             IReadOnlyDictionary<string, string> columnToParameterMappings)
         {
-            if (table == null)
-            {
-                throw new ArgumentNullException(nameof(table));
-            }
+            table.CheckNotNullOrCorrupted(nameof(table));
 
             if (columnToParameterMappings == null)
             {
                 throw new ArgumentNullException(nameof(columnToParameterMappings));
             }
 
-            if (columnToParameterMappings.Count == 0)
+            var pkColumnName = table.GetPrimaryKeySingleColumn().Name;
+
+            if (!columnToParameterMappings.ContainsKey(pkColumnName))
             {
-                throw new ArgumentException($"'{nameof(columnToParameterMappings)}' must not be empty.");
+                throw new ArgumentException(
+                    $"'{nameof(columnToParameterMappings)}' must contain primary key column mapping.", // todo ut
+                    nameof(columnToParameterMappings));
+            }
+
+            if (columnToParameterMappings.Count <= 1)
+            {
+                throw new ArgumentException(
+                    $"'{nameof(columnToParameterMappings)}' must contain at least one column mapping besides primary key column.", // todo ut
+                    nameof(columnToParameterMappings));
+            }
+
+            if (columnToParameterMappings.Values.Any(x => x == null))
+            {
+                throw new ArgumentException($"'{nameof(columnToParameterMappings)}' cannot contain null values.",
+                    nameof(columnToParameterMappings));
+            }
+
+            var validColumnNames = table.Columns.Select(x => x.Name).ToHashSet();
+            var badColumn = columnToParameterMappings.Keys.FirstOrDefault(x => !validColumnNames.Contains(x));
+            if (badColumn != null)
+            {
+                throw new ArgumentException($"Invalid column: '{badColumn}'.", nameof(columnToParameterMappings)); // todo ut
             }
 
             var sb = new StringBuilder();
@@ -509,16 +532,19 @@ namespace TauCode.Db
                 table.Name,
                 this.CurrentOpeningIdentifierDelimiter);
 
-            sb.AppendLine($"UPDATE {decoratedTableName} SET");
+            sb.Append("UPDATE ");
+            this.WriteSchemaPrefixIfNeeded(sb);
+            sb.AppendLine(decoratedTableName);
 
-            var idColumnName = table.GetPrimaryKeyColumn().Name;
+            sb.AppendLine("SET");
+
             var decoratedIdColumnName = this.Dialect.DecorateIdentifier(
                 DbIdentifierType.Column,
-                idColumnName,
+                pkColumnName,
                 this.CurrentOpeningIdentifierDelimiter);
-            var idParameterName = columnToParameterMappings[idColumnName];
+            var pkParameterName = columnToParameterMappings[pkColumnName];
 
-            var columnNamesToUpdate = columnToParameterMappings.Keys.Except(new[] {idColumnName}).ToList();
+            var columnNamesToUpdate = columnToParameterMappings.Keys.Except(new[] {pkColumnName}).ToList();
 
             for (var i = 0; i < columnNamesToUpdate.Count; i++)
             {
@@ -541,7 +567,7 @@ namespace TauCode.Db
 
             sb.AppendLine();
 
-            sb.Append($"WHERE {decoratedIdColumnName} = @{idParameterName}");
+            sb.Append($"WHERE{Environment.NewLine}    {decoratedIdColumnName} = @{pkParameterName}");
             var sql = sb.ToString();
             return sql;
         }
@@ -579,7 +605,7 @@ namespace TauCode.Db
             sb.AppendLine("WHERE");
             var decoratedIdColumnName = this.Dialect.DecorateIdentifier(
                 DbIdentifierType.Column,
-                table.GetPrimaryKeyColumn().Name,
+                table.GetPrimaryKeySingleColumn().Name,
                 this.CurrentOpeningIdentifierDelimiter);
             sb.Append($"    {decoratedIdColumnName} = @{idParameterName}");
 
@@ -642,7 +668,7 @@ namespace TauCode.Db
 
             var decoratedIdColumnName = this.Dialect.DecorateIdentifier(
                 DbIdentifierType.Column,
-                table.GetPrimaryKeyColumn().Name,
+                table.GetPrimaryKeySingleColumn().Name,
                 this.CurrentOpeningIdentifierDelimiter);
 
             sb.Append($"DELETE FROM {decoratedTableName} WHERE {decoratedIdColumnName} = @{pkColumnParameterName}");
