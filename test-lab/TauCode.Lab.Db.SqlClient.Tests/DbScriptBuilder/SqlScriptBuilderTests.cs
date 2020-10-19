@@ -1270,11 +1270,151 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbScriptBuilder
             Assert.That(ex, Has.Message.StartsWith("No columns were selected."));
         }
 
+        [Test]
+        public void BuildSelectByPrimaryKeyScript_TableIsNull_ThrowsArgumentNullException()
+        {
+            // Arrange
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta");
+
+            // Act
+            var ex = Assert.Throws<ArgumentNullException>((() =>
+                scriptBuilder.BuildSelectByPrimaryKeyScript(null, "p_id", null)));
+
+            // Assert
+            Assert.That(ex.ParamName, Is.EqualTo("table"));
+        }
+
+        [Test]
+        public void BuildSelectByPrimaryKeyScript_TableIsCorrupted_ThrowsArgumentNullException()
+        {
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta");
+
+            this.AssertCorruptedTableAction(mold => scriptBuilder.BuildSelectByPrimaryKeyScript(mold, "", null));
+        }
+
         #endregion
 
         #region BuildSelectAllScript
 
-        // todo
+        [Test]
+        [TestCase('[')]
+        [TestCase('"')]
+        public void BuildSelectAllScript_ValidArguments_ReturnsValidScript(char delimiter)
+        {
+            // Arrange
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta")
+            {
+                CurrentOpeningIdentifierDelimiter = delimiter,
+            };
+
+            IDbTableInspector tableInspector = new SqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            var table = tableInspector.GetTable();
+
+            var columns = new[]
+            {
+                "Height",
+                "EnglishDescription",
+                "UnicodeDescription",
+                "PersonMetaKey",
+                "PersonOrdNumber",
+                "PersonId",
+            }.ToHashSet();
+
+            bool Selector(string x) => columns.Contains(x);
+
+            // Act
+            var sql = scriptBuilder.BuildSelectAllScript(table, Selector);
+
+            // Assert
+            var expectedSql = this.GetType()
+                .Assembly
+                .GetResourceText("BuildSelectAllScript_Brackets.sql", true);
+
+            if (delimiter == '"')
+            {
+                expectedSql = this.GetType()
+                    .Assembly
+                    .GetResourceText("BuildSelectAllScript_DoubleQuotes.sql", true);
+            }
+
+            TodoCompare(sql, expectedSql);
+
+            Assert.That(sql, Is.EqualTo(expectedSql));
+        }
+
+        [Test]
+        [TestCase('[')]
+        [TestCase('"')]
+        public void BuildSelectAllScript_ColumnSelectorIsNull_ReturnsValidScript(char delimiter)
+        {
+            // Arrange
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta")
+            {
+                CurrentOpeningIdentifierDelimiter = delimiter,
+            };
+
+            IDbTableInspector tableInspector = new SqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            var table = tableInspector.GetTable();
+
+            // Act
+            var sql = scriptBuilder.BuildSelectAllScript(table, null);
+
+            // Assert
+            var expectedSql = this.GetType()
+                .Assembly
+                .GetResourceText("BuildSelectAllScript_AllColumns_Brackets.sql", true);
+
+            if (delimiter == '"')
+            {
+                expectedSql = this.GetType()
+                    .Assembly
+                    .GetResourceText("BuildSelectAllScript_AllColumns_DoubleQuotes.sql", true);
+            }
+
+            TodoCompare(sql, expectedSql);
+
+            Assert.That(sql, Is.EqualTo(expectedSql));
+        }
+
+        [Test]
+        public void BuildSelectAllScript_NoColumnsSelected_ThrowsArgumentException()
+        {
+            // Arrange
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta");
+
+            IDbTableInspector tableInspector = new SqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            var table = tableInspector.GetTable();
+
+            // Act
+            var ex = Assert.Throws<ArgumentException>(() =>
+                scriptBuilder.BuildSelectAllScript(table, x => false));
+
+            // Assert
+            Assert.That(ex.ParamName, Is.EqualTo("columnSelector"));
+            Assert.That(ex, Has.Message.StartsWith("No columns were selected."));
+        }
+
+        [Test]
+        public void BuildSelectAllScript_TableIsNull_ThrowsArgumentNullException()
+        {
+            // Arrange
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta");
+
+            // Act
+            var ex = Assert.Throws<ArgumentNullException>((() =>
+                scriptBuilder.BuildSelectAllScript(null, null)));
+
+            // Assert
+            Assert.That(ex.ParamName, Is.EqualTo("table"));
+        }
+
+        [Test]
+        public void BuildSelectAllScript_TableIsCorrupted_ThrowsArgumentNullException()
+        {
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta");
+
+            this.AssertCorruptedTableAction(mold => scriptBuilder.BuildSelectAllScript(mold, null));
+        }
 
         #endregion
 

@@ -648,6 +648,20 @@ namespace TauCode.Db
             TableMold table,
             Func<string, bool> columnSelector = null)
         {
+            table.CheckNotNullOrCorrupted(nameof(table));
+
+            columnSelector ??= ColumnTruer;
+
+            var columnsToInclude =
+                table.Columns
+                    .Where(x => columnSelector(x.Name))
+                    .ToList();
+
+            if (columnsToInclude.Count == 0)
+            {
+                throw new ArgumentException("No columns were selected.", nameof(columnSelector));
+            }
+
             var sb = new StringBuilder();
 
             var decoratedTableName = this.Dialect.DecorateIdentifier(
@@ -656,24 +670,29 @@ namespace TauCode.Db
                 this.CurrentOpeningIdentifierDelimiter);
 
             sb.AppendLine($"SELECT");
-            for (var i = 0; i < table.Columns.Count; i++)
+            for (var i = 0; i < columnsToInclude.Count; i++)
             {
-                var column = table.Columns[i];
+                var column = columnsToInclude[i];
                 var decoratedColumnName = this.Dialect.DecorateIdentifier(
                     DbIdentifierType.Column,
                     column.Name,
                     this.CurrentOpeningIdentifierDelimiter);
 
                 sb.Append($"    {decoratedColumnName}");
-                if (i < table.Columns.Count - 1)
+                if (i < columnsToInclude.Count - 1)
                 {
                     sb.AppendLine(",");
                 }
             }
 
             sb.AppendLine();
-            sb.AppendLine($"FROM {decoratedTableName}");
 
+            sb.AppendLine("FROM");
+
+            sb.Append("    ");
+            this.WriteSchemaPrefixIfNeeded(sb);
+            sb.Append(decoratedTableName);
+            
             var sql = sb.ToString();
             return sql;
         }
