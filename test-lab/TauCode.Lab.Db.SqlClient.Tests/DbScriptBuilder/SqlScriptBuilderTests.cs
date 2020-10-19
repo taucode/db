@@ -1289,7 +1289,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbScriptBuilder
         {
             IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta");
 
-            this.AssertCorruptedTableAction(mold => scriptBuilder.BuildSelectByPrimaryKeyScript(mold, "", null));
+            this.AssertCorruptedTableAction(mold => scriptBuilder.BuildSelectByPrimaryKeyScript(mold, "p_id", null));
         }
 
         #endregion
@@ -1418,15 +1418,165 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbScriptBuilder
 
         #endregion
 
-        #region BuildDeleteByIdScript
+        #region BuildDeleteByPrimaryKeyScript
 
-        // todo
+        [Test]
+        [TestCase('[')]
+        [TestCase('"')]
+        public void BuildDeleteByPrimaryKeyScript_ValidArguments_ReturnsValidScript(char delimiter)
+        {
+            // Arrange
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta")
+            {
+                CurrentOpeningIdentifierDelimiter = delimiter,
+            };
+
+            IDbTableInspector tableInspector = new SqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            var table = tableInspector.GetTable();
+            
+            // Act
+            var sql = scriptBuilder.BuildDeleteByPrimaryKeyScript(table, "p_id");
+
+            // Assert
+            var expectedSql = "DELETE FROM [zeta].[PersonData] WHERE [Id] = @p_id";
+
+            if (delimiter == '"')
+            {
+                expectedSql = expectedSql
+                    .Replace('[', '"')
+                    .Replace(']', '"');
+            }
+
+            TodoCompare(sql, expectedSql);
+
+            Assert.That(sql, Is.EqualTo(expectedSql));
+        }
+
+        [Test]
+        public void BuildDeleteByPrimaryKeyScript_TableDoesNotContainPrimaryKey_ThrowsArgumentException()
+        {
+            // Arrange
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta");
+
+            this.Connection.ExecuteSingleSql("CREATE TABLE [zeta].[dummy](Foo int)"); // no PK
+            IDbTableInspector tableInspector = new SqlTableInspectorLab(this.Connection, "zeta", "dummy");
+            var table = tableInspector.GetTable();
+
+            // Act
+
+            var ex = Assert.Throws<ArgumentException>((() =>
+                scriptBuilder.BuildDeleteByPrimaryKeyScript(table, "p_id")));
+
+            // Assert
+            Assert.That(ex, Has.Message.StartsWith("Table does not have a primary key."));
+            Assert.That(ex.ParamName, Is.EqualTo("table"));
+        }
+
+        [Test]
+        public void BuildDeleteByPrimaryKeyScript_PrimaryKeyIsMultiColumn_ThrowsArgumentException()
+        {
+            // Arrange
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta");
+            IDbTableInspector tableInspector = new SqlTableInspectorLab(this.Connection, "zeta", "Person");
+            var table = tableInspector.GetTable();
+
+            // Act
+
+            var ex = Assert.Throws<ArgumentException>((() =>
+                scriptBuilder.BuildDeleteByPrimaryKeyScript(table, "p_id")));
+
+            // Assert
+            Assert.That(ex, Has.Message.StartsWith("Failed to retrieve single primary key column name."));
+            Assert.That(ex.ParamName, Is.EqualTo("table"));
+        }
+
+        [Test]
+        public void BuildDeleteByPrimaryKeyScript_PrimaryKeyParameterNameIsNull_ThrowsArgumentNullException()
+        {
+            // Arrange
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta");
+
+            IDbTableInspector tableInspector = new SqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            var table = tableInspector.GetTable();
+
+            // Act
+            var ex = Assert.Throws<ArgumentNullException>(() =>
+                scriptBuilder.BuildDeleteByPrimaryKeyScript(table, null));
+
+            // Assert
+            Assert.That(ex.ParamName, Is.EqualTo("pkColumnParameterName"));
+        }
+
+        [Test]
+        public void BuildDeleteByPrimaryKeyScript_TableIsNull_ThrowsArgumentNullException()
+        {
+            // Arrange
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta");
+
+            // Act
+            var ex = Assert.Throws<ArgumentNullException>((() =>
+                scriptBuilder.BuildDeleteByPrimaryKeyScript(null, "p_id")));
+
+            // Assert
+            Assert.That(ex.ParamName, Is.EqualTo("table"));
+        }
+
+        [Test]
+        public void BuildDeleteByPrimaryKeyScript_TableIsCorrupted_ThrowsArgumentNullException()
+        {
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta");
+
+            this.AssertCorruptedTableAction(mold => scriptBuilder.BuildDeleteByPrimaryKeyScript(mold, "p_id"));
+        }
 
         #endregion
 
         #region BuildDeleteScript
 
-        // todo
+        [Test]
+        [TestCase('[')]
+        [TestCase('"')]
+        public void BuildDeleteScript_ValidArgument_ReturnsValidScript(char delimiter)
+        {
+            // Arrange
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta")
+            {
+                CurrentOpeningIdentifierDelimiter = delimiter,
+            };
+
+            var tableName = "PersonData";
+
+            // Act
+            var sql = scriptBuilder.BuildDeleteScript(tableName);
+
+            // Assert
+            var expectedSql = "DELETE FROM [zeta].[PersonData]";
+
+            if (delimiter == '"')
+            {
+                expectedSql = expectedSql
+                    .Replace('[', '"')
+                    .Replace(']', '"');
+            }
+
+            TodoCompare(sql, expectedSql);
+
+            Assert.That(sql, Is.EqualTo(expectedSql));
+        }
+
+        [Test]
+        public void BuildDeleteScript_TableNameIsNull_ThrowsArgumentNullException()
+        {
+            // Arrange
+            IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta");
+
+            // Act
+            var ex = Assert.Throws<ArgumentNullException>((() =>
+                scriptBuilder.BuildDeleteScript(null)));
+
+            // Assert
+            Assert.That(ex.ParamName, Is.EqualTo("tableName"));
+        }
 
         #endregion
     }

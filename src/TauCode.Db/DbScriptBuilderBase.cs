@@ -699,10 +699,7 @@ namespace TauCode.Db
 
         public virtual string BuildDeleteByPrimaryKeyScript(TableMold table, string pkColumnParameterName)
         {
-            if (table == null)
-            {
-                throw new ArgumentNullException(nameof(table));
-            }
+            table.CheckNotNullOrCorrupted(nameof(table));
 
             if (pkColumnParameterName == null)
             {
@@ -721,7 +718,10 @@ namespace TauCode.Db
                 table.GetPrimaryKeySingleColumn().Name,
                 this.CurrentOpeningIdentifierDelimiter);
 
-            sb.Append($"DELETE FROM {decoratedTableName} WHERE {decoratedIdColumnName} = @{pkColumnParameterName}");
+            sb.Append("DELETE FROM ");
+            this.WriteSchemaPrefixIfNeeded(sb);
+            sb.Append($"{decoratedTableName} WHERE {decoratedIdColumnName} = @{pkColumnParameterName}");
+
             var sql = sb.ToString();
             return sql;
         }
@@ -738,7 +738,13 @@ namespace TauCode.Db
                 tableName,
                 this.CurrentOpeningIdentifierDelimiter);
 
-            return $"DELETE FROM {decoratedTableName}";
+            var sb = new StringBuilder();
+
+            sb.Append("DELETE FROM ");
+            this.WriteSchemaPrefixIfNeeded(sb);
+            sb.Append(decoratedTableName);
+
+            return sb.ToString();
         }
 
         #endregion
