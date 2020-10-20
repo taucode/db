@@ -16,5 +16,6 @@ namespace TauCode.Db
         IList<dynamic> GetAllRows(string tableName);
         bool UpdateRow(string tableName, object rowUpdate, object id);
         bool DeleteRow(string tableName, object id);
+        void DeleteRows(string tableName, object[] ids);
     }
 }

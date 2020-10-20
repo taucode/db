@@ -490,6 +490,11 @@ namespace TauCode.Db
             return result > 0;
         }
 
+        public virtual void DeleteRows(string tableName, object[] ids)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
     }
 }
