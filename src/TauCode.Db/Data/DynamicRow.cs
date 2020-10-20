@@ -4,7 +4,7 @@ using TauCode.Data;
 
 namespace TauCode.Db.Data
 {
-    // todo: ignore case
+    // todo: regions
     public class DynamicRow : DynamicObject
     {
         private readonly IDictionary<string, object> _values;

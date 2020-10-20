@@ -295,7 +295,7 @@ namespace TauCode.Db
         public virtual void InsertRow(
             string tableName,
             object row,
-            Func<string, bool> propertySelector)
+            Func<string, bool> propertySelector = null)
         {
             if (row == null)
             {
@@ -308,7 +308,7 @@ namespace TauCode.Db
         public virtual void InsertRows(
             string tableName,
             IReadOnlyList<object> rows,
-            Func<string, bool> propertySelector)
+            Func<string, bool> propertySelector = null)
         {
             if (tableName == null)
             {
@@ -368,7 +368,7 @@ namespace TauCode.Db
 
         public Action<string, object, int> RowInsertedCallback { get; set; }
 
-        public virtual dynamic GetRow(string tableName, object id)
+        public virtual dynamic GetRow(string tableName, object id, Func<string, bool> columnSelector = null)
         {
             if (tableName == null)
             {
@@ -397,7 +397,7 @@ namespace TauCode.Db
             return rows.SingleOrDefault();
         }
 
-        public virtual IList<dynamic> GetAllRows(string tableName)
+        public virtual IList<dynamic> GetAllRows(string tableName, Func<string, bool> columnSelector = null)
         {
             if (tableName == null)
             {
@@ -415,49 +415,51 @@ namespace TauCode.Db
             return rows;
         }
 
-        public virtual bool UpdateRow(string tableName, object rowUpdate, object id)
+        public virtual bool UpdateRow(string tableName, object rowUpdate, Func<string, bool> propertySelector = null)
         {
-            if (tableName == null)
-            {
-                throw new ArgumentNullException(nameof(tableName));
-            }
+            throw new NotImplementedException();
 
-            if (rowUpdate == null)
-            {
-                throw new ArgumentNullException(nameof(rowUpdate));
-            }
+            //if (tableName == null)
+            //{
+            //    throw new ArgumentNullException(nameof(tableName));
+            //}
 
-            if (id == null)
-            {
-                throw new ArgumentNullException(nameof(id));
-            }
+            //if (rowUpdate == null)
+            //{
+            //    throw new ArgumentNullException(nameof(rowUpdate));
+            //}
 
-            var table = this.Factory
-                .CreateTableInspector(this.Connection, this.SchemaName, tableName)
-                .GetTable();
+            //if (id == null)
+            //{
+            //    throw new ArgumentNullException(nameof(id));
+            //}
 
-            var dataDictionary = this.ObjectToDataDictionary(rowUpdate);
+            //var table = this.Factory
+            //    .CreateTableInspector(this.Connection, this.SchemaName, tableName)
+            //    .GetTable();
 
-            if (dataDictionary.Keys.Contains(table.GetPrimaryKeySingleColumn().Name))
-            {
-                throw new TauDbException("Update object must not contain ID column.");
-            }
+            //var dataDictionary = this.ObjectToDataDictionary(rowUpdate);
 
-            var columnNames = new List<string>(dataDictionary.Keys)
-            {
-                table.GetPrimaryKeySingleColumn().Name,
-            };
+            //if (dataDictionary.Keys.Contains(table.GetPrimaryKeySingleColumn().Name))
+            //{
+            //    throw new TauDbException("Update object must not contain ID column.");
+            //}
 
-            using var helper = new CommandHelper(this, table, columnNames);
-            var sql = this.ScriptBuilder.BuildUpdateScript(
-                table,
-                helper.GetParameterNames());
+            //var columnNames = new List<string>(dataDictionary.Keys)
+            //{
+            //    table.GetPrimaryKeySingleColumn().Name,
+            //};
 
-            dataDictionary.Add(table.GetPrimaryKeySingleColumn().Name, id);
+            //using var helper = new CommandHelper(this, table, columnNames);
+            //var sql = this.ScriptBuilder.BuildUpdateScript(
+            //    table,
+            //    helper.GetParameterNames());
 
-            helper.CommandText = sql;
-            var result = helper.ExecuteWithValues(dataDictionary);
-            return result > 0;
+            //dataDictionary.Add(table.GetPrimaryKeySingleColumn().Name, id);
+
+            //helper.CommandText = sql;
+            //var result = helper.ExecuteWithValues(dataDictionary);
+            //return result > 0;
         }
 
         public virtual bool DeleteRow(string tableName, object id)
