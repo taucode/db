@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <None Remove="CommonResources\crebase.sql" />
+    <None Remove="DbCruder\TestResources\InsertRows.sql" />
     <None Remove="DbScriptBuilder\TestResources\BuildCreateIndexScript_NonUniqueIndex_Brackets.sql" />
     <None Remove="DbScriptBuilder\TestResources\BuildCreateIndexScript_NonUniqueIndex_DoubleQuotes.sql" />
     <None Remove="DbScriptBuilder\TestResources\BuildCreateIndexScript_UniqueIndex_Brackets.sql" />
@@ -32,6 +33,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="CommonResources\crebase.sql" />
+    <EmbeddedResource Include="DbCruder\TestResources\InsertRows.sql" />
     <EmbeddedResource Include="DbCruder\TestResources\SuperTable.sql" />
     <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildSelectAllScript\BuildSelectAllScript_AllColumns_Brackets.sql" />
     <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildSelectAllScript\BuildSelectAllScript_AllColumns_DoubleQuotes.sql" />

@@ -97,12 +97,14 @@ namespace TauCode.Db
 
                         if (convertedValue == DBNull.Value)
                         {
-                            throw new TauDbException($"Method '{dbValueConverter.GetType().FullName}.{nameof(IDbValueConverter.FromDbValue)}' returned 'DBNull.Value' for field '{name}'.");
+                            throw new TauDbException(
+                                $"Method '{dbValueConverter.GetType().FullName}.{nameof(IDbValueConverter.FromDbValue)}' returned 'DBNull.Value' for field '{name}'.");
                         }
 
                         if (convertedValue == null && value != DBNull.Value)
                         {
-                            throw new TauDbException($"Method '{dbValueConverter.GetType().FullName}.{nameof(IDbValueConverter.FromDbValue)}' returned null for field '{name}' while original DB  value was not <NULL>.");
+                            throw new TauDbException(
+                                $"Method '{dbValueConverter.GetType().FullName}.{nameof(IDbValueConverter.FromDbValue)}' returned null for field '{name}' while original DB  value was not <NULL>.");
                         }
 
                         value = convertedValue;
@@ -117,16 +119,18 @@ namespace TauCode.Db
             return rows;
         }
 
-        public static ColumnMold GetPrimaryKeySingleColumn(this TableMold table)
+        public static ColumnMold GetPrimaryKeySingleColumn(this TableMold table, string tableParameterName = null)
         {
             if (table == null)
             {
                 throw new ArgumentNullException(nameof(table));
             }
 
+            tableParameterName ??= nameof(table);
+
             if (table.PrimaryKey == null)
             {
-                throw new ArgumentException("Table does not have a primary key.", nameof(table));
+                throw new ArgumentException($"Table '{table.Name}' does not have a primary key.", tableParameterName);
             }
 
             try
@@ -135,7 +139,10 @@ namespace TauCode.Db
             }
             catch (Exception ex)
             {
-                throw new ArgumentException("Failed to retrieve single primary key column name.", nameof(table), ex);
+                throw new ArgumentException(
+                    $"Failed to retrieve single primary key column name for table '{table.Name}'.",
+                    tableParameterName,
+                    ex);
             }
         }
 
@@ -198,7 +205,8 @@ namespace TauCode.Db
                     var table = node.Value;
                     foreach (var foreignKey in table.ForeignKeys)
                     {
-                        var referencedNode = graph.Nodes.SingleOrDefault(x => x.Value.Name == foreignKey.ReferencedTableName);
+                        var referencedNode =
+                            graph.Nodes.SingleOrDefault(x => x.Value.Name == foreignKey.ReferencedTableName);
 
                         if (referencedNode == null)
                         {
@@ -347,7 +355,7 @@ namespace TauCode.Db
             // name
             if (table.Name == null)
             {
-                throw new ArgumentException("Table name cannot be null.", tableArgumentName); 
+                throw new ArgumentException("Table name cannot be null.", tableArgumentName);
             }
 
             // columns
@@ -444,13 +452,15 @@ namespace TauCode.Db
             {
                 if (type.Precision.HasValue || type.Scale.HasValue)
                 {
-                    throw new ArgumentException("If type size is provided, neither precision nor scale cannot be provided.", argumentName);
+                    throw new ArgumentException(
+                        "If type size is provided, neither precision nor scale cannot be provided.", argumentName);
                 }
             }
 
             if (type.Scale.HasValue && !type.Precision.HasValue)
             {
-                throw new ArgumentException("If type scale is provided, precision must be provided as well.", argumentName);
+                throw new ArgumentException("If type scale is provided, precision must be provided as well.",
+                    argumentName);
             }
         }
 
@@ -544,7 +554,8 @@ namespace TauCode.Db
 
             if (foreignKey.ReferencedColumnNames == null)
             {
-                throw new ArgumentException("Foreign key referenced column names collection cannot be null.", argumentName);
+                throw new ArgumentException("Foreign key referenced column names collection cannot be null.",
+                    argumentName);
             }
 
             if (foreignKey.ReferencedColumnNames.Any(x => x == null))
@@ -554,7 +565,8 @@ namespace TauCode.Db
 
             if (foreignKey.ColumnNames.Count != foreignKey.ReferencedColumnNames.Count)
             {
-                throw new ArgumentException("Foreign key's column name count does not match referenced column name count.", argumentName);
+                throw new ArgumentException(
+                    "Foreign key's column name count does not match referenced column name count.", argumentName);
             }
         }
 

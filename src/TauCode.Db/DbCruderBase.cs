@@ -436,7 +436,7 @@ namespace TauCode.Db
                 .GetTable();
 
             using var command = this.Connection.CreateCommand();
-            var sql = this.ScriptBuilder.BuildSelectAllScript(table);
+            var sql = this.ScriptBuilder.BuildSelectAllScript(table, columnSelector);
             command.CommandText = sql;
             var rows = DbTools.GetCommandRows(command, this.GetTableValuesConverter(tableName));
             return rows;
@@ -505,7 +505,7 @@ namespace TauCode.Db
                 .CreateTableInspector(this.Connection, this.SchemaName, tableName)
                 .GetTable();
 
-            var idColumnName = table.GetPrimaryKeySingleColumn().Name;
+            var idColumnName = table.GetPrimaryKeySingleColumn(nameof(tableName)).Name;
 
             using var helper = new CommandHelper(this, table, new[] { idColumnName });
             var sql = this.ScriptBuilder.BuildDeleteByPrimaryKeyScript(table, helper.GetParameterNames().Single().Value);
@@ -517,11 +517,6 @@ namespace TauCode.Db
             });
 
             return result > 0;
-        }
-
-        public virtual void DeleteRows(string tableName, object[] ids)
-        {
-            throw new NotImplementedException();
         }
 
         #endregion

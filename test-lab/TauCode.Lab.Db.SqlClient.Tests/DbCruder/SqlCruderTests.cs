@@ -35,6 +35,19 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbCruder
             this.Connection.ExecuteSingleSql(sql);
         }
 
+        private void CreateMediumTable()
+        {
+            var sql = @"
+CREATE TABLE [zeta].[MediumTable](
+    [Id] int NOT NULL PRIMARY KEY,
+
+    [TheInt] int NULL DEFAULT 1599,
+    [TheNVarChar] nvarchar(100) NULL DEFAULT 'Semmi')
+";
+
+            this.Connection.ExecuteSingleSql(sql);
+        }
+
         private void CreateSmallTable()
         {
             var sql = @"
@@ -793,11 +806,92 @@ CREATE TABLE [zeta].[MyTab](
         public void GetRow_AllDataTypes_RunsOk()
         {
             // Arrange
+            this.CreateSuperTable();
+
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
+
+            dynamic row = new DynamicRow(new
+            {
+                TheGuid = new Guid("8e816a5f-b97c-43df-95e9-4fbfe7172dd0"),
+
+                TheBit = true,
+
+                TheTinyInt = (byte)17,
+                TheSmallInt = (short)11,
+                TheInt = 44,
+                TheBigInt = 777L,
+
+                TheDecimal = 11.2m,
+                TheNumeric = 22.3m,
+
+                TheSmallMoney = 123.06m,
+                TheMoney = 60.77m,
+
+                TheReal = (float)15.99,
+                TheFloat = 7001.555,
+
+                TheDate = DateTime.Parse("2010-01-02"),
+                TheDateTime = DateTime.Parse("2011-11-12T10:10:10"),
+                TheDateTime2 = DateTime.Parse("2015-03-07T05:06:33.777"),
+                TheDateTimeOffset = DateTimeOffset.Parse("2011-11-12T10:10:10+03:00"),
+                TheSmallDateTime = DateTime.Parse("1970-04-08T11:11:11"),
+                TheTime = TimeSpan.Parse("03:03:03"),
+
+                TheChar = "abc",
+                TheVarChar = "Andrey Kovalenko",
+                TheVarCharMax = "Rocky Marciano",
+
+                TheNChar = "АБВ",
+                TheNVarChar = "Андрей Коваленко",
+                TheNVarCharMax = "Роки Марчиано",
+
+                TheBinary = new byte[] { 0x10, 0x20, 0x33 },
+                TheVarBinary = new byte[] { 0xff, 0xee, 0xbb },
+                TheVarBinaryMax = new byte[] { 0x80, 0x90, 0xa0 },
+            });
+
+            cruder.InsertRow("SuperTable", row, (Func<string, bool>)(x => true)); // InsertRow is ut'ed already :)
 
             // Act
+            var insertedRow = ((DynamicRow)cruder.GetRow("SuperTable", 1)).ToDictionary();
 
             // Assert
-            throw new NotImplementedException();
+            Assert.That(insertedRow["TheGuid"], Is.EqualTo(new Guid("8e816a5f-b97c-43df-95e9-4fbfe7172dd0")));
+
+            Assert.That(insertedRow["TheBit"], Is.EqualTo(true));
+
+            Assert.That(insertedRow["TheTinyInt"], Is.EqualTo((byte)17));
+            Assert.That(insertedRow["TheSmallInt"], Is.EqualTo((short)11));
+            Assert.That(insertedRow["TheInt"], Is.EqualTo(44));
+            Assert.That(insertedRow["TheBigInt"], Is.EqualTo(777L));
+
+            Assert.That(insertedRow["TheDecimal"], Is.EqualTo(11.2m));
+            Assert.That(insertedRow["TheNumeric"], Is.EqualTo(22.3m));
+
+            Assert.That(insertedRow["TheSmallMoney"], Is.EqualTo(123.06m));
+            Assert.That(insertedRow["TheMoney"], Is.EqualTo(60.77m));
+
+            Assert.That(insertedRow["TheReal"], Is.EqualTo((float)15.99));
+            Assert.That(insertedRow["TheFloat"], Is.EqualTo(7001.555));
+
+            Assert.That(insertedRow["TheDate"], Is.EqualTo(DateTime.Parse("2010-01-02")));
+            Assert.That(insertedRow["TheDateTime"], Is.EqualTo(DateTime.Parse("2011-11-12T10:10:10")));
+            Assert.That(insertedRow["TheDateTime2"], Is.EqualTo(DateTime.Parse("2015-03-07T05:06:33.777")));
+            Assert.That(insertedRow["TheDateTimeOffset"], Is.EqualTo(DateTimeOffset.Parse("2011-11-12T10:10:10+03:00")));
+            Assert.That(insertedRow["TheSmallDateTime"], Is.EqualTo(DateTime.Parse("1970-04-08T11:11")));
+            Assert.That(insertedRow["TheTime"], Is.EqualTo(TimeSpan.Parse("03:03:03")));
+
+            Assert.That(insertedRow["TheChar"], Does.StartWith("abc"));
+            Assert.That(insertedRow["TheVarChar"], Is.EqualTo("Andrey Kovalenko"));
+            Assert.That(insertedRow["TheVarCharMax"], Is.EqualTo("Rocky Marciano"));
+
+            Assert.That(insertedRow["TheNChar"], Does.StartWith("АБВ"));
+            Assert.That(insertedRow["TheNVarChar"], Is.EqualTo("Андрей Коваленко"));
+            Assert.That(insertedRow["TheNVarCharMax"], Is.EqualTo("Роки Марчиано"));
+
+            CollectionAssert.AreEqual(new byte[] { 0x10, 0x20, 0x33 }, ((byte[])insertedRow["TheBinary"]).Take(3));
+            CollectionAssert.AreEqual(new byte[] { 0xff, 0xee, 0xbb }, (byte[])insertedRow["TheVarBinary"]);
+            CollectionAssert.AreEqual(new byte[] { 0x80, 0x90, 0xa0 }, (byte[])insertedRow["TheVarBinaryMax"]);
         }
 
         [Test]
@@ -907,66 +1001,96 @@ CREATE TABLE [zeta].[MyTab](
         public void GetAllRows_ValidArguments_ReturnsRows()
         {
             // Arrange
+            var insertSql = this.GetType().Assembly.GetResourceText("InsertRows.sql", true);
+            this.Connection.ExecuteCommentedScript(insertSql);
+
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
+            var rows = cruder.GetAllRows("DateData", x => x == "Moment");
 
             // Assert
-            throw new NotImplementedException();
-        }
+            var row = (DynamicRow)rows[0];
+            Assert.That(row.GetDynamicMemberNames().Count(), Is.EqualTo(1));
+            Assert.That(row.GetValue("Moment"), Is.EqualTo(DateTimeOffset.Parse("2020-01-01T05:05:05+00:00")));
 
+            row = rows[1];
+            Assert.That(row.GetDynamicMemberNames().Count(), Is.EqualTo(1));
+            Assert.That(row.GetValue("Moment"), Is.EqualTo(DateTimeOffset.Parse("2020-02-02T06:06:06+00:00")));
+        }
         [Test]
         public void GetAllRows_SelectorIsTruer_DeliversAllColumns()
         {
             // Arrange
+            var insertSql = this.GetType().Assembly.GetResourceText("InsertRows.sql", true);
+            this.Connection.ExecuteCommentedScript(insertSql);
+
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
+            var rows = cruder.GetAllRows("DateData", x => true);
 
             // Assert
-            throw new NotImplementedException();
+            var row = rows[0];
+            Assert.That(row.Id, Is.EqualTo(new Guid("11111111-1111-1111-1111-111111111111")));
+            Assert.That(row.Moment, Is.EqualTo(DateTimeOffset.Parse("2020-01-01T05:05:05+00:00")));
+
+            row = rows[1];
+            Assert.That(row.Id, Is.EqualTo(new Guid("22222222-2222-2222-2222-222222222222")));
+            Assert.That(row.Moment, Is.EqualTo(DateTimeOffset.Parse("2020-02-02T06:06:06+00:00")));
         }
 
         [Test]
-        public void GetAllRows_SchemaDoesNotExist_ThrowsTodo()
+        public void GetAllRows_SchemaDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "bad_schema");
 
             // Act
+            var ex = Assert.Throws<TauDbException>(() => cruder.GetAllRows("some_table"));
 
             // Assert
-            throw new NotImplementedException();
+            Assert.That(ex.Message, Is.EqualTo("Schema 'bad_schema' does not exist."));
         }
 
         [Test]
-        public void GetAllRows_TableDoesNotExist_ThrowsTodo()
+        public void GetAllRows_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
+            var ex = Assert.Throws<TauDbException>(() => cruder.GetAllRows("bad_table"));
 
             // Assert
-            throw new NotImplementedException();
+            Assert.That(ex.Message, Is.EqualTo("Table 'bad_table' does not exist in schema 'zeta'."));
         }
 
         [Test]
-        public void GetAllRows_TableNameIsNull_ThrowsTodo()
+        public void GetAllRows_TableNameIsNull_ThrowsArgumentNullException()
         {
             // Arrange
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
+            var ex = Assert.Throws<ArgumentNullException>(() => cruder.GetAllRows(null));
 
             // Assert
-            throw new NotImplementedException();
+            Assert.That(ex.ParamName, Is.EqualTo("tableName"));
         }
 
         [Test]
-        public void GetAllRows_SelectorIsFalser_ThrowsTodo()
+        public void GetAllRows_SelectorIsFalser_ThrowsArgumentException()
         {
             // Arrange
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
+            var ex = Assert.Throws<ArgumentException>(() => cruder.GetAllRows("HealthInfo", x => false));
 
             // Assert
-            throw new NotImplementedException();
+            Assert.That(ex, Has.Message.StartsWith("No columns were selected."));
+            Assert.That(ex.ParamName, Is.EqualTo("columnSelector"));
         }
 
         #endregion
@@ -1141,180 +1265,117 @@ CREATE TABLE [zeta].[MyTab](
         public void DeleteRow_ValidArguments_DeletesRowAndReturnsTrue()
         {
             // Arrange
+            this.CreateMediumTable();
+            const int id = 1;
+            this.Connection.ExecuteSingleSql($"INSERT INTO [zeta].[MediumTable]([Id]) VALUES ({id})");
+
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
-
+            var deleted = cruder.DeleteRow("MediumTable", id);
+            
             // Assert
-            throw new NotImplementedException();
+            var deletedRow = TestHelper.LoadRow(this.Connection, "zeta", "MediumTable", id);
+
+            Assert.That(deleted, Is.True);
+            Assert.That(deletedRow, Is.Null);
         }
 
         [Test]
         public void DeleteRow_IdNotFound_ReturnsFalse()
         {
             // Arrange
+            this.CreateMediumTable();
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
+            var notExistingId = 11;
 
             // Act
+            var deleted = cruder.DeleteRow("MediumTable", notExistingId);
 
             // Assert
-            throw new NotImplementedException();
+            Assert.That(deleted, Is.False);
         }
 
         [Test]
-        public void DeleteRow_SchemaDoesNotExist_ThrowsTodo()
+        public void DeleteRow_SchemaDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "bad_schema");
 
             // Act
+            var ex = Assert.Throws<TauDbException>(() => cruder.DeleteRow("some_table", 17));
 
             // Assert
-            throw new NotImplementedException();
+            Assert.That(ex.Message, Is.EqualTo("Schema 'bad_schema' does not exist."));
         }
 
         [Test]
-        public void DeleteRow_TableDoesNotExist_ThrowsTodo()
+        public void DeleteRow_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
+            var ex = Assert.Throws<TauDbException>(() => cruder.DeleteRow("bad_table", 17));
 
             // Assert
-            throw new NotImplementedException();
+            Assert.That(ex.Message, Is.EqualTo("Table 'bad_table' does not exist in schema 'zeta'."));
         }
 
         [Test]
         public void DeleteRow_TableNameIsNull_ThrowsArgumentNullException()
         {
             // Arrange
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
+            var ex = Assert.Throws<ArgumentNullException>(() => cruder.DeleteRow(null, 11));
 
             // Assert
-            throw new NotImplementedException();
+            Assert.That(ex.ParamName, Is.EqualTo("tableName"));
         }
 
         [Test]
-        public void DeleteRow_IdIsNull_ThrowsTodo()
+        public void DeleteRow_IdIsNull_ThrowsArgumentNullException()
         {
             // Arrange
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
+            var ex = Assert.Throws<ArgumentNullException>(() => cruder.DeleteRow("MediumTable", null));
 
             // Assert
-            throw new NotImplementedException();
+            Assert.That(ex.ParamName, Is.EqualTo("id"));
         }
 
         [Test]
-        public void DeleteRow_TableHasNoPrimaryKey_ThrowsTodo()
+        public void DeleteRow_TableHasNoPrimaryKey_ThrowsArgumentException()
         {
             // Arrange
+            this.Connection.ExecuteSingleSql("CREATE TABLE [zeta].[dummy](Foo int)"); // no PK
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
+            var ex = Assert.Throws<ArgumentException>((() => cruder.DeleteRow("dummy", 1)));
 
             // Assert
-            throw new NotImplementedException();
+            Assert.That(ex, Has.Message.StartsWith("Table 'dummy' does not have a primary key."));
+            Assert.That(ex.ParamName, Is.EqualTo("tableName"));
         }
 
         [Test]
-        public void DeleteRow_TablePrimaryKeyIsMultiColumn_ThrowsTodo()
+        public void DeleteRow_PrimaryKeyIsMultiColumn_ThrowsArgumentException()
         {
             // Arrange
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
 
-            // Assert
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region DeleteRows
-
-        [Test]
-        public void DeleteRows_ValidArguments_DeletesExistingRowsAndReturnsCount()
-        {
-            // Arrange
-
-            // Act
+            var ex = Assert.Throws<ArgumentException>((() =>  cruder.DeleteRow("Person", "the_id")));
 
             // Assert
-            throw new NotImplementedException();
-        }
-
-        [Test]
-        public void DeleteRows_SchemaDoesNotExist_ThrowsTodo()
-        {
-            // Arrange
-
-            // Act
-
-            // Assert
-            throw new NotImplementedException();
-        }
-
-        [Test]
-        public void DeleteRows_TableDoesNotExist_ThrowsTodo()
-        {
-            // Arrange
-
-            // Act
-
-            // Assert
-            throw new NotImplementedException();
-        }
-
-        [Test]
-        public void DeleteRows_TableNameIsNull_ThrowsArgumentNullException()
-        {
-            // Arrange
-
-            // Act
-
-            // Assert
-            throw new NotImplementedException();
-        }
-
-        [Test]
-        public void DeleteRows_IdsIsNull_ThrowsTodo()
-        {
-            // Arrange
-
-            // Act
-
-            // Assert
-            throw new NotImplementedException();
-        }
-
-        [Test]
-        public void DeleteRows_IdsContainNull_ThrowsTodo()
-        {
-            // Arrange
-
-            // Act
-
-            // Assert
-            throw new NotImplementedException();
-        }
-
-        [Test]
-        public void DeleteRows_TableHasNoPrimaryKey_ThrowsTodo()
-        {
-            // Arrange
-
-            // Act
-
-            // Assert
-            throw new NotImplementedException();
-        }
-
-        [Test]
-        public void DeleteRows_TablePrimaryKeyIsMultiColumn_ThrowsTodo()
-        {
-            // Arrange
-
-            // Act
-
-            // Assert
-            throw new NotImplementedException();
+            Assert.That(ex, Has.Message.StartsWith("Failed to retrieve single primary key column name for table 'Person'."));
+            Assert.That(ex.ParamName, Is.EqualTo("tableName"));
         }
 
         #endregion

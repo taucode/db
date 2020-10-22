@@ -77,7 +77,12 @@ WHERE
 ";
             command.Parameters.AddWithValue("p_id", id);
             using var reader = command.ExecuteReader();
-            reader.Read();
+
+            var read = reader.Read();
+            if (!read)
+            {
+                return null;
+            }
 
             var dictionary = new Dictionary<string, object>();
 

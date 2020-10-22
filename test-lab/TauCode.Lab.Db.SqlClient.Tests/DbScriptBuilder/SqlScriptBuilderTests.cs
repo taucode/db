@@ -979,7 +979,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbScriptBuilder
                 scriptBuilder.BuildUpdateScript(table, columnToParameterMappings)));
 
             // Assert
-            Assert.That(ex, Has.Message.StartsWith("Table does not have a primary key."));
+            Assert.That(ex, Has.Message.StartsWith("Table 'dummy' does not have a primary key."));
             Assert.That(ex.ParamName, Is.EqualTo("table"));
         }
 
@@ -1006,7 +1006,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbScriptBuilder
                 scriptBuilder.BuildUpdateScript(table, columnToParameterMappings)));
 
             // Assert
-            Assert.That(ex, Has.Message.StartsWith("Failed to retrieve single primary key column name."));
+            Assert.That(ex, Has.Message.StartsWith("Failed to retrieve single primary key column name for table 'Person'."));
             Assert.That(ex.ParamName, Is.EqualTo("table"));
         }
 
@@ -1201,7 +1201,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbScriptBuilder
                 scriptBuilder.BuildSelectByPrimaryKeyScript(table, "p_id", x => true)));
 
             // Assert
-            Assert.That(ex, Has.Message.StartsWith("Table does not have a primary key."));
+            Assert.That(ex, Has.Message.StartsWith("Table 'dummy' does not have a primary key."));
             Assert.That(ex.ParamName, Is.EqualTo("table"));
         }
 
@@ -1219,7 +1219,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbScriptBuilder
                 scriptBuilder.BuildSelectByPrimaryKeyScript(table, "p_id", x => true)));
 
             // Assert
-            Assert.That(ex, Has.Message.StartsWith("Failed to retrieve single primary key column name."));
+            Assert.That(ex, Has.Message.StartsWith("Failed to retrieve single primary key column name for table 'Person'."));
             Assert.That(ex.ParamName, Is.EqualTo("table"));
         }
 
@@ -1453,7 +1453,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbScriptBuilder
         }
 
         [Test]
-        public void BuildDeleteByPrimaryKeyScript_TableDoesNotContainPrimaryKey_ThrowsArgumentException()
+        public void BuildDeleteByPrimaryKeyScript_TableHasNoPrimaryKey_ThrowsArgumentException()
         {
             // Arrange
             IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta");
@@ -1468,7 +1468,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbScriptBuilder
                 scriptBuilder.BuildDeleteByPrimaryKeyScript(table, "p_id")));
 
             // Assert
-            Assert.That(ex, Has.Message.StartsWith("Table does not have a primary key."));
+            Assert.That(ex, Has.Message.StartsWith("Table 'dummy' does not have a primary key."));
             Assert.That(ex.ParamName, Is.EqualTo("table"));
         }
 
@@ -1486,7 +1486,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbScriptBuilder
                 scriptBuilder.BuildDeleteByPrimaryKeyScript(table, "p_id")));
 
             // Assert
-            Assert.That(ex, Has.Message.StartsWith("Failed to retrieve single primary key column name."));
+            Assert.That(ex, Has.Message.StartsWith("Failed to retrieve single primary key column name for table 'Person'."));
             Assert.That(ex.ParamName, Is.EqualTo("table"));
         }
 
