@@ -411,10 +411,10 @@ namespace TauCode.Db
                 .CreateTableInspector(this.Connection, this.SchemaName, tableName)
                 .GetTable();
 
-            var idColumnName = table.GetPrimaryKeySingleColumn().Name;
+            var idColumnName = table.GetPrimaryKeySingleColumn(nameof(tableName)).Name;
 
             using var helper = new CommandHelper(this, table, new[] { idColumnName });
-            var sql = this.ScriptBuilder.BuildSelectByPrimaryKeyScript(table, helper.GetParameterNames().Single().Value);
+            var sql = this.ScriptBuilder.BuildSelectByPrimaryKeyScript(table, helper.GetParameterNames().Single().Value, columnSelector);
             helper.CommandText = sql;
             var rows = helper.FetchWithValues(new Dictionary<string, object>
             {
