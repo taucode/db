@@ -223,6 +223,12 @@ namespace TauCode.Db
 
         #endregion
 
+        #region Private
+
+        private bool PropertyTruer(string propertyName) => true;
+
+        #endregion
+
         #region Abstract
 
         protected abstract IDbValueConverter CreateDbValueConverter(ColumnMold column);
@@ -276,7 +282,11 @@ namespace TauCode.Db
 
         public IDbTableValuesConverter GetTableValuesConverter(string tableName)
         {
-            // todo: checks, lowercase, everywhere.
+            if (tableName == null)
+            {
+                throw new ArgumentNullException(nameof(tableName));
+            }
+
             var tableValuesConverter = _tableValuesConverters.GetValueOrDefault(tableName);
             if (tableValuesConverter == null)
             {
@@ -319,6 +329,8 @@ namespace TauCode.Db
             {
                 throw new ArgumentNullException(nameof(rows));
             }
+
+            propertySelector ??= PropertyTruer;
 
             //if (columnsToOmit != null)
             //{

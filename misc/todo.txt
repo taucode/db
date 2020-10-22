@@ -35,3 +35,8 @@ x   1. Incorporate changes from TX.
 2020-09-27
 ==========
 x   1. Get rid of 'own' DbException.
+
+2020-10-22
+==========
+    1. MySQL DateTimeOffset: https://stackoverflow.com/questions/32103607/will-does-mysql-support-datetimeoffset
+

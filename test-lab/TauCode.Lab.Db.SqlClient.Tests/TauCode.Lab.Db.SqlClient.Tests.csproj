@@ -32,6 +32,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="CommonResources\crebase.sql" />
+    <EmbeddedResource Include="DbCruder\TestResources\SuperTable.sql" />
     <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildSelectAllScript\BuildSelectAllScript_AllColumns_Brackets.sql" />
     <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildSelectAllScript\BuildSelectAllScript_AllColumns_DoubleQuotes.sql" />
     <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildSelectAllScript\BuildSelectAllScript_Brackets.sql" />

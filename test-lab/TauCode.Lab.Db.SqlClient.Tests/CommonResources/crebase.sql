@@ -87,7 +87,7 @@ CREATE TABLE [zeta].[TaxInfo](
 CREATE TABLE [zeta].[HealthInfo](
 	[Id] [uniqueidentifier] NOT NULL,
 	[PersonId] [bigint] NOT NULL,
-	[Weight] [decimal] NOT NULL,
+	[Weight] [decimal](8, 2) NOT NULL,
 	[PersonMetaKey] [smallint] NOT NULL,
 	[IQ] [numeric](8, 2) NULL,
 	[Temper] [smallint] NULL,

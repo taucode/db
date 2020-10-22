@@ -4,6 +4,7 @@ Data types to cover
 uniqueidentifier
 
 bit
+
 tinyint
 smallint
 int

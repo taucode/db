@@ -1,7 +1,9 @@
 ﻿using Microsoft.Data.SqlClient;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using TauCode.Db;
 
 namespace TauCode.Lab.Db.SqlClient.Tests
 {
@@ -54,5 +56,45 @@ namespace TauCode.Lab.Db.SqlClient.Tests
             File.WriteAllText(expectedFilePath, expected, Encoding.UTF8);
         }
 
+        internal static IReadOnlyDictionary<string, object> LoadRow(
+            SqlConnection connection,
+            string schemaName,
+            string tableName,
+            object id)
+        {
+            IDbTableInspector tableInspector = new SqlTableInspectorLab(connection, schemaName, tableName);
+            var table = tableInspector.GetTable();
+            var pkColumnName = table.GetPrimaryKeySingleColumn().Name;
+
+            using var command = connection.CreateCommand();
+            command.CommandText = $@"
+SELECT
+    *
+FROM
+    [{schemaName}].[{tableName}]
+WHERE
+    [{pkColumnName}] = @p_id
+";
+            command.Parameters.AddWithValue("p_id", id);
+            using var reader = command.ExecuteReader();
+            reader.Read();
+
+            var dictionary = new Dictionary<string, object>();
+
+            for (var i = 0; i < reader.FieldCount; i++)
+            {
+                var fieldName = reader.GetName(i);
+                var value = reader[fieldName];
+
+                if (value == DBNull.Value)
+                {
+                    value = null;
+                }
+
+                dictionary[fieldName] = value;
+            }
+
+            return dictionary;
+        }
     }
 }
