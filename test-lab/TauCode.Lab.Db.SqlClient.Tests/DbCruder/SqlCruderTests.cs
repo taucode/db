@@ -29,6 +29,25 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbCruder
             TestHelper.WriteDiff(actual, expected, @"c:\temp\0-sql\", extension, "todo");
         }
 
+        private void CreateSuperTable()
+        {
+            var sql = this.GetType().Assembly.GetResourceText("SuperTable.sql", true);
+            this.Connection.ExecuteSingleSql(sql);
+        }
+
+        private void CreateSmallTable()
+        {
+            var sql = @"
+CREATE TABLE [zeta].[SmallTable](
+    [Id] int NOT NULL PRIMARY KEY IDENTITY(1, 1),
+
+    [TheInt] int NULL DEFAULT 1599,
+    [TheNVarChar] nvarchar(100) NULL DEFAULT 'Semmi')
+";
+
+            this.Connection.ExecuteSingleSql(sql);
+        }
+
         #region Constructor
 
         [Test]
@@ -256,8 +275,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbCruder
         public void InsertRow_AllDataTypes_RunsOk()
         {
             // Arrange
-            var sql = this.GetType().Assembly.GetResourceText("SuperTable.sql", true);
-            this.Connection.ExecuteSingleSql(sql);
+            this.CreateSuperTable();
 
             IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
@@ -405,77 +423,113 @@ CREATE TABLE [zeta].[MyTab](
         }
 
         [Test]
-        public void InsertRow_PropertySelectorProducesNoProperties_InsertsDefaultValues()
+        public void InsertRow_RowHasUnknownPropertiesAndSelectorIsFalser_InsertsDefaultValues()
         {
             // Arrange
+            this.CreateSmallTable();
 
-            // todo: EMPTY row is a dictionary, row is a DynamicRow, row is an anon type, row is a strongly-typed dto
+            var row1 = new Dictionary<string, object>
+            {
+                {"NonExisting", 777},
+            };
+
+            var row2 = new DynamicRow();
+            row2.SetValue("NonExisting", 777);
+
+            var row3 = new
+            {
+                NonExisting = 777,
+            };
+
+            var row4 = new DummyDto
+            {
+                NonExisting = 777,
+            };
+
+            object[] rows =
+            {
+                row1,
+                row2,
+                row3,
+                row4,
+            };
+
+            IReadOnlyDictionary<string, object>[] insertedRows = new IReadOnlyDictionary<string, object>[rows.Length];
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
+            for (var i = 0; i < rows.Length; i++)
+            {
+                var row = rows[i];
+                cruder.InsertRow("SmallTable", row, x => false);
+
+                var lastIdentity = (int)this.Connection.GetLastIdentity();
+
+                var insertedRow = TestHelper.LoadRow(
+                    this.Connection,
+                    "zeta",
+                    "SmallTable",
+                    lastIdentity);
+
+                insertedRows[i] = insertedRow;
+
+                this.Connection.ExecuteSingleSql("DELETE FROM [zeta].[SmallTable]");
+            }
 
             // Assert
-            throw new NotImplementedException();
+            foreach (var insertedRow in insertedRows)
+            {
+                Assert.That(insertedRow["TheInt"], Is.EqualTo(1599));
+                Assert.That(insertedRow["TheNVarChar"], Is.EqualTo("Semmi"));
+            }
         }
 
         [Test]
-        public void InsertRow_PropertySelectorIsNull_UsesAllColumns()
+        public void InsertRow_NoColumnForSelectedProperty_ThrowsTauDbException()
         {
             // Arrange
+            this.CreateSmallTable();
 
-            // todo: row is a dictionary, row is a DynamicRow, row is an anon type, row is a strongly-typed dto
+            var row = new
+            {
+                TheInt = 1,
+                TheNVarChar = "Polina",
+                NotExisting = 100,
+            };
+
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
+            var ex = Assert.Throws<TauDbException>(() => cruder.InsertRow("SmallTable", row));
 
             // Assert
-            throw new NotImplementedException();
+            Assert.That(ex, Has.Message.EqualTo($"Column 'NotExisting' does not exist."));
         }
 
         [Test]
-        public void InsertRow_RowContainsPropertiesOnWhichSelectorReturnsFalse_RunsOk()
+        public void InsertRow_SchemaDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-
-            // todo: row is a dictionary, row is a DynamicRow, row is an anon type, row is a strongly-typed dto
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "bad_schema");
 
             // Act
+            var ex = Assert.Throws<TauDbException>(() => cruder.InsertRow("some_table", new object()));
 
             // Assert
-            throw new NotImplementedException();
+            Assert.That(ex.Message, Is.EqualTo("Schema 'bad_schema' does not exist."));
         }
 
         [Test]
-        public void InsertRow_NoColumnForSelectedProperty_ThrowsTodo()
+        public void InsertRow_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-
-            // todo: row is a dictionary, row is a DynamicRow, row is an anon type, row is a strongly-typed dto
-
-            // Act
-
-            // Assert
-            throw new NotImplementedException();
-        }
-
-        [Test]
-        public void InsertRow_SchemaDoesNotExist_ThrowsTodo()
-        {
-            // Arrange
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
+            var ex = Assert.Throws<TauDbException>(() => cruder.InsertRow("bad_table", new object()));
 
             // Assert
-            throw new NotImplementedException();
-        }
-
-        [Test]
-        public void InsertRow_TableDoesNotExist_ThrowsTodo()
-        {
-            // Arrange
-
-            // Act
-
-            // Assert
-            throw new NotImplementedException();
+            Assert.That(ex.Message, Is.EqualTo("Table 'bad_table' does not exist in schema 'zeta'."));
         }
 
         [Test]
@@ -505,14 +559,21 @@ CREATE TABLE [zeta].[MyTab](
         }
 
         [Test]
-        public void InsertRow_RowContainsDBNullValue_ThrowsTodo()
+        public void InsertRow_RowContainsDBNullValue_ThrowsTauDbException()
         {
             // Arrange
+            this.CreateSuperTable();
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
+            var row = new
+            {
+                TheGuid = DBNull.Value,
+            };
 
             // Act
+            var ex = Assert.Throws<TauDbException>(() => cruder.InsertRow("SuperTable", row, x => x == "TheGuid"));
 
             // Assert
-            throw new NotImplementedException();
+            Assert.That(ex, Has.Message.EqualTo("Could not transform value '' of type 'System.DBNull'. Table name is 'SuperTable'. Column name is 'TheGuid'."));
         }
 
         #endregion

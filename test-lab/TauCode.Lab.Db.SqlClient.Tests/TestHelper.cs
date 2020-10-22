@@ -96,5 +96,12 @@ WHERE
 
             return dictionary;
         }
+
+        internal static decimal GetLastIdentity(this SqlConnection connection)
+        {
+            using var command = connection.CreateCommand();
+            command.CommandText = "SELECT @@IDENTITY";
+            return (decimal)command.ExecuteScalar();
+        }
     }
 }

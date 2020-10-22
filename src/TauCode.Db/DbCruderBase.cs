@@ -28,7 +28,7 @@ namespace TauCode.Db
             private readonly IReadOnlyDictionary<string, IDbDataParameter> _parametersByParameterNames;
 
             /// <summary>
-            /// Some DB providers (namely, MySQL) change parameter's size when executing command despite they were never asked for that.
+            /// Some DB providers (namely, MySQL) change parameter's size when executing command, even though they were never asked to do so.
             /// So we gotta keep parameter sizes intact.
             /// </summary>
             private readonly IReadOnlyDictionary<string, int> _parameterSizes;
@@ -79,7 +79,7 @@ namespace TauCode.Db
 
                         if (column == null)
                         {
-                            throw new TauDbException($"Column not found: '{x}'.");
+                            throw new TauDbException($"Column '{x}' does not exist.");
                         }
 
                         return column;
@@ -137,17 +137,32 @@ namespace TauCode.Db
                     var parameter = _parametersByParameterNames[parameterName];
 
                     var tableValuesConverter = _cruder.GetTableValuesConverter(_table.Name);
-                    var dbValueConverter = tableValuesConverter.GetColumnConverter(columnName);
-                    var columnValue = dbValueConverter.ToDbValue(originalColumnValue);
+                    
+                    try
+                    {
+                        var dbValueConverter = tableValuesConverter.GetColumnConverter(columnName);
 
-                    if (columnValue == null)
+                        if (dbValueConverter == null)
+                        {
+                            throw new TauDbException($"'GetColumnConverter' returned null. Table name is '{_table.Name}'. Column name is '{columnName}'.");
+                        }
+
+                        var columnValue = dbValueConverter.ToDbValue(originalColumnValue);
+
+                        if (columnValue == null)
+                        {
+                            throw new TauDbException($"Method '{nameof(IDbValueConverter.ToDbValue)}' of the instance of type '{dbValueConverter.GetType().FullName}' returned null.");
+                        }
+
+                        parameter.Size = _parameterSizes[parameter.ParameterName];
+                        parameter.Value = columnValue;
+                    }
+                    catch (Exception ex)
                     {
                         throw new TauDbException(
-                            $"Could not transform value '{originalColumnValue}' of type '{originalColumnValue.GetType().FullName}'. Table name is '{_table.Name}'. Column name is '{columnName}'.");
+                            $"Could not transform value '{originalColumnValue}' of type '{originalColumnValue.GetType().FullName}'. Table name is '{_table.Name}'. Column name is '{columnName}'.",
+                            ex);
                     }
-
-                    parameter.Size = _parameterSizes[parameter.ParameterName];
-                    parameter.Value = columnValue;
                 }
             }
 

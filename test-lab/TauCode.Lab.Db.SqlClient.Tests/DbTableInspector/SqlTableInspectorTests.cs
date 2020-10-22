@@ -237,7 +237,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbTableInspector
             this.AssertColumn(
                 columns[2],
                 "Weight",
-                new DbTypeMoldInfo("decimal", precision: SqlToolsLab.DefaultDecimalPrecision, scale: 0),
+                new DbTypeMoldInfo("decimal", precision: 8, scale: 2),
                 false,
                 null,
                 null);
@@ -561,7 +561,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbTableInspector
         #region GetTable
 
         [Test]
-        public void GetTable_ValidInput_ReturnsIndexes()
+        public void GetTable_ValidInput_ReturnsTable()
         {
             // Arrange
             IDbTableInspector inspector = new SqlTableInspectorLab(this.Connection, "zeta", "HealthInfo");
@@ -596,7 +596,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbTableInspector
             this.AssertColumn(
                 columns[2],
                 "Weight",
-                new DbTypeMoldInfo("decimal", precision: SqlToolsLab.DefaultDecimalPrecision, scale: 0),
+                new DbTypeMoldInfo("decimal", precision: 8, scale: 2),
                 false,
                 null,
                 null);
