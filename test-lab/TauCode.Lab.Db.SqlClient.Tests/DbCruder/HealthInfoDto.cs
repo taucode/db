@@ -13,5 +13,6 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbCruder
         public byte PersonOrdNumber { get; set; }
         public int MetricB { get; set; }
         public int MetricA { get; set; }
+        public int NotExisting { get; set; }
     }
 }

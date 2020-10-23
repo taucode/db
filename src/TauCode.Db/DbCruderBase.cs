@@ -123,21 +123,20 @@ namespace TauCode.Db
                 }
 
                 var rowDictionary = _cruder.ObjectToDataDictionary(values);
-                foreach (var pair in rowDictionary)
-                {
-                    var columnName = pair.Key;
-                    var originalColumnValue = pair.Value;
 
-                    if (!_parameterNamesByColumnNames.ContainsKey(columnName))
+                foreach (var columnName in _parameterNamesByColumnNames.Keys)
+                {
+                    var gotColumn = rowDictionary.TryGetValue(columnName, out var originalColumnValue);
+                    if (!gotColumn)
                     {
-                        continue; // row has a value we will not insert into any table's column.
+                        throw new ArgumentException($"'{nameof(values)}' does not contain property representing column '{columnName}'.", nameof(values));
                     }
 
                     var parameterName = _parameterNamesByColumnNames[columnName];
                     var parameter = _parametersByParameterNames[parameterName];
 
                     var tableValuesConverter = _cruder.GetTableValuesConverter(_table.Name);
-                    
+
                     try
                     {
                         var dbValueConverter = tableValuesConverter.GetColumnConverter(columnName);
@@ -347,22 +346,12 @@ namespace TauCode.Db
 
             propertySelector ??= PropertyTruer;
 
-            //if (columnsToOmit != null)
-            //{
-            //    if (columnsToOmit.Any(string.IsNullOrWhiteSpace))
-            //    {
-            //        throw new ArgumentException($"'{nameof(columnsToOmit)}' must not contain empty strings or nulls.");
-            //    }
-            //}
-
             var table = this.Factory.CreateTableInspector(this.Connection, this.SchemaName, tableName).GetTable();
 
             if (rows.Count == 0)
             {
                 return; // nothing to insert
             }
-
-            //columnsToOmit ??= new List<string>();
 
             var columnNames = this.ObjectToDataDictionary(rows[0])
                 .Keys
@@ -385,7 +374,7 @@ namespace TauCode.Db
 
                 if (row == null)
                 {
-                    throw new ArgumentException($"'{nameof(rows)}' must not contain nulls.");
+                    throw new ArgumentException($"'{nameof(rows)}' must not contain nulls.", nameof(rows));
                 }
 
                 helper.ExecuteWithValues(row);

@@ -204,45 +204,47 @@ CREATE TABLE [zeta].[SmallTable](
                 {"PersonOrdNumber", (byte) 3},
                 {"MetricB", -3},
                 {"MetricA", 177},
+                {"NotExisting", 11},
             };
-
-            var json = JsonConvert.SerializeObject(row1, Formatting.Indented);
-
+            
             var row2 = new DynamicRow();
             row2.SetValue("Id", new Guid("a776fd76-f2a8-4e09-9e69-b6d08e96c075"));
             row2.SetValue("PersonId", 101);
-            row2.SetValue("Weight", 69.2m);
+            row2.SetValue("Weight", 69.20m);
             row2.SetValue("PersonMetaKey", (short)12);
-            row2.SetValue("IQ", 101.6m);
+            row2.SetValue("IQ", 101.60m);
             row2.SetValue("Temper", (short)4);
             row2.SetValue("PersonOrdNumber", (byte)3);
             row2.SetValue("MetricB", -3);
             row2.SetValue("MetricA", 177);
+            row2.SetValue("NotExisting", 11);
 
             var row3 = new
             {
                 Id = new Guid("a776fd76-f2a8-4e09-9e69-b6d08e96c075"),
                 PersonId = 101,
-                Weight = 69.2m,
+                Weight = 69.20m,
                 PersonMetaKey = (short)12,
-                IQ = 101.6m,
+                IQ = 101.60m,
                 Temper = (short)4,
                 PersonOrdNumber = (byte)3,
                 MetricB = -3,
                 MetricA = 177,
+                NotExisting = 11,
             };
 
             var row4 = new HealthInfoDto
             {
                 Id = new Guid("a776fd76-f2a8-4e09-9e69-b6d08e96c075"),
                 PersonId = 101,
-                Weight = 69.2m,
+                Weight = 69.20m,
                 PersonMetaKey = 12,
-                IQ = 101.6m,
+                IQ = 101.60m,
                 Temper = 4,
                 PersonOrdNumber = 3,
                 MetricB = -3,
                 MetricA = 177,
+                NotExisting = 11,
             };
 
             object[] rows =
@@ -253,7 +255,7 @@ CREATE TABLE [zeta].[SmallTable](
                 row4,
             };
 
-            IReadOnlyDictionary<string, object>[] insertedRows = new IReadOnlyDictionary<string, object>[rows.Length];
+            IReadOnlyDictionary<string, object>[] loadedRows = new IReadOnlyDictionary<string, object>[rows.Length];
 
             this.Connection.ExecuteSingleSql("ALTER TABLE [zeta].[HealthInfo] DROP CONSTRAINT [FK_healthInfo_Person]");
 
@@ -263,24 +265,29 @@ CREATE TABLE [zeta].[SmallTable](
             for (var i = 0; i < rows.Length; i++)
             {
                 var row = rows[i];
-                cruder.InsertRow("HealthInfo", row);
-                var insertedRow = TestHelper.LoadRow(
+                cruder.InsertRow("HealthInfo", row, x => x != "NotExisting");
+                var loadedRow = TestHelper.LoadRow(
                     this.Connection,
                     "zeta",
                     "HealthInfo",
                     new Guid("a776fd76-f2a8-4e09-9e69-b6d08e96c075"));
 
-                insertedRows[i] = insertedRow;
+                loadedRows[i] = loadedRow;
 
                 this.Connection.ExecuteSingleSql("DELETE FROM [zeta].[HealthInfo]");
             }
 
             // Assert
-            foreach (var insertedRow in insertedRows)
+            for (var i = 0; i < loadedRows.Length; i++)
             {
-                var insertedJson = JsonConvert.SerializeObject(insertedRow, Formatting.Indented);
-                TodoCompare(insertedJson, json, "json");
-                Assert.That(insertedJson, Is.EqualTo(json));
+                var originalRow = rows[i];
+                var cleanOriginalRow = new DynamicRow(originalRow);
+                cleanOriginalRow.DeleteValue("NotExisting");
+
+                var originalRowJson = JsonConvert.SerializeObject(cleanOriginalRow);
+                var loadedJson = JsonConvert.SerializeObject(loadedRows[i]);
+
+                Assert.That(loadedJson, Is.EqualTo(originalRowJson));
             }
         }
 
@@ -597,157 +604,392 @@ CREATE TABLE [zeta].[MyTab](
         public void InsertRows_ValidArguments_InsertsRows()
         {
             // Arrange
+            var row1 = new Dictionary<string, object>
+            {
+                {"Id", new Guid("11111111-1111-1111-1111-111111111111")},
+                {"PersonId", 101},
+                {"Weight", 69.20m},
+                {"PersonMetaKey", (short) 12},
+                {"IQ", 101.60m},
+                {"Temper", (short) 4},
+                {"PersonOrdNumber", (byte) 3},
+                {"MetricB", -3},
+                {"MetricA", 177},
+                {"NotExisting", 7},
+            };
 
-            // todo: row is a dictionary, row is a DynamicRow, row is an anon type, row is a strongly-typed dto
+            var row2 = new DynamicRow();
+            row2.SetValue("Id", new Guid("22222222-2222-2222-2222-222222222222"));
+            row2.SetValue("PersonId", 101);
+            row2.SetValue("Weight", 69.20m);
+            row2.SetValue("PersonMetaKey", (short)12);
+            row2.SetValue("IQ", 101.60m);
+            row2.SetValue("Temper", (short)4);
+            row2.SetValue("PersonOrdNumber", (byte)3);
+            row2.SetValue("MetricB", -3);
+            row2.SetValue("MetricA", 177);
+            row2.SetValue("NotExisting", 7);
+
+            var row3 = new
+            {
+                Id = new Guid("33333333-3333-3333-3333-333333333333"),
+                PersonId = 101,
+                Weight = 69.20m,
+                PersonMetaKey = (short)12,
+                IQ = 101.60m,
+                Temper = (short)4,
+                PersonOrdNumber = (byte)3,
+                MetricB = -3,
+                MetricA = 177,
+                NotExisting = 7,
+            };
+
+            var row4 = new HealthInfoDto
+            {
+                Id = new Guid("44444444-4444-4444-4444-444444444444"),
+                PersonId = 101,
+                Weight = 69.20m,
+                PersonMetaKey = 12,
+                IQ = 101.60m,
+                Temper = 4,
+                PersonOrdNumber = 3,
+                MetricB = -3,
+                MetricA = 177,
+                NotExisting = 7,
+            };
+
+            object[] rows =
+            {
+                row1,
+                row2,
+                row3,
+                row4,
+            };
+
+            this.Connection.ExecuteSingleSql("ALTER TABLE [zeta].[HealthInfo] DROP CONSTRAINT [FK_healthInfo_Person]");
+
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
+            cruder.InsertRows("HealthInfo", rows, x => x != "NotExisting");
 
-            // Assert
-            throw new NotImplementedException();
+            using var command = this.Connection.CreateCommand();
+            command.CommandText = @"
+SELECT
+    *
+FROM
+    [zeta].[HealthInfo]
+ORDER BY
+    [Id]
+";
+            var loadedRows = DbTools.GetCommandRows(command);
+            Assert.That(loadedRows, Has.Count.EqualTo(4));
+
+            for (var i = 0; i < loadedRows.Count; i++)
+            {
+                var cleanOriginalRow = new DynamicRow(rows[i]);
+                cleanOriginalRow.DeleteValue("NotExisting");
+
+                var json = JsonConvert.SerializeObject(cleanOriginalRow, Formatting.Indented);
+                var loadedJson = JsonConvert.SerializeObject(loadedRows[i], Formatting.Indented);
+
+                Assert.That(json, Is.EqualTo(loadedJson));
+            }
         }
 
         [Test]
         public void InsertRows_RowsAreEmptyAndSelectorIsFalser_InsertsDefaultValues()
         {
             // Arrange
+            this.CreateSmallTable();
 
-            // todo: EMPTY row is a dictionary, row is a DynamicRow, row is an anon type, row is a strongly-typed dto
+            var row1 = new Dictionary<string, object>();
+            var row2 = new DynamicRow();
+            var row3 = new object();
+
+            var rows = new[]
+            {
+                row1,
+                row2,
+                row3,
+            };
+
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
+            cruder.InsertRows("SmallTable", rows, x => false);
 
             // Assert
-            throw new NotImplementedException();
+            using var command = this.Connection.CreateCommand();
+            command.CommandText = @"
+SELECT
+    *
+FROM
+    [zeta].[SmallTable]
+ORDER BY
+    [Id]
+";
+            var loadedRows = DbTools.GetCommandRows(command);
+            Assert.That(loadedRows, Has.Count.EqualTo(3));
+
+            foreach (var loadedRow in loadedRows)
+            {
+                Assert.That(loadedRow.TheInt, Is.EqualTo(1599));
+                Assert.That(loadedRow.TheNVarChar, Is.EqualTo("Semmi"));
+            }
         }
 
         [Test]
         public void InsertRows_PropertySelectorProducesNoProperties_InsertsDefaultValues()
         {
             // Arrange
+            this.CreateSmallTable();
 
-            // todo: EMPTY row is a dictionary, row is a DynamicRow, row is an anon type, row is a strongly-typed dto
+            var row1 = new
+            {
+                TheInt = 77,
+                TheNVarChar = "abc",
+            };
+
+            var row2 = new
+            {
+                TheInt = 88,
+                TheNVarChar = "def",
+            };
+
+            var rows = new[] { row1, row2 };
+
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
+            cruder.InsertRows("SmallTable", rows, x => false);
 
             // Assert
-            throw new NotImplementedException();
+            using var command = this.Connection.CreateCommand();
+            command.CommandText = @"
+SELECT
+    *
+FROM
+    [zeta].[SmallTable]
+ORDER BY
+    [Id]
+";
+
+            var loadedRows = DbTools.GetCommandRows(command);
+            Assert.That(loadedRows, Has.Count.EqualTo(2));
+
+            foreach (var loadedRow in loadedRows)
+            {
+                Assert.That(loadedRow.TheInt, Is.EqualTo(1599));
+                Assert.That(loadedRow.TheNVarChar, Is.EqualTo("Semmi"));
+            }
         }
 
         [Test]
         public void InsertRows_PropertySelectorIsNull_UsesAllColumns()
         {
             // Arrange
+            this.CreateSmallTable();
 
-            // todo: row is a dictionary, row is a DynamicRow, row is an anon type, row is a strongly-typed dto
+            var row1 = new
+            {
+                TheInt = 77,
+                TheNVarChar = "abc",
+            };
+
+            var row2 = new
+            {
+                TheInt = 88,
+                TheNVarChar = "def",
+            };
+
+            var rows = new[] { row1, row2 };
+
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
+            cruder.InsertRows("SmallTable", rows);
 
             // Assert
-            throw new NotImplementedException();
+            using var command = this.Connection.CreateCommand();
+            command.CommandText = @"
+SELECT
+    *
+FROM
+    [zeta].[SmallTable]
+ORDER BY
+    [Id]
+";
+
+            var loadedRows = DbTools.GetCommandRows(command);
+            Assert.That(loadedRows, Has.Count.EqualTo(2));
+
+            var loadedRow = loadedRows[0];
+            Assert.That(loadedRow.TheInt, Is.EqualTo(77));
+            Assert.That(loadedRow.TheNVarChar, Is.EqualTo("abc"));
+
+            loadedRow = loadedRows[1];
+            Assert.That(loadedRow.TheInt, Is.EqualTo(88));
+            Assert.That(loadedRow.TheNVarChar, Is.EqualTo("def"));
         }
 
         [Test]
-        public void InsertRows_RowsContainPropertiesOnWhichSelectorReturnsFalse_RunsOk()
+        public void InsertRows_NoColumnForSelectedProperty_ThrowsTauDbException()
         {
             // Arrange
+            this.CreateSmallTable();
 
-            // todo: row is a dictionary, row is a DynamicRow, row is an anon type, row is a strongly-typed dto
+            var row1 = new
+            {
+                TheInt = 77,
+                TheNVarChar = "abc",
+                NotExisting = 2,
+            };
+
+            var row2 = new
+            {
+                TheInt = 88,
+                TheNVarChar = "def",
+                NotExisting = 1,
+            };
+
+            var rows = new[] { row1, row2 };
+
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
+            var ex = Assert.Throws<TauDbException>(() => cruder.InsertRows("SmallTable", rows, x => true));
 
             // Assert
-            throw new NotImplementedException();
+            Assert.That(ex, Has.Message.EqualTo("Column 'NotExisting' does not exist."));
         }
 
         [Test]
-        public void InsertRows_NoColumnForSelectedProperty_ThrowsTodo()
+        public void InsertRows_NextRowSignatureDiffersFromPrevious_ThrowsArgumentException()
         {
             // Arrange
+            this.CreateSmallTable();
 
-            // todo: row is a dictionary, row is a DynamicRow, row is an anon type, row is a strongly-typed dto
+            var row1 = new
+            {
+                TheInt = 77,
+            };
+
+            var row2 = new
+            {
+                TheNVarChar = "def",
+            };
+
+            var rows = new object[] { row1, row2 };
+
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
+            var ex = Assert.Throws<ArgumentException>(() => cruder.InsertRows("SmallTable", rows, x => true));
 
             // Assert
-            throw new NotImplementedException();
+            Assert.That(ex, Has.Message.StartsWith("'values' does not contain property representing column 'TheInt'."));
         }
 
         [Test]
-        public void InsertRows_NextRowSignatureDiffersFromPrevious_ThrowsTodo()
+        public void InsertRows_SchemaDoesNotExist_TauDbException()
         {
             // Arrange
-
-            // todo: row is a dictionary, row is a DynamicRow, row is an anon type, row is a strongly-typed dto
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "bad_schema");
 
             // Act
+            var ex = Assert.Throws<TauDbException>(() => cruder.InsertRows("some_table", new object[] { }));
 
             // Assert
-            throw new NotImplementedException();
+            Assert.That(ex.Message, Is.EqualTo("Schema 'bad_schema' does not exist."));
         }
 
         [Test]
-        public void InsertRows_SchemaDoesNotExist_ThrowsTodo()
+        public void InsertRows_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
+            var ex = Assert.Throws<TauDbException>(() => cruder.InsertRows("bad_table", new object[] { }));
 
             // Assert
-            throw new NotImplementedException();
+            Assert.That(ex.Message, Is.EqualTo("Table 'bad_table' does not exist in schema 'zeta'."));
         }
 
         [Test]
-        public void InsertRows_TableDoesNotExist_ThrowsTodo()
+        public void InsertRows_TableNameIsNull_ThrowsArgumentNullException()
         {
             // Arrange
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
+            var ex = Assert.Throws<ArgumentNullException>(() => cruder.InsertRows(null, new object[] { }));
 
             // Assert
-            throw new NotImplementedException();
+            Assert.That(ex.ParamName, Is.EqualTo("tableName"));
         }
 
         [Test]
-        public void InsertRows_TableNameIsNull_ThrowsTodo()
+        public void InsertRows_RowsIsNull_ThrowsArgumentNullException()
         {
             // Arrange
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
+            var ex = Assert.Throws<ArgumentNullException>(() => cruder.InsertRows("HealthInfo", null));
 
             // Assert
-            throw new NotImplementedException();
+            Assert.That(ex.ParamName, Is.EqualTo("rows"));
         }
 
         [Test]
-        public void InsertRows_RowsIsNull_ThrowsTodo()
+        public void InsertRows_RowsContainNull_ThrowsArgumentException()
         {
             // Arrange
+            this.CreateSmallTable();
+
+            var rows = new[]
+            {
+                new object(),
+                null,
+            };
+
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
+            var ex = Assert.Throws<ArgumentException>(() => cruder.InsertRows("SmallTable", rows));
 
             // Assert
-            throw new NotImplementedException();
+            Assert.That(ex, Has.Message.StartWith("'rows' must not contain nulls."));
+            Assert.That(ex.ParamName, Is.EqualTo("rows"));
         }
 
         [Test]
-        public void InsertRows_RowsContainNull_ThrowsTodo()
+        public void InsertRows_RowContainsDBNullValue_ThrowsTauDbException()
         {
             // Arrange
+            this.CreateSmallTable();
+
+            var rows = new object[]
+            {
+                new
+                {
+                    TheInt = 10,
+                },
+                new 
+                {
+                    TheInt = DBNull.Value,
+                },
+            };
+
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
+            var ex = Assert.Throws<TauDbException>(() => cruder.InsertRows("SmallTable", rows));
 
             // Assert
-            throw new NotImplementedException();
-        }
-
-        [Test]
-        public void InsertRows_RowContainsDBNullValue_ThrowsTodo()
-        {
-            // Arrange
-
-            // Act
-
-            // Assert
-            throw new NotImplementedException();
+            Assert.That(ex, Has.Message.StartWith("Could not transform value '' of type 'System.DBNull'. Table name is 'SmallTable'. Column name is 'TheInt'."));
         }
 
         #endregion
@@ -843,7 +1085,7 @@ CREATE TABLE [zeta].[MyTab](
 
             // Act
             var insertedRow = ((DynamicRow)cruder.GetRow("SuperTable", 1, x => x.Contains("DateTime"))).ToDictionary();
-            
+
             // Assert
             Assert.That(insertedRow, Has.Count.EqualTo(4));
 
@@ -1426,7 +1668,7 @@ CREATE TABLE [zeta].[MyTab](
 
             // Act
             var deleted = cruder.DeleteRow("MediumTable", id);
-            
+
             // Assert
             var deletedRow = TestHelper.LoadRow(this.Connection, "zeta", "MediumTable", id);
 
@@ -1524,7 +1766,7 @@ CREATE TABLE [zeta].[MyTab](
 
             // Act
 
-            var ex = Assert.Throws<ArgumentException>((() =>  cruder.DeleteRow("Person", "the_id")));
+            var ex = Assert.Throws<ArgumentException>((() => cruder.DeleteRow("Person", "the_id")));
 
             // Assert
             Assert.That(ex, Has.Message.StartsWith("Failed to retrieve single primary key column name for table 'Person'."));
