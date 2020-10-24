@@ -433,49 +433,53 @@ namespace TauCode.Db
 
         public virtual bool UpdateRow(string tableName, object rowUpdate, Func<string, bool> propertySelector = null)
         {
-            throw new NotImplementedException();
+            if (tableName == null)
+            {
+                throw new ArgumentNullException(nameof(tableName));
+            }
 
-            //if (tableName == null)
-            //{
-            //    throw new ArgumentNullException(nameof(tableName));
-            //}
+            if (rowUpdate == null)
+            {
+                throw new ArgumentNullException(nameof(rowUpdate));
+            }
 
-            //if (rowUpdate == null)
-            //{
-            //    throw new ArgumentNullException(nameof(rowUpdate));
-            //}
+            propertySelector ??= PropertyTruer;
 
-            //if (id == null)
-            //{
-            //    throw new ArgumentNullException(nameof(id));
-            //}
+            var table = this.Factory
+                .CreateTableInspector(this.Connection, this.SchemaName, tableName)
+                .GetTable();
 
-            //var table = this.Factory
-            //    .CreateTableInspector(this.Connection, this.SchemaName, tableName)
-            //    .GetTable();
+            var dataDictionary = this.ObjectToDataDictionary(rowUpdate);
 
-            //var dataDictionary = this.ObjectToDataDictionary(rowUpdate);
+            var columnNames = dataDictionary
+                .Keys
+                .Where(propertySelector)
+                .ToHashSet();
 
-            //if (dataDictionary.Keys.Contains(table.GetPrimaryKeySingleColumn().Name))
-            //{
-            //    throw new TauDbException("Update object must not contain ID column.");
-            //}
+            var idColumnName = table.GetPrimaryKeySingleColumn(nameof(tableName)).Name;
+            if (!columnNames.Contains(idColumnName))
+            {
+                throw new ArgumentException("Row update object does not contain primary key value.", nameof(rowUpdate));
+            }
 
-            //var columnNames = new List<string>(dataDictionary.Keys)
-            //{
-            //    table.GetPrimaryKeySingleColumn().Name,
-            //};
+            if (columnNames.Count == 1)
+            {
+                throw new ArgumentException($"'{nameof(rowUpdate)}' has no columns to update.", nameof(rowUpdate));
+            }
 
-            //using var helper = new CommandHelper(this, table, columnNames);
-            //var sql = this.ScriptBuilder.BuildUpdateScript(
-            //    table,
-            //    helper.GetParameterNames());
+            if (dataDictionary[idColumnName] == null)
+            {
+                throw new ArgumentException("Primary key column value must not be null.", nameof(rowUpdate));
+            }
 
-            //dataDictionary.Add(table.GetPrimaryKeySingleColumn().Name, id);
+            using var helper = new CommandHelper(this, table, columnNames);
+            var sql = this.ScriptBuilder.BuildUpdateScript(
+                table,
+                helper.GetParameterNames());
 
-            //helper.CommandText = sql;
-            //var result = helper.ExecuteWithValues(dataDictionary);
-            //return result > 0;
+            helper.CommandText = sql;
+            var result = helper.ExecuteWithValues(dataDictionary);
+            return result > 0;
         }
 
         public virtual bool DeleteRow(string tableName, object id)

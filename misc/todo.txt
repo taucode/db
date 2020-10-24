@@ -40,3 +40,7 @@ x   1. Get rid of 'own' DbException.
 ==========
     1. MySQL DateTimeOffset: https://stackoverflow.com/questions/32103607/will-does-mysql-support-datetimeoffset
 
+2020-10-24
+==========
+    1. GetRow<T>, GetAllRows<T>? or better use NHibernate?
+

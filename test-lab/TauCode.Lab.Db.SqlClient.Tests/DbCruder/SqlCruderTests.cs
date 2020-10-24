@@ -3,7 +3,9 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Text;
 using TauCode.Db;
 using TauCode.Db.Data;
 using TauCode.Db.DbValueConverters;
@@ -18,6 +20,8 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbCruder
         [SetUp]
         public void SetUp()
         {
+            Inflector.Inflector.SetDefaultCultureFunc = () => new CultureInfo("en-US");
+
             this.Connection.CreateSchema("zeta");
 
             var sql = this.GetType().Assembly.GetResourceText("crebase.sql", true);
@@ -33,6 +37,157 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbCruder
         {
             var sql = this.GetType().Assembly.GetResourceText("SuperTable.sql", true);
             this.Connection.ExecuteSingleSql(sql);
+        }
+
+        private SuperTableRowDto CreateSuperTableRowDto()
+        {
+            return new SuperTableRowDto
+            {
+                Id = 1,
+
+                TheGuid = new Guid("11111111-1111-1111-1111-111111111111"),
+
+                TheBit = true,
+
+                TheTinyInt = 1,
+                TheSmallInt = 11,
+                TheInt = 111,
+                TheBigInt = 1111,
+
+                TheDecimal = 11.10m,
+                TheNumeric = 111.10m,
+
+                TheSmallMoney = 1111.1100m,
+                TheMoney = 11111.1100m,
+
+                TheReal = (float)111111.0,
+                TheFloat = 1111111.0,
+
+                TheDate = DateTime.Parse("1990-01-01"),
+                TheDateTime = DateTime.Parse("1991-01-01"),
+                TheDateTime2 = DateTime.Parse("1992-01-01"),
+                TheDateTimeOffset = DateTime.Parse("1993-01-01"),
+                TheSmallDateTime = DateTime.Parse("1994-01-01"),
+                TheTime = TimeSpan.Parse("01:01:01"),
+
+                TheChar = "a",
+                TheVarChar = "aa",
+                TheVarCharMax = "aaa",
+
+                TheNChar = "ц",
+                TheNVarChar = "цц",
+                TheNVarCharMax = "ццц",
+
+                TheBinary = new byte[] { 1 },
+                TheVarBinary = new byte[] { 10, 11, },
+                TheVarBinaryMax = new byte[] { 100, 101, 102 },
+
+                NotExisting = 777,
+            };
+        }
+
+        private void InsertSuperTableRow()
+        {
+            using var command = this.Connection.CreateCommand();
+            command.CommandText = @"
+INSERT INTO [zeta].[SuperTable](
+    [TheGuid],
+    [TheBit],
+    [TheTinyInt],
+    [TheSmallInt],
+    [TheInt],
+    [TheBigInt],
+    [TheDecimal],
+    [TheNumeric],
+    [TheSmallMoney],
+    [TheMoney],
+    [TheReal],
+    [TheFloat],
+    [TheDate],
+    [TheDateTime],
+    [TheDateTime2],
+    [TheDateTimeOffset],
+    [TheSmallDateTime],
+    [TheTime],
+    [TheChar],
+    [TheVarChar],
+    [TheVarCharMax],
+    [TheNChar],
+    [TheNVarChar],
+    [TheNVarCharMax],
+    [TheBinary],
+    [TheVarBinary],
+    [TheVarBinaryMax])
+VALUES(
+    @p_theGuid,
+    @p_theBit,
+    @p_theTinyInt,
+    @p_theSmallInt,
+    @p_theInt,
+    @p_theBigInt,
+    @p_theDecimal,
+    @p_theNumeric,
+    @p_theSmallMoney,
+    @p_theMoney,
+    @p_theReal,
+    @p_theFloat,
+    @p_theDate,
+    @p_theDateTime,
+    @p_theDateTime2,
+    @p_theDateTimeOffset,
+    @p_theSmallDateTime,
+    @p_theTime,
+    @p_theChar,
+    @p_theVarChar,
+    @p_theVarCharMax,
+    @p_theNChar,
+    @p_theNVarChar,
+    @p_theNVarCharMax,
+    @p_theBinary,
+    @p_theVarBinary,
+    @p_theVarBinaryMax)
+";
+
+            var row = this.CreateSuperTableRowDto();
+
+            command.Parameters.AddWithValue("@p_theGuid", row.TheGuid);
+
+            command.Parameters.AddWithValue("@p_theBit", row.TheBit);
+
+            command.Parameters.AddWithValue("@p_theTinyInt", row.TheTinyInt);
+            command.Parameters.AddWithValue("@p_theSmallInt", row.TheSmallInt);
+            command.Parameters.AddWithValue("@p_theInt", row.TheInt);
+            command.Parameters.AddWithValue("@p_theBigInt", row.TheBigInt);
+
+            command.Parameters.AddWithValue("@p_theDecimal", row.TheDecimal);
+            command.Parameters.AddWithValue("@p_theNumeric", row.TheNumeric);
+
+            command.Parameters.AddWithValue("@p_theSmallMoney", row.TheSmallMoney);
+            command.Parameters.AddWithValue("@p_theMoney", row.TheMoney);
+
+            command.Parameters.AddWithValue("@p_theReal", row.TheReal);
+            command.Parameters.AddWithValue("@p_theFloat", row.TheFloat);
+
+            command.Parameters.AddWithValue("@p_theDate", row.TheDate);
+            command.Parameters.AddWithValue("@p_theDateTime", row.TheDateTime);
+            command.Parameters.AddWithValue("@p_theDateTime2", row.TheDateTime2);
+            command.Parameters.AddWithValue("@p_theDateTimeOffset", row.TheDateTimeOffset);
+            command.Parameters.AddWithValue("@p_theSmallDateTime", row.TheSmallDateTime);
+            command.Parameters.AddWithValue("@p_theTime", row.TheTime);
+
+            command.Parameters.AddWithValue("@p_theChar", row.TheChar);
+            command.Parameters.AddWithValue("@p_theVarChar", row.TheVarChar);
+            command.Parameters.AddWithValue("@p_theVarCharMax", row.TheVarCharMax);
+
+            command.Parameters.AddWithValue("@p_theNChar", row.TheNChar);
+            command.Parameters.AddWithValue("@p_theNVarChar", row.TheNVarChar);
+            command.Parameters.AddWithValue("@p_theNVarCharMax", row.TheNVarCharMax);
+
+            command.Parameters.AddWithValue("@p_theBinary", row.TheBinary);
+            command.Parameters.AddWithValue("@p_theVarBinary", row.TheVarBinary);
+            command.Parameters.AddWithValue("@p_theVarBinaryMax", row.TheVarBinaryMax);
+
+            command.ExecuteNonQuery();
         }
 
         private void CreateMediumTable()
@@ -206,7 +361,7 @@ CREATE TABLE [zeta].[SmallTable](
                 {"MetricA", 177},
                 {"NotExisting", 11},
             };
-            
+
             var row2 = new DynamicRow();
             row2.SetValue("Id", new Guid("a776fd76-f2a8-4e09-9e69-b6d08e96c075"));
             row2.SetValue("PersonId", 101);
@@ -366,7 +521,8 @@ CREATE TABLE [zeta].[SmallTable](
             Assert.That(insertedRow["TheDate"], Is.EqualTo(DateTime.Parse("2010-01-02")));
             Assert.That(insertedRow["TheDateTime"], Is.EqualTo(DateTime.Parse("2011-11-12T10:10:10")));
             Assert.That(insertedRow["TheDateTime2"], Is.EqualTo(DateTime.Parse("2015-03-07T05:06:33.777")));
-            Assert.That(insertedRow["TheDateTimeOffset"], Is.EqualTo(DateTimeOffset.Parse("2011-11-12T10:10:10+03:00")));
+            Assert.That(insertedRow["TheDateTimeOffset"],
+                Is.EqualTo(DateTimeOffset.Parse("2011-11-12T10:10:10+03:00")));
             Assert.That(insertedRow["TheSmallDateTime"], Is.EqualTo(DateTime.Parse("1970-04-08T11:11")));
             Assert.That(insertedRow["TheTime"], Is.EqualTo(TimeSpan.Parse("03:03:03")));
 
@@ -593,7 +749,9 @@ CREATE TABLE [zeta].[MyTab](
             var ex = Assert.Throws<TauDbException>(() => cruder.InsertRow("SuperTable", row, x => x == "TheGuid"));
 
             // Assert
-            Assert.That(ex, Has.Message.EqualTo("Could not transform value '' of type 'System.DBNull'. Table name is 'SuperTable'. Column name is 'TheGuid'."));
+            Assert.That(ex,
+                Has.Message.EqualTo(
+                    "Could not transform value '' of type 'System.DBNull'. Table name is 'SuperTable'. Column name is 'TheGuid'."));
         }
 
         #endregion
@@ -977,7 +1135,7 @@ ORDER BY
                 {
                     TheInt = 10,
                 },
-                new 
+                new
                 {
                     TheInt = DBNull.Value,
                 },
@@ -989,7 +1147,9 @@ ORDER BY
             var ex = Assert.Throws<TauDbException>(() => cruder.InsertRows("SmallTable", rows));
 
             // Assert
-            Assert.That(ex, Has.Message.StartWith("Could not transform value '' of type 'System.DBNull'. Table name is 'SmallTable'. Column name is 'TheInt'."));
+            Assert.That(ex,
+                Has.Message.StartWith(
+                    "Could not transform value '' of type 'System.DBNull'. Table name is 'SmallTable'. Column name is 'TheInt'."));
         }
 
         #endregion
@@ -1000,33 +1160,89 @@ ORDER BY
         public void RowInsertedCallback_SetToSomeValue_KeepsThatValue()
         {
             // Arrange
+            this.CreateSmallTable();
+
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
+            var sb1 = new StringBuilder();
 
             // Act
+            Action<string, object, int> callback = (tableName, row, index) =>
+            {
+                sb1.Append($"Table name: {tableName}; index: {index}");
+            };
+
+            cruder.RowInsertedCallback = callback;
+
+            cruder.InsertRow("SmallTable", new object());
+            var callback1 = cruder.RowInsertedCallback;
+
+            cruder.RowInsertedCallback = null;
+            var callback2 = cruder.RowInsertedCallback;
 
             // Assert
-            throw new NotImplementedException();
+            var s = sb1.ToString();
+            Assert.That(s, Is.EqualTo("Table name: SmallTable; index: 0"));
+
+            Assert.That(callback1, Is.SameAs(callback));
+            Assert.That(callback2, Is.Null);
         }
 
         [Test]
         public void RowInsertedCallback_SetToNonNull_IsCalledWhenInsertRowIsCalled()
         {
             // Arrange
+            this.CreateSmallTable();
+
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
+            var sb1 = new StringBuilder();
 
             // Act
+            cruder.RowInsertedCallback = (tableName, row, index) =>
+            {
+                sb1.Append($"Table name: {tableName}; index: {index}");
+            };
+
+            cruder.InsertRow("SmallTable", new object());
 
             // Assert
-            throw new NotImplementedException();
+            var s = sb1.ToString();
+            Assert.That(s, Is.EqualTo("Table name: SmallTable; index: 0"));
         }
 
         [Test]
         public void RowInsertedCallback_SetToNonNull_IsCalledWhenInsertRowsIsCalled()
         {
             // Arrange
+            this.CreateSmallTable();
+
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
+            var sb1 = new StringBuilder();
 
             // Act
+            cruder.RowInsertedCallback = (tableName, row, index) =>
+            {
+                sb1.AppendLine($"Table name: {tableName}; index: {index}; int: {((dynamic)row).TheInt}");
+            };
+
+            cruder.InsertRows(
+                "SmallTable",
+                new object[]
+                {
+                    new
+                    {
+                        TheInt = 11,
+                    },
+                    new
+                    {
+                        TheInt = 22,
+                    },
+                });
 
             // Assert
-            throw new NotImplementedException();
+            var s = sb1.ToString();
+            Assert.That(s, Is.EqualTo(@"Table name: SmallTable; index: 0; int: 11
+Table name: SmallTable; index: 1; int: 22
+"));
         }
 
         #endregion
@@ -1091,7 +1307,8 @@ ORDER BY
 
             Assert.That(insertedRow["TheDateTime"], Is.EqualTo(DateTime.Parse("2011-11-12T10:10:10")));
             Assert.That(insertedRow["TheDateTime2"], Is.EqualTo(DateTime.Parse("2015-03-07T05:06:33.777")));
-            Assert.That(insertedRow["TheDateTimeOffset"], Is.EqualTo(DateTimeOffset.Parse("2011-11-12T10:10:10+03:00")));
+            Assert.That(insertedRow["TheDateTimeOffset"],
+                Is.EqualTo(DateTimeOffset.Parse("2011-11-12T10:10:10+03:00")));
             Assert.That(insertedRow["TheSmallDateTime"], Is.EqualTo(DateTime.Parse("1970-04-08T11:11")));
         }
 
@@ -1170,7 +1387,8 @@ ORDER BY
             Assert.That(insertedRow["TheDate"], Is.EqualTo(DateTime.Parse("2010-01-02")));
             Assert.That(insertedRow["TheDateTime"], Is.EqualTo(DateTime.Parse("2011-11-12T10:10:10")));
             Assert.That(insertedRow["TheDateTime2"], Is.EqualTo(DateTime.Parse("2015-03-07T05:06:33.777")));
-            Assert.That(insertedRow["TheDateTimeOffset"], Is.EqualTo(DateTimeOffset.Parse("2011-11-12T10:10:10+03:00")));
+            Assert.That(insertedRow["TheDateTimeOffset"],
+                Is.EqualTo(DateTimeOffset.Parse("2011-11-12T10:10:10+03:00")));
             Assert.That(insertedRow["TheSmallDateTime"], Is.EqualTo(DateTime.Parse("1970-04-08T11:11")));
             Assert.That(insertedRow["TheTime"], Is.EqualTo(TimeSpan.Parse("03:03:03")));
 
@@ -1262,7 +1480,8 @@ ORDER BY
             Assert.That(insertedRow["TheDate"], Is.EqualTo(DateTime.Parse("2010-01-02")));
             Assert.That(insertedRow["TheDateTime"], Is.EqualTo(DateTime.Parse("2011-11-12T10:10:10")));
             Assert.That(insertedRow["TheDateTime2"], Is.EqualTo(DateTime.Parse("2015-03-07T05:06:33.777")));
-            Assert.That(insertedRow["TheDateTimeOffset"], Is.EqualTo(DateTimeOffset.Parse("2011-11-12T10:10:10+03:00")));
+            Assert.That(insertedRow["TheDateTimeOffset"],
+                Is.EqualTo(DateTimeOffset.Parse("2011-11-12T10:10:10+03:00")));
             Assert.That(insertedRow["TheSmallDateTime"], Is.EqualTo(DateTime.Parse("1970-04-08T11:11")));
             Assert.That(insertedRow["TheTime"], Is.EqualTo(TimeSpan.Parse("03:03:03")));
 
@@ -1346,6 +1565,7 @@ ORDER BY
             Assert.That(ex, Has.Message.StartsWith("Table 'dummy' does not have a primary key."));
             Assert.That(ex.ParamName, Is.EqualTo("tableName"));
         }
+
         [Test]
         public void GetRow_TablePrimaryKeyIsMultiColumn_ThrowsArgumentException()
         {
@@ -1356,7 +1576,8 @@ ORDER BY
             var ex = Assert.Throws<ArgumentException>((() => cruder.GetRow("Person", "the_id")));
 
             // Assert
-            Assert.That(ex, Has.Message.StartsWith("Failed to retrieve single primary key column name for table 'Person'."));
+            Assert.That(ex,
+                Has.Message.StartsWith("Failed to retrieve single primary key column name for table 'Person'."));
             Assert.That(ex.ParamName, Is.EqualTo("tableName"));
         }
 
@@ -1413,6 +1634,7 @@ ORDER BY
             Assert.That(row.GetDynamicMemberNames().Count(), Is.EqualTo(1));
             Assert.That(row.GetValue("Moment"), Is.EqualTo(DateTimeOffset.Parse("2020-02-02T06:06:06+00:00")));
         }
+
         [Test]
         public void GetAllRows_SelectorIsTruer_DeliversAllColumns()
         {
@@ -1496,160 +1718,492 @@ ORDER BY
         public void UpdateRow_ValidArguments_UpdatesRow()
         {
             // Arrange
+            var id = 1; // will be inserted by IDENTITY
+
+            var update1 = new Dictionary<string, object>
+            {
+                {"Id", id},
+                {"TheTinyInt", (byte) 2},
+                {"TheSmallInt", (short) 22},
+                {"TheInt", 222},
+                {"TheBigInt", 2222L},
+                {"NotExisting", 777},
+            };
+
+            var update2 = new DynamicRow();
+            update2.SetValue("Id", id);
+            update2.SetValue("TheTinyInt", (byte)2);
+            update2.SetValue("TheSmallInt", (short)22);
+            update2.SetValue("TheInt", 222);
+            update2.SetValue("TheBigInt", 2222L);
+            update2.SetValue("NotExisting", 777);
+
+            var update3 = new
+            {
+                Id = id,
+                TheTinyInt = (byte)2,
+                TheSmallInt = (short)22,
+                TheInt = 222,
+                TheBigInt = 2222L,
+                NotExisting = 777,
+            };
+
+            var update4 = new SuperTableRowDto
+            {
+                Id = id,
+                TheTinyInt = (byte)2,
+                TheSmallInt = (short)22,
+                TheInt = 222,
+                TheBigInt = 2222L,
+                NotExisting = 777,
+            };
+
+            var updates = new object[]
+            {
+                update1,
+                update2,
+                update3,
+                update4,
+            };
+
+            var loadedRows = new IReadOnlyDictionary<string, object>[updates.Length];
+
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
-            // todo: row is a dictionary, row is a DynamicRow, row is an anon type, row is a strongly-typed dto
+            for (var i = 0; i < updates.Length; i++)
+            {
+                this.CreateSuperTable();
+                this.InsertSuperTableRow();
 
-            // Assert
-            throw new NotImplementedException();
+                cruder.UpdateRow(
+                    "SuperTable",
+                    updates[i],
+                    x => x.IsIn(
+                        "Id",
+                        "TheTinyInt",
+                        "TheSmallInt",
+                        "TheInt",
+                        "TheBigInt"));
+
+                var loadedRow = TestHelper.LoadRow(this.Connection, "zeta", "SuperTable", 1);
+                loadedRows[i] = loadedRow;
+
+                this.Connection.ExecuteSingleSql("DROP TABLE [zeta].[SuperTable]");
+            }
+
+            for (var i = 0; i < loadedRows.Length; i++)
+            {
+                var loadedRow = loadedRows[i];
+
+                Assert.That(loadedRow["TheGuid"], Is.EqualTo(new Guid("11111111-1111-1111-1111-111111111111")));
+
+                Assert.That(loadedRow["TheBit"], Is.EqualTo(true));
+
+                Assert.That(loadedRow["TheTinyInt"], Is.EqualTo((byte)2));
+                Assert.That(loadedRow["TheSmallInt"], Is.EqualTo((short)22));
+                Assert.That(loadedRow["TheInt"], Is.EqualTo(222));
+                Assert.That(loadedRow["TheBigInt"], Is.EqualTo(2222L));
+
+                Assert.That(loadedRow["TheDecimal"], Is.EqualTo(11.10m));
+                Assert.That(loadedRow["TheNumeric"], Is.EqualTo(111.10m));
+
+                Assert.That(loadedRow["TheSmallMoney"], Is.EqualTo(1111.1100m));
+                Assert.That(loadedRow["TheMoney"], Is.EqualTo(11111.1100m));
+
+                Assert.That(loadedRow["TheReal"], Is.EqualTo((float)111111.0));
+                Assert.That(loadedRow["TheFloat"], Is.EqualTo(1111111.0));
+
+                Assert.That(loadedRow["TheDate"], Is.EqualTo(DateTime.Parse("1990-01-01")));
+                Assert.That(loadedRow["TheDateTime"], Is.EqualTo(DateTime.Parse("1991-01-01")));
+                Assert.That(loadedRow["TheDateTime2"], Is.EqualTo(DateTime.Parse("1992-01-01")));
+                Assert.That(loadedRow["TheDateTimeOffset"], Is.EqualTo(DateTimeOffset.Parse("1993-01-01")));
+                Assert.That(loadedRow["TheSmallDateTime"], Is.EqualTo(DateTime.Parse("1994-01-01")));
+                Assert.That(loadedRow["TheTime"], Is.EqualTo(TimeSpan.Parse("01:01:01")));
+
+                Assert.That(loadedRow["TheChar"], Is.EqualTo("a         "));
+                Assert.That(loadedRow["TheVarChar"], Is.EqualTo("aa"));
+                Assert.That(loadedRow["TheVarCharMax"], Is.EqualTo("aaa"));
+
+                Assert.That(loadedRow["TheNChar"], Is.EqualTo("ц         "));
+                Assert.That(loadedRow["TheNVarChar"], Is.EqualTo("цц"));
+                Assert.That(loadedRow["TheNVarCharMax"], Is.EqualTo("ццц"));
+
+                Assert.That(loadedRow["TheBinary"], Is.EqualTo(new byte[] { 1, 0, 0, 0 }));
+                Assert.That(loadedRow["TheVarBinary"], Is.EqualTo(new byte[] { 10, 11, }));
+                Assert.That(loadedRow["TheVarBinaryMax"], Is.EqualTo(new byte[] { 100, 101, 102 }));
+            }
         }
 
         [Test]
         public void UpdateRow_AllDataTypes_RunsOk()
         {
             // Arrange
+            this.CreateSuperTable();
+            this.InsertSuperTableRow();
+
+            var update = new SuperTableRowDto
+            {
+                Id = 1,
+
+                TheGuid = new Guid("22222222-2222-2222-2222-222222222222"),
+
+                TheBit = false,
+
+                TheTinyInt = 2,
+                TheSmallInt = 22,
+                TheInt = 222,
+                TheBigInt = 2222,
+
+                TheDecimal = 22.20m,
+                TheNumeric = 222.20m,
+
+                TheSmallMoney = 2222.2200m,
+                TheMoney = 22222.2200m,
+
+                TheReal = (float)222222.0,
+                TheFloat = 2222222.0,
+
+                TheDate = DateTime.Parse("2002-02-02"),
+                TheDateTime = DateTime.Parse("2003-03-03"),
+                TheDateTime2 = DateTime.Parse("2004-04-04"),
+                TheDateTimeOffset = DateTime.Parse("2005-05-05"),
+                TheSmallDateTime = DateTime.Parse("2006-06-06"),
+                TheTime = TimeSpan.Parse("02:02:02"),
+
+                TheChar = "b",
+                TheVarChar = "bb",
+                TheVarCharMax = "bbb",
+
+                TheNChar = "щ",
+                TheNVarChar = "щщ",
+                TheNVarCharMax = "щщщ",
+
+                TheBinary = new byte[] { 2 },
+                TheVarBinary = new byte[] { 20, 22, },
+                TheVarBinaryMax = new byte[] { 17, 177, 179 },
+
+                NotExisting = 777,
+            };
+
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
+            cruder.UpdateRow("SuperTable", update, x => x != "NotExisting");
 
             // Assert
-            throw new NotImplementedException();
+            var loadedRow = TestHelper.LoadRow(this.Connection, "zeta", "SuperTable", 1);
+
+            Assert.That(loadedRow["TheGuid"], Is.EqualTo(new Guid("22222222-2222-2222-2222-222222222222")));
+
+            Assert.That(loadedRow["TheBit"], Is.EqualTo(false));
+
+            Assert.That(loadedRow["TheTinyInt"], Is.EqualTo((byte)2));
+            Assert.That(loadedRow["TheSmallInt"], Is.EqualTo((short)22));
+            Assert.That(loadedRow["TheInt"], Is.EqualTo(222));
+            Assert.That(loadedRow["TheBigInt"], Is.EqualTo(2222L));
+
+            Assert.That(loadedRow["TheDecimal"], Is.EqualTo(22.20m));
+            Assert.That(loadedRow["TheNumeric"], Is.EqualTo(222.20m));
+
+            Assert.That(loadedRow["TheSmallMoney"], Is.EqualTo(2222.2200m));
+            Assert.That(loadedRow["TheMoney"], Is.EqualTo(22222.2200m));
+
+            Assert.That(loadedRow["TheReal"], Is.EqualTo((float)222222.0));
+            Assert.That(loadedRow["TheFloat"], Is.EqualTo(2222222.0));
+
+            Assert.That(loadedRow["TheDate"], Is.EqualTo(DateTime.Parse("2002-02-02")));
+            Assert.That(loadedRow["TheDateTime"], Is.EqualTo(DateTime.Parse("2003-03-03")));
+            Assert.That(loadedRow["TheDateTime2"], Is.EqualTo(DateTime.Parse("2004-04-04")));
+            Assert.That(loadedRow["TheDateTimeOffset"], Is.EqualTo(DateTimeOffset.Parse("2005-05-05")));
+            Assert.That(loadedRow["TheSmallDateTime"], Is.EqualTo(DateTime.Parse("2006-06-06")));
+            Assert.That(loadedRow["TheTime"], Is.EqualTo(TimeSpan.Parse("02:02:02")));
+
+            Assert.That(loadedRow["TheChar"], Is.EqualTo("b         "));
+            Assert.That(loadedRow["TheVarChar"], Is.EqualTo("bb"));
+            Assert.That(loadedRow["TheVarCharMax"], Is.EqualTo("bbb"));
+
+            Assert.That(loadedRow["TheNChar"], Is.EqualTo("щ         "));
+            Assert.That(loadedRow["TheNVarChar"], Is.EqualTo("щщ"));
+            Assert.That(loadedRow["TheNVarCharMax"], Is.EqualTo("щщщ"));
+
+            Assert.That(loadedRow["TheBinary"], Is.EqualTo(new byte[] { 2, 0, 0, 0 }));
+            Assert.That(loadedRow["TheVarBinary"], Is.EqualTo(new byte[] { 20, 22, }));
+            Assert.That(loadedRow["TheVarBinaryMax"], Is.EqualTo(new byte[] { 17, 177, 179 }));
         }
 
-
         [Test]
-        public void UpdateRow_SchemaDoesNotExist_ThrowsTodo()
+        public void UpdateRow_SchemaDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "bad_schema");
 
             // Act
+            var ex = Assert.Throws<TauDbException>(() => cruder.UpdateRow("some_table", new { Id = 1, Name = 2 }));
 
             // Assert
-            throw new NotImplementedException();
+            Assert.That(ex.Message, Is.EqualTo("Schema 'bad_schema' does not exist."));
         }
 
         [Test]
-        public void UpdateRow_TableDoesNotExist_ThrowsTodo()
+        public void UpdateRow_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
+            var ex = Assert.Throws<TauDbException>(() => cruder.UpdateRow("bad_table", new { Id = 1, Name = 2 }));
 
             // Assert
-            throw new NotImplementedException();
+            Assert.That(ex.Message, Is.EqualTo("Table 'bad_table' does not exist in schema 'zeta'."));
         }
 
         [Test]
-        public void UpdateRow_TableNameIsNull_ThrowsTodo()
+        public void UpdateRow_TableNameIsNull_ThrowsArgumentNullException()
         {
             // Arrange
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
+            var ex = Assert.Throws<ArgumentNullException>(() =>
+                cruder.UpdateRow(null, new { Id = 1, Name = 2 }, x => true));
 
             // Assert
-            throw new NotImplementedException();
+            Assert.That(ex.ParamName, Is.EqualTo("tableName"));
         }
 
         [Test]
-        public void UpdateRow_RowUpdateIsNull_UpdatesRow()
+        public void UpdateRow_RowUpdateIsNull_ThrowsArgumentNullException()
         {
             // Arrange
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
+            var ex = Assert.Throws<ArgumentNullException>(() =>
+                cruder.UpdateRow("SuperTable", null));
 
             // Assert
-            throw new NotImplementedException();
+            Assert.That(ex.ParamName, Is.EqualTo("rowUpdate"));
         }
 
         [Test]
         public void UpdateRow_PropertySelectorIsNull_UsesAllProperties()
         {
             // Arrange
+            this.CreateSuperTable();
+            this.InsertSuperTableRow();
+
+            var updateMold = new SuperTableRowDto
+            {
+                Id = 1,
+
+                TheGuid = new Guid("22222222-2222-2222-2222-222222222222"),
+
+                TheBit = false,
+
+                TheTinyInt = 2,
+                TheSmallInt = 22,
+                TheInt = 222,
+                TheBigInt = 2222,
+
+                TheDecimal = 22.20m,
+                TheNumeric = 222.20m,
+
+                TheSmallMoney = 2222.2200m,
+                TheMoney = 22222.2200m,
+
+                TheReal = (float)222222.0,
+                TheFloat = 2222222.0,
+
+                TheDate = DateTime.Parse("2002-02-02"),
+                TheDateTime = DateTime.Parse("2003-03-03"),
+                TheDateTime2 = DateTime.Parse("2004-04-04"),
+                TheDateTimeOffset = DateTime.Parse("2005-05-05"),
+                TheSmallDateTime = DateTime.Parse("2006-06-06"),
+                TheTime = TimeSpan.Parse("02:02:02"),
+
+                TheChar = "b",
+                TheVarChar = "bb",
+                TheVarCharMax = "bbb",
+
+                TheNChar = "щ",
+                TheNVarChar = "щщ",
+                TheNVarCharMax = "щщщ",
+
+                TheBinary = new byte[] { 2 },
+                TheVarBinary = new byte[] { 20, 22, },
+                TheVarBinaryMax = new byte[] { 17, 177, 179 },
+
+                NotExisting = 777,
+            };
+
+            var update = new DynamicRow(updateMold);
+            update.DeleteValue("NotExisting");
+
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
+            cruder.UpdateRow("SuperTable", update, null);
 
             // Assert
-            throw new NotImplementedException();
+            var loadedRow = TestHelper.LoadRow(this.Connection, "zeta", "SuperTable", 1);
+
+            Assert.That(loadedRow["TheGuid"], Is.EqualTo(new Guid("22222222-2222-2222-2222-222222222222")));
+
+            Assert.That(loadedRow["TheBit"], Is.EqualTo(false));
+
+            Assert.That(loadedRow["TheTinyInt"], Is.EqualTo((byte)2));
+            Assert.That(loadedRow["TheSmallInt"], Is.EqualTo((short)22));
+            Assert.That(loadedRow["TheInt"], Is.EqualTo(222));
+            Assert.That(loadedRow["TheBigInt"], Is.EqualTo(2222L));
+
+            Assert.That(loadedRow["TheDecimal"], Is.EqualTo(22.20m));
+            Assert.That(loadedRow["TheNumeric"], Is.EqualTo(222.20m));
+
+            Assert.That(loadedRow["TheSmallMoney"], Is.EqualTo(2222.2200m));
+            Assert.That(loadedRow["TheMoney"], Is.EqualTo(22222.2200m));
+
+            Assert.That(loadedRow["TheReal"], Is.EqualTo((float)222222.0));
+            Assert.That(loadedRow["TheFloat"], Is.EqualTo(2222222.0));
+
+            Assert.That(loadedRow["TheDate"], Is.EqualTo(DateTime.Parse("2002-02-02")));
+            Assert.That(loadedRow["TheDateTime"], Is.EqualTo(DateTime.Parse("2003-03-03")));
+            Assert.That(loadedRow["TheDateTime2"], Is.EqualTo(DateTime.Parse("2004-04-04")));
+            Assert.That(loadedRow["TheDateTimeOffset"], Is.EqualTo(DateTimeOffset.Parse("2005-05-05")));
+            Assert.That(loadedRow["TheSmallDateTime"], Is.EqualTo(DateTime.Parse("2006-06-06")));
+            Assert.That(loadedRow["TheTime"], Is.EqualTo(TimeSpan.Parse("02:02:02")));
+
+            Assert.That(loadedRow["TheChar"], Is.EqualTo("b         "));
+            Assert.That(loadedRow["TheVarChar"], Is.EqualTo("bb"));
+            Assert.That(loadedRow["TheVarCharMax"], Is.EqualTo("bbb"));
+
+            Assert.That(loadedRow["TheNChar"], Is.EqualTo("щ         "));
+            Assert.That(loadedRow["TheNVarChar"], Is.EqualTo("щщ"));
+            Assert.That(loadedRow["TheNVarCharMax"], Is.EqualTo("щщщ"));
+
+            Assert.That(loadedRow["TheBinary"], Is.EqualTo(new byte[] { 2, 0, 0, 0 }));
+            Assert.That(loadedRow["TheVarBinary"], Is.EqualTo(new byte[] { 20, 22, }));
+            Assert.That(loadedRow["TheVarBinaryMax"], Is.EqualTo(new byte[] { 17, 177, 179 }));
         }
 
         [Test]
-        public void UpdateRow_RowUpdateContainsPropertiesOnWhichSelectorReturnsFalse_RunsOk()
+        public void UpdateRow_PropertySelectorDoesNotContainPkColumn_ArgumentException()
         {
             // Arrange
+            this.CreateSuperTable();
+            this.InsertSuperTableRow();
 
-            // todo: row is a dictionary, row is a DynamicRow, row is an anon type, row is a strongly-typed dto
+            var update = new
+            {
+                TheGuid = new Guid("22222222-2222-2222-2222-222222222222"),
+            };
+
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
+            var ex = Assert.Throws<ArgumentException>(() => cruder.UpdateRow("SuperTable", update));
 
             // Assert
-            throw new NotImplementedException();
+            Assert.That(ex, Has.Message.StartsWith("Row update object does not contain primary key value."));
+            Assert.That(ex.ParamName, Is.EqualTo("rowUpdate"));
         }
 
         [Test]
-        public void UpdateRow_PropertySelectorDoesNotContainPkColumn_ThrowsTodo()
+        public void UpdateRow_PropertySelectorContainsOnlyPkColumn_ThrowsArgumentException()
         {
             // Arrange
+            this.CreateSuperTable();
+            this.InsertSuperTableRow();
+
+            var update = new
+            {
+                Id = 1,
+            };
+
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
+            var ex = Assert.Throws<ArgumentException>(() => cruder.UpdateRow("SuperTable", update));
 
             // Assert
-            throw new NotImplementedException();
+            Assert.That(ex, Has.Message.StartsWith("'rowUpdate' has no columns to update."));
+            Assert.That(ex.ParamName, Is.EqualTo("rowUpdate"));
         }
 
         [Test]
-        public void UpdateRow_PropertySelectorContainsOnlyPkColumn_ThrowsTodo()
+        public void UpdateRow_IdIsNull_ThrowsArgumentException()
         {
             // Arrange
+            this.CreateSuperTable();
+            this.InsertSuperTableRow();
+
+            var update = new
+            {
+                Id = (object)null,
+                TheGuid = Guid.NewGuid(),
+            };
+
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
+            var ex = Assert.Throws<ArgumentException>(() => cruder.UpdateRow("SuperTable", update));
 
             // Assert
-            throw new NotImplementedException();
+            Assert.That(ex, Has.Message.StartsWith("Primary key column value must not be null."));
+            Assert.That(ex.ParamName, Is.EqualTo("rowUpdate"));
         }
 
         [Test]
-        public void UpdateRow_IdIsNull_ThrowsTodo()
+        public void UpdateRow_NoColumnForSelectedProperty_ThrowsTauDbException()
         {
             // Arrange
+            this.CreateSuperTable();
+            this.InsertSuperTableRow();
+
+            var update = new
+            {
+                Id = 1,
+                NotExisting = 7,
+            };
+
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
+            var ex = Assert.Throws<TauDbException>(() => cruder.UpdateRow("SuperTable", update));
 
             // Assert
-            throw new NotImplementedException();
+            Assert.That(ex, Has.Message.EqualTo("Column 'NotExisting' does not exist."));
         }
 
         [Test]
-        public void UpdateRow_NoColumnForSelectedProperty_ThrowsTodo()
+        public void UpdateRow_TableHasNoPrimaryKey_ArgumentException()
+
         {
             // Arrange
-
-            // todo: row is a dictionary, row is a DynamicRow, row is an anon type, row is a strongly-typed dto
+            this.Connection.ExecuteSingleSql("CREATE TABLE [zeta].[dummy](Foo int)"); // no PK
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
+            var ex = Assert.Throws<ArgumentException>((() => cruder.UpdateRow("dummy", new { Foo = 1 })));
 
             // Assert
-            throw new NotImplementedException();
+            Assert.That(ex, Has.Message.StartsWith("Table 'dummy' does not have a primary key."));
+            Assert.That(ex.ParamName, Is.EqualTo("tableName"));
         }
 
         [Test]
-        public void UpdateRow_TableHasNoPrimaryKey_ThrowsTodo()
+        public void UpdateRow_TablePrimaryKeyIsMultiColumn_ThrowsArgumentException()
         {
             // Arrange
+            IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
 
             // Act
+            var ex = Assert.Throws<ArgumentException>((() => cruder.UpdateRow("Person", new { Key = 3 })));
 
             // Assert
-            throw new NotImplementedException();
-        }
-
-        [Test]
-        public void UpdateRow_TablePrimaryKeyIsMultiColumn_ThrowsTodo()
-        {
-            // Arrange
-
-            // Act
-
-            // Assert
-            throw new NotImplementedException();
+            Assert.That(ex,
+                Has.Message.StartsWith("Failed to retrieve single primary key column name for table 'Person'."));
+            Assert.That(ex.ParamName, Is.EqualTo("tableName"));
         }
 
         #endregion
@@ -1769,7 +2323,9 @@ ORDER BY
             var ex = Assert.Throws<ArgumentException>((() => cruder.DeleteRow("Person", "the_id")));
 
             // Assert
-            Assert.That(ex, Has.Message.StartsWith("Failed to retrieve single primary key column name for table 'Person'."));
+            Assert.That(
+                ex,
+                Has.Message.StartsWith("Failed to retrieve single primary key column name for table 'Person'."));
             Assert.That(ex.ParamName, Is.EqualTo("tableName"));
         }
 

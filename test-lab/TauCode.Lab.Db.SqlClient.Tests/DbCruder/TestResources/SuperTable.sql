@@ -34,6 +34,6 @@ CREATE TABLE [zeta].[SuperTable](
 	[TheNVarChar] nvarchar(100) NULL,
 	[TheNVarCharMax] nvarchar(max) NULL,
 
-	[TheBinary] binary(100) NULL,
+	[TheBinary] binary(4) NULL,
 	[TheVarBinary] varbinary(1000) NULL,
 	[TheVarBinaryMax] varbinary(max) NULL)
