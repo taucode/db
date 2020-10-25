@@ -1,8 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using NUnit.Framework;
 using System;
-using System.IO;
-using System.Text;
 using TauCode.Db;
 
 namespace TauCode.Lab.Db.SqlClient.Tests.DbSerializer
@@ -10,43 +8,6 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbSerializer
     [TestFixture]
     public class SqlSerializerTests : TestBase
     {
-        [Test]
-        public void TodoWat()
-        {
-            var dir = new DirectoryInfo(@"C:\work\tau\lib\taucode.db\test-lab\TauCode.Lab.Db.SqlClient.Tests\DbSerializer\TestResources\Assets");
-            var files = dir.GetFiles("*.png");
-            foreach (var file in files)
-            {
-                var path = file.FullName;
-                var bytes = File.ReadAllBytes(path);
-
-
-                var directoryName = Path.GetDirectoryName(path);
-                var fileName = Path.GetFileName(path);
-                var extension = Path.GetExtension(path);
-
-                var txtFileName = fileName.Substring(0, fileName.Length - extension.Length) + ".txt";
-                var txtFilePath = Path.Combine(directoryName ?? string.Empty, txtFileName);
-
-                var bytesString = BytesToString(bytes);
-
-                File.WriteAllText(txtFilePath, bytesString, Encoding.ASCII);
-            }
-        }
-
-        private static string BytesToString(byte[] bytes)
-        {
-            var sb = new StringBuilder();
-            foreach (var b in bytes)
-            {
-                var s = b.ToString("x2");
-                sb.Append(s);
-            }
-
-            return sb.ToString();
-        }
-
-
         #region Constructor
 
         [Test]
