@@ -1,3 +1,30 @@
+/* harvey */
+INSERT INTO [zeta].[Person](
+	[Id],
+	[Tag],
+	[IsChecked],
+	[Birthday],
+	[FirstName],
+	[LastName],
+	[Initials],
+	[Gender]
+)
+VALUES(
+	1,
+	'df601c43-fb4c-4a4d-ab05-e6bf5cfa68d1',
+	1,
+	'1939-05-13',
+	'Harvey',
+	'Keitel',
+	'HK',
+	100
+)
+
+/* harvey data */
+
+
+
+
 /* Person; [Gender] is enum */
 CREATE TABLE [zeta].[Person](
 	[Id] int NOT NULL,

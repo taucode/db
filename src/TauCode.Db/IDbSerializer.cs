@@ -1,5 +1,6 @@
 ﻿using System;
 using TauCode.Db.Data;
+using TauCode.Db.Model;
 
 namespace TauCode.Db
 {
@@ -16,12 +17,12 @@ namespace TauCode.Db
         void DeserializeTableData(
             string tableName,
             string json,
-            Func<string, DynamicRow, DynamicRow> rowTransformer = null);
+            Func<TableMold, DynamicRow, DynamicRow> rowTransformer = null);
 
         void DeserializeDbData(
             string json,
             Func<string, bool> tableNamePredicate = null,
-            Func<string, DynamicRow, DynamicRow> rowTransformer = null);
+            Func<TableMold, DynamicRow, DynamicRow> rowTransformer = null);
 
         string SerializeTableMetadata(string tableName);
 

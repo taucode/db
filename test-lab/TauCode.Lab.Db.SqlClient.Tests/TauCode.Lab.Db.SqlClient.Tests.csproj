@@ -30,13 +30,13 @@
     <None Remove="DbScriptBuilder\TestResources\BuildUpdateScript\BuildUpdateScript_AllColumns_Brackets.sql" />
     <None Remove="DbScriptBuilder\TestResources\BuildUpdateScript\BuildUpdateScript_AllColumns_DoubleQuotes.sql" />
     <None Remove="DbSerializer\TestResources\CreatePersonDb.sql" />
-    <None Remove="DbSerializer\TestResources\SuperTable.sql" />
+    <None Remove="DbSerializer\TestResources\SeedPersonDb.sql" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="CommonResources\crebase.sql" />
     <EmbeddedResource Include="DbCruder\TestResources\InsertRows.sql" />
-    <EmbeddedResource Include="DbCruder\TestResources\SuperTable.sql" />
+    <EmbeddedResource Include="CommonResources\SuperTable.sql" />
     <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildSelectAllScript\BuildSelectAllScript_AllColumns_Brackets.sql" />
     <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildSelectAllScript\BuildSelectAllScript_AllColumns_DoubleQuotes.sql" />
     <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildSelectAllScript\BuildSelectAllScript_Brackets.sql" />
@@ -57,8 +57,8 @@
     <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateTableScript\BuildCreateTableScript_DoubleQuotes_NoConstraints.sql" />
     <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateTableScript\BuildCreateTableScript_DoubleQuotes.sql" />
     <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateTableScript\BuildCreateTableScript_Brackets.sql" />
+    <EmbeddedResource Include="DbSerializer\TestResources\SeedPersonDb.sql" />
     <EmbeddedResource Include="DbSerializer\TestResources\CreatePersonDb.sql" />
-    <EmbeddedResource Include="DbSerializer\TestResources\SuperTable.sql" />
   </ItemGroup>
 
   <ItemGroup>
