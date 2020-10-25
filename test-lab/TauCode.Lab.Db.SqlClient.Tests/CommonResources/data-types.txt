@@ -1,41 +1,41 @@
 Data types to cover
 ===================
 
-uniqueidentifier
++uniqueidentifier
 
-bit
++bit
 
-tinyint
-smallint
-int
-bigint
++tinyint
++smallint
++int
++bigint
 
-decimal
-numeric
++decimal
++numeric
 
-smallmoney
-money
++smallmoney
++money
 
-real    (.NET float)
-float   (.NET double)
++real    (.NET float)
++float   (.NET double)
 
-date
-datetime
-datetime2
-datetimeoffset
-smalldatetime
-time
++date
++datetime
++datetime2
++datetimeoffset
++smalldatetime
++time
 
-char
-varchar
-text        (deprecated) (use varchar(max))
++char
++varchar
+-text        (deprecated) (use varchar(max))
 
-nchar
-nvarchar
-ntext       (deprecated) (use nvarchar(max))
++nchar
++nvarchar
+-ntext       (deprecated) (use nvarchar(max))
 
-binary
-varbinary
-image       (deprecated) (use varbinary(max))
++binary
++varbinary
+-image       (deprecated) (use varbinary(max))
 
 

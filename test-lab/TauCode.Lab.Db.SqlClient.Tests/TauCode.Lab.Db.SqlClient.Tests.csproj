@@ -29,6 +29,8 @@
     <None Remove="DbScriptBuilder\TestResources\BuildSelectByPrimaryKeyScript\BuildSelectByPrimaryKeyScript_DoubleQuotes.sql" />
     <None Remove="DbScriptBuilder\TestResources\BuildUpdateScript\BuildUpdateScript_AllColumns_Brackets.sql" />
     <None Remove="DbScriptBuilder\TestResources\BuildUpdateScript\BuildUpdateScript_AllColumns_DoubleQuotes.sql" />
+    <None Remove="DbSerializer\TestResources\CreatePersonDb.sql" />
+    <None Remove="DbSerializer\TestResources\SuperTable.sql" />
   </ItemGroup>
 
   <ItemGroup>
@@ -55,6 +57,8 @@
     <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateTableScript\BuildCreateTableScript_DoubleQuotes_NoConstraints.sql" />
     <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateTableScript\BuildCreateTableScript_DoubleQuotes.sql" />
     <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateTableScript\BuildCreateTableScript_Brackets.sql" />
+    <EmbeddedResource Include="DbSerializer\TestResources\CreatePersonDb.sql" />
+    <EmbeddedResource Include="DbSerializer\TestResources\SuperTable.sql" />
   </ItemGroup>
 
   <ItemGroup>

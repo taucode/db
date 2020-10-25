@@ -39,6 +39,8 @@ x   1. Get rid of 'own' DbException.
 2020-10-22
 ==========
     1. MySQL DateTimeOffset: https://stackoverflow.com/questions/32103607/will-does-mysql-support-datetimeoffset
+    2. MySQL bulk insert: https://stackoverflow.com/questions/30615443/bulk-copy-a-datatable-into-mysql-similar-to-system-data-sqlclient-sqlbulkcopy
+    3. SQLite bulk insert: https://stackoverflow.com/questions/47190192/connecting-to-a-sqllite-db-with-sqlbulkcopy
 
 2020-10-24
 ==========

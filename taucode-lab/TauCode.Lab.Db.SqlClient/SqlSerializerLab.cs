@@ -6,7 +6,7 @@ namespace TauCode.Lab.Db.SqlClient
     public class SqlSerializerLab : DbSerializerBase
     {
         public SqlSerializerLab(SqlConnection connection, string schema)
-            : base(connection, schema)
+            : base(connection, schema ?? SqlToolsLab.DefaultSchemaName)
 
         {
         }

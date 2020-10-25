@@ -111,7 +111,10 @@ namespace TauCode.Db
             return json;
         }
 
-        public virtual void DeserializeTableData(string tableName, string json)
+        public virtual void DeserializeTableData(
+            string tableName,
+            string json,
+            Func<string, DynamicRow, DynamicRow> rowTransformer = null)
         {
             if (tableName == null)
             {
@@ -134,7 +137,10 @@ namespace TauCode.Db
             this.DeserializeTableData(table, tableData);
         }
 
-        public virtual void DeserializeDbData(string json, Func<string, bool> tableNamePredicate = null)
+        public virtual void DeserializeDbData(
+            string json,
+            Func<string, bool> tableNamePredicate = null,
+            Func<string, DynamicRow, DynamicRow> rowTransformer = null)
         {
             if (json == null)
             {
