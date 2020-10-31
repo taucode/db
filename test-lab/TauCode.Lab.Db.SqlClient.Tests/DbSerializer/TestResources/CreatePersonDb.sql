@@ -52,7 +52,7 @@ CREATE TABLE [zeta].[WorkInfo](
 	[WeekendCoef] float NULL,
 	[Url] varchar(200)
 	CONSTRAINT [PK_workInfo] PRIMARY KEY([Id]),
-	CONSTRAINT [FK_workInfo_person] FOREIGN KEY([PersonDataId]) REFERENCES [zeta].[PersonData]([Id]))
+	CONSTRAINT [FK_workInfo_person] FOREIGN KEY([PersonId]) REFERENCES [zeta].[Person]([Id]))
 
 /* Index on salary, bonus */
 CREATE INDEX [IX_workInfo_salary_bonus] ON [zeta].[WorkInfo]([Salary] ASC, [Bonus] DESC)

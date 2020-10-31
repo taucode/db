@@ -104,7 +104,7 @@ namespace TauCode.Db
                         if (convertedValue == null && value != DBNull.Value)
                         {
                             throw new TauDbException(
-                                $"Method '{dbValueConverter.GetType().FullName}.{nameof(IDbValueConverter.FromDbValue)}' returned null for field '{name}' while original DB  value was not <NULL>.");
+                                $"Method '{dbValueConverter.GetType().FullName}.{nameof(IDbValueConverter.FromDbValue)}' returned null for field '{name}' while original DB value was not <NULL>.");
                         }
 
                         value = convertedValue;

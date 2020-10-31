@@ -108,5 +108,13 @@ WHERE
             command.CommandText = "SELECT @@IDENTITY";
             return (decimal)command.ExecuteScalar();
         }
+
+        internal static int GetTableRowCount(SqlConnection connection, string schemaName, string tableName)
+        {
+            using var command = connection.CreateCommand();
+            command.CommandText = $"SELECT COUNT(*) FROM [{schemaName}].[{tableName}]";
+            var count = (int)command.ExecuteScalar();
+            return count;
+        }
     }
 }

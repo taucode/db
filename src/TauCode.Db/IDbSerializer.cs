@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using TauCode.Db.Data;
 using TauCode.Db.Model;
 
@@ -9,6 +10,8 @@ namespace TauCode.Db
         string SchemaName { get; }
 
         IDbCruder Cruder { get; }
+
+        JsonSerializerSettings JsonSerializerSettings { get; set; }
 
         string SerializeTableData(string tableName);
 

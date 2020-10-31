@@ -33,6 +33,8 @@ namespace TauCode.Db
 
         public void SetColumnConverter(string columnName, IDbValueConverter dbValueConverter)
         {
+            // todo: checks, ut-s.
+
             if (columnName == null)
             {
                 throw new ArgumentNullException(nameof(columnName));
@@ -47,6 +49,8 @@ namespace TauCode.Db
             {
                 _dbValueConverters[columnName] = dbValueConverter;
             }
+
+            else throw new ArgumentException($"Column '{columnName}' does not exist.");
         }
     }
 }
