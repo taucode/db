@@ -11,7 +11,7 @@ CREATE TABLE [zeta].[Person](
 	CONSTRAINT [PK_person] PRIMARY KEY([Id]))
 
 /* Index on birthday */
-CREATE INDEX [UX_person_tag] ON [zeta].[Person]([Tag])
+CREATE UNIQUE INDEX [UX_person_tag] ON [zeta].[Person]([Tag])
 
 /* PersonData */
 CREATE TABLE [zeta].[PersonData](

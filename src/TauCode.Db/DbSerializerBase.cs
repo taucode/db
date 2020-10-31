@@ -242,7 +242,7 @@ namespace TauCode.Db
                 .OrderBy(x => x.Name)
                 .ToList();
 
-            var json = DbTools.FineSerializeToJson(table);
+            var json = JsonConvert.SerializeObject(table, this.JsonSerializerSettings);
             return json;
         }
 
@@ -266,13 +266,13 @@ namespace TauCode.Db
 
             var dbMold = new DbMold
             {
-                DbProviderName = this.Factory.GetDialect().Name,
                 Tables = tables
                     .Select(x => x.CloneTable(false))
                     .ToList(),
             };
 
-            var json = DbTools.FineSerializeToJson(dbMold);
+            var json = JsonConvert.SerializeObject(dbMold, this.JsonSerializerSettings);
+            //var json = DbTools.FineSerializeToJson(dbMold);
             return json;
         }
 

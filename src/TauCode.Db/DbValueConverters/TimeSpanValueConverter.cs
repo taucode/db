@@ -11,6 +11,15 @@ namespace TauCode.Db.DbValueConverters
                 return timeSpan;
             }
 
+            if (value is string s)
+            {
+                var parsed = TimeSpan.TryParse(s, out var timeSpan2);
+                if (parsed)
+                {
+                    return timeSpan2;
+                }
+            }
+
             return null;
         }
 

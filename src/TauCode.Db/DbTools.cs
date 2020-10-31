@@ -1,7 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Serialization;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -267,20 +264,20 @@ namespace TauCode.Db
             }
         }
 
-        public static string ConvertDbToJson(
-            this IDbMetadataConverter dbConverter,
-            DbMold originDb,
-            IReadOnlyDictionary<string, string> options = null)
-        {
-            if (dbConverter == null)
-            {
-                throw new ArgumentNullException(nameof(dbConverter));
-            }
+        //public static string ConvertDbToJson(
+        //    this IDbMetadataConverter dbConverter,
+        //    DbMold originDb,
+        //    IReadOnlyDictionary<string, string> options = null)
+        //{
+        //    if (dbConverter == null)
+        //    {
+        //        throw new ArgumentNullException(nameof(dbConverter));
+        //    }
 
-            var convertedDb = dbConverter.ConvertDb(originDb, options);
-            var json = DbTools.FineSerializeToJson(convertedDb);
-            return json;
-        }
+        //    var convertedDb = dbConverter.ConvertDb(originDb, options);
+        //    var json = DbTools.FineSerializeToJson(convertedDb);
+        //    return json;
+        //}
 
         public static void AddParameterWithValue(
             this IDbCommand command,
@@ -293,30 +290,30 @@ namespace TauCode.Db
             command.Parameters.Add(parameter);
         }
 
-        public static string FineSerializeToJson(object obj)
-        {
-            var contractResolver = new DefaultContractResolver
-            {
-                NamingStrategy = new CamelCaseNamingStrategy
-                {
-                    ProcessDictionaryKeys = false,
-                },
-            };
+        //public static string FineSerializeToJson(object obj)
+        //{
+        //    var contractResolver = new DefaultContractResolver
+        //    {
+        //        NamingStrategy = new CamelCaseNamingStrategy
+        //        {
+        //            ProcessDictionaryKeys = false,
+        //        },
+        //    };
 
-            var json = JsonConvert.SerializeObject(
-                obj,
-                new JsonSerializerSettings
-                {
-                    ContractResolver = contractResolver,
-                    Formatting = Formatting.Indented,
-                    Converters = new List<JsonConverter>
-                    {
-                        new StringEnumConverter(new CamelCaseNamingStrategy())
-                    }
-                });
+        //    var json = JsonConvert.SerializeObject(
+        //        obj,
+        //        new JsonSerializerSettings
+        //        {
+        //            ContractResolver = contractResolver,
+        //            Formatting = Formatting.Indented,
+        //            Converters = new List<JsonConverter>
+        //            {
+        //                new StringEnumConverter(new CamelCaseNamingStrategy())
+        //            }
+        //        });
 
-            return json;
-        }
+        //    return json;
+        //}
 
         public static TauDbException CreateSchemaDoesNotExistException(string schemaName)
         {
