@@ -29,3 +29,8 @@
 2020-10-17
 ==========
     1. Added schema concept.
+
+2020-11-01
+==========
+    1. SQL Server Lab ut-s are green.
+
