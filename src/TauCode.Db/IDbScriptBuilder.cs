@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using TauCode.Db.Model;
 
 namespace TauCode.Db
@@ -12,9 +13,9 @@ namespace TauCode.Db
         string BuildDropTableScript(string tableName);
         string BuildInsertScript(TableMold table, IReadOnlyDictionary<string, string> columnToParameterMappings);
         string BuildUpdateScript(TableMold table, IReadOnlyDictionary<string, string> columnToParameterMappings);
-        string BuildSelectByIdScript(TableMold table, string idParameterName);
-        string BuildSelectAllScript(TableMold table);
-        string BuildDeleteByIdScript(TableMold table, string idParameterName);
+        string BuildSelectByPrimaryKeyScript(TableMold table, string pkColumnParameterName, Func<string, bool> columnSelector = null);
+        string BuildSelectAllScript(TableMold table, Func<string, bool> columnSelector = null);
+        string BuildDeleteByPrimaryKeyScript(TableMold table, string pkColumnParameterName);
         string BuildDeleteScript(string tableName);
     }
 }

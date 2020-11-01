@@ -3,6 +3,7 @@ using System.Data;
 
 namespace TauCode.Db.DbValueConverters
 {
+    // todo clean up
     // todo rearrange and make look nice
     public class EnumValueConverter<TEnum> : DbValueConverterBase
         where TEnum : struct
@@ -16,7 +17,7 @@ namespace TauCode.Db.DbValueConverters
 
         private static void CheckGenericArg()
         {
-            bool validGenericArg = typeof(TEnum).IsEnum;
+            var validGenericArg = typeof(TEnum).IsEnum;
             if (!validGenericArg)
             {
                 throw new ArgumentException($"'{nameof(TEnum)}' must be an enum type.", nameof(TEnum));
@@ -154,23 +155,23 @@ namespace TauCode.Db.DbValueConverters
             return null;
         }
 
-        protected virtual object FromDbValueAsInteger(object dbValue)
-        {
-            throw new NotImplementedException();
-        }
+        //protected virtual object FromDbValueAsInteger(object dbValue)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        protected virtual TEnum? FromDbValueAsString(object dbValue)
-        {
-            if (dbValue is string stringDbValue)
-            {
-                var parsed = Enum.TryParse<TEnum>(stringDbValue, out var result);
-                if (parsed)
-                {
-                    return result;
-                }
-            }
+        //protected virtual TEnum? FromDbValueAsString(object dbValue)
+        //{
+        //    if (dbValue is string stringDbValue)
+        //    {
+        //        var parsed = Enum.TryParse<TEnum>(stringDbValue, out var result);
+        //        if (parsed)
+        //        {
+        //            return result;
+        //        }
+        //    }
 
-            return null;
-        }
+        //    return null;
+        //}
     }
 }

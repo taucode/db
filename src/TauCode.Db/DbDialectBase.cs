@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using TauCode.Db.Model;
 
 namespace TauCode.Db
 {
@@ -155,6 +156,12 @@ namespace TauCode.Db
             }
 
             return $"{openingDelimiter}{identifier}{closingDelimiterString}";
+        }
+
+        public virtual IList<IndexMold> GetCreatableIndexes(TableMold tableMold)
+        {
+            tableMold.CheckNotNullOrCorrupted(nameof(tableMold));
+            return tableMold.Indexes.ToList();
         }
 
         #endregion

@@ -17,10 +17,12 @@ namespace TauCode.Db
             if (value == DBNull.Value)
             {
                 throw new ArgumentException(
-                    "Cannot convert 'DBNull.Value' to DB value. Should be 'null' instead of 'DBNull.Value'.");
+                    "Cannot convert 'DBNull.Value'. For row column values, use CLR null instead of DBNull.Value.");
             }
 
-            return this.ToDbValueImpl(value);
+            var dbValue = this.ToDbValueImpl(value);
+
+            return dbValue;
         }
 
         public object FromDbValue(object dbValue)

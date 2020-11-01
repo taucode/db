@@ -6,6 +6,7 @@ using TauCode.Db.Model;
 
 namespace TauCode.Db
 {
+    // todo clean
     public abstract class DbTableInspectorBase : DbUtilityBase, IDbTableInspector
     {
         #region Nested
@@ -37,6 +38,30 @@ namespace TauCode.Db
 
         #endregion
 
+        #region Private
+
+        private void CheckSchemaIfNeeded()
+        {
+            if (this.NeedCheckSchemaExistence)
+            {
+                if (!this.SchemaExists(this.SchemaName))
+                {
+                    throw DbTools.CreateSchemaDoesNotExistException(this.SchemaName);
+                }
+            }
+        }
+
+        private void CheckTable()
+        {
+            var exists = this.TableExists(this.TableName);
+            if (!exists)
+            {
+                throw DbTools.CreateTableDoesNotExistException(this.SchemaName, this.TableName);
+            }
+        }
+
+        #endregion
+
         #region Polymorph
 
         protected abstract List<ColumnInfo> GetColumnInfos();
@@ -45,15 +70,13 @@ namespace TauCode.Db
 
         protected abstract Dictionary<string, ColumnIdentityMold> GetIdentities();
 
-        #endregion
+        protected abstract bool NeedCheckSchemaExistence { get; }
 
-        #region ITableInspector Members
+        protected abstract bool SchemaExists(string schemaName);
 
-        public string SchemaName { get; }
+        protected abstract bool TableExists(string tableName);
 
-        public string TableName { get; }
-
-        public virtual IReadOnlyList<ColumnMold> GetColumns()
+        public virtual IReadOnlyList<ColumnMold> GetColumnsImpl()
         {
             var columnInfos = this.GetColumnInfos();
             var columns = columnInfos
@@ -64,8 +87,12 @@ namespace TauCode.Db
 
             foreach (var identityColumnName in identities.Keys)
             {
-                var column = columns.Single(x =>
-                    string.Equals(x.Name, identityColumnName, StringComparison.InvariantCultureIgnoreCase));
+                var column = columns.SingleOrDefault(x => x.Name == identityColumnName);
+                if (column == null)
+                {
+                    // should not happen.
+                    throw DbTools.CreateInternalErrorException();
+                }
 
                 column.Identity = identities[identityColumnName];
             }
@@ -73,24 +100,65 @@ namespace TauCode.Db
             return columns;
         }
 
-        public abstract PrimaryKeyMold GetPrimaryKey();
+        protected abstract PrimaryKeyMold GetPrimaryKeyImpl();
 
-        public abstract IReadOnlyList<ForeignKeyMold> GetForeignKeys();
+        protected abstract IReadOnlyList<ForeignKeyMold> GetForeignKeysImpl();
 
-        public abstract IReadOnlyList<IndexMold> GetIndexes();
+        protected abstract IReadOnlyList<IndexMold> GetIndexesImpl();
+
+        #endregion
+
+        #region ITableInspector Members
+
+        public string SchemaName { get; }
+
+        public string TableName { get; }
+
+        public IReadOnlyList<ColumnMold> GetColumns()
+        {
+            this.CheckSchemaIfNeeded();
+            this.CheckTable();
+
+            var columns = this.GetColumnsImpl();
+            return columns;
+        }
+
+        public PrimaryKeyMold GetPrimaryKey()
+        {
+            this.CheckSchemaIfNeeded();
+            this.CheckTable();
+
+            var primaryKey = this.GetPrimaryKeyImpl();
+            return primaryKey;
+        }
+
+        public IReadOnlyList<ForeignKeyMold> GetForeignKeys()
+        {
+            this.CheckSchemaIfNeeded();
+            this.CheckTable();
+
+            var foreignKeys = this.GetForeignKeysImpl();
+            return foreignKeys;
+        }
+
+        public IReadOnlyList<IndexMold> GetIndexes()
+        {
+            this.CheckSchemaIfNeeded();
+            this.CheckTable();
+
+            var indexes = this.GetIndexesImpl();
+            return indexes;
+        }
 
         public virtual TableMold GetTable()
         {
-            var primaryKey = this.GetPrimaryKey();
-            var columns = this.GetColumns();
+            this.CheckSchemaIfNeeded();
+            this.CheckTable();
 
-            if (columns.Count == 0)
-            {
-                throw DbTools.CreateTableNotFoundException(this.TableName); // no columns means table does not exist.
-            }
-
-            var foreignKeys = this.GetForeignKeys();
-            var indexes = this.GetIndexes();
+            var primaryKey = this.GetPrimaryKeyImpl();
+            var columns = this.GetColumnsImpl();
+            var foreignKeys = this.GetForeignKeysImpl();
+            var indexes = this.GetIndexesImpl();
 
             var table = new TableMold
             {

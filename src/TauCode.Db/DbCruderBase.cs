@@ -6,7 +6,6 @@ using TauCode.Data;
 using TauCode.Db.Data;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
-using TauCode.Extensions;
 
 // todo clean up
 namespace TauCode.Db
@@ -29,7 +28,7 @@ namespace TauCode.Db
             private readonly IReadOnlyDictionary<string, IDbDataParameter> _parametersByParameterNames;
 
             /// <summary>
-            /// Some DB providers (namely, MySQL) change parameter's size when executing command despite they were never asked for that.
+            /// Some DB providers (namely, MySQL) change parameter's size when executing command, even though they were never asked to do so.
             /// So we gotta keep parameter sizes intact.
             /// </summary>
             private readonly IReadOnlyDictionary<string, int> _parameterSizes;
@@ -76,17 +75,16 @@ namespace TauCode.Db
                 return columnNames
                     .Select(x =>
                     {
-                        var column = table.Columns.SingleOrDefault(y =>
-                            string.Equals(y.Name, x, StringComparison.InvariantCultureIgnoreCase));
+                        var column = table.Columns.SingleOrDefault(y => y.Name == x);
 
                         if (column == null)
                         {
-                            throw new TauDbException($"Column not found: '{x}'.");
+                            throw new TauDbException($"Column '{x}' does not exist.");
                         }
 
                         return column;
                     })
-                    .ToDictionary(x => x.Name.ToLowerInvariant(), x => x);
+                    .ToDictionary(x => x.Name, x => x);
             }
 
             private IReadOnlyDictionary<string, string> BuildParameterNamesByColumnNames()
@@ -125,31 +123,45 @@ namespace TauCode.Db
                 }
 
                 var rowDictionary = _cruder.ObjectToDataDictionary(values);
-                foreach (var pair in rowDictionary)
-                {
-                    var columnName = pair.Key.ToLowerInvariant();
-                    var originalColumnValue = pair.Value;
 
-                    if (!_parameterNamesByColumnNames.ContainsKey(columnName))
+                foreach (var columnName in _parameterNamesByColumnNames.Keys)
+                {
+                    var gotColumn = rowDictionary.TryGetValue(columnName, out var originalColumnValue);
+                    if (!gotColumn)
                     {
-                        continue; // row has a value we will not insert into any table's column.
+                        throw new ArgumentException($"'{nameof(values)}' does not contain property representing column '{columnName}'.", nameof(values));
                     }
 
                     var parameterName = _parameterNamesByColumnNames[columnName];
                     var parameter = _parametersByParameterNames[parameterName];
 
                     var tableValuesConverter = _cruder.GetTableValuesConverter(_table.Name);
-                    var dbValueConverter = tableValuesConverter.GetColumnConverter(columnName);
-                    var columnValue = dbValueConverter.ToDbValue(originalColumnValue);
 
-                    if (columnValue == null)
+                    try
+                    {
+                        var dbValueConverter = tableValuesConverter.GetColumnConverter(columnName);
+
+                        if (dbValueConverter == null)
+                        {
+                            throw new TauDbException($"'GetColumnConverter' returned null. Table name is '{_table.Name}'. Column name is '{columnName}'.");
+                        }
+
+                        var columnValue = dbValueConverter.ToDbValue(originalColumnValue);
+
+                        if (columnValue == null)
+                        {
+                            throw new TauDbException($"Method '{nameof(IDbValueConverter.ToDbValue)}' of the instance of type '{dbValueConverter.GetType().FullName}' returned null.");
+                        }
+
+                        parameter.Size = _parameterSizes[parameter.ParameterName];
+                        parameter.Value = columnValue;
+                    }
+                    catch (Exception ex)
                     {
                         throw new TauDbException(
-                            $"Could not transform value '{originalColumnValue}' of type '{originalColumnValue.GetType().FullName}'. Table name is '{_table.Name}'. Column name is '{columnName}'.");
+                            $"Could not transform value '{originalColumnValue}' of type '{originalColumnValue.GetType().FullName}'. Table name is '{_table.Name}'. Column name is '{columnName}'.",
+                            ex);
                     }
-
-                    parameter.Size = _parameterSizes[parameter.ParameterName];
-                    parameter.Value = columnValue;
                 }
             }
 
@@ -225,6 +237,12 @@ namespace TauCode.Db
 
         #endregion
 
+        #region Private
+
+        private bool PropertyTruer(string propertyName) => true;
+
+        #endregion
+
         #region Abstract
 
         protected abstract IDbValueConverter CreateDbValueConverter(ColumnMold column);
@@ -262,7 +280,7 @@ namespace TauCode.Db
 
             var dictionary = table.Columns
                 .ToDictionary(
-                    x => x.Name.ToLowerInvariant(),
+                    x => x.Name,
                     this.CreateDbValueConverter);
 
             var tableValuesConverter = new DbTableValuesConverter(dictionary);
@@ -278,7 +296,11 @@ namespace TauCode.Db
 
         public IDbTableValuesConverter GetTableValuesConverter(string tableName)
         {
-            // todo: checks, lowercase, everywhere.
+            if (tableName == null)
+            {
+                throw new ArgumentNullException(nameof(tableName));
+            }
+
             var tableValuesConverter = _tableValuesConverters.GetValueOrDefault(tableName);
             if (tableValuesConverter == null)
             {
@@ -297,7 +319,7 @@ namespace TauCode.Db
         public virtual void InsertRow(
             string tableName,
             object row,
-            Func<string, bool> propertySelector)
+            Func<string, bool> propertySelector = null)
         {
             if (row == null)
             {
@@ -310,7 +332,7 @@ namespace TauCode.Db
         public virtual void InsertRows(
             string tableName,
             IReadOnlyList<object> rows,
-            Func<string, bool> propertySelector)
+            Func<string, bool> propertySelector = null)
         {
             if (tableName == null)
             {
@@ -322,13 +344,7 @@ namespace TauCode.Db
                 throw new ArgumentNullException(nameof(rows));
             }
 
-            //if (columnsToOmit != null)
-            //{
-            //    if (columnsToOmit.Any(string.IsNullOrWhiteSpace))
-            //    {
-            //        throw new ArgumentException($"'{nameof(columnsToOmit)}' must not contain empty strings or nulls.");
-            //    }
-            //}
+            propertySelector ??= PropertyTruer;
 
             var table = this.Factory.CreateTableInspector(this.Connection, this.SchemaName, tableName).GetTable();
 
@@ -336,8 +352,6 @@ namespace TauCode.Db
             {
                 return; // nothing to insert
             }
-
-            //columnsToOmit ??= new List<string>();
 
             var columnNames = this.ObjectToDataDictionary(rows[0])
                 .Keys
@@ -360,7 +374,7 @@ namespace TauCode.Db
 
                 if (row == null)
                 {
-                    throw new ArgumentException($"'{nameof(rows)}' must not contain nulls.");
+                    throw new ArgumentException($"'{nameof(rows)}' must not contain nulls.", nameof(rows));
                 }
 
                 helper.ExecuteWithValues(row);
@@ -370,7 +384,7 @@ namespace TauCode.Db
 
         public Action<string, object, int> RowInsertedCallback { get; set; }
 
-        public virtual dynamic GetRow(string tableName, object id)
+        public virtual dynamic GetRow(string tableName, object id, Func<string, bool> columnSelector = null)
         {
             if (tableName == null)
             {
@@ -386,10 +400,10 @@ namespace TauCode.Db
                 .CreateTableInspector(this.Connection, this.SchemaName, tableName)
                 .GetTable();
 
-            var idColumnName = table.GetPrimaryKeyColumn().Name.ToLowerInvariant();
+            var idColumnName = table.GetPrimaryKeySingleColumn(nameof(tableName)).Name;
 
             using var helper = new CommandHelper(this, table, new[] { idColumnName });
-            var sql = this.ScriptBuilder.BuildSelectByIdScript(table, helper.GetParameterNames().Single().Value);
+            var sql = this.ScriptBuilder.BuildSelectByPrimaryKeyScript(table, helper.GetParameterNames().Single().Value, columnSelector);
             helper.CommandText = sql;
             var rows = helper.FetchWithValues(new Dictionary<string, object>
             {
@@ -399,7 +413,7 @@ namespace TauCode.Db
             return rows.SingleOrDefault();
         }
 
-        public virtual IList<dynamic> GetAllRows(string tableName)
+        public virtual IList<dynamic> GetAllRows(string tableName, Func<string, bool> columnSelector = null)
         {
             if (tableName == null)
             {
@@ -411,13 +425,13 @@ namespace TauCode.Db
                 .GetTable();
 
             using var command = this.Connection.CreateCommand();
-            var sql = this.ScriptBuilder.BuildSelectAllScript(table);
+            var sql = this.ScriptBuilder.BuildSelectAllScript(table, columnSelector);
             command.CommandText = sql;
             var rows = DbTools.GetCommandRows(command, this.GetTableValuesConverter(tableName));
             return rows;
         }
 
-        public virtual bool UpdateRow(string tableName, object rowUpdate, object id)
+        public virtual bool UpdateRow(string tableName, object rowUpdate, Func<string, bool> propertySelector = null)
         {
             if (tableName == null)
             {
@@ -429,10 +443,7 @@ namespace TauCode.Db
                 throw new ArgumentNullException(nameof(rowUpdate));
             }
 
-            if (id == null)
-            {
-                throw new ArgumentNullException(nameof(id));
-            }
+            propertySelector ??= PropertyTruer;
 
             var table = this.Factory
                 .CreateTableInspector(this.Connection, this.SchemaName, tableName)
@@ -440,23 +451,31 @@ namespace TauCode.Db
 
             var dataDictionary = this.ObjectToDataDictionary(rowUpdate);
 
-            if (dataDictionary.Keys.Contains(table.GetPrimaryKeyColumn().Name,
-                StringComparer.InvariantCultureIgnoreCase))
+            var columnNames = dataDictionary
+                .Keys
+                .Where(propertySelector)
+                .ToHashSet();
+
+            var idColumnName = table.GetPrimaryKeySingleColumn(nameof(tableName)).Name;
+            if (!columnNames.Contains(idColumnName))
             {
-                throw new TauDbException("Update object must not contain ID column.");
+                throw new ArgumentException("Row update object does not contain primary key value.", nameof(rowUpdate));
             }
 
-            var columnNames = new List<string>(dataDictionary.Keys)
+            if (columnNames.Count == 1)
             {
-                table.GetPrimaryKeyColumn().Name,
-            };
+                throw new ArgumentException($"'{nameof(rowUpdate)}' has no columns to update.", nameof(rowUpdate));
+            }
+
+            if (dataDictionary[idColumnName] == null)
+            {
+                throw new ArgumentException("Primary key column value must not be null.", nameof(rowUpdate));
+            }
 
             using var helper = new CommandHelper(this, table, columnNames);
             var sql = this.ScriptBuilder.BuildUpdateScript(
                 table,
                 helper.GetParameterNames());
-
-            dataDictionary.Add(table.GetPrimaryKeyColumn().Name.ToLowerInvariant(), id);
 
             helper.CommandText = sql;
             var result = helper.ExecuteWithValues(dataDictionary);
@@ -479,10 +498,10 @@ namespace TauCode.Db
                 .CreateTableInspector(this.Connection, this.SchemaName, tableName)
                 .GetTable();
 
-            var idColumnName = table.GetPrimaryKeyColumn().Name.ToLowerInvariant();
+            var idColumnName = table.GetPrimaryKeySingleColumn(nameof(tableName)).Name;
 
             using var helper = new CommandHelper(this, table, new[] { idColumnName });
-            var sql = this.ScriptBuilder.BuildDeleteByIdScript(table, helper.GetParameterNames().Single().Value);
+            var sql = this.ScriptBuilder.BuildDeleteByPrimaryKeyScript(table, helper.GetParameterNames().Single().Value);
             helper.CommandText = sql;
 
             var result = helper.ExecuteWithValues(new Dictionary<string, object>

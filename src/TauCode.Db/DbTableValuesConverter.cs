@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TauCode.Extensions;
 
 namespace TauCode.Db
 {
+    // todo regions
     public class DbTableValuesConverter : IDbTableValuesConverter
     {
         private readonly Dictionary<string, IDbValueConverter> _dbValueConverters;
@@ -21,7 +21,7 @@ namespace TauCode.Db
 
         public IDbValueConverter GetColumnConverter(string columnName)
         {
-            var converter = _dbValueConverters.GetValueOrDefault(columnName.ToLowerInvariant());
+            var converter = _dbValueConverters.GetValueOrDefault(columnName);
 
             if (converter == null)
             {
@@ -33,6 +33,8 @@ namespace TauCode.Db
 
         public void SetColumnConverter(string columnName, IDbValueConverter dbValueConverter)
         {
+            // todo: checks, ut-s.
+
             if (columnName == null)
             {
                 throw new ArgumentNullException(nameof(columnName));
@@ -47,6 +49,8 @@ namespace TauCode.Db
             {
                 _dbValueConverters[columnName] = dbValueConverter;
             }
+
+            else throw new ArgumentException($"Column '{columnName}' does not exist.");
         }
     }
 }

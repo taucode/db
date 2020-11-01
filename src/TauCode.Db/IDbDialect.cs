@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TauCode.Db.Model;
 
 namespace TauCode.Db
 {
@@ -24,5 +25,7 @@ namespace TauCode.Db
         bool CanDecorateTypeIdentifier { get; }
 
         string DecorateIdentifier(DbIdentifierType identifierType, string identifier, char? openingDelimiter);
+
+        IList<IndexMold> GetCreatableIndexes(TableMold tableMold);
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
@@ -17,11 +16,30 @@ namespace TauCode.Db
 
         #endregion
 
+        #region Private
+
+        private void CheckSchemaIfNeeded()
+        {
+            if (this.NeedCheckSchemaExistence)
+            {
+                if (!this.SchemaExists(this.SchemaName))
+                {
+                    throw DbTools.CreateSchemaDoesNotExistException(this.SchemaName);
+                }
+            }
+        }
+
+        #endregion
+
         #region Abstract & Virtual
 
         protected abstract IReadOnlyList<string> GetTableNamesImpl(string schemaName);
 
         protected abstract HashSet<string> GetSystemSchemata();
+
+        protected abstract bool NeedCheckSchemaExistence { get; }
+
+        protected abstract bool SchemaExists(string schemaName);
 
         #endregion
 
@@ -37,15 +55,17 @@ namespace TauCode.Db
             command.CommandText =
                 @"
 SELECT
-    schema_name SchemaName
+    S.schema_name SchemaName
 FROM
-    information_schema.schemata
+    information_schema.schemata S
+ORDER BY
+    S.schema_name
 ";
 
             var schemata = DbTools
                 .GetCommandRows(command)
                 .Select(x => (string)x.SchemaName)
-                .Except(systemSchemata, StringComparer.InvariantCultureIgnoreCase)
+                .Except(systemSchemata)
                 .ToList();
 
             return schemata;
@@ -53,6 +73,8 @@ FROM
 
         public IReadOnlyList<string> GetTableNames()
         {
+            this.CheckSchemaIfNeeded();
+
             var tableNames = this.GetTableNamesImpl(this.SchemaName);
 
             return tableNames;

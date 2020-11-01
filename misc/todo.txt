@@ -20,7 +20,7 @@ x   5. IDbInspector should check type (actually, type full name) of IDbConnectio
 2019-12-17
 ==========
 +   1. Check if all resources are needed in test projects.
-    2. Remove dummy tests one day.
++   2. Remove dummy tests one day.
 
 2020-01-07
 ==========
@@ -28,10 +28,21 @@ x   5. IDbInspector should check type (actually, type full name) of IDbConnectio
 
 2020-09-24
 ==========
-    1. Incorporate changes from TX.
-    2. Support schemas.
-    3. Get rid of type-names.txt. data-type-names.txt
+x   1. Incorporate changes from TX.
++   2. Support schemas.
++   3. Get rid of type-names.txt. data-type-names.txt
 
 2020-09-27
 ==========
 x   1. Get rid of 'own' DbException.
+
+2020-10-22
+==========
+    1. MySQL DateTimeOffset: https://stackoverflow.com/questions/32103607/will-does-mysql-support-datetimeoffset
+    2. MySQL bulk insert: https://stackoverflow.com/questions/30615443/bulk-copy-a-datatable-into-mysql-similar-to-system-data-sqlclient-sqlbulkcopy
+    3. SQLite bulk insert: https://stackoverflow.com/questions/47190192/connecting-to-a-sqllite-db-with-sqlbulkcopy
+
+2020-10-24
+==========
+    1. GetRow<T>, GetAllRows<T>? or better use NHibernate?
+
