@@ -71,9 +71,9 @@ namespace TauCode.Lab.Db.Npgsql.Tests
 SELECT
     *
 FROM
-    [{schemaName}].[{tableName}]
+    ""{schemaName}"".""{tableName}""
 WHERE
-    [{pkColumnName}] = @p_id
+    ""{pkColumnName}"" = @p_id
 ";
             command.Parameters.AddWithValue("p_id", id);
             using var reader = command.ExecuteReader();
@@ -102,11 +102,11 @@ WHERE
             return dictionary;
         }
 
-        internal static decimal GetLastIdentity(this NpgsqlConnection connection)
+        internal static long GetLastIdentity(this NpgsqlConnection connection, string schemaName, string tableName, string columnName)
         {
             using var command = connection.CreateCommand();
-            command.CommandText = "SELECT @@IDENTITY";
-            return (decimal)command.ExecuteScalar();
+            command.CommandText = $"SELECT currval(pg_get_serial_sequence('\"{schemaName}\".\"{tableName}\"', '{columnName}'))";
+            return (long)command.ExecuteScalar();
         }
 
         internal static int GetTableRowCount(NpgsqlConnection connection, string schemaName, string tableName)

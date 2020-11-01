@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -24,6 +24,7 @@
     <None Remove="CommonResources\Assets\PicMaria2Thumb.txt" />
     <None Remove="CommonResources\crebase.sql" />
     <None Remove="CommonResources\SuperTable.sql" />
+    <None Remove="DbCruder\TestResources\InsertRows.sql" />
     <None Remove="DbScriptBuilder\TestResources\BuildCreateIndexScript\BuildCreateIndexScript_NonUniqueIndex_DoubleQuotes.sql" />
     <None Remove="DbScriptBuilder\TestResources\BuildCreateIndexScript\BuildCreateIndexScript_UniqueIndex_DoubleQuotes.sql" />
     <None Remove="DbScriptBuilder\TestResources\BuildCreateTableScript\BuildCreateTableScript_DoubleQuotes.sql" />
@@ -55,6 +56,7 @@
     <EmbeddedResource Include="CommonResources\Assets\PicMaria2Thumb.txt" />
     <EmbeddedResource Include="CommonResources\crebase.sql" />
     <EmbeddedResource Include="CommonResources\SuperTable.sql" />
+    <EmbeddedResource Include="DbCruder\TestResources\InsertRows.sql" />
     <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateIndexScript\BuildCreateIndexScript_NonUniqueIndex_DoubleQuotes.sql" />
     <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateIndexScript\BuildCreateIndexScript_UniqueIndex_DoubleQuotes.sql" />
     <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateTableScript\BuildCreateTableScript_DoubleQuotes.sql" />
@@ -68,6 +70,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Inflector.NetStandard" Version="1.2.2" />
     <PackageReference Include="NUnit" Version="3.12.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />

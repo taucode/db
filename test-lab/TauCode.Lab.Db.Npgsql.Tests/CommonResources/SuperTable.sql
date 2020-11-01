@@ -1,39 +1,39 @@
 CREATE TABLE "zeta"."SuperTable"(
-	"Id" int NOT NULL PRIMARY KEY IDENTITY(1, 1),
+	"Id" serial NOT NULL PRIMARY KEY,
 
-	"TheGuid" uniqueidentifier NULL,
+	"TheGuid" uuid NULL,
 
-	"TheBit" bit NULL,
+	"TheBit" boolean NULL,
 
-	"TheTinyInt" tinyint NULL,
+	"TheTinyInt" smallint NULL,
 	"TheSmallInt" smallint NULL,
-	"TheInt" int NULL,
+	"TheInt" integer NULL,
 	"TheBigInt" bigint NULL,
 
 	"TheDecimal" decimal(10, 2) NULL,
 	"TheNumeric" decimal(10, 2) NULL,
 
-	"TheSmallMoney" smallmoney NULL,
+	"TheSmallMoney" money NULL,
 	"TheMoney" money NULL,
 
 	"TheReal" real NULL,
-	"TheFloat" float NULL,
+	"TheFloat" double precision NULL,
 
-	"TheDate" date NULL,
-	"TheDateTime" datetime NULL,
-	"TheDateTime2" datetime2 NULL,
-	"TheDateTimeOffset" datetimeoffset NULL,
-	"TheSmallDateTime" smalldatetime NULL,
+	"TheDate" timestamp without time zone NULL,
+	"TheDateTime" timestamp without time zone NULL,
+	"TheDateTime2" timestamp without time zone NULL,
+	"TheDateTimeOffset" timestamp with time zone NULL,
+	"TheSmallDateTime" timestamp without time zone NULL,
 	"TheTime" time NULL,
 
-	"TheChar" char(10) NULL,
-	"TheVarChar" varchar(100) NULL,
-	"TheVarCharMax" varchar(max) NULL,
+	"TheChar" character(10) NULL,
+	"TheVarChar" character varying(100) NULL,
+	"TheVarCharMax" text NULL,
 
 	"TheNChar" nchar(10) NULL,
-	"TheNVarChar" nvarchar(100) NULL,
-	"TheNVarCharMax" nvarchar(max) NULL,
+	"TheNVarChar" character varying(100) NULL,
+	"TheNVarCharMax" text NULL,
 
-	"TheBinary" binary(4) NULL,
-	"TheVarBinary" varbinary(1000) NULL,
-	"TheVarBinaryMax" varbinary(max) NULL)
+	"TheBinary" bytea NULL,
+	"TheVarBinary" bytea NULL,
+	"TheVarBinaryMax" bytea NULL)

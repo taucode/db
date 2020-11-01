@@ -28,6 +28,12 @@ namespace TauCode.Db.DbValueConverters
                 return dateTimeOffset;
             }
 
+            if (dbValue is DateTime dateTime)
+            {
+                DateTimeOffset dateTimeOffset2 = dateTime;
+                return dateTimeOffset2;
+            }
+
             return null;
         }
     }

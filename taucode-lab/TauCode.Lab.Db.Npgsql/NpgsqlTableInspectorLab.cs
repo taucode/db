@@ -12,7 +12,7 @@ namespace TauCode.Lab.Db.Npgsql
     // todo: copy-pasted a lot from SQL Server.
     public class NpgsqlTableInspectorLab : DbTableInspectorBase
     {
-        public NpgsqlTableInspectorLab(IDbConnection connection, string schemaName, string tableName)
+        public NpgsqlTableInspectorLab(NpgsqlConnection connection, string schemaName, string tableName)
             : base(connection, schemaName ?? NpgsqlToolsLab.DefaultSchemaName, tableName)
         {
         }
