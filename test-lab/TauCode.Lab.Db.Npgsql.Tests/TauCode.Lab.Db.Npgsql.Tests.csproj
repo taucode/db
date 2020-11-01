@@ -24,6 +24,26 @@
     <None Remove="CommonResources\Assets\PicMaria2Thumb.txt" />
     <None Remove="CommonResources\crebase.sql" />
     <None Remove="CommonResources\SuperTable.sql" />
+    <None Remove="DbScriptBuilder\TestResources\BuildCreateIndexScript\BuildCreateIndexScript_NonUniqueIndex_Brackets.sql" />
+    <None Remove="DbScriptBuilder\TestResources\BuildCreateIndexScript\BuildCreateIndexScript_NonUniqueIndex_DoubleQuotes.sql" />
+    <None Remove="DbScriptBuilder\TestResources\BuildCreateIndexScript\BuildCreateIndexScript_UniqueIndex_Brackets.sql" />
+    <None Remove="DbScriptBuilder\TestResources\BuildCreateIndexScript\BuildCreateIndexScript_UniqueIndex_DoubleQuotes.sql" />
+    <None Remove="DbScriptBuilder\TestResources\BuildCreateTableScript\BuildCreateTableScript_Brackets.sql" />
+    <None Remove="DbScriptBuilder\TestResources\BuildCreateTableScript\BuildCreateTableScript_Brackets_NoConstraints.sql" />
+    <None Remove="DbScriptBuilder\TestResources\BuildCreateTableScript\BuildCreateTableScript_DoubleQuotes.sql" />
+    <None Remove="DbScriptBuilder\TestResources\BuildCreateTableScript\BuildCreateTableScript_DoubleQuotes_NoConstraints.sql" />
+    <None Remove="DbScriptBuilder\TestResources\BuildInsertScript\BuildInsertScript_AllColumns_Brackets.sql" />
+    <None Remove="DbScriptBuilder\TestResources\BuildInsertScript\BuildInsertScript_AllColumns_DoubleQuotes.sql" />
+    <None Remove="DbScriptBuilder\TestResources\BuildSelectAllScript\BuildSelectAllScript_AllColumns_Brackets.sql" />
+    <None Remove="DbScriptBuilder\TestResources\BuildSelectAllScript\BuildSelectAllScript_AllColumns_DoubleQuotes.sql" />
+    <None Remove="DbScriptBuilder\TestResources\BuildSelectAllScript\BuildSelectAllScript_Brackets.sql" />
+    <None Remove="DbScriptBuilder\TestResources\BuildSelectAllScript\BuildSelectAllScript_DoubleQuotes.sql" />
+    <None Remove="DbScriptBuilder\TestResources\BuildSelectByPrimaryKeyScript\BuildSelectByPrimaryKeyScript_AllColumns_Brackets.sql" />
+    <None Remove="DbScriptBuilder\TestResources\BuildSelectByPrimaryKeyScript\BuildSelectByPrimaryKeyScript_AllColumns_DoubleQuotes.sql" />
+    <None Remove="DbScriptBuilder\TestResources\BuildSelectByPrimaryKeyScript\BuildSelectByPrimaryKeyScript_Brackets.sql" />
+    <None Remove="DbScriptBuilder\TestResources\BuildSelectByPrimaryKeyScript\BuildSelectByPrimaryKeyScript_DoubleQuotes.sql" />
+    <None Remove="DbScriptBuilder\TestResources\BuildUpdateScript\BuildUpdateScript_AllColumns_Brackets.sql" />
+    <None Remove="DbScriptBuilder\TestResources\BuildUpdateScript\BuildUpdateScript_AllColumns_DoubleQuotes.sql" />
   </ItemGroup>
 
   <ItemGroup>
@@ -45,6 +65,26 @@
     <EmbeddedResource Include="CommonResources\Assets\PicMaria2Thumb.txt" />
     <EmbeddedResource Include="CommonResources\crebase.sql" />
     <EmbeddedResource Include="CommonResources\SuperTable.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateIndexScript\BuildCreateIndexScript_NonUniqueIndex_Brackets.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateIndexScript\BuildCreateIndexScript_NonUniqueIndex_DoubleQuotes.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateIndexScript\BuildCreateIndexScript_UniqueIndex_Brackets.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateIndexScript\BuildCreateIndexScript_UniqueIndex_DoubleQuotes.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateTableScript\BuildCreateTableScript_Brackets.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateTableScript\BuildCreateTableScript_Brackets_NoConstraints.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateTableScript\BuildCreateTableScript_DoubleQuotes.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateTableScript\BuildCreateTableScript_DoubleQuotes_NoConstraints.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildInsertScript\BuildInsertScript_AllColumns_Brackets.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildInsertScript\BuildInsertScript_AllColumns_DoubleQuotes.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildSelectAllScript\BuildSelectAllScript_AllColumns_Brackets.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildSelectAllScript\BuildSelectAllScript_AllColumns_DoubleQuotes.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildSelectAllScript\BuildSelectAllScript_Brackets.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildSelectAllScript\BuildSelectAllScript_DoubleQuotes.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildSelectByPrimaryKeyScript\BuildSelectByPrimaryKeyScript_AllColumns_Brackets.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildSelectByPrimaryKeyScript\BuildSelectByPrimaryKeyScript_AllColumns_DoubleQuotes.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildSelectByPrimaryKeyScript\BuildSelectByPrimaryKeyScript_Brackets.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildSelectByPrimaryKeyScript\BuildSelectByPrimaryKeyScript_DoubleQuotes.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildUpdateScript\BuildUpdateScript_AllColumns_Brackets.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildUpdateScript\BuildUpdateScript_AllColumns_DoubleQuotes.sql" />
   </ItemGroup>
 
   <ItemGroup>

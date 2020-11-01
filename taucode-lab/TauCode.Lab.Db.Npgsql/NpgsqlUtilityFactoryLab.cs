@@ -12,10 +12,7 @@ namespace TauCode.Lab.Db.Npgsql
         {   
         }
 
-        public IDbDialect GetDialect()
-        {
-            throw new NotImplementedException();
-        }
+        public IDbDialect GetDialect() => NpgsqlDialectLab.Instance;
 
         public IDbScriptBuilder CreateScriptBuilder(string schemaName)
         {
