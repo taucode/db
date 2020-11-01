@@ -1,6 +1,9 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Data;
+using TauCode.Db.Data;
+using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
 
 namespace TauCode.Db
@@ -9,7 +12,7 @@ namespace TauCode.Db
     {
         #region Fields
 
-        private IDbSerializer _dbSerializer;
+        private IDbSerializer _serializer;
 
         #endregion
 
@@ -19,36 +22,55 @@ namespace TauCode.Db
             IDbConnection connection,
             string schemaName,
             Func<string> metadataJsonGetter,
-            Func<string> dataJsonGetter)
+            Func<string> dataJsonGetter,
+            Func<string, bool> tableNamePredicate = null,
+            Func<TableMold, DynamicRow, DynamicRow> rowTransformer = null)
             : base(connection, true, false)
         {
             this.SchemaName = schemaName;
             this.MetadataJsonGetter = metadataJsonGetter ?? throw new ArgumentNullException(nameof(metadataJsonGetter));
             this.DataJsonGetter = dataJsonGetter ?? throw new ArgumentNullException(nameof(dataJsonGetter));
+            this.TableNamePredicate = tableNamePredicate;
+            this.RowTransformer = rowTransformer;
         }
 
         #endregion
 
         #region Protected
 
-        protected virtual IDbSerializer DbSerializer => _dbSerializer ??= this.Factory.CreateSerializer(this.Connection, this.SchemaName);
+        protected virtual IDbSerializer CreateSerializer()
+        {
+            var serializer = this.Factory.CreateSerializer(this.Connection, this.SchemaName);
+            return serializer;
+        }
+
+        protected virtual IList<IndexMold> GetMigratableIndexes(TableMold table) => table.Indexes;
 
         #endregion
 
         #region Public
 
+        public Func<string, bool> TableNamePredicate { get; }
+        public Func<TableMold, DynamicRow, DynamicRow> RowTransformer { get; }
+        public IDbSerializer Serializer => _serializer ??= this.CreateSerializer();
         public Func<string> MetadataJsonGetter { get; }
         public Func<string> DataJsonGetter { get; }
-        public string SchemaName { get; }
 
         #endregion
 
         #region IDbMigrator Members
 
+        public string SchemaName { get; }
+
         public virtual void Migrate()
         {
             // migrate metadata
             var metadataJson = this.MetadataJsonGetter();
+            if (metadataJson == null)
+            {
+                throw new TauDbException($"'{nameof(MetadataJsonGetter)}' returned null.");
+            }
+
             var metadata = JsonConvert.DeserializeObject<DbMold>(metadataJson);
 
             using (var command = this.Connection.CreateCommand())
@@ -56,16 +78,18 @@ namespace TauCode.Db
                 foreach (var table in metadata.Tables)
                 {
                     // create table itself
-                    var script = this.DbSerializer.Cruder.ScriptBuilder.BuildCreateTableScript(
+                    var script = this.Serializer.Cruder.ScriptBuilder.BuildCreateTableScript(
                         table,
                         true);
                     command.CommandText = script;
                     command.ExecuteNonQuery();
 
+                    var indexes = this.GetMigratableIndexes(table);
+
                     // create indexes
-                    foreach (var index in table.Indexes)
+                    foreach (var index in indexes)
                     {
-                        script = this.DbSerializer.Cruder.ScriptBuilder.BuildCreateIndexScript(index);
+                        script = this.Serializer.Cruder.ScriptBuilder.BuildCreateIndexScript(index);
                         command.CommandText = script;
                         command.ExecuteNonQuery();
                     }
@@ -74,7 +98,13 @@ namespace TauCode.Db
 
             // migrate data
             var dataJson = this.DataJsonGetter();
-            this.DbSerializer.DeserializeDbData(dataJson);
+
+            if (dataJson == null)
+            {
+                throw new TauDbException($"'{nameof(DataJsonGetter)}' returned null.");
+            }
+
+            this.Serializer.DeserializeDbData(dataJson, this.TableNamePredicate, this.RowTransformer);
         }
 
         #endregion

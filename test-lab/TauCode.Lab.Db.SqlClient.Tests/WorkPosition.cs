@@ -1,4 +1,4 @@
-﻿namespace TauCode.Lab.Db.SqlClient.Tests.DbSerializer.TestResources
+﻿namespace TauCode.Lab.Db.SqlClient.Tests
 {
     public enum WorkPosition
     {

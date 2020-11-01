@@ -12,7 +12,6 @@ using TauCode.Db;
 using TauCode.Db.DbValueConverters;
 using TauCode.Db.Exceptions;
 using TauCode.Extensions;
-using TauCode.Lab.Db.SqlClient.Tests.DbSerializer.TestResources;
 
 namespace TauCode.Lab.Db.SqlClient.Tests.DbSerializer
 {
@@ -31,7 +30,6 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbSerializer
 
             sql = this.GetType().Assembly.GetResourceText("SeedPersonDb.sql", true);
             this.Connection.ExecuteCommentedScript(sql);
-
         }
 
         private void TodoCompare(string actual, string expected, string extension = "sql")
@@ -83,7 +81,6 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbSerializer
             Assert.That(ex.ParamName, Is.EqualTo("connection"));
             Assert.That(ex.Message, Does.StartWith("Connection should be opened."));
         }
-
 
         #endregion
 
