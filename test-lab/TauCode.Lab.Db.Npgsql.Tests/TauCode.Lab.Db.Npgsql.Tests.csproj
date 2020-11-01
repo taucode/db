@@ -1,9 +1,51 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="CommonResources\Assets\PicHarvey1.png" />
+    <None Remove="CommonResources\Assets\PicHarvey1.txt" />
+    <None Remove="CommonResources\Assets\PicHarvey1Thumb.png" />
+    <None Remove="CommonResources\Assets\PicHarvey1Thumb.txt" />
+    <None Remove="CommonResources\Assets\PicHarvey2.png" />
+    <None Remove="CommonResources\Assets\PicHarvey2.txt" />
+    <None Remove="CommonResources\Assets\PicHarvey2Thumb.png" />
+    <None Remove="CommonResources\Assets\PicHarvey2Thumb.txt" />
+    <None Remove="CommonResources\Assets\PicMaria1.png" />
+    <None Remove="CommonResources\Assets\PicMaria1.txt" />
+    <None Remove="CommonResources\Assets\PicMaria1Thumb.png" />
+    <None Remove="CommonResources\Assets\PicMaria1Thumb.txt" />
+    <None Remove="CommonResources\Assets\PicMaria2.png" />
+    <None Remove="CommonResources\Assets\PicMaria2.txt" />
+    <None Remove="CommonResources\Assets\PicMaria2Thumb.png" />
+    <None Remove="CommonResources\Assets\PicMaria2Thumb.txt" />
+    <None Remove="CommonResources\crebase.sql" />
+    <None Remove="CommonResources\SuperTable.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="CommonResources\Assets\PicHarvey1.png" />
+    <EmbeddedResource Include="CommonResources\Assets\PicHarvey1.txt" />
+    <EmbeddedResource Include="CommonResources\Assets\PicHarvey1Thumb.png" />
+    <EmbeddedResource Include="CommonResources\Assets\PicHarvey1Thumb.txt" />
+    <EmbeddedResource Include="CommonResources\Assets\PicHarvey2.png" />
+    <EmbeddedResource Include="CommonResources\Assets\PicHarvey2.txt" />
+    <EmbeddedResource Include="CommonResources\Assets\PicHarvey2Thumb.png" />
+    <EmbeddedResource Include="CommonResources\Assets\PicHarvey2Thumb.txt" />
+    <EmbeddedResource Include="CommonResources\Assets\PicMaria1.png" />
+    <EmbeddedResource Include="CommonResources\Assets\PicMaria1.txt" />
+    <EmbeddedResource Include="CommonResources\Assets\PicMaria1Thumb.png" />
+    <EmbeddedResource Include="CommonResources\Assets\PicMaria1Thumb.txt" />
+    <EmbeddedResource Include="CommonResources\Assets\PicMaria2.png" />
+    <EmbeddedResource Include="CommonResources\Assets\PicMaria2.txt" />
+    <EmbeddedResource Include="CommonResources\Assets\PicMaria2Thumb.png" />
+    <EmbeddedResource Include="CommonResources\Assets\PicMaria2Thumb.txt" />
+    <EmbeddedResource Include="CommonResources\crebase.sql" />
+    <EmbeddedResource Include="CommonResources\SuperTable.sql" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="NUnit" Version="3.12.0" />

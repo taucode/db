@@ -30,7 +30,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbInspector
         }
 
         [Test]
-        public void Constructor_SchemaIsNull_RunsOkAndSchemaIsDbo()
+        public void Constructor_SchemaIsNull_RunsOkAndSchemaIsPublic()
         {
             // Arrange
 

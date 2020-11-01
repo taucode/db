@@ -1,0 +1,35 @@
+Data types to cover
+===================
+
+uuid
+
+smallint
+integer
+bigint
+
+smallserial
+serial
+bigserial
+
+
+double precision
+real
+
+boolean
+
+bytea
+
+character
+character varying
+
+text
+
+date
+time
+timestamp
+
+interval?
+
+money
+numeric [ (p, s) ]
+
