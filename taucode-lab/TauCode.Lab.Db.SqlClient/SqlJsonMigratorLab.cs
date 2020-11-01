@@ -1,11 +1,10 @@
 ﻿using Microsoft.Data.SqlClient;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using TauCode.Db;
 using TauCode.Db.Data;
 using TauCode.Db.Model;
 
+// todo clean up, regions, here & in other classes.
 namespace TauCode.Lab.Db.SqlClient
 {
     public class SqlJsonMigratorLab : DbJsonMigratorBase
@@ -27,14 +26,12 @@ namespace TauCode.Lab.Db.SqlClient
         {
         }
 
+        protected SqlConnection SqlConnection => (SqlConnection)this.Connection;
+
         public override IDbUtilityFactory Factory => SqlUtilityFactoryLab.Instance;
 
-        protected override IList<IndexMold> GetMigratableIndexes(TableMold table)
-        {
-            var pkIndex = table.Indexes.SingleOrDefault(x => x.Name == table.PrimaryKey?.Name);
-            return table.Indexes
-                .Where(x => x.Name != pkIndex?.Name)
-                .ToList();
-        }
+        protected override bool NeedCheckSchemaExistence => true;
+
+        protected override bool SchemaExists(string schemaName) => this.SqlConnection.SchemaExists(schemaName);
     }
 }

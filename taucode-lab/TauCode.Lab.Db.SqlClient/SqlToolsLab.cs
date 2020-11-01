@@ -48,9 +48,9 @@ FROM
     information_schema.schemata S
 ";
 
-            var schemata = DbTools
-                .GetCommandRows(command)
-                .Select(x => (string)x.SchemaName)
+            var schemata = command
+                .GetCommandRows()
+                .Select(x => (string) x.SchemaName)
                 .Except(SystemSchemata)
                 .ToList();
 
@@ -89,7 +89,7 @@ ORDER BY
 
             var tableNames = DbTools
                 .GetCommandRows(command)
-                .Select(x => (string)x.TableName)
+                .Select(x => (string) x.TableName)
                 .ToList();
 
             if (independentFirst.HasValue)
@@ -147,6 +147,19 @@ ORDER BY
             }
 
             return tableNames;
+        }
+
+        public static IReadOnlyList<TableMold> GetTableMolds(
+            this SqlConnection connection,
+            string schemaName,
+            bool? independentFirst)
+        {
+            var tableNames = GetTableNames(connection, schemaName, independentFirst);
+            var inspector = new SqlInspectorLab(connection, schemaName);
+
+            return tableNames
+                .Select(x => inspector.Factory.CreateTableInspector(connection, schemaName, x).GetTable())
+                .ToList();
         }
 
         public static void DropTable(this SqlConnection connection, string schemaName, string tableName)
@@ -317,11 +330,11 @@ ORDER BY
                     var rows = DbTools.GetCommandRows(command);
 
                     fk.ColumnNames = rows
-                        .Select(x => (string)x.ColumnName)
+                        .Select(x => (string) x.ColumnName)
                         .ToList();
 
                     fk.ReferencedColumnNames = rows
-                        .Select(x => (string)x.ReferencedColumnName)
+                        .Select(x => (string) x.ReferencedColumnName)
                         .ToList();
                 }
             }
@@ -393,20 +406,22 @@ ORDER BY
 
             return DbTools
                 .GetCommandRows(command)
-                .GroupBy(x => (int)x.IndexId)
+                .GroupBy(x => (int) x.IndexId)
                 .Select(g => new IndexMold
                 {
-                    Name = (string)g.First().IndexName,
+                    Name = (string) g.First().IndexName,
                     TableName = tableName,
                     Columns = g
-                        .OrderBy(x => (int)x.KeyOrdinal)
+                        .OrderBy(x => (int) x.KeyOrdinal)
                         .Select(x => new IndexColumnMold
                         {
-                            Name = (string)x.ColumnName,
-                            SortDirection = (bool)x.IsDescendingKey ? SortDirection.Descending : SortDirection.Ascending,
+                            Name = (string) x.ColumnName,
+                            SortDirection = (bool) x.IsDescendingKey
+                                ? SortDirection.Descending
+                                : SortDirection.Ascending,
                         })
                         .ToList(),
-                    IsUnique = (bool)g.First().IndexIsUnique,
+                    IsUnique = (bool) g.First().IndexIsUnique,
                 })
                 .OrderBy(x => x.Name)
                 .ToList();
@@ -450,7 +465,7 @@ WHERE
 
             var names = DbTools
                 .GetCommandRows(command)
-                .Select(x => (string)x.ConstraintName)
+                .Select(x => (string) x.ConstraintName)
                 .ToList();
 
             return names;
@@ -509,7 +524,10 @@ WHERE
             return reader.Read();
         }
 
-        public static PrimaryKeyMold GetTablePrimaryKey(this SqlConnection connection, string schemaName, string tableName)
+        public static PrimaryKeyMold GetTablePrimaryKey(
+            this SqlConnection connection,
+            string schemaName,
+            string tableName)
         {
             if (connection == null)
             {
@@ -559,9 +577,9 @@ ORDER BY
                 return null; // no PK
             }
 
-            var constraintName = (string)rows[0].ConstraintName;
+            var constraintName = (string) rows[0].ConstraintName;
             var columnNames = rows
-                .Select(x => (string)x.ColumnName)
+                .Select(x => (string) x.ColumnName)
                 .ToList();
 
             var pk = new PrimaryKeyMold

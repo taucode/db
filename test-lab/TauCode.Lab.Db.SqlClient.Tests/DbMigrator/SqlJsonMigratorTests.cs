@@ -1,14 +1,21 @@
 ﻿using Microsoft.Data.SqlClient;
 using NUnit.Framework;
 using System;
-using System.Text;
+using TauCode.Db;
+using TauCode.Db.Exceptions;
 using TauCode.Extensions;
 
+// todo clean up
 namespace TauCode.Lab.Db.SqlClient.Tests.DbMigrator
 {
     [TestFixture]
     public class SqlJsonMigratorTests : TestBase
     {
+        private void TodoCompare(string actual, string expected, string extension = "sql")
+        {
+            TestHelper.WriteDiff(actual, expected, @"c:\temp\0-sql\", extension, "todo");
+        }
+
         #region Constructor
 
         [Test]
@@ -66,7 +73,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbMigrator
         }
 
         [Test]
-        public void Constructor_MetadataJsonGetter_ThrowsArgumentNullException()
+        public void Constructor_MetadataJsonGetterIsNull_ThrowsArgumentNullException()
         {
             // Arrange
 
@@ -82,7 +89,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbMigrator
         }
 
         [Test]
-        public void Constructor_DataJsonGetter_ThrowsArgumentNullException()
+        public void Constructor_DataJsonGetterIsNull_ThrowsArgumentNullException()
         {
             // Arrange
 
@@ -135,10 +142,15 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbMigrator
 
             #region metadata
 
-            var sb = new StringBuilder();
+            var scriptBuilder = new SqlScriptBuilderLab("zeta");
+            var tableMolds = this.Connection.GetTableMolds("zeta", true);
+            var script = scriptBuilder.BuildCreateAllTablesScript(tableMolds);
+            var expectedScript = this.GetType().Assembly.GetResourceText("MigratedDbCustomOutput.sql", true);
 
+            TodoCompare(script, expectedScript);
 
-
+            Assert.That(script, Is.EqualTo(expectedScript));
+            
             #endregion
 
             #region data
@@ -197,8 +209,6 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbMigrator
 
             #region Photo
 
-            // todo: PicMigrationHarvey and so forth
-
             Assert.That(TestHelper.GetTableRowCount(this.Connection, "zeta", "Photo"), Is.EqualTo(4));
 
             var harveyPhoto1 = TestHelper.LoadRow(this.Connection, "zeta", "Photo", "PH-1");
@@ -245,7 +255,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbMigrator
 
             #region WorkInfo
 
-            Assert.That(TestHelper.GetTableRowCount(this.Connection, "zeta", "WorkInfo"), Is.EqualTo(0));
+            // no such table in this test (WorkInfo)
 
             #endregion
 
@@ -262,24 +272,25 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbMigrator
                 this.Connection,
                 "zeta",
                 () => this.GetType().Assembly.GetResourceText("MigrateMetadataInput.json", true),
-                () => this.GetType().Assembly.GetResourceText("MigrateDataInput.json", true),
-                x => x != "WorkInfo",
-                (tableMold, row) =>
-                {
-                    if (tableMold.Name == "Person")
-                    {
-                        var birthday = (string)row.GetValue("Birthday");
-                        var birthdayDateTime = DateTime.Parse(birthday.Substring("Month_".Length));
-                        row.SetValue("Birthday", birthdayDateTime);
-                    }
-
-                    return row;
-                });
+                () => this.GetType().Assembly.GetResourceText("MigrateDataInput.json", true));
 
             // Act
             migrator.Migrate();
 
             // Assert
+
+            #region metadata
+
+            var scriptBuilder = new SqlScriptBuilderLab("zeta");
+            var tableMolds = this.Connection.GetTableMolds("zeta", true);
+            var script = scriptBuilder.BuildCreateAllTablesScript(tableMolds);
+            var expectedScript = this.GetType().Assembly.GetResourceText("MigratedDbOutput.sql", true);
+
+            TodoCompare(script, expectedScript);
+
+            Assert.That(script, Is.EqualTo(expectedScript));
+
+            #endregion
 
             #region data
 
@@ -383,10 +394,37 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbMigrator
 
             #region WorkInfo
 
-            Assert.That(TestHelper.GetTableRowCount(this.Connection, "zeta", "WorkInfo"), Is.EqualTo(0));
+            Assert.That(TestHelper.GetTableRowCount(this.Connection, "zeta", "WorkInfo"), Is.EqualTo(2));
+
+            var harveyWorkInfo = TestHelper.LoadRow(this.Connection, "zeta", "WorkInfo", 1001);
+            Assert.That(harveyWorkInfo["Id"], Is.EqualTo(1001));
+            Assert.That(harveyWorkInfo["PersonId"], Is.EqualTo(1));
+            Assert.That(harveyWorkInfo["PositionCode"], Is.EqualTo("Fixer"));
+            Assert.That(harveyWorkInfo["PositionDescription"], Is.EqualTo("Человек, решающий пробемы"));
+            Assert.That(harveyWorkInfo["PositionDescriptionEn"], Is.EqualTo("Man who fixes problems"));
+            Assert.That(harveyWorkInfo["HiredOn"], Is.EqualTo(DateTime.Parse("1990-02-07T11:12:44")));
+            Assert.That(harveyWorkInfo["WorkStartDayTime"], Is.EqualTo(TimeSpan.Parse("07:11:22")));
+            Assert.That(harveyWorkInfo["Salary"], Is.EqualTo(20100.20m));
+            Assert.That(harveyWorkInfo["Bonus"], Is.EqualTo(10500.70m));
+            Assert.That(harveyWorkInfo["OvertimeCoef"], Is.EqualTo(1.2).Within(0.00001));
+            Assert.That(harveyWorkInfo["WeekendCoef"], Is.EqualTo(3.7));
+            Assert.That(harveyWorkInfo["Url"], Is.EqualTo("https://example.com/wolf"));
+
+            var mariaWorkInfo = TestHelper.LoadRow(this.Connection, "zeta", "WorkInfo", 2001);
+            Assert.That(mariaWorkInfo["Id"], Is.EqualTo(2001));
+            Assert.That(mariaWorkInfo["PersonId"], Is.EqualTo(2));
+            Assert.That(mariaWorkInfo["PositionCode"], Is.EqualTo("Lover"));
+            Assert.That(mariaWorkInfo["PositionDescription"], Is.EqualTo("Девушка, любящая Бутча"));
+            Assert.That(mariaWorkInfo["PositionDescriptionEn"], Is.EqualTo("The girl who loves Butch"));
+            Assert.That(mariaWorkInfo["HiredOn"], Is.EqualTo(DateTime.Parse("1989-08-11T01:08:05")));
+            Assert.That(mariaWorkInfo["WorkStartDayTime"], Is.EqualTo(TimeSpan.Parse("01:44:33")));
+            Assert.That(mariaWorkInfo["Salary"], Is.EqualTo(700.10m));
+            Assert.That(mariaWorkInfo["Bonus"], Is.EqualTo(80.33m));
+            Assert.That(mariaWorkInfo["OvertimeCoef"], Is.EqualTo(1.7).Within(0.00001));
+            Assert.That(mariaWorkInfo["WeekendCoef"], Is.EqualTo(2.6));
+            Assert.That(mariaWorkInfo["Url"], Is.EqualTo("https://example.com/fabienne"));
 
             #endregion
-
 
             #endregion
         }
@@ -395,14 +433,54 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbMigrator
         public void Migrate_SchemaDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
+            this.Connection.CreateSchema("zeta");
+
+            var migrator = new SqlJsonMigratorLab(
+                this.Connection,
+                "bad_schema",
+                () => this.GetType().Assembly.GetResourceText("MigrateMetadataInput.json", true),
+                () => this.GetType().Assembly.GetResourceText("MigrateDataInput.json", true));
 
             // Act
+            var ex = Assert.Throws<TauDbException>(() => migrator.Migrate());
 
             // Assert
-
-            throw new NotImplementedException();
+            Assert.That(ex, Has.Message.EqualTo("Schema 'bad_schema' does not exist."));
         }
 
+        [Test]
+        public void Migrate_MetadataJsonGetterReturnsNull_ThrowsTauDbException()
+        {
+            // Arrange
+            var migrator = new SqlJsonMigratorLab(
+                this.Connection,
+                "dbo",
+                () => null,
+                () => "{}");
+
+            // Act
+            var ex = Assert.Throws<TauDbException>(() => migrator.Migrate());
+
+            // Assert
+            Assert.That(ex, Has.Message.EqualTo("'MetadataJsonGetter' returned null."));
+        }
+
+        [Test]
+        public void Migrate_DataJsonGetterReturnsNull_ThrowsTauDbException()
+        {
+            // Arrange
+            var migrator = new SqlJsonMigratorLab(
+                this.Connection,
+                "dbo",
+                () => "{}",
+                () => null);
+
+            // Act
+            var ex = Assert.Throws<TauDbException>(() => migrator.Migrate());
+
+            // Assert
+            Assert.That(ex, Has.Message.EqualTo("'DataJsonGetter' returned null."));
+        }
 
         #endregion
     }

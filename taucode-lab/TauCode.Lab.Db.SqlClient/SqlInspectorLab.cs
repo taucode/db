@@ -22,6 +22,6 @@ namespace TauCode.Lab.Db.SqlClient
 
         protected override bool NeedCheckSchemaExistence => true;
 
-        protected override bool SchemaExists(string schemaName) => SqlToolsLab.SchemaExists(this.SqlConnection, schemaName);
+        protected override bool SchemaExists(string schemaName) => this.SqlConnection.SchemaExists(schemaName);
     }
 }

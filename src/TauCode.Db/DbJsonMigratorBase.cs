@@ -1,11 +1,11 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using TauCode.Db.Data;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
 
+// todo clean up
 namespace TauCode.Db
 {
     public abstract class DbJsonMigratorBase : DbUtilityBase, IDbMigrator
@@ -36,15 +36,32 @@ namespace TauCode.Db
 
         #endregion
 
-        #region Protected
+        #region Private
+
+        private void CheckSchemaIfNeeded()
+        {
+            if (this.NeedCheckSchemaExistence)
+            {
+                if (!this.SchemaExists(this.SchemaName))
+                {
+                    throw DbTools.CreateSchemaDoesNotExistException(this.SchemaName);
+                }
+            }
+        }
+
+        #endregion
+
+        #region Abstract & Virtual
+
+        protected abstract bool NeedCheckSchemaExistence { get; }
+
+        protected abstract bool SchemaExists(string schemaName);
 
         protected virtual IDbSerializer CreateSerializer()
         {
             var serializer = this.Factory.CreateSerializer(this.Connection, this.SchemaName);
             return serializer;
         }
-
-        protected virtual IList<IndexMold> GetMigratableIndexes(TableMold table) => table.Indexes;
 
         #endregion
 
@@ -64,6 +81,8 @@ namespace TauCode.Db
 
         public virtual void Migrate()
         {
+            this.CheckSchemaIfNeeded();
+
             // migrate metadata
             var metadataJson = this.MetadataJsonGetter();
             if (metadataJson == null)
@@ -72,11 +91,18 @@ namespace TauCode.Db
             }
 
             var metadata = JsonConvert.DeserializeObject<DbMold>(metadataJson);
+            var dialect = this.Factory.GetDialect();
+            var predicate = this.TableNamePredicate ?? (x => true);
 
             using (var command = this.Connection.CreateCommand())
             {
                 foreach (var table in metadata.Tables)
                 {
+                    if (!predicate(table.Name))
+                    {
+                        continue;
+                    }
+
                     // create table itself
                     var script = this.Serializer.Cruder.ScriptBuilder.BuildCreateTableScript(
                         table,
@@ -84,7 +110,7 @@ namespace TauCode.Db
                     command.CommandText = script;
                     command.ExecuteNonQuery();
 
-                    var indexes = this.GetMigratableIndexes(table);
+                    var indexes = dialect.GetCreatableIndexes(table);
 
                     // create indexes
                     foreach (var index in indexes)
