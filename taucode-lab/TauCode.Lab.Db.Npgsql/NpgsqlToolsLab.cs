@@ -429,5 +429,17 @@ ORDER BY
             return pk;
         }
 
+        public static IReadOnlyList<TableMold> GetTableMolds(
+            this NpgsqlConnection connection,
+            string schemaName,
+            bool? independentFirst)
+        {
+            var tableNames = GetTableNames(connection, schemaName, independentFirst);
+            var inspector = new NpgsqlInspectorLab(connection, schemaName);
+
+            return tableNames
+                .Select(x => inspector.Factory.CreateTableInspector(connection, schemaName, x).GetTable())
+                .ToList();
+        }
     }
 }
