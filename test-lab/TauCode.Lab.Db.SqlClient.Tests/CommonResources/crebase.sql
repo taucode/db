@@ -119,6 +119,6 @@ CREATE TABLE [zeta].[NumericData](
 /*** DateData ***/
 CREATE TABLE [zeta].[DateData](
 	[Id] [uniqueidentifier] NOT NULL,
-	[Moment] [datetimeoffset] NULL
+	[Moment] [datetimeoffset] NULL,
 	CONSTRAINT [PK_dateData] PRIMARY KEY ([Id])
 )

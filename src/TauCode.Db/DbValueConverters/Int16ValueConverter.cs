@@ -12,6 +12,10 @@
             {
                 return longValue;
             }
+            else if (value is byte byteValue)
+            {
+                return byteValue;
+            }
 
             return null;
         }

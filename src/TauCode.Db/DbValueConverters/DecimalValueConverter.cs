@@ -10,7 +10,7 @@
             }
             else if (value is double doubleValue)
             {
-                return doubleValue;
+                return (decimal)doubleValue;
             }
             else if (value is int intValue)
             {
