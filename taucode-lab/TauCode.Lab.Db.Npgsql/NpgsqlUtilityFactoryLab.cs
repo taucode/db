@@ -1,5 +1,4 @@
 ﻿using Npgsql;
-using System;
 using System.Data;
 using TauCode.Db;
 
@@ -28,9 +27,7 @@ namespace TauCode.Lab.Db.Npgsql
         public IDbCruder CreateCruder(IDbConnection connection, string schemaName) =>
             new NpgsqlCruderLab((NpgsqlConnection)connection, schemaName);
 
-        public IDbSerializer CreateSerializer(IDbConnection connection, string schemaName)
-        {
-            throw new NotImplementedException();
-        }
+        public IDbSerializer CreateSerializer(IDbConnection connection, string schemaName) =>
+            new NpgsqlSerializerLab((NpgsqlConnection)connection, schemaName);
     }
 }

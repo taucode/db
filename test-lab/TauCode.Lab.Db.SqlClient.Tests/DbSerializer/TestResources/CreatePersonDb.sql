@@ -50,7 +50,7 @@ CREATE TABLE [zeta].[WorkInfo](
 	[Bonus] smallmoney NULL,
 	[OvertimeCoef] real NULL,
 	[WeekendCoef] float NULL,
-	[Url] varchar(200)
+	[Url] varchar(200),
 	CONSTRAINT [PK_workInfo] PRIMARY KEY([Id]),
 	CONSTRAINT [FK_workInfo_person] FOREIGN KEY([PersonId]) REFERENCES [zeta].[Person]([Id]))
 

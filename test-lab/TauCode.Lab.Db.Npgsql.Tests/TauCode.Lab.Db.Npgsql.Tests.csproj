@@ -35,6 +35,18 @@
     <None Remove="DbScriptBuilder\TestResources\BuildSelectByPrimaryKeyScript\BuildSelectByPrimaryKeyScript_AllColumns_DoubleQuotes.sql" />
     <None Remove="DbScriptBuilder\TestResources\BuildSelectByPrimaryKeyScript\BuildSelectByPrimaryKeyScript_DoubleQuotes.sql" />
     <None Remove="DbScriptBuilder\TestResources\BuildUpdateScript\BuildUpdateScript_AllColumns_DoubleQuotes.sql" />
+    <None Remove="DbSerializer\TestResources\CreatePersonDb.sql" />
+    <None Remove="DbSerializer\TestResources\Input\DeserializeDbBadInput.json" />
+    <None Remove="DbSerializer\TestResources\Input\DeserializeDbInput.json" />
+    <None Remove="DbSerializer\TestResources\Input\DeserializeTableBadInput.json" />
+    <None Remove="DbSerializer\TestResources\Input\DeserializeTableInput.json" />
+    <None Remove="DbSerializer\TestResources\Output\SerializeDbCustomResult.json" />
+    <None Remove="DbSerializer\TestResources\Output\SerializeDbMetadataCustomResult.json" />
+    <None Remove="DbSerializer\TestResources\Output\SerializeDbMetadataResult.json" />
+    <None Remove="DbSerializer\TestResources\Output\SerializeDbResult.json" />
+    <None Remove="DbSerializer\TestResources\Output\SerializeTableMetadataResult.json" />
+    <None Remove="DbSerializer\TestResources\Output\SerializeTableResult.json" />
+    <None Remove="DbSerializer\TestResources\SeedPersonDb.sql" />
   </ItemGroup>
 
   <ItemGroup>
@@ -67,6 +79,18 @@
     <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildSelectByPrimaryKeyScript\BuildSelectByPrimaryKeyScript_AllColumns_DoubleQuotes.sql" />
     <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildSelectByPrimaryKeyScript\BuildSelectByPrimaryKeyScript_DoubleQuotes.sql" />
     <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildUpdateScript\BuildUpdateScript_AllColumns_DoubleQuotes.sql" />
+    <EmbeddedResource Include="DbSerializer\TestResources\CreatePersonDb.sql" />
+    <EmbeddedResource Include="DbSerializer\TestResources\Input\DeserializeDbBadInput.json" />
+    <EmbeddedResource Include="DbSerializer\TestResources\Input\DeserializeDbInput.json" />
+    <EmbeddedResource Include="DbSerializer\TestResources\Input\DeserializeTableBadInput.json" />
+    <EmbeddedResource Include="DbSerializer\TestResources\Input\DeserializeTableInput.json" />
+    <EmbeddedResource Include="DbSerializer\TestResources\Output\SerializeDbCustomResult.json" />
+    <EmbeddedResource Include="DbSerializer\TestResources\Output\SerializeDbMetadataCustomResult.json" />
+    <EmbeddedResource Include="DbSerializer\TestResources\Output\SerializeDbMetadataResult.json" />
+    <EmbeddedResource Include="DbSerializer\TestResources\Output\SerializeDbResult.json" />
+    <EmbeddedResource Include="DbSerializer\TestResources\Output\SerializeTableMetadataResult.json" />
+    <EmbeddedResource Include="DbSerializer\TestResources\Output\SerializeTableResult.json" />
+    <EmbeddedResource Include="DbSerializer\TestResources\SeedPersonDb.sql" />
   </ItemGroup>
 
   <ItemGroup>

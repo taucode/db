@@ -112,8 +112,8 @@ WHERE
         internal static int GetTableRowCount(NpgsqlConnection connection, string schemaName, string tableName)
         {
             using var command = connection.CreateCommand();
-            command.CommandText = $"SELECT COUNT(*) FROM [{schemaName}].[{tableName}]";
-            var count = (int)command.ExecuteScalar();
+            command.CommandText = @$"SELECT COUNT(*) FROM ""{schemaName}"".""{tableName}""";
+            var count = (int)(long)command.ExecuteScalar();
             return count;
         }
     }

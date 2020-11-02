@@ -31,6 +31,7 @@ namespace TauCode.Db.DbValueConverters
             if (dbValue is DateTime dateTime)
             {
                 DateTimeOffset dateTimeOffset2 = dateTime;
+                dateTimeOffset2 = dateTimeOffset2.ToUniversalTime();
                 return dateTimeOffset2;
             }
 
