@@ -46,3 +46,7 @@ x   1. Get rid of 'own' DbException.
 ==========
     1. GetRow<T>, GetAllRows<T>? or better use NHibernate?
 
+2020-11-02
+==========
+    1. Support PostgreSQL's serial types (migration included).
+
