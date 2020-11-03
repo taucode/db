@@ -6,7 +6,7 @@ namespace TauCode.Lab.Db.MySql.Tests
     [TestFixture]
     public abstract class TestBase
     {
-        protected MySqlConnection Connection { get; private set; }
+        protected MySqlConnection Connection { get; set; }
 
         [OneTimeSetUp]
         public void OneTimeSetUpBase()

@@ -17,6 +17,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
         public void SetUp()
         {
             this.Connection.CreateSchema("zeta");
+            this.Connection = TestHelper.CreateConnection("zeta");
 
             var sql = this.GetType().Assembly.GetResourceText("crebase.sql", true);
             this.Connection.ExecuteCommentedScript(sql);
@@ -67,7 +68,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
             Assert.That(inspector.Connection, Is.SameAs(this.Connection));
             Assert.That(inspector.Factory, Is.SameAs(MySqlUtilityFactoryLab.Instance));
 
-            Assert.That(inspector.SchemaName, Is.EqualTo("foo"));
+            Assert.That(inspector.SchemaName, Is.EqualTo("zeta"));
             Assert.That(inspector.TableName, Is.EqualTo("tab1"));
         }
 
@@ -109,7 +110,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
             Assert.That(inspector.Connection, Is.SameAs(this.Connection));
             Assert.That(inspector.Factory, Is.SameAs(MySqlUtilityFactoryLab.Instance));
 
-            Assert.That(inspector.SchemaName, Is.EqualTo("foo"));
+            Assert.That(inspector.SchemaName, Is.EqualTo("zeta"));
             Assert.That(inspector.TableName, Is.EqualTo("tab1"));
         }
 
@@ -119,7 +120,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
             // Arrange
 
             // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => new MySqlTableInspectorLab(this.Connection,  null));
+            var ex = Assert.Throws<ArgumentNullException>(() => new MySqlTableInspectorLab(this.Connection, null));
 
             // Assert
             Assert.That(ex.ParamName, Is.EqualTo("tableName"));
@@ -162,11 +163,18 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
             this.AssertColumn(columns[0], "MetaKey", new DbTypeMoldInfo("smallint"), false, null, null);
             this.AssertColumn(columns[1], "OrdNumber", new DbTypeMoldInfo("tinyint"), false, null, null);
             this.AssertColumn(columns[2], "Id", new DbTypeMoldInfo("bigint"), false, null, null);
-            this.AssertColumn(columns[3], "FirstName", new DbTypeMoldInfo("nvarchar", size: 100), false, null, null);
-            this.AssertColumn(columns[4], "LastName", new DbTypeMoldInfo("nvarchar", size: 100), false, null, null);
+
+            this.AssertColumn(columns[3], "FirstName", new DbTypeMoldInfo("varchar", size: 100), false, null, null);
+            // todo: char set
+
+            this.AssertColumn(columns[4], "LastName", new DbTypeMoldInfo("varchar", size: 100), false, null, null);
+            // todo: char set
+
             this.AssertColumn(columns[5], "Birthday", new DbTypeMoldInfo("date"), false, null, null);
-            this.AssertColumn(columns[6], "Gender", new DbTypeMoldInfo("bit"), true, null, null);
-            this.AssertColumn(columns[7], "Initials", new DbTypeMoldInfo("nchar", size: 2), true, null, null);
+            this.AssertColumn(columns[6], "Gender", new DbTypeMoldInfo("tinyint"), true, null, null);
+
+            this.AssertColumn(columns[7], "Initials", new DbTypeMoldInfo("char", size: 2), true, null, null);
+            // todo: char set
 
             #endregion
 
@@ -175,13 +183,19 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
             columns = dictionary["PersonData"];
             Assert.That(columns, Has.Count.EqualTo(8));
 
-            this.AssertColumn(columns[0], "Id", new DbTypeMoldInfo("uniqueidentifier"), false, null, null);
+            this.AssertColumn(columns[0], "Id", new DbTypeMoldInfo("char", 16), false, null, null);
+            // todo: binary
+
             this.AssertColumn(columns[1], "Height", new DbTypeMoldInfo("int"), true, null, null);
-            this.AssertColumn(columns[2], "Photo", new DbTypeMoldInfo("varbinary", size: -1), true, null, null);
-            this.AssertColumn(columns[3], "EnglishDescription", new DbTypeMoldInfo("varchar", size: -1), false, null,
+            this.AssertColumn(columns[2], "Photo", new DbTypeMoldInfo("blob", size: MySqlToolsLab.DefaultBlobSize), true, null, null);
+            this.AssertColumn(columns[3], "EnglishDescription", new DbTypeMoldInfo("text", size: MySqlToolsLab.DefaultTextSize), false, null,
                 null);
-            this.AssertColumn(columns[4], "UnicodeDescription", new DbTypeMoldInfo("nvarchar", size: -1), false, null,
+            // todo: char set
+
+            this.AssertColumn(columns[4], "UnicodeDescription", new DbTypeMoldInfo("text", size: MySqlToolsLab.DefaultTextSize), false, null,
                 null);
+            // todo: char set
+
             this.AssertColumn(columns[5], "PersonMetaKey", new DbTypeMoldInfo("smallint"), false, null, null);
             this.AssertColumn(columns[6], "PersonOrdNumber", new DbTypeMoldInfo("tinyint"), false, null, null);
             this.AssertColumn(columns[7], "PersonId", new DbTypeMoldInfo("bigint"), false, null, null);
@@ -193,17 +207,27 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
             columns = dictionary["WorkInfo"];
             Assert.That(columns, Has.Count.EqualTo(11));
 
-            this.AssertColumn(columns[0], "Id", new DbTypeMoldInfo("uniqueidentifier"), false, null, null);
+            this.AssertColumn(columns[0], "Id", new DbTypeMoldInfo("char", 16), false, null, null);
+            // todo: binary
+
             this.AssertColumn(columns[1], "Position", new DbTypeMoldInfo("varchar", size: 20), false, null, null);
-            this.AssertColumn(columns[2], "HireDate", new DbTypeMoldInfo("smalldatetime"), false, null, null);
+            // todo: char set
+
+            this.AssertColumn(columns[2], "HireDate", new DbTypeMoldInfo("datetime"), false, null, null);
+
             this.AssertColumn(columns[3], "Code", new DbTypeMoldInfo("char", size: 3), true, null, null);
+            // todo: char set
+
             this.AssertColumn(columns[4], "PersonMetaKey", new DbTypeMoldInfo("smallint"), false, null, null);
             this.AssertColumn(columns[5], "DigitalSignature", new DbTypeMoldInfo("binary", size: 16), false, null,
                 null);
             this.AssertColumn(columns[6], "PersonId", new DbTypeMoldInfo("bigint"), false, null, null);
             this.AssertColumn(columns[7], "PersonOrdNumber", new DbTypeMoldInfo("tinyint"), false, null, null);
-            this.AssertColumn(columns[8], "Hash", new DbTypeMoldInfo("uniqueidentifier"), false, null, null);
-            this.AssertColumn(columns[9], "Salary", new DbTypeMoldInfo("smallmoney"), true, null, null);
+
+            this.AssertColumn(columns[8], "Hash", new DbTypeMoldInfo("char", 16), false, null, null);
+            // todo: binary
+
+            this.AssertColumn(columns[9], "Salary", new DbTypeMoldInfo("decimal", null, 13, 4), true, null, null);
             this.AssertColumn(columns[10], "VaryingSignature", new DbTypeMoldInfo("varbinary", size: 100), true, null,
                 null);
 
@@ -214,16 +238,18 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
             columns = dictionary["TaxInfo"];
             Assert.That(columns, Has.Count.EqualTo(10));
 
-            this.AssertColumn(columns[0], "Id", new DbTypeMoldInfo("uniqueidentifier"), false, null, null);
+            this.AssertColumn(columns[0], "Id", new DbTypeMoldInfo("char", 16), false, null, null);
+            // todo: binary
+
             this.AssertColumn(columns[1], "PersonId", new DbTypeMoldInfo("bigint"), false, null, null);
-            this.AssertColumn(columns[2], "Tax", new DbTypeMoldInfo("money"), false, null, null);
-            this.AssertColumn(columns[3], "Ratio", new DbTypeMoldInfo("float"), true, null, null);
+            this.AssertColumn(columns[2], "Tax", new DbTypeMoldInfo("decimal", null, 13, 4), false, null, null);
+            this.AssertColumn(columns[3], "Ratio", new DbTypeMoldInfo("double"), true, null, null);
             this.AssertColumn(columns[4], "PersonMetaKey", new DbTypeMoldInfo("smallint"), false, null, null);
-            this.AssertColumn(columns[5], "SmallRatio", new DbTypeMoldInfo("real"), false, null, null);
+            this.AssertColumn(columns[5], "SmallRatio", new DbTypeMoldInfo("float"), false, null, null);
             this.AssertColumn(columns[6], "RecordDate", new DbTypeMoldInfo("datetime"), true, null, null);
-            this.AssertColumn(columns[7], "CreatedAt", new DbTypeMoldInfo("datetimeoffset"), false, null, null);
+            this.AssertColumn(columns[7], "CreatedAt", new DbTypeMoldInfo("datetime"), false, null, null);
             this.AssertColumn(columns[8], "PersonOrdNumber", new DbTypeMoldInfo("tinyint"), false, null, null);
-            this.AssertColumn(columns[9], "DueDate", new DbTypeMoldInfo("datetime2"), true, null, null);
+            this.AssertColumn(columns[9], "DueDate", new DbTypeMoldInfo("datetime"), true, null, null);
 
             #endregion
 
@@ -232,7 +258,9 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
             columns = dictionary["HealthInfo"];
             Assert.That(columns, Has.Count.EqualTo(9));
 
-            this.AssertColumn(columns[0], "Id", new DbTypeMoldInfo("uniqueidentifier"), false, null, null);
+            this.AssertColumn(columns[0], "Id", new DbTypeMoldInfo("char", 16), false, null, null);
+            // todo: binary
+
             this.AssertColumn(columns[1], "PersonId", new DbTypeMoldInfo("bigint"), false, null, null);
             this.AssertColumn(
                 columns[2],
@@ -242,7 +270,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
                 null,
                 null);
             this.AssertColumn(columns[3], "PersonMetaKey", new DbTypeMoldInfo("smallint"), false, null, null);
-            this.AssertColumn(columns[4], "IQ", new DbTypeMoldInfo("numeric", precision: 8, scale: 2), true, null, null);
+            this.AssertColumn(columns[4], "IQ", new DbTypeMoldInfo("decimal", precision: 8, scale: 2), true, null, null);
             this.AssertColumn(columns[5], "Temper", new DbTypeMoldInfo("smallint"), true, null, null);
             this.AssertColumn(columns[6], "PersonOrdNumber", new DbTypeMoldInfo("tinyint"), false, null, null);
             this.AssertColumn(columns[7], "MetricB", new DbTypeMoldInfo("int"), true, null, null);
@@ -255,15 +283,15 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
             columns = dictionary["NumericData"];
             Assert.That(columns, Has.Count.EqualTo(10));
 
-            this.AssertColumn(columns[0], "Id", new DbTypeMoldInfo("int"), false, new ColumnIdentityMoldInfo("15", "99"), null);
-            this.AssertColumn(columns[1], "BooleanData", new DbTypeMoldInfo("bit"), true, null, null);
+            this.AssertColumn(columns[0], "Id", new DbTypeMoldInfo("int"), false, new ColumnIdentityMoldInfo("1", "1"), null);
+            this.AssertColumn(columns[1], "BooleanData", new DbTypeMoldInfo("tinyint"), true, null, null);
             this.AssertColumn(columns[2], "ByteData", new DbTypeMoldInfo("tinyint"), true, null, null);
             this.AssertColumn(columns[3], "Int16", new DbTypeMoldInfo("smallint"), true, null, null);
             this.AssertColumn(columns[4], "Int32", new DbTypeMoldInfo("int"), true, null, null);
             this.AssertColumn(columns[5], "Int64", new DbTypeMoldInfo("bigint"), true, null, null);
-            this.AssertColumn(columns[6], "NetDouble", new DbTypeMoldInfo("float"), true, null, null);
-            this.AssertColumn(columns[7], "NetSingle", new DbTypeMoldInfo("real"), true, null, null);
-            this.AssertColumn(columns[8], "NumericData", new DbTypeMoldInfo("numeric", precision: 10, scale: 6), true, null, null);
+            this.AssertColumn(columns[6], "NetDouble", new DbTypeMoldInfo("double"), true, null, null);
+            this.AssertColumn(columns[7], "NetSingle", new DbTypeMoldInfo("float"), true, null, null);
+            this.AssertColumn(columns[8], "NumericData", new DbTypeMoldInfo("decimal", precision: 10, scale: 6), true, null, null);
             this.AssertColumn(columns[9], "DecimalData", new DbTypeMoldInfo("decimal", precision: 11, scale: 5), true, null, null);
 
             #endregion
@@ -273,8 +301,10 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
             columns = dictionary["DateData"];
             Assert.That(columns, Has.Count.EqualTo(2));
 
-            this.AssertColumn(columns[0], "Id", new DbTypeMoldInfo("uniqueidentifier"), false, null, null);
-            this.AssertColumn(columns[1], "Moment", new DbTypeMoldInfo("datetimeoffset"), true, null, null);
+            this.AssertColumn(columns[0], "Id", new DbTypeMoldInfo("char", 16), false, null, null);
+            // todo: binary
+
+            this.AssertColumn(columns[1], "Moment", new DbTypeMoldInfo("datetime"), true, null, null);
 
             #endregion
         }
@@ -283,7 +313,11 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
         public void GetColumns_SchemaDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbTableInspector inspector = new MySqlTableInspectorLab(this.Connection,  "tab1");
+            this.Connection.CreateSchema("bad_schema");
+            var connection = TestHelper.CreateConnection("bad_schema");
+            this.Connection.DropSchema("bad_schema");
+
+            IDbTableInspector inspector = new MySqlTableInspectorLab(connection, "tab1");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => inspector.GetColumns());
@@ -325,8 +359,8 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
             PrimaryKeyMold pk;
 
             // Person
-            pk = dictionary["Person"];
-            Assert.That(pk.Name, Is.EqualTo("PK_person"));
+            pk = dictionary["person"];
+            Assert.That(pk.Name, Is.EqualTo("PRIMARY"));
             CollectionAssert.AreEqual(
                 new[]
                 {
@@ -337,8 +371,8 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
                 pk.Columns);
 
             // PersonData
-            pk = dictionary["PersonData"];
-            Assert.That(pk.Name, Is.EqualTo("PK_personData"));
+            pk = dictionary["persondata"];
+            Assert.That(pk.Name, Is.EqualTo("PRIMARY"));
             CollectionAssert.AreEqual(
                 new[]
                 {
@@ -347,8 +381,8 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
                 pk.Columns);
 
             // NumericData
-            pk = dictionary["NumericData"];
-            Assert.That(pk.Name, Is.EqualTo("PK_numericData"));
+            pk = dictionary["numericdata"];
+            Assert.That(pk.Name, Is.EqualTo("PRIMARY"));
             CollectionAssert.AreEqual(
                 new[]
                 {
@@ -362,7 +396,10 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
         public void GetPrimaryKey_SchemaDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbTableInspector inspector = new MySqlTableInspectorLab(this.Connection, "tab1");
+            this.Connection.CreateSchema("bad_schema");
+            var connection = TestHelper.CreateConnection("bad_schema");
+            this.Connection.DropSchema("bad_schema");
+            IDbTableInspector inspector = new MySqlTableInspectorLab(connection, "tab1");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => inspector.GetPrimaryKey());
@@ -405,7 +442,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
             CollectionAssert.AreEqual(
                 new string[] { "PersonId", "PersonMetaKey", "PersonOrdNumber" },
                 fk.ColumnNames);
-            Assert.That(fk.ReferencedTableName, Is.EqualTo("Person"));
+            Assert.That(fk.ReferencedTableName, Is.EqualTo("person"));
             CollectionAssert.AreEqual(
                 new string[] { "Id", "MetaKey", "OrdNumber" },
                 fk.ReferencedColumnNames);
@@ -415,7 +452,10 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
         public void GetForeignKeys_SchemaDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbTableInspector inspector = new MySqlTableInspectorLab(this.Connection,  "tab1");
+            this.Connection.CreateSchema("bad_schema");
+            var connection = TestHelper.CreateConnection("bad_schema");
+            this.Connection.DropSchema("bad_schema");
+            IDbTableInspector inspector = new MySqlTableInspectorLab(connection, "tab1");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => inspector.GetForeignKeys());
@@ -445,9 +485,9 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
         public void GetIndexes_ValidInput_ReturnsIndexes()
         {
             // Arrange
-            IDbTableInspector inspector1 = new MySqlTableInspectorLab(this.Connection,  "Person");
-            IDbTableInspector inspector2 = new MySqlTableInspectorLab(this.Connection,  "WorkInfo");
-            IDbTableInspector inspector3 = new MySqlTableInspectorLab(this.Connection,  "HealthInfo");
+            IDbTableInspector inspector1 = new MySqlTableInspectorLab(this.Connection, "Person");
+            IDbTableInspector inspector2 = new MySqlTableInspectorLab(this.Connection, "WorkInfo");
+            IDbTableInspector inspector3 = new MySqlTableInspectorLab(this.Connection, "HealthInfo");
 
             // Act
             var indexes1 = inspector1.GetIndexes();
@@ -458,8 +498,8 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
 
             // Person
             var index = indexes1.Single();
-            Assert.That(index.Name, Is.EqualTo("PK_person"));
-            Assert.That(index.TableName, Is.EqualTo("Person"));
+            Assert.That(index.Name, Is.EqualTo("PRIMARY"));
+            Assert.That(index.TableName, Is.EqualTo("person"));
             Assert.That(index.IsUnique, Is.True);
             Assert.That(index.Columns, Has.Count.EqualTo(3));
 
@@ -476,12 +516,31 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
             Assert.That(column.SortDirection, Is.EqualTo(SortDirection.Ascending));
 
             // WorkInfo
-            Assert.That(indexes2, Has.Count.EqualTo(2));
+            Assert.That(indexes2, Has.Count.EqualTo(3));
 
-            // index: PK_workInfo
+            // index: FK_workInfo_Person
             index = indexes2[0];
-            Assert.That(index.Name, Is.EqualTo("PK_workInfo"));
-            Assert.That(index.TableName, Is.EqualTo("WorkInfo"));
+            Assert.That(index.Name, Is.EqualTo("FK_workInfo_Person"));
+            Assert.That(index.TableName, Is.EqualTo("workinfo"));
+            Assert.That(index.IsUnique, Is.False);
+            Assert.That(index.Columns, Has.Count.EqualTo(3));
+
+            column = index.Columns[0];
+            Assert.That(column.Name, Is.EqualTo("PersonId"));
+            Assert.That(column.SortDirection, Is.EqualTo(SortDirection.Ascending));
+
+            column = index.Columns[1];
+            Assert.That(column.Name, Is.EqualTo("PersonMetaKey"));
+            Assert.That(column.SortDirection, Is.EqualTo(SortDirection.Ascending));
+
+            column = index.Columns[2];
+            Assert.That(column.Name, Is.EqualTo("PersonOrdNumber"));
+            Assert.That(column.SortDirection, Is.EqualTo(SortDirection.Ascending));
+
+            // index: PRIMARY
+            index = indexes2[1];
+            Assert.That(index.Name, Is.EqualTo("PRIMARY"));
+            Assert.That(index.TableName, Is.EqualTo("workinfo"));
             Assert.That(index.IsUnique, Is.True);
             Assert.That(index.Columns, Has.Count.EqualTo(1));
 
@@ -490,9 +549,9 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
             Assert.That(column.SortDirection, Is.EqualTo(SortDirection.Ascending));
 
             // index: UX_workInfo_Hash
-            index = indexes2[1];
+            index = indexes2[2];
             Assert.That(index.Name, Is.EqualTo("UX_workInfo_Hash"));
-            Assert.That(index.TableName, Is.EqualTo("WorkInfo"));
+            Assert.That(index.TableName, Is.EqualTo("workinfo"));
             Assert.That(index.IsUnique, Is.True);
             Assert.That(index.Columns, Has.Count.EqualTo(1));
 
@@ -501,12 +560,31 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
             Assert.That(column.SortDirection, Is.EqualTo(SortDirection.Ascending));
 
             // HealthInfo
-            Assert.That(indexes3, Has.Count.EqualTo(2));
+            Assert.That(indexes3, Has.Count.EqualTo(3));
+
+            // index: FK_healthInfo_Person
+            index = indexes3[0];
+            Assert.That(index.Name, Is.EqualTo("FK_healthInfo_Person"));
+            Assert.That(index.TableName, Is.EqualTo("healthinfo"));
+            Assert.That(index.IsUnique, Is.False);
+            Assert.That(index.Columns, Has.Count.EqualTo(3));
+
+            column = index.Columns[0];
+            Assert.That(column.Name, Is.EqualTo("PersonId"));
+            Assert.That(column.SortDirection, Is.EqualTo(SortDirection.Ascending));
+
+            column = index.Columns[1];
+            Assert.That(column.Name, Is.EqualTo("PersonMetaKey"));
+            Assert.That(column.SortDirection, Is.EqualTo(SortDirection.Ascending));
+
+            column = index.Columns[2];
+            Assert.That(column.Name, Is.EqualTo("PersonOrdNumber"));
+            Assert.That(column.SortDirection, Is.EqualTo(SortDirection.Ascending));
 
             // index: IX_healthInfo_metricAmetricB
-            index = indexes3[0];
+            index = indexes3[1];
             Assert.That(index.Name, Is.EqualTo("IX_healthInfo_metricAmetricB"));
-            Assert.That(index.TableName, Is.EqualTo("HealthInfo"));
+            Assert.That(index.TableName, Is.EqualTo("healthinfo"));
             Assert.That(index.IsUnique, Is.False);
             Assert.That(index.Columns, Has.Count.EqualTo(2));
 
@@ -519,9 +597,9 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
             Assert.That(column.SortDirection, Is.EqualTo(SortDirection.Descending));
 
             // index: PK_healthInfo
-            index = indexes3[1];
-            Assert.That(index.Name, Is.EqualTo("PK_healthInfo"));
-            Assert.That(index.TableName, Is.EqualTo("HealthInfo"));
+            index = indexes3[2];
+            Assert.That(index.Name, Is.EqualTo("PRIMARY"));
+            Assert.That(index.TableName, Is.EqualTo("healthinfo"));
             Assert.That(index.IsUnique, Is.True);
             Assert.That(index.Columns, Has.Count.EqualTo(1));
 
@@ -534,7 +612,10 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
         public void GetIndexes_SchemaDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbTableInspector inspector = new MySqlTableInspectorLab(this.Connection, "tab1");
+            this.Connection.CreateSchema("bad_schema");
+            var connection = TestHelper.CreateConnection("bad_schema");
+            IDbTableInspector inspector = new MySqlTableInspectorLab(connection, "tab1");
+            this.Connection.DropSchema("bad_schema");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => inspector.GetForeignKeys());
@@ -547,7 +628,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
         public void GetIndexes_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbTableInspector inspector = new MySqlTableInspectorLab(this.Connection,  "bad_table");
+            IDbTableInspector inspector = new MySqlTableInspectorLab(this.Connection, "bad_table");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => inspector.GetForeignKeys());
@@ -577,7 +658,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
 
             var primaryKey = table.PrimaryKey;
 
-            Assert.That(primaryKey.Name, Is.EqualTo("PK_healthInfo"));
+            Assert.That(primaryKey.Name, Is.EqualTo("PRIMARY"));
 
             Assert.That(primaryKey.Columns, Has.Count.EqualTo(1));
 
@@ -591,7 +672,9 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
             var columns = table.Columns;
             Assert.That(columns, Has.Count.EqualTo(9));
 
-            this.AssertColumn(columns[0], "Id", new DbTypeMoldInfo("uniqueidentifier"), false, null, null);
+            this.AssertColumn(columns[0], "Id", new DbTypeMoldInfo("char", 16), false, null, null);
+            // todo: binary
+
             this.AssertColumn(columns[1], "PersonId", new DbTypeMoldInfo("bigint"), false, null, null);
             this.AssertColumn(
                 columns[2],
@@ -601,7 +684,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
                 null,
                 null);
             this.AssertColumn(columns[3], "PersonMetaKey", new DbTypeMoldInfo("smallint"), false, null, null);
-            this.AssertColumn(columns[4], "IQ", new DbTypeMoldInfo("numeric", precision: 8, scale: 2), true, null, null);
+            this.AssertColumn(columns[4], "IQ", new DbTypeMoldInfo("decimal", precision: 8, scale: 2), true, null, null);
             this.AssertColumn(columns[5], "Temper", new DbTypeMoldInfo("smallint"), true, null, null);
             this.AssertColumn(columns[6], "PersonOrdNumber", new DbTypeMoldInfo("tinyint"), false, null, null);
             this.AssertColumn(columns[7], "MetricB", new DbTypeMoldInfo("int"), true, null, null);
@@ -626,7 +709,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
                 },
                 fk.ColumnNames);
 
-            Assert.That(fk.ReferencedTableName, Is.EqualTo("Person"));
+            Assert.That(fk.ReferencedTableName, Is.EqualTo("person"));
             CollectionAssert.AreEqual(
                 new string[]
                 {
@@ -642,16 +725,35 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
 
             var indexes = table.Indexes;
 
-            Assert.That(indexes, Has.Count.EqualTo(2));
+            Assert.That(indexes, Has.Count.EqualTo(3));
+
+            // index: FK_healthInfo_Person
+            var index = indexes[0];
+            Assert.That(index.Name, Is.EqualTo("FK_healthInfo_Person"));
+            Assert.That(index.TableName, Is.EqualTo("healthinfo"));
+            Assert.That(index.IsUnique, Is.False);
+            Assert.That(index.Columns, Has.Count.EqualTo(3));
+
+            var indexColumn = index.Columns[0];
+            Assert.That(indexColumn.Name, Is.EqualTo("PersonId"));
+            Assert.That(indexColumn.SortDirection, Is.EqualTo(SortDirection.Ascending));
+
+            indexColumn = index.Columns[1];
+            Assert.That(indexColumn.Name, Is.EqualTo("PersonMetaKey"));
+            Assert.That(indexColumn.SortDirection, Is.EqualTo(SortDirection.Ascending));
+
+            indexColumn = index.Columns[2];
+            Assert.That(indexColumn.Name, Is.EqualTo("PersonOrdNumber"));
+            Assert.That(indexColumn.SortDirection, Is.EqualTo(SortDirection.Ascending));
 
             // index: IX_healthInfo_metricAmetricB
-            var index = indexes[0];
+            index = indexes[1];
             Assert.That(index.Name, Is.EqualTo("IX_healthInfo_metricAmetricB"));
-            Assert.That(index.TableName, Is.EqualTo("HealthInfo"));
+            Assert.That(index.TableName, Is.EqualTo("healthinfo"));
             Assert.That(index.IsUnique, Is.False);
             Assert.That(index.Columns, Has.Count.EqualTo(2));
 
-            var indexColumn = index.Columns[0];
+            indexColumn = index.Columns[0];
             Assert.That(indexColumn.Name, Is.EqualTo("MetricA"));
             Assert.That(indexColumn.SortDirection, Is.EqualTo(SortDirection.Ascending));
 
@@ -660,9 +762,9 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
             Assert.That(indexColumn.SortDirection, Is.EqualTo(SortDirection.Descending));
 
             // index: PK_healthInfo
-            index = indexes[1];
-            Assert.That(index.Name, Is.EqualTo("PK_healthInfo"));
-            Assert.That(index.TableName, Is.EqualTo("HealthInfo"));
+            index = indexes[2];
+            Assert.That(index.Name, Is.EqualTo("PRIMARY"));
+            Assert.That(index.TableName, Is.EqualTo("healthinfo"));
             Assert.That(index.IsUnique, Is.True);
             Assert.That(index.Columns, Has.Count.EqualTo(1));
 
@@ -677,7 +779,10 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
         public void GetTable_SchemaDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbTableInspector inspector = new MySqlTableInspectorLab(this.Connection,  "tab1");
+            this.Connection.CreateSchema("bad_schema");
+            var connection = TestHelper.CreateConnection("bad_schema");
+            this.Connection.DropSchema("bad_schema");
+            IDbTableInspector inspector = new MySqlTableInspectorLab(connection, "tab1");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => inspector.GetTable());

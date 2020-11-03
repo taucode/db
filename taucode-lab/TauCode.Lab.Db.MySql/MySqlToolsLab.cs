@@ -12,6 +12,9 @@ namespace TauCode.Lab.Db.MySql
 {
     public static class MySqlToolsLab
     {
+        public const int DefaultBlobSize = 65535;
+        public const int DefaultTextSize = 65535;
+
         internal static readonly HashSet<string> SystemSchemata = new HashSet<string>(new[]
         {
             "mysql",
@@ -115,11 +118,14 @@ FROM
 INNER JOIN
     information_schema.referential_constraints RC
 ON
-    TC.constraint_name = RC.constraint_name
+    TC.constraint_name = RC.constraint_name AND
+    TC.table_name = RC.table_name
 INNER JOIN
     information_schema.table_constraints TC2
 ON
-    TC2.constraint_name = RC.unique_constraint_name AND TC2.constraint_type = 'PRIMARY KEY'
+    TC2.constraint_name = RC.unique_constraint_name AND
+    TC2.table_name = RC.referenced_table_name AND
+    TC2.constraint_type = 'PRIMARY KEY'
 WHERE
     TC.table_name = @p_tableName AND
     TC.constraint_type = 'FOREIGN KEY' AND
@@ -163,14 +169,15 @@ INNER JOIN
     information_schema.key_column_usage CU2
 ON
     RC.unique_constraint_name = CU2.constraint_name AND
-    CU.ordinal_position = CU2.ordinal_position
+    CU.ordinal_position = CU2.ordinal_position AND
+    CU2.table_name = @p_referencedTableName
 WHERE
     CU.constraint_name = @p_fkName AND
     CU.constraint_schema = @p_schemaName AND
     CU.table_schema = @p_schemaName AND
 
-    CU2.CONSTRAINT_SCHEMA = @p_schemaName AND
-    CU2.TABLE_SCHEMA = @p_schemaName
+    CU2.constraint_schema = @p_schemaName AND
+    CU2.table_schema = @p_schemaName
 ORDER BY
     CU.ordinal_position
 ";
@@ -179,6 +186,8 @@ ORDER BY
 
                 var fkParam = command.Parameters.Add("p_fkName", MySqlDbType.VarChar, 100);
                 var schemaParam = command.Parameters.Add("p_schemaName", MySqlDbType.VarChar, 100);
+                var referencedTableNameParam = command.Parameters.Add("p_referencedTableName", MySqlDbType.VarChar, 100);
+
                 schemaParam.Value = schemaName;
 
                 command.Prepare();
@@ -186,6 +195,7 @@ ORDER BY
                 foreach (var fk in foreignKeyMolds)
                 {
                     fkParam.Value = fk.Name;
+                    referencedTableNameParam.Value = fk.ReferencedTableName;
 
                     var rows = command.GetCommandRows();
 
@@ -232,8 +242,8 @@ ORDER BY
 
             command.Parameters.AddWithValue("p_schemaName", schemaName);
 
-            var tableNames = DbTools
-                .GetCommandRows(command)
+            var tableNames = command
+                .GetCommandRows()
                 .Select(x => (string)x.TableName)
                 .ToList();
 
@@ -354,6 +364,42 @@ ORDER BY
             }
 
             return GetSchemata(connection).Contains(schemaName); // todo optimize
+        }
+
+        public static bool TableExists(this MySqlConnection connection, string tableName)
+        {
+            if (connection == null)
+            {
+                throw new ArgumentNullException(nameof(connection));
+            }
+            
+            if (tableName == null)
+            {
+                throw new ArgumentNullException(nameof(tableName));
+            }
+
+            var schemaName = connection.GetSchemaName();
+
+            if (schemaName == null)
+            {
+                throw new ArgumentNullException(nameof(schemaName));
+            }
+
+            using var command = connection.CreateCommand();
+            command.CommandText = @"
+SELECT
+    T.table_name
+FROM
+    information_schema.tables T
+WHERE
+    T.table_schema = @p_schemaName AND
+    T.table_name = @p_tableName
+";
+            command.Parameters.AddWithValue("p_schemaName", schemaName);
+            command.Parameters.AddWithValue("p_tableName", tableName);
+
+            using var reader = command.ExecuteReader();
+            return reader.Read();
         }
     }
 }

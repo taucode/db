@@ -67,13 +67,14 @@ namespace TauCode.Lab.Db.MySql.Tests
 
         internal static IReadOnlyDictionary<string, object> LoadRow(
             MySqlConnection connection,
-            string schemaName,
             string tableName,
             object id)
         {
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(connection, schemaName, tableName);
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(connection, tableName);
             var table = tableInspector.GetTable();
             var pkColumnName = table.GetPrimaryKeySingleColumn().Name;
+
+            var schemaName = connection.GetSchema();
 
             using var command = connection.CreateCommand();
             command.CommandText = $@"
