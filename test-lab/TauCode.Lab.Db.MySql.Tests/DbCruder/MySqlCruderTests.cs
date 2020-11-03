@@ -423,7 +423,6 @@ CREATE TABLE [zeta].[SmallTable](
                 cruder.InsertRow("HealthInfo", row, x => x != "NotExisting");
                 var loadedRow = TestHelper.LoadRow(
                     this.Connection,
-                    "zeta",
                     "HealthInfo",
                     new Guid("a776fd76-f2a8-4e09-9e69-b6d08e96c075"));
 
@@ -498,7 +497,7 @@ CREATE TABLE [zeta].[SmallTable](
             cruder.InsertRow("SuperTable", row, (Func<string, bool>)(x => true));
 
             // Assert
-            var insertedRow = TestHelper.LoadRow(this.Connection, "zeta", "SuperTable", 1);
+            var insertedRow = TestHelper.LoadRow(this.Connection,  "SuperTable", 1);
 
             Assert.That(insertedRow["TheGuid"], Is.EqualTo(new Guid("8e816a5f-b97c-43df-95e9-4fbfe7172dd0")));
 
@@ -575,7 +574,7 @@ CREATE TABLE [zeta].[MyTab](
                 command.ExecuteNonQuery();
 
                 cruder.InsertRow("MyTab", row, x => false);
-                var insertedRow = TestHelper.LoadRow(this.Connection, "zeta", "MyTab", 1);
+                var insertedRow = TestHelper.LoadRow(this.Connection,  "MyTab", 1);
                 insertedRows[i] = insertedRow;
 
                 this.Connection.ExecuteSingleSql("DROP TABLE [zeta].[MyTab]");
@@ -643,7 +642,6 @@ CREATE TABLE [zeta].[MyTab](
 
                 var insertedRow = TestHelper.LoadRow(
                     this.Connection,
-                    "zeta",
                     "SmallTable",
                     lastIdentity);
 
@@ -1786,7 +1784,7 @@ Table name: SmallTable; index: 1; int: 22
                         "TheInt",
                         "TheBigInt"));
 
-                var loadedRow = TestHelper.LoadRow(this.Connection, "zeta", "SuperTable", 1);
+                var loadedRow = TestHelper.LoadRow(this.Connection, "SuperTable", 1);
                 loadedRows[i] = loadedRow;
 
                 this.Connection.ExecuteSingleSql("DROP TABLE [zeta].[SuperTable]");
@@ -1892,7 +1890,7 @@ Table name: SmallTable; index: 1; int: 22
             cruder.UpdateRow("SuperTable", update, x => x != "NotExisting");
 
             // Assert
-            var loadedRow = TestHelper.LoadRow(this.Connection, "zeta", "SuperTable", 1);
+            var loadedRow = TestHelper.LoadRow(this.Connection, "SuperTable", 1);
 
             Assert.That(loadedRow["TheGuid"], Is.EqualTo(new Guid("22222222-2222-2222-2222-222222222222")));
 
@@ -2046,7 +2044,7 @@ Table name: SmallTable; index: 1; int: 22
             cruder.UpdateRow("SuperTable", update, null);
 
             // Assert
-            var loadedRow = TestHelper.LoadRow(this.Connection, "zeta", "SuperTable", 1);
+            var loadedRow = TestHelper.LoadRow(this.Connection,  "SuperTable", 1);
 
             Assert.That(loadedRow["TheGuid"], Is.EqualTo(new Guid("22222222-2222-2222-2222-222222222222")));
 
@@ -2224,7 +2222,7 @@ Table name: SmallTable; index: 1; int: 22
             var deleted = cruder.DeleteRow("MediumTable", id);
 
             // Assert
-            var deletedRow = TestHelper.LoadRow(this.Connection, "zeta", "MediumTable", id);
+            var deletedRow = TestHelper.LoadRow(this.Connection,  "MediumTable", id);
 
             Assert.That(deleted, Is.True);
             Assert.That(deletedRow, Is.Null);

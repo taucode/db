@@ -61,13 +61,13 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
             // Arrange
 
             // Act
-            IDbTableInspector inspector = new MySqlTableInspectorLab(this.Connection, "dbo", "tab1");
+            IDbTableInspector inspector = new MySqlTableInspectorLab(this.Connection, "tab1");
 
             // Assert
             Assert.That(inspector.Connection, Is.SameAs(this.Connection));
             Assert.That(inspector.Factory, Is.SameAs(MySqlUtilityFactoryLab.Instance));
 
-            Assert.That(inspector.SchemaName, Is.EqualTo("dbo"));
+            Assert.That(inspector.SchemaName, Is.EqualTo("foo"));
             Assert.That(inspector.TableName, Is.EqualTo("tab1"));
         }
 
@@ -77,7 +77,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
             // Arrange
 
             // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => new MySqlTableInspectorLab(null, "dbo", "tab1"));
+            var ex = Assert.Throws<ArgumentNullException>(() => new MySqlTableInspectorLab(null, "tab1"));
 
             // Assert
             Assert.That(ex.ParamName, Is.EqualTo("connection"));
@@ -90,7 +90,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
             using var connection = new MySqlConnection(TestHelper.ConnectionString);
 
             // Act
-            var ex = Assert.Throws<ArgumentException>(() => new MySqlTableInspectorLab(connection, "dbo", "tab1"));
+            var ex = Assert.Throws<ArgumentException>(() => new MySqlTableInspectorLab(connection, "tab1"));
 
             // Assert
             Assert.That(ex, Has.Message.StartsWith("Connection should be opened."));
@@ -103,13 +103,13 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
             // Arrange
 
             // Act
-            IDbTableInspector inspector = new MySqlTableInspectorLab(this.Connection, null, "tab1");
+            IDbTableInspector inspector = new MySqlTableInspectorLab(this.Connection, "tab1");
 
             // Assert
             Assert.That(inspector.Connection, Is.SameAs(this.Connection));
             Assert.That(inspector.Factory, Is.SameAs(MySqlUtilityFactoryLab.Instance));
 
-            Assert.That(inspector.SchemaName, Is.EqualTo("dbo"));
+            Assert.That(inspector.SchemaName, Is.EqualTo("foo"));
             Assert.That(inspector.TableName, Is.EqualTo("tab1"));
         }
 
@@ -119,7 +119,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
             // Arrange
 
             // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => new MySqlTableInspectorLab(this.Connection, "dbo", null));
+            var ex = Assert.Throws<ArgumentNullException>(() => new MySqlTableInspectorLab(this.Connection,  null));
 
             // Assert
             Assert.That(ex.ParamName, Is.EqualTo("tableName"));
@@ -147,7 +147,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
 
             // Act
             var dictionary = tableNames
-                .Select(x => new MySqlTableInspectorLab(this.Connection, "zeta", x))
+                .Select(x => new MySqlTableInspectorLab(this.Connection, x))
                 .ToDictionary(x => x.TableName, x => x.GetColumns());
 
             // Assert
@@ -283,7 +283,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
         public void GetColumns_SchemaDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbTableInspector inspector = new MySqlTableInspectorLab(this.Connection, "bad_schema", "tab1");
+            IDbTableInspector inspector = new MySqlTableInspectorLab(this.Connection,  "tab1");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => inspector.GetColumns());
@@ -296,7 +296,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
         public void GetColumns_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbTableInspector inspector = new MySqlTableInspectorLab(this.Connection, "zeta", "bad_table");
+            IDbTableInspector inspector = new MySqlTableInspectorLab(this.Connection, "bad_table");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => inspector.GetColumns());
@@ -317,7 +317,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
 
             // Act
             var dictionary = tableNames
-                .Select(x => new MySqlTableInspectorLab(this.Connection, "zeta", x))
+                .Select(x => new MySqlTableInspectorLab(this.Connection, x))
                 .ToDictionary(x => x.TableName, x => x.GetPrimaryKey());
 
             // Assert
@@ -362,7 +362,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
         public void GetPrimaryKey_SchemaDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbTableInspector inspector = new MySqlTableInspectorLab(this.Connection, "bad_schema", "tab1");
+            IDbTableInspector inspector = new MySqlTableInspectorLab(this.Connection, "tab1");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => inspector.GetPrimaryKey());
@@ -375,7 +375,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
         public void GetPrimaryKey_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbTableInspector inspector = new MySqlTableInspectorLab(this.Connection, "zeta", "bad_table");
+            IDbTableInspector inspector = new MySqlTableInspectorLab(this.Connection, "bad_table");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => inspector.GetPrimaryKey());
@@ -392,7 +392,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
         public void GetForeignKeys_ValidInput_ReturnsForeignKeys()
         {
             // Arrange
-            IDbTableInspector inspector = new MySqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector inspector = new MySqlTableInspectorLab(this.Connection, "PersonData");
 
             // Act
             var foreignKeys = inspector.GetForeignKeys();
@@ -415,7 +415,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
         public void GetForeignKeys_SchemaDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbTableInspector inspector = new MySqlTableInspectorLab(this.Connection, "bad_schema", "tab1");
+            IDbTableInspector inspector = new MySqlTableInspectorLab(this.Connection,  "tab1");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => inspector.GetForeignKeys());
@@ -428,7 +428,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
         public void GetForeignKeys_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbTableInspector inspector = new MySqlTableInspectorLab(this.Connection, "zeta", "bad_table");
+            IDbTableInspector inspector = new MySqlTableInspectorLab(this.Connection, "bad_table");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => inspector.GetForeignKeys());
@@ -445,9 +445,9 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
         public void GetIndexes_ValidInput_ReturnsIndexes()
         {
             // Arrange
-            IDbTableInspector inspector1 = new MySqlTableInspectorLab(this.Connection, "zeta", "Person");
-            IDbTableInspector inspector2 = new MySqlTableInspectorLab(this.Connection, "zeta", "WorkInfo");
-            IDbTableInspector inspector3 = new MySqlTableInspectorLab(this.Connection, "zeta", "HealthInfo");
+            IDbTableInspector inspector1 = new MySqlTableInspectorLab(this.Connection,  "Person");
+            IDbTableInspector inspector2 = new MySqlTableInspectorLab(this.Connection,  "WorkInfo");
+            IDbTableInspector inspector3 = new MySqlTableInspectorLab(this.Connection,  "HealthInfo");
 
             // Act
             var indexes1 = inspector1.GetIndexes();
@@ -534,7 +534,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
         public void GetIndexes_SchemaDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbTableInspector inspector = new MySqlTableInspectorLab(this.Connection, "bad_schema", "tab1");
+            IDbTableInspector inspector = new MySqlTableInspectorLab(this.Connection, "tab1");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => inspector.GetForeignKeys());
@@ -547,7 +547,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
         public void GetIndexes_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbTableInspector inspector = new MySqlTableInspectorLab(this.Connection, "zeta", "bad_table");
+            IDbTableInspector inspector = new MySqlTableInspectorLab(this.Connection,  "bad_table");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => inspector.GetForeignKeys());
@@ -564,7 +564,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
         public void GetTable_ValidInput_ReturnsTable()
         {
             // Arrange
-            IDbTableInspector inspector = new MySqlTableInspectorLab(this.Connection, "zeta", "HealthInfo");
+            IDbTableInspector inspector = new MySqlTableInspectorLab(this.Connection, "HealthInfo");
 
             // Act
             var table = inspector.GetTable();
@@ -677,7 +677,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
         public void GetTable_SchemaDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbTableInspector inspector = new MySqlTableInspectorLab(this.Connection, "bad_schema", "tab1");
+            IDbTableInspector inspector = new MySqlTableInspectorLab(this.Connection,  "tab1");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => inspector.GetTable());
@@ -690,7 +690,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
         public void GetTable_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbTableInspector inspector = new MySqlTableInspectorLab(this.Connection, "zeta", "bad_table");
+            IDbTableInspector inspector = new MySqlTableInspectorLab(this.Connection, "bad_table");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => inspector.GetTable());

@@ -25,7 +25,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
         private void AssertCorruptedTableAction(Action<TableMold> action)
         {
             // Arrange
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "zeta", "HealthInfo");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection,  "HealthInfo");
             IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab("zeta");
 
             var table = tableInspector.GetTable();
@@ -396,7 +396,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
         public void BuildCreateTableScript_IncludeConstraints_ReturnsValidScript(char delimiter)
         {
             // Arrange
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "zeta", "TaxInfo");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "TaxInfo");
             var table = tableInspector.GetTable();
 
             IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab("zeta");
@@ -417,7 +417,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
             this.Connection.DropTable("zeta", "TaxInfo");
             this.Connection.ExecuteSingleSql(sql);
 
-            IDbTableInspector tableInspector2 = new MySqlTableInspectorLab(this.Connection, "zeta", "TaxInfo");
+            IDbTableInspector tableInspector2 = new MySqlTableInspectorLab(this.Connection, "TaxInfo");
             var table2 = tableInspector2.GetTable();
 
             var json = JsonConvert.SerializeObject(table);
@@ -436,7 +436,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
         public void BuildCreateTableScript_DoNotIncludeConstraints_ReturnsValidScript(char delimiter)
         {
             // Arrange
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "zeta", "TaxInfo");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection,  "TaxInfo");
             var table = tableInspector.GetTable();
 
             IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab("zeta");
@@ -494,7 +494,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
         public void BuildCreateIndexScript_UniqueIndex_ReturnsValidScript(char delimiter)
         {
             // Arrange
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "zeta", "WorkInfo");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "WorkInfo");
             var table = tableInspector.GetTable();
             var index = table.Indexes.Single(x => x.Name == "UX_workInfo_Hash");
 
@@ -527,7 +527,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
         public void BuildCreateIndexScript_NonUniqueIndex_ReturnsValidScript(char delimiter)
         {
             // Arrange
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "zeta", "HealthInfo");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "HealthInfo");
             var table = tableInspector.GetTable();
             var index = table.Indexes.Single(x => x.Name == "IX_healthInfo_metricAmetricB");
 
@@ -571,7 +571,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
         public void BuildCreateIndexScript_IndexIsCorrupted_ThrowsArgumentException()
         {
             // Arrange
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "zeta", "HealthInfo");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection,  "HealthInfo");
             var table = tableInspector.GetTable();
             var index = table.Indexes.Single(x => x.Name == "IX_healthInfo_metricAmetricB");
 
@@ -676,7 +676,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
                 CurrentOpeningIdentifierDelimiter = delimiter,
             };
 
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "zeta", "Person");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection,  "Person");
             var table = tableInspector.GetTable();
 
             var columnToParameterMappings = new Dictionary<string, string>
@@ -721,7 +721,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
                 CurrentOpeningIdentifierDelimiter = delimiter,
             };
 
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "zeta", "Person");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "Person");
             var table = tableInspector.GetTable();
 
             var columnToParameterMappings = new Dictionary<string, string>();
@@ -755,7 +755,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
                 CurrentOpeningIdentifierDelimiter = delimiter,
             };
 
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "zeta", "Person");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "Person");
             var table = tableInspector.GetTable();
 
             var columnToParameterMappings = new Dictionary<string, string>
@@ -809,7 +809,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
         {
             // Arrange
             IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab("zeta");
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "zeta", "Person");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection,  "Person");
             var table = tableInspector.GetTable();
 
             // Act
@@ -824,7 +824,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
         {
             // Arrange
             IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab("zeta");
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "zeta", "Person");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "Person");
             var table = tableInspector.GetTable();
 
             var columnToParameterMappings = new Dictionary<string, string>
@@ -868,7 +868,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
                 CurrentOpeningIdentifierDelimiter = delimiter,
             };
 
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "PersonData");
             var table = tableInspector.GetTable();
 
             var columnToParameterMappings = new Dictionary<string, string>
@@ -907,7 +907,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
             // Arrange
             IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab("zeta");
 
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection,  "PersonData");
             var table = tableInspector.GetTable();
 
             var columnToParameterMappings = new Dictionary<string, string>
@@ -965,7 +965,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
             IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab("zeta");
 
             this.Connection.ExecuteSingleSql("CREATE TABLE [zeta].[dummy](Foo int)"); // no PK
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "zeta", "dummy");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "dummy");
             var table = tableInspector.GetTable();
 
             var columnToParameterMappings = new Dictionary<string, string>
@@ -988,7 +988,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
         {
             // Arrange
             IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab("zeta");
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "zeta", "Person");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "Person");
             var table = tableInspector.GetTable();
 
             var columnToParameterMappings = new Dictionary<string, string>
@@ -1055,7 +1055,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
             // Arrange
             IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab("zeta");
 
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection,  "PersonData");
             var table = tableInspector.GetTable();
 
             // Act
@@ -1071,7 +1071,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
             // Arrange
             IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab("zeta");
 
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "PersonData");
             var table = tableInspector.GetTable();
 
             var columnToParameterMappings = new Dictionary<string, string>
@@ -1116,7 +1116,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
                 CurrentOpeningIdentifierDelimiter = delimiter,
             };
 
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "PersonData");
             var table = tableInspector.GetTable();
 
             var columns = new[]
@@ -1162,7 +1162,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
                 CurrentOpeningIdentifierDelimiter = delimiter,
             };
 
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "PersonData");
             var table = tableInspector.GetTable();
 
             // Act
@@ -1192,7 +1192,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
             IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab("zeta");
 
             this.Connection.ExecuteSingleSql("CREATE TABLE [zeta].[dummy](Foo int)"); // no PK
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "zeta", "dummy");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "dummy");
             var table = tableInspector.GetTable();
 
             // Act
@@ -1210,7 +1210,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
         {
             // Arrange
             IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab("zeta");
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "zeta", "Person");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "Person");
             var table = tableInspector.GetTable();
 
             // Act
@@ -1229,7 +1229,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
             // Arrange
             IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab("zeta");
 
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "PersonData");
             var table = tableInspector.GetTable();
 
             var columns = new[]
@@ -1258,7 +1258,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
             // Arrange
             IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab("zeta");
 
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "PersonData");
             var table = tableInspector.GetTable();
 
             // Act
@@ -1307,7 +1307,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
                 CurrentOpeningIdentifierDelimiter = delimiter,
             };
 
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "PersonData");
             var table = tableInspector.GetTable();
 
             var columns = new[]
@@ -1353,7 +1353,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
                 CurrentOpeningIdentifierDelimiter = delimiter,
             };
 
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "PersonData");
             var table = tableInspector.GetTable();
 
             // Act
@@ -1382,7 +1382,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
             // Arrange
             IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab("zeta");
 
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "PersonData");
             var table = tableInspector.GetTable();
 
             // Act
@@ -1431,9 +1431,9 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
                 CurrentOpeningIdentifierDelimiter = delimiter,
             };
 
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "PersonData");
             var table = tableInspector.GetTable();
-            
+
             // Act
             var sql = scriptBuilder.BuildDeleteByPrimaryKeyScript(table, "p_id");
 
@@ -1459,7 +1459,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
             IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab("zeta");
 
             this.Connection.ExecuteSingleSql("CREATE TABLE [zeta].[dummy](Foo int)"); // no PK
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "zeta", "dummy");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "dummy");
             var table = tableInspector.GetTable();
 
             // Act
@@ -1477,7 +1477,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
         {
             // Arrange
             IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab("zeta");
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "zeta", "Person");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection,  "Person");
             var table = tableInspector.GetTable();
 
             // Act
@@ -1496,7 +1496,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
             // Arrange
             IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab("zeta");
 
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection,  "PersonData");
             var table = tableInspector.GetTable();
 
             // Act

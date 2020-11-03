@@ -8,10 +8,12 @@ namespace TauCode.Lab.Db.MySql
 {
     public class MySqlTableInspectorLab : DbTableInspectorBase
     {
-        public MySqlTableInspectorLab(MySqlConnection connection, string schemaName, string tableName)
-            : base(connection, schemaName, tableName)
+        public MySqlTableInspectorLab(MySqlConnection connection, string tableName)
+            : base(connection, connection.GetSchemaName(), tableName)
         {
         }
+
+        protected MySqlConnection MySqlConnection => (MySqlConnection)this.Connection;
 
         public override IDbUtilityFactory Factory => MySqlUtilityFactoryLab.Instance;
 
@@ -30,11 +32,9 @@ namespace TauCode.Lab.Db.MySql
             throw new NotImplementedException();
         }
 
-        protected override bool NeedCheckSchemaExistence => throw new NotImplementedException();
-        protected override bool SchemaExists(string schemaName)
-        {
-            throw new NotImplementedException();
-        }
+        protected override bool NeedCheckSchemaExistence => true;
+
+        protected override bool SchemaExists(string schemaName) => this.MySqlConnection.SchemaExists(schemaName);
 
         protected override bool TableExists(string tableName)
         {
