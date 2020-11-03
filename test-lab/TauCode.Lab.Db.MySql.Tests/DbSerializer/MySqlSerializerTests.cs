@@ -23,7 +23,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
         {
             Inflector.Inflector.SetDefaultCultureFunc = () => new CultureInfo("en-US");
 
-            //this.Connection.CreateSchema("zeta");
+            this.Connection.CreateSchema("zeta");
 
             var sql = this.GetType().Assembly.GetResourceText("CreatePersonDb.sql", true);
             this.Connection.ExecuteCommentedScript(sql);
@@ -350,7 +350,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
         public void DeserializeDbData_ValidArguments_RunsOk()
         {
             // Arrange
-            IDbInspector dbInspector = new MySqlInspectorLab(this.Connection, "zeta");
+            IDbInspector dbInspector = new MySqlInspectorLab(this.Connection);
             dbInspector.DeleteDataFromAllTables();
 
             IDbSerializer serializer = new MySqlSerializerLab(this.Connection, "zeta");
@@ -488,7 +488,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
         public void DeserializeDbData_TablePredicateIsNull_DeserializesAll()
         {
             // Arrange
-            IDbInspector dbInspector = new MySqlInspectorLab(this.Connection, "zeta");
+            IDbInspector dbInspector = new MySqlInspectorLab(this.Connection);
             dbInspector.DeleteDataFromAllTables();
 
             IDbSerializer serializer = new MySqlSerializerLab(this.Connection, "zeta");
@@ -641,7 +641,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
         public void DeserializeDbData_TablePredicateReturnsUnknownTable_ThrowsTauDbException()
         {
             // Arrange
-            IDbInspector dbInspector = new MySqlInspectorLab(this.Connection, "zeta");
+            IDbInspector dbInspector = new MySqlInspectorLab(this.Connection);
             dbInspector.DeleteDataFromAllTables();
 
             IDbSerializer serializer = new MySqlSerializerLab(this.Connection, "zeta");

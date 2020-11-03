@@ -1,6 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using TauCode.Algorithms.Graphs;
 using TauCode.Db;
@@ -11,6 +12,77 @@ namespace TauCode.Lab.Db.MySql
 {
     public static class MySqlToolsLab
     {
+        internal static readonly HashSet<string> SystemSchemata = new HashSet<string>(new[]
+        {
+            "mysql",
+            "information_schema",
+            "performance_schema",
+        });
+
+        public static IReadOnlyList<string> GetSchemata(this MySqlConnection connection)
+        {
+            if (connection == null)
+            {
+                throw new ArgumentNullException(nameof(connection));
+            }
+
+            using var command = connection.CreateCommand();
+            command.CommandText = @"
+SELECT
+    S.schema_name SchemaName
+FROM
+    information_schema.schemata S
+";
+
+            var schemata = command
+                .GetCommandRows()
+                .Select(x => (string)x.SchemaName)
+                .Except(SystemSchemata)
+                .ToList();
+
+            return schemata;
+        }
+
+        public static string GetSchemaName(this MySqlConnection connection)
+        {
+            if (connection == null)
+            {
+                throw new ArgumentNullException(nameof(connection));
+            }
+
+            if (connection.State != ConnectionState.Open)
+            {
+                throw new ArgumentException("Connection should be opened.", nameof(connection)); // todo: exception message is copy-pasted
+            }
+
+            using var command = connection.CreateCommand();
+            command.CommandText = "SELECT SCHEMA()";
+            var schemaNameObject = command.ExecuteScalar();
+            if (schemaNameObject == DBNull.Value)
+            {
+                return null;
+            }
+
+            return (string)schemaNameObject;
+        }
+
+        public static void CreateSchema(this MySqlConnection connection, string schemaName)
+        {
+            if (connection == null)
+            {
+                throw new ArgumentNullException(nameof(connection));
+            }
+
+            if (schemaName == null)
+            {
+                throw new ArgumentNullException(nameof(schemaName));
+            }
+
+            using var command = connection.CreateCommand();
+            command.CommandText = $"CREATE SCHEMA `{schemaName}`";
+            command.ExecuteNonQuery();
+        }
+
         public static IList<ForeignKeyMold> GetTableForeignKeys(
             this MySqlConnection connection,
             string schemaName,
@@ -228,11 +300,28 @@ ORDER BY
             bool? independentFirst)
         {
             var tableNames = GetTableNames(connection, schemaName, independentFirst);
-            var inspector = new MySqlInspectorLab(connection, schemaName);
+            var inspector = new MySqlInspectorLab(connection);
 
             return tableNames
                 .Select(x => inspector.Factory.CreateTableInspector(connection, schemaName, x).GetTable())
                 .ToList();
+        }
+
+        public static void DropSchema(this MySqlConnection connection, string schemaName)
+        {
+            if (connection == null)
+            {
+                throw new ArgumentNullException(nameof(connection));
+            }
+
+            if (schemaName == null)
+            {
+                throw new ArgumentNullException(nameof(schemaName));
+            }
+
+            using var command = connection.CreateCommand();
+            command.CommandText = $"DROP SCHEMA `{schemaName}`";
+            command.ExecuteNonQuery();
         }
 
         public static void DropTable(this MySqlConnection connection, string schemaName, string tableName)
@@ -253,9 +342,18 @@ ORDER BY
             }
 
             using var command = connection.CreateCommand();
-            command.CommandText = $"DROP TABLE \"{schemaName}\".\"{tableName}\"";
+            command.CommandText = $"DROP TABLE `{schemaName}`.`{tableName}`";
             command.ExecuteNonQuery();
         }
 
+        public static bool SchemaExists(this MySqlConnection connection, string schemaName)
+        {
+            if (schemaName == null)
+            {
+                throw new ArgumentNullException(nameof(schemaName));
+            }
+
+            return GetSchemata(connection).Contains(schemaName); // todo optimize
+        }
     }
 }

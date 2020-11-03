@@ -13,7 +13,8 @@ namespace TauCode.Lab.Db.MySql
         {
         }
 
-        public override IDbUtilityFactory Factory => throw new NotImplementedException();
+        public override IDbUtilityFactory Factory => MySqlUtilityFactoryLab.Instance;
+
         protected override bool NeedCheckSchemaExistence => throw new NotImplementedException();
         protected override bool SchemaExists(string schemaName)
         {

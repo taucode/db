@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using TauCode.Db;
 
@@ -10,7 +11,7 @@ namespace TauCode.Lab.Db.MySql.Tests
     // todo clean up
     internal static class TestHelper
     {
-        internal const string ConnectionString = @"Server=.\mssqltest;Database=rho.test;Trusted_Connection=True;";
+        internal const string ConnectionString = @"Server=localhost;Database=foo;Uid=root;Pwd=1234;";
 
         internal static MySqlConnection CreateConnection()
         {
@@ -21,21 +22,28 @@ namespace TauCode.Lab.Db.MySql.Tests
 
         internal static void Purge(this MySqlConnection connection)
         {
-            //var schemata = connection.GetSchemata();
+            var schemata = connection.GetSchemata();
 
-            //foreach (var schema in schemata)
-            //{
-            //    var tableNames = connection.GetTableNames(schema, false);
-            //    foreach (var tableName in tableNames)
-            //    {
-            //        connection.DropTable(schema, tableName);
-            //    }
+            foreach (var schema in schemata)
+            {
+                var tableNames = connection.GetTableNames(schema, false);
+                foreach (var tableName in tableNames)
+                {
+                    connection.DropTable(schema, tableName);
+                }
 
-            //    if (schema != MySqlToolsLab.DefaultSchemaName)
-            //    {
-            //        connection.DropSchema(schema);
-            //    }
-            //}
+                if (schema == "foo")
+                {
+                    continue;
+                }
+
+                connection.DropSchema(schema);
+            }
+
+            if (!schemata.Contains("foo"))
+            {
+                connection.CreateSchema("foo");
+            }
         }
 
         internal static void WriteDiff(string actual, string expected, string directory, string fileExtension, string reminder)
@@ -116,6 +124,14 @@ WHERE
             command.CommandText = $"SELECT COUNT(*) FROM [{schemaName}].[{tableName}]";
             var count = (int)command.ExecuteScalar();
             return count;
+        }
+
+        internal static MySqlConnection CreateConnection(string schemaName)
+        {
+            var connectionString = $@"Server=localhost;Database={schemaName};Uid=root;Pwd=1234;";
+            var connection = new MySqlConnection(connectionString);
+            connection.Open();
+            return connection;
         }
     }
 }

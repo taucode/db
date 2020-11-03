@@ -112,7 +112,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbMigrator
         public void Migrate_ValidInput_RunsOk()
         {
             // Arrange
-            //this.Connection.CreateSchema("zeta");
+            this.Connection.CreateSchema("zeta");
 
             var migrator = new MySqlJsonMigratorLab(
                 this.Connection,
@@ -266,7 +266,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbMigrator
         public void Migrate_TablePredicateIsNull_MigratesAll()
         {
             // Arrange
-            //this.Connection.CreateSchema("zeta");
+            this.Connection.CreateSchema("zeta");
 
             var migrator = new MySqlJsonMigratorLab(
                 this.Connection,
@@ -433,7 +433,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbMigrator
         public void Migrate_SchemaDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            //this.Connection.CreateSchema("zeta");
+            this.Connection.CreateSchema("zeta");
 
             var migrator = new MySqlJsonMigratorLab(
                 this.Connection,

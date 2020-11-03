@@ -21,28 +21,28 @@ namespace TauCode.Lab.Db.MySql.Tests.DbInspector
             // Arrange
 
             // Act
-            IDbInspector inspector = new MySqlInspectorLab(this.Connection, "dbo");
+            IDbInspector inspector = new MySqlInspectorLab(this.Connection);
 
             // Assert
             Assert.That(inspector.Connection, Is.SameAs(this.Connection));
             Assert.That(inspector.Factory, Is.SameAs(MySqlUtilityFactoryLab.Instance));
 
-            Assert.That(inspector.SchemaName, Is.EqualTo("dbo"));
+            Assert.That(inspector.SchemaName, Is.EqualTo("foo"));
         }
 
         [Test]
-        public void Constructor_SchemaIsNull_RunsOkAndSchemaIsDbo()
+        public void Constructor_SchemaIsNull_RunsOkAndSchemaIsFoo()
         {
             // Arrange
 
             // Act
-            IDbInspector inspector = new MySqlInspectorLab(this.Connection, null);
+            IDbInspector inspector = new MySqlInspectorLab(this.Connection);
 
             // Assert
             Assert.That(inspector.Connection, Is.SameAs(this.Connection));
             Assert.That(inspector.Factory, Is.SameAs(MySqlUtilityFactoryLab.Instance));
 
-            Assert.That(inspector.SchemaName, Is.EqualTo("dbo"));
+            Assert.That(inspector.SchemaName, Is.EqualTo("foo"));
         }
 
         [Test]
@@ -51,7 +51,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbInspector
             // Arrange
 
             // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => new MySqlInspectorLab(null, "dbo"));
+            var ex = Assert.Throws<ArgumentNullException>(() => new MySqlInspectorLab(null));
             
             // Assert
             Assert.That(ex.ParamName, Is.EqualTo("connection"));
@@ -64,7 +64,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbInspector
             using var connection = new MySqlConnection(TestHelper.ConnectionString);
 
             // Act
-            var ex = Assert.Throws<ArgumentException>(() => new MySqlInspectorLab(connection, "dbo"));
+            var ex = Assert.Throws<ArgumentException>(() => new MySqlInspectorLab(connection));
 
             // Assert
             Assert.That(ex, Has.Message.StartsWith("Connection should be opened."));
@@ -79,11 +79,11 @@ namespace TauCode.Lab.Db.MySql.Tests.DbInspector
         public void GetSchemaNames_NoArguments_ReturnsSchemaNames()
         {
             // Arrange
-            //this.Connection.CreateSchema("zeta");
-            //this.Connection.CreateSchema("hello");
-            //this.Connection.CreateSchema("HangFire");
+            this.Connection.CreateSchema("zeta");
+            this.Connection.CreateSchema("hello");
+            this.Connection.CreateSchema("HangFire");
 
-            IDbInspector inspector = new MySqlInspectorLab(this.Connection, "dbo");
+            IDbInspector inspector = new MySqlInspectorLab(this.Connection);
 
             // Act
             var schemaNames = inspector.GetSchemaNames();
@@ -92,8 +92,8 @@ namespace TauCode.Lab.Db.MySql.Tests.DbInspector
             CollectionAssert.AreEqual(
                 new []
                 {
-                    "dbo",
-                    "HangFire",
+                    "foo",
+                    "hangfire",
                     "hello",
                     "zeta",
                 },
@@ -108,22 +108,22 @@ namespace TauCode.Lab.Db.MySql.Tests.DbInspector
         public void GetTableNames_ExistingSchema_ReturnsTableNames()
         {
             // Arrange
-            //this.Connection.CreateSchema("zeta");
+            this.Connection.CreateSchema("zeta");
 
             this.Connection.ExecuteSingleSql(@"
-CREATE TABLE [zeta].[tab2]([id] int PRIMARY KEY)
+CREATE TABLE `zeta`.`tab2`(`id` int PRIMARY KEY)
 ");
 
             this.Connection.ExecuteSingleSql(@"
-CREATE TABLE [zeta].[tab1]([id] int PRIMARY KEY)
+CREATE TABLE `zeta`.`tab1`(`id` int PRIMARY KEY)
 ");
 
             this.Connection.ExecuteSingleSql(@"
-CREATE TABLE [dbo].[tab3]([id] int PRIMARY KEY)
+CREATE TABLE `foo`.`tab3`(`id` int PRIMARY KEY)
 ");
+            using var connection = TestHelper.CreateConnection("zeta");
 
-
-            IDbInspector inspector = new MySqlInspectorLab(this.Connection, "zeta");
+            IDbInspector inspector = new MySqlInspectorLab(connection);
 
             // Act
             var tableNames = inspector.GetTableNames();
@@ -142,21 +142,25 @@ CREATE TABLE [dbo].[tab3]([id] int PRIMARY KEY)
         public void GetTableNames_NonExistingSchema_ReturnsEmptyList()
         {
             // Arrange
-            //this.Connection.CreateSchema("zeta");
+            this.Connection.CreateSchema("zeta");
+            this.Connection.CreateSchema("kappa");
 
             this.Connection.ExecuteSingleSql(@"
-CREATE TABLE [zeta].[tab2]([id] int PRIMARY KEY)
+CREATE TABLE `zeta`.`tab2`(`id` int PRIMARY KEY)
 ");
 
             this.Connection.ExecuteSingleSql(@"
-CREATE TABLE [zeta].[tab1]([id] int PRIMARY KEY)
+CREATE TABLE `zeta`.`tab1`(`id` int PRIMARY KEY)
 ");
 
             this.Connection.ExecuteSingleSql(@"
-CREATE TABLE [dbo].[tab3]([id] int PRIMARY KEY)
+CREATE TABLE `foo`.`tab3`(`id` int PRIMARY KEY)
 ");
 
-            IDbInspector inspector = new MySqlInspectorLab(this.Connection, "kappa");
+            using var connection = TestHelper.CreateConnection("kappa");
+            this.Connection.DropSchema("kappa");
+
+            IDbInspector inspector = new MySqlInspectorLab(connection);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => inspector.GetTableNames());

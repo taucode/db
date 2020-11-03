@@ -22,7 +22,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbCruder
         {
             Inflector.Inflector.SetDefaultCultureFunc = () => new CultureInfo("en-US");
 
-            //this.Connection.CreateSchema("zeta");
+            this.Connection.CreateSchema("zeta");
 
             var sql = this.GetType().Assembly.GetResourceText("crebase.sql", true);
             this.Connection.ExecuteCommentedScript(sql);
@@ -219,7 +219,7 @@ CREATE TABLE [zeta].[SmallTable](
         #region Constructor
 
         [Test]
-        [TestCase("dbo")]
+        [TestCase("foo")]
         [TestCase(null)]
         public void Constructor_ValidArguments_RunsOk(string schemaName)
         {
@@ -231,7 +231,7 @@ CREATE TABLE [zeta].[SmallTable](
             // Assert
             Assert.That(cruder.Connection, Is.SameAs(this.Connection));
             Assert.That(cruder.Factory, Is.SameAs(MySqlUtilityFactoryLab.Instance));
-            Assert.That(cruder.SchemaName, Is.EqualTo("dbo"));
+            Assert.That(cruder.SchemaName, Is.EqualTo("foo"));
             Assert.That(cruder.ScriptBuilder, Is.TypeOf<MySqlScriptBuilderLab>());
             Assert.That(cruder.RowInsertedCallback, Is.Null);
         }
@@ -242,7 +242,7 @@ CREATE TABLE [zeta].[SmallTable](
             // Arrange
 
             // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => new MySqlCruderLab(null, "dbo"));
+            var ex = Assert.Throws<ArgumentNullException>(() => new MySqlCruderLab(null, "foo"));
 
             // Assert
             Assert.That(ex.ParamName, Is.EqualTo("connection"));
@@ -255,7 +255,7 @@ CREATE TABLE [zeta].[SmallTable](
             using var connection = new MySqlConnection(TestHelper.ConnectionString);
 
             // Act
-            var ex = Assert.Throws<ArgumentException>(() => new MySqlCruderLab(connection, "dbo"));
+            var ex = Assert.Throws<ArgumentException>(() => new MySqlCruderLab(connection, "foo"));
 
             // Assert
             Assert.That(ex.ParamName, Is.EqualTo("connection"));

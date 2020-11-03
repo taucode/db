@@ -1,31 +1,27 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
 using System.Collections.Generic;
-using System.Data;
 using TauCode.Db;
 
 namespace TauCode.Lab.Db.MySql
 {
     public class MySqlInspectorLab : DbInspectorBase
     {
-        public MySqlInspectorLab(IDbConnection connection, string schemaName) : base(connection, schemaName)
+        public MySqlInspectorLab(MySqlConnection connection)
+            : base(connection, connection.GetSchemaName())
         {
         }
 
-        public override IDbUtilityFactory Factory => throw new NotImplementedException();
-        protected override IReadOnlyList<string> GetTableNamesImpl(string schemaName)
-        {
-            throw new NotImplementedException();
-        }
+        protected MySqlConnection MySqlConnection => (MySqlConnection)this.Connection;
 
-        protected override HashSet<string> GetSystemSchemata()
-        {
-            throw new NotImplementedException();
-        }
+        public override IDbUtilityFactory Factory => MySqlUtilityFactoryLab.Instance;
 
-        protected override bool NeedCheckSchemaExistence => throw new NotImplementedException();
-        protected override bool SchemaExists(string schemaName)
-        {
-            throw new NotImplementedException();
-        }
+        protected override IReadOnlyList<string> GetTableNamesImpl(string schemaName) =>
+            this.MySqlConnection.GetTableNames(this.SchemaName, null);
+
+        protected override HashSet<string> GetSystemSchemata() => MySqlToolsLab.SystemSchemata;
+
+        protected override bool NeedCheckSchemaExistence => true;
+
+        protected override bool SchemaExists(string schemaName) => this.MySqlConnection.SchemaExists(schemaName);
     }
 }

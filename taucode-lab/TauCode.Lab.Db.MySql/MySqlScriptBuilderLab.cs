@@ -1,5 +1,4 @@
-﻿using System;
-using TauCode.Db;
+﻿using TauCode.Db;
 
 namespace TauCode.Lab.Db.MySql
 {
@@ -9,6 +8,6 @@ namespace TauCode.Lab.Db.MySql
         {
         }
 
-        public override IDbUtilityFactory Factory => throw new NotImplementedException();
+        public override IDbUtilityFactory Factory => MySqlUtilityFactoryLab.Instance;
     }
 }

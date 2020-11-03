@@ -16,7 +16,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
         [SetUp]
         public void SetUp()
         {
-            //this.Connection.CreateSchema("zeta");
+            this.Connection.CreateSchema("zeta");
 
             var sql = this.GetType().Assembly.GetResourceText("crebase.sql", true);
             this.Connection.ExecuteCommentedScript(sql);
