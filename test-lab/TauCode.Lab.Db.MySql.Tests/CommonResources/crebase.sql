@@ -36,7 +36,7 @@ CREATE TABLE `zeta`.`Person`(
 
 /*** PersonData ***/
 CREATE TABLE `zeta`.`PersonData`(
-	`Id` char(16) binary NOT NULL,
+	`Id` char(16) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
 	`Height` int NULL,
 	`Photo` blob NULL,
 	`EnglishDescription` text CHARACTER SET ascii NOT NULL,
@@ -50,7 +50,7 @@ CREATE TABLE `zeta`.`PersonData`(
 
 /*** WorkInfo ***/
 CREATE TABLE `zeta`.`WorkInfo`(
-	`Id` char(16) binary NOT NULL,
+	`Id` char(16) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
 	`Position` varchar(20) CHARACTER SET ascii NOT NULL,
 	`HireDate` datetime NOT NULL,
 	`Code` char(3) CHARACTER SET ascii NULL,
@@ -58,7 +58,7 @@ CREATE TABLE `zeta`.`WorkInfo`(
 	`DigitalSignature` binary(16) NOT NULL,
 	`PersonId` bigint NOT NULL,
 	`PersonOrdNumber` tinyint NOT NULL,
-	`Hash` char(16) binary NOT NULL,
+	`Hash` char(16) binary CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
 	`Salary` decimal(13, 4) NULL,
 	`VaryingSignature` varbinary(100) NULL,
 	CONSTRAINT `PK_workInfo` PRIMARY KEY (`Id`),
@@ -70,7 +70,7 @@ CREATE UNIQUE INDEX `UX_workInfo_Hash` ON `zeta`.`WorkInfo`(`Hash`)
 
 /*** TaxInfo ***/
 CREATE TABLE `zeta`.`TaxInfo`(
-	`Id` char(16) binary NOT NULL,
+	`Id` char(16) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
 	`PersonId` bigint NOT NULL,
 	`Tax` decimal(13, 4) NOT NULL,
 	`Ratio` real NULL,
@@ -85,7 +85,7 @@ CREATE TABLE `zeta`.`TaxInfo`(
 
 /*** HealthInfo ***/
 CREATE TABLE `zeta`.`HealthInfo`(
-	`Id` char(16) binary NOT NULL,
+	`Id` char(16) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
 	`PersonId` bigint NOT NULL,
 	`Weight` decimal(8, 2) NOT NULL,
 	`PersonMetaKey` smallint NOT NULL,
@@ -118,7 +118,7 @@ CREATE TABLE `zeta`.`NumericData`(
 
 /*** DateData ***/
 CREATE TABLE `zeta`.`DateData`(
-	`Id` char(16) binary NOT NULL,
+	`Id` char(16) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
 	`Moment` datetime NULL,
 	CONSTRAINT `PK_dateData` PRIMARY KEY (`Id`)
 )

@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using TauCode.Db;
 using TauCode.Db.Exceptions;
@@ -165,16 +166,20 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
             this.AssertColumn(columns[2], "Id", new DbTypeMoldInfo("bigint"), false, null, null);
 
             this.AssertColumn(columns[3], "FirstName", new DbTypeMoldInfo("varchar", size: 100), false, null, null);
-            // todo: char set
+            Assert.That(columns[3].Properties["character_set_name"], Is.EqualTo("utf8mb4"));
+            Assert.That(columns[3].Properties["collation_name"], Is.EqualTo("utf8mb4_0900_ai_ci"));
+
 
             this.AssertColumn(columns[4], "LastName", new DbTypeMoldInfo("varchar", size: 100), false, null, null);
-            // todo: char set
+            Assert.That(columns[4].Properties["character_set_name"], Is.EqualTo("utf8mb4"));
+            Assert.That(columns[4].Properties["collation_name"], Is.EqualTo("utf8mb4_0900_ai_ci"));
 
             this.AssertColumn(columns[5], "Birthday", new DbTypeMoldInfo("date"), false, null, null);
             this.AssertColumn(columns[6], "Gender", new DbTypeMoldInfo("tinyint"), true, null, null);
 
             this.AssertColumn(columns[7], "Initials", new DbTypeMoldInfo("char", size: 2), true, null, null);
-            // todo: char set
+            Assert.That(columns[7].Properties["character_set_name"], Is.EqualTo("utf8mb4"));
+            Assert.That(columns[7].Properties["collation_name"], Is.EqualTo("utf8mb4_0900_ai_ci"));
 
             #endregion
 
@@ -184,17 +189,20 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
             Assert.That(columns, Has.Count.EqualTo(8));
 
             this.AssertColumn(columns[0], "Id", new DbTypeMoldInfo("char", 16), false, null, null);
-            // todo: binary
+            Assert.That(columns[0].Properties["character_set_name"], Is.EqualTo("ascii"));
+            Assert.That(columns[0].Properties["collation_name"], Is.EqualTo("ascii_bin"));
 
             this.AssertColumn(columns[1], "Height", new DbTypeMoldInfo("int"), true, null, null);
-            this.AssertColumn(columns[2], "Photo", new DbTypeMoldInfo("blob", size: MySqlToolsLab.DefaultBlobSize), true, null, null);
-            this.AssertColumn(columns[3], "EnglishDescription", new DbTypeMoldInfo("text", size: MySqlToolsLab.DefaultTextSize), false, null,
+            this.AssertColumn(columns[2], "Photo", new DbTypeMoldInfo("blob"), true, null, null);
+            this.AssertColumn(columns[3], "EnglishDescription", new DbTypeMoldInfo("text"), false, null,
                 null);
-            // todo: char set
+            Assert.That(columns[3].Properties["character_set_name"], Is.EqualTo("ascii"));
+            Assert.That(columns[3].Properties["collation_name"], Is.EqualTo("ascii_general_ci"));
 
-            this.AssertColumn(columns[4], "UnicodeDescription", new DbTypeMoldInfo("text", size: MySqlToolsLab.DefaultTextSize), false, null,
+            this.AssertColumn(columns[4], "UnicodeDescription", new DbTypeMoldInfo("text"), false, null,
                 null);
-            // todo: char set
+            Assert.That(columns[4].Properties["character_set_name"], Is.EqualTo("utf8mb4"));
+            Assert.That(columns[4].Properties["collation_name"], Is.EqualTo("utf8mb4_0900_ai_ci"));
 
             this.AssertColumn(columns[5], "PersonMetaKey", new DbTypeMoldInfo("smallint"), false, null, null);
             this.AssertColumn(columns[6], "PersonOrdNumber", new DbTypeMoldInfo("tinyint"), false, null, null);
@@ -208,15 +216,18 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
             Assert.That(columns, Has.Count.EqualTo(11));
 
             this.AssertColumn(columns[0], "Id", new DbTypeMoldInfo("char", 16), false, null, null);
-            // todo: binary
+            Assert.That(columns[0].Properties["character_set_name"], Is.EqualTo("ascii"));
+            Assert.That(columns[0].Properties["collation_name"], Is.EqualTo("ascii_bin"));
 
             this.AssertColumn(columns[1], "Position", new DbTypeMoldInfo("varchar", size: 20), false, null, null);
-            // todo: char set
+            Assert.That(columns[1].Properties["character_set_name"], Is.EqualTo("ascii"));
+            Assert.That(columns[1].Properties["collation_name"], Is.EqualTo("ascii_general_ci"));
 
             this.AssertColumn(columns[2], "HireDate", new DbTypeMoldInfo("datetime"), false, null, null);
 
             this.AssertColumn(columns[3], "Code", new DbTypeMoldInfo("char", size: 3), true, null, null);
-            // todo: char set
+            Assert.That(columns[3].Properties["character_set_name"], Is.EqualTo("ascii"));
+            Assert.That(columns[3].Properties["collation_name"], Is.EqualTo("ascii_general_ci"));
 
             this.AssertColumn(columns[4], "PersonMetaKey", new DbTypeMoldInfo("smallint"), false, null, null);
             this.AssertColumn(columns[5], "DigitalSignature", new DbTypeMoldInfo("binary", size: 16), false, null,
@@ -225,7 +236,8 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
             this.AssertColumn(columns[7], "PersonOrdNumber", new DbTypeMoldInfo("tinyint"), false, null, null);
 
             this.AssertColumn(columns[8], "Hash", new DbTypeMoldInfo("char", 16), false, null, null);
-            // todo: binary
+            Assert.That(columns[8].Properties["character_set_name"], Is.EqualTo("ascii"));
+            Assert.That(columns[8].Properties["collation_name"], Is.EqualTo("ascii_bin"));
 
             this.AssertColumn(columns[9], "Salary", new DbTypeMoldInfo("decimal", null, 13, 4), true, null, null);
             this.AssertColumn(columns[10], "VaryingSignature", new DbTypeMoldInfo("varbinary", size: 100), true, null,
@@ -239,7 +251,8 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
             Assert.That(columns, Has.Count.EqualTo(10));
 
             this.AssertColumn(columns[0], "Id", new DbTypeMoldInfo("char", 16), false, null, null);
-            // todo: binary
+            Assert.That(columns[0].Properties["character_set_name"], Is.EqualTo("ascii"));
+            Assert.That(columns[0].Properties["collation_name"], Is.EqualTo("ascii_bin"));
 
             this.AssertColumn(columns[1], "PersonId", new DbTypeMoldInfo("bigint"), false, null, null);
             this.AssertColumn(columns[2], "Tax", new DbTypeMoldInfo("decimal", null, 13, 4), false, null, null);
@@ -307,6 +320,173 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
             this.AssertColumn(columns[1], "Moment", new DbTypeMoldInfo("datetime"), true, null, null);
 
             #endregion
+        }
+
+        [Test]
+        public void GetColumns_AllTypes_ReturnsColumns()
+        {
+            // Arrange
+            this.Connection.Purge();
+            this.Connection.CreateSchema("zeta");
+
+            var sql = this.GetType().Assembly.GetResourceText("SuperTable.sql", true);
+            this.Connection.ExecuteSingleSql(sql);
+            var connection = TestHelper.CreateConnection("zeta");
+            var tableInspector = new MySqlTableInspectorLab(connection, "supertable");
+
+            // Act
+            var columns = tableInspector.GetColumns();
+
+
+            // Assert
+
+            Assert.That(columns, Has.Count.EqualTo(35));
+
+            // TheInt
+            this.AssertColumn(columns[0], "TheInt", new DbTypeMoldInfo("int"), false, new ColumnIdentityMoldInfo("1", "1"), null);
+            Assert.That(columns[0].Properties, Is.Empty);
+
+            // TheIntUnsigned
+            this.AssertColumn(columns[1], "TheIntUnsigned", new DbTypeMoldInfo("int"), true, null, null);
+            Assert.That(columns[1].Properties["unsigned"], Is.EqualTo("true"));
+
+            // TheBit
+            this.AssertColumn(columns[2], "TheBit", new DbTypeMoldInfo("bit", precision: 1), true, null, null);
+            Assert.That(columns[2].Properties, Is.Empty);
+
+            // TheBit9
+            this.AssertColumn(columns[3], "TheBit9", new DbTypeMoldInfo("bit", precision: 9), true, null, null);
+            Assert.That(columns[3].Properties, Is.Empty);
+
+            // TheTinyInt
+            this.AssertColumn(columns[4], "TheTinyInt", new DbTypeMoldInfo("tinyint"), true, null, null);
+            Assert.That(columns[4].Properties, Is.Empty);
+
+            // TheTinyIntUnsigned
+            this.AssertColumn(columns[5], "TheTinyIntUnsigned", new DbTypeMoldInfo("tinyint"), true, null, null);
+            Assert.That(columns[5].Properties["unsigned"], Is.EqualTo("true"));
+
+            // TheBool
+            this.AssertColumn(columns[6], "TheBool", new DbTypeMoldInfo("tinyint"), true, null, null);
+            Assert.That(columns[6].Properties, Is.Empty);
+
+            // TheBoolean
+            this.AssertColumn(columns[7], "TheBoolean", new DbTypeMoldInfo("tinyint"), true, null, null);
+            Assert.That(columns[7].Properties, Is.Empty);
+
+            // TheSmallInt
+            this.AssertColumn(columns[8], "TheSmallInt", new DbTypeMoldInfo("smallint"), true, null, null);
+            Assert.That(columns[8].Properties, Is.Empty);
+
+            // TheSmallIntUnsigned
+            this.AssertColumn(columns[9], "TheSmallIntUnsigned", new DbTypeMoldInfo("smallint"), true, null, null);
+            Assert.That(columns[9].Properties["unsigned"], Is.EqualTo("true"));
+
+            // TheMediumInt
+            this.AssertColumn(columns[10], "TheMediumInt", new DbTypeMoldInfo("mediumint"), true, null, null);
+            Assert.That(columns[10].Properties, Is.Empty);
+
+            // TheMediumIntUnsigned
+            this.AssertColumn(columns[11], "TheMediumIntUnsigned", new DbTypeMoldInfo("mediumint"), true, null, null);
+            Assert.That(columns[11].Properties["unsigned"], Is.EqualTo("true"));
+
+            // TheBigInt
+            this.AssertColumn(columns[12], "TheBigInt", new DbTypeMoldInfo("bigint"), true, null, null);
+            Assert.That(columns[12].Properties, Is.Empty);
+
+            // TheBigIntUnsigned
+            this.AssertColumn(columns[13], "TheBigIntUnsigned", new DbTypeMoldInfo("bigint"), true, null, null);
+            Assert.That(columns[13].Properties["unsigned"], Is.EqualTo("true"));
+
+            // TheDecimal
+            this.AssertColumn(columns[14], "TheDecimal", new DbTypeMoldInfo("decimal", null, 8, 2), true, null, null);
+            Assert.That(columns[14].Properties, Is.Empty);
+
+            // TheNumeric
+            this.AssertColumn(columns[15], "TheNumeric", new DbTypeMoldInfo("decimal", null, 10, 3), true, null, null);
+            Assert.That(columns[15].Properties, Is.Empty);
+
+            // TheFloat
+            this.AssertColumn(columns[16], "TheFloat", new DbTypeMoldInfo("float"), true, null, null);
+            Assert.That(columns[16].Properties, Is.Empty);
+
+            // TheDouble
+            this.AssertColumn(columns[17], "TheDouble", new DbTypeMoldInfo("double"), true, null, null);
+            Assert.That(columns[17].Properties, Is.Empty);
+
+            // TheDate
+            this.AssertColumn(columns[18], "TheDate", new DbTypeMoldInfo("date"), true, null, null);
+            Assert.That(columns[18].Properties, Is.Empty);
+
+            // TheDateTime
+            this.AssertColumn(columns[19], "TheDateTime", new DbTypeMoldInfo("datetime"), true, null, null);
+            Assert.That(columns[19].Properties, Is.Empty);
+
+            // TheTimeStamp
+            this.AssertColumn(columns[20], "TheTimeStamp", new DbTypeMoldInfo("timestamp"), true, null, null);
+            Assert.That(columns[20].Properties, Is.Empty);
+
+            // TheTime
+            this.AssertColumn(columns[21], "TheTime", new DbTypeMoldInfo("time"), true, null, null);
+            Assert.That(columns[21].Properties, Is.Empty);
+
+            // TheYear
+            this.AssertColumn(columns[22], "TheYear", new DbTypeMoldInfo("year"), true, null, null);
+            Assert.That(columns[22].Properties, Is.Empty);
+
+            // TheChar
+            this.AssertColumn(columns[23], "TheChar", new DbTypeMoldInfo("char", 100), true, null, null);
+            Assert.That(columns[23].Properties["character_set_name"], Is.EqualTo("ascii"));
+            Assert.That(columns[23].Properties["collation_name"], Is.EqualTo("ascii_general_ci"));
+
+            // TheVarChar
+            this.AssertColumn(columns[24], "TheVarChar", new DbTypeMoldInfo("varchar", 100), true, null, null);
+            Assert.That(columns[24].Properties["character_set_name"], Is.EqualTo("utf8mb4"));
+            Assert.That(columns[24].Properties["collation_name"], Is.EqualTo("utf8mb4_0900_ai_ci"));
+
+            // TheBinary
+            this.AssertColumn(columns[25], "TheBinary", new DbTypeMoldInfo("binary", 10), true, null, null);
+            Assert.That(columns[25].Properties, Is.Empty);
+
+            // TheVarBinary
+            this.AssertColumn(columns[26], "TheVarBinary", new DbTypeMoldInfo("varbinary", 20), true, null, null);
+            Assert.That(columns[26].Properties, Is.Empty);
+
+            // TheTinyText
+            this.AssertColumn(columns[27], "TheTinyText", new DbTypeMoldInfo("tinytext"), true, null, null);
+            Assert.That(columns[27].Properties["character_set_name"], Is.EqualTo("ascii"));
+            Assert.That(columns[27].Properties["collation_name"], Is.EqualTo("ascii_general_ci"));
+
+            // TheText
+            this.AssertColumn(columns[28], "TheText", new DbTypeMoldInfo("text"), true, null, null);
+            Assert.That(columns[28].Properties["character_set_name"], Is.EqualTo("utf8mb4"));
+            Assert.That(columns[28].Properties["collation_name"], Is.EqualTo("utf8mb4_0900_ai_ci"));
+
+            // TheMediumText
+            this.AssertColumn(columns[29], "TheMediumText", new DbTypeMoldInfo("mediumtext"), true, null, null);
+            Assert.That(columns[29].Properties["character_set_name"], Is.EqualTo("ascii"));
+            Assert.That(columns[29].Properties["collation_name"], Is.EqualTo("ascii_general_ci"));
+
+            // TheLongText
+            this.AssertColumn(columns[30], "TheLongText", new DbTypeMoldInfo("longtext"), true, null, null);
+            Assert.That(columns[30].Properties["character_set_name"], Is.EqualTo("utf8mb4"));
+            Assert.That(columns[30].Properties["collation_name"], Is.EqualTo("utf8mb4_0900_ai_ci"));
+
+            // TheTinyBlob
+            this.AssertColumn(columns[31], "TheTinyBlob", new DbTypeMoldInfo("tinyblob"), true, null, null);
+            Assert.That(columns[31].Properties, Is.Empty);
+
+            // TheBlob
+            this.AssertColumn(columns[32], "TheBlob", new DbTypeMoldInfo("blob"), true, null, null);
+            Assert.That(columns[32].Properties, Is.Empty);
+
+            // TheMediumBlob
+            this.AssertColumn(columns[33], "TheMediumBlob", new DbTypeMoldInfo("mediumblob"), true, null, null);
+            Assert.That(columns[33].Properties, Is.Empty);
+
+            // TheLongBlob
+            this.AssertColumn(columns[34], "TheLongBlob", new DbTypeMoldInfo("longblob"), true, null, null);
+            Assert.That(columns[34].Properties, Is.Empty);
         }
 
         [Test]

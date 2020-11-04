@@ -1,39 +1,49 @@
-CREATE TABLE [zeta].[SuperTable](
-	[Id] int NOT NULL PRIMARY KEY IDENTITY(1, 1),
+CREATE TABLE `zeta`.`SuperTable`(
+	`TheInt` int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	`TheIntUnsigned` int unsigned NULL,
 
-	[TheGuid] uniqueidentifier NULL,
+	`TheBit` bit NULL,
+	`TheBit9` bit (9) NULL,
 
-	[TheBit] bit NULL,
+	`TheTinyInt` tinyint NULL,
+	`TheTinyIntUnsigned` tinyint unsigned NULL,
 
-	[TheTinyInt] tinyint NULL,
-	[TheSmallInt] smallint NULL,
-	[TheInt] int NULL,
-	[TheBigInt] bigint NULL,
+	`TheBool` bool NULL,
+	`TheBoolean` boolean NULL,
 
-	[TheDecimal] decimal(10, 2) NULL,
-	[TheNumeric] decimal(10, 2) NULL,
+	`TheSmallInt` smallint NULL,
+	`TheSmallIntUnsigned` smallint unsigned NULL,
+	
+	`TheMediumInt` mediumint NULL,
+	`TheMediumIntUnsigned` mediumint unsigned NULL,
 
-	[TheSmallMoney] smallmoney NULL,
-	[TheMoney] money NULL,
+	`TheBigInt` bigint NULL,
+	`TheBigIntUnsigned` bigint unsigned NULL,
 
-	[TheReal] real NULL,
-	[TheFloat] float NULL,
+	`TheDecimal` decimal(8, 2) NULL,
+	`TheNumeric` numeric(10, 3) NULL,
 
-	[TheDate] date NULL,
-	[TheDateTime] datetime NULL,
-	[TheDateTime2] datetime2 NULL,
-	[TheDateTimeOffset] datetimeoffset NULL,
-	[TheSmallDateTime] smalldatetime NULL,
-	[TheTime] time NULL,
+	`TheFloat` float NULL,
+	`TheDouble` double NULL,
 
-	[TheChar] char(10) NULL,
-	[TheVarChar] varchar(100) NULL,
-	[TheVarCharMax] varchar(max) NULL,
+	`TheDate` date NULL,
+	`TheDateTime` datetime NULL,
+	`TheTimeStamp` timestamp NULL,
+	`TheTime` time NULL,
+	`TheYear` year NULL,
 
-	[TheNChar] nchar(10) NULL,
-	[TheNVarChar] nvarchar(100) NULL,
-	[TheNVarCharMax] nvarchar(max) NULL,
+	`TheChar` char(100) CHARACTER SET ascii COLLATE ascii_general_ci NULL,
+	`TheVarChar` varchar(100) CHARACTER SET utf8mb4 NULL,
 
-	[TheBinary] binary(4) NULL,
-	[TheVarBinary] varbinary(1000) NULL,
-	[TheVarBinaryMax] varbinary(max) NULL)
+	`TheBinary` binary(10) NULL,
+	`TheVarBinary` varbinary(20) NULL,
+
+	`TheTinyText` tinytext CHARACTER SET ascii COLLATE ascii_general_ci NULL,
+	`TheText` text CHARACTER SET utf8mb4 NULL,
+	`TheMediumText` mediumtext CHARACTER SET ascii COLLATE ascii_general_ci NULL,
+	`TheLongText` longtext CHARACTER SET utf8mb4 NULL,
+
+	`TheTinyBlob` tinyblob NULL,
+	`TheBlob` blob NULL,
+	`TheMediumBlob` mediumblob NULL,
+	`TheLongBlob` longblob NULL)

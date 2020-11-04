@@ -4,6 +4,10 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
 {
     public class ColumnIdentityMoldInfo : IEquatable<ColumnIdentityMoldInfo>
     {
+        public ColumnIdentityMoldInfo()
+        {   
+        }
+
         public ColumnIdentityMoldInfo(string seed, string increment)
         {
             this.Seed = seed;

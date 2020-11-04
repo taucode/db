@@ -10,6 +10,7 @@ using TauCode.Extensions;
 namespace TauCode.Lab.Db.MySql
 {
     // todo: a lot of copy-paste
+    // todo clean up
     public class MySqlTableInspectorLab : DbTableInspectorBase
     {
         public MySqlTableInspectorLab(MySqlConnection connection, string tableName)
@@ -32,7 +33,10 @@ SELECT
     C.data_type                 DataType,
     C.character_maximum_length  MaxLen,
     C.numeric_precision         NumericPrecision,
-    C.numeric_scale             NumericScale
+    C.numeric_scale             NumericScale,
+    C.character_set_name        CharacterSetName,
+    C.collation_name            CollationName,
+    C.column_type               ColumnType
 FROM
     information_schema.columns C
 WHERE
@@ -45,19 +49,39 @@ ORDER BY
             command.AddParameterWithValue("p_tableName", this.TableName);
             command.AddParameterWithValue("p_schema", this.SchemaName);
 
-            var columnInfos = command
-                .GetCommandRows()
-                .Select(x => new ColumnInfo
-                {
-                    Name = x.ColumnName,
-                    TypeName = x.DataType,
-                    IsNullable = ParseBoolean(x.IsNullable),
-                    Size = GetDbValueAsInt(x.MaxLen),
-                    Precision = GetDbValueAsInt(x.NumericPrecision),
-                    Scale = GetDbValueAsInt(x.NumericScale),
-                })
-                .ToList();
+            var rows = command.GetCommandRows();
+            var columnInfos = new List<ColumnInfo>();
 
+            foreach (var row in rows)
+            {
+                var columnInfo = new ColumnInfo
+                {
+                    Name = row.ColumnName,
+                    TypeName = row.DataType,
+                    IsNullable = ParseBoolean(row.IsNullable),
+                    Size = GetDbValueAsInt(row.MaxLen),
+                    Precision = GetDbValueAsInt(row.NumericPrecision),
+                    Scale = GetDbValueAsInt(row.NumericScale),
+                };
+
+                if (row.CharacterSetName != null)
+                {
+                    columnInfo.AdditionalProperties["character_set_name"] = (string)row.CharacterSetName;
+                }
+
+                if (row.CollationName != null)
+                {
+                    columnInfo.AdditionalProperties["collation_name"] = (string)row.CollationName;
+                }
+
+                if (((string)row.ColumnType).EndsWith(" unsigned"))
+                {
+                    columnInfo.AdditionalProperties["unsigned"] = "true";
+                }
+
+                columnInfos.Add(columnInfo);
+            }
+            
             return columnInfos;
         }
 
@@ -100,7 +124,13 @@ ORDER BY
                 return null;
             }
 
-            return int.Parse(dbValue.ToString());
+            var longValue = long.Parse(dbValue.ToString());
+            if (longValue > int.MaxValue)
+            {
+                return null;
+            }
+
+            return (int)longValue;
         }
 
         protected override ColumnMold ColumnInfoToColumnMold(ColumnInfo columnInfo)
@@ -119,9 +149,22 @@ ORDER BY
             };
 
             if (column.Type.Name.IsIn(
+                "tinytext",
+                "text",
+                "mediumtext",
+
+                "tinyblob",
+                "blob",
+                "mediumblob"))
+            {
+                column.Type.Size = null;
+            }
+
+            if (column.Type.Name.IsIn(
                 "tinyint",
                 "smallint",
                 "int",
+                "mediumint",
                 "bigint",
                 "float",
                 "double"))
@@ -129,6 +172,8 @@ ORDER BY
                 column.Type.Precision = null;
                 column.Type.Scale = null;
             }
+
+            column.Properties = columnInfo.AdditionalProperties;
 
             return column;
         }

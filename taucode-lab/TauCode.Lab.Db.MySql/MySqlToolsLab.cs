@@ -12,9 +12,6 @@ namespace TauCode.Lab.Db.MySql
 {
     public static class MySqlToolsLab
     {
-        public const int DefaultBlobSize = 65535;
-        public const int DefaultTextSize = 65535;
-
         internal static readonly HashSet<string> SystemSchemata = new HashSet<string>(new[]
         {
             "mysql",
