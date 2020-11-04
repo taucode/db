@@ -1,41 +1,50 @@
 Data types to cover
 ===================
 
-+uniqueidentifier
+bit
+bit(n)
 
-+bit
+tinyint
+tinyint unsigned
 
-+tinyint
-+smallint
-+int
-+bigint
+bool
+boolean
 
-+decimal
-+numeric
+smallint
+smallint unsigned
 
-+smallmoney
-+money
+mediumint
+mediumint unsigned
 
-+real    (.NET float)
-+float   (.NET double)
+int
+int unsigned
 
-+date
-+datetime
-+datetime2
-+datetimeoffset
-+smalldatetime
-+time
+bigint
+bigint unsigned
 
-+char
-+varchar
--text        (deprecated) (use varchar(max))
+decimal
 
-+nchar
-+nvarchar
--ntext       (deprecated) (use nvarchar(max))
+float               (C# Single)
+double              (C# Double)
 
-+binary
-+varbinary
--image       (deprecated) (use varbinary(max))
+date
+datetime
+timestamp
+year
 
+char
+varchar
+
+binary
+varbinary
+
+tinytext
+text
+mediumtext
+longtext
+
+tinyblob
+blob
+mediumblob
+longblob
 
