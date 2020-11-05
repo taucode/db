@@ -11,6 +11,9 @@ using TauCode.Extensions;
 
 namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
 {
+    // todo: all types (supertable), check returned column types
+    // todo: MySqlGuidDbValueConverter
+
     [TestFixture]
     public class MySqlTableInspectorTests : TestBase
     {
@@ -18,6 +21,8 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
         public void SetUp()
         {
             this.Connection.CreateSchema("zeta");
+
+            this.Connection.Dispose();
             this.Connection = TestHelper.CreateConnection("zeta");
 
             var sql = this.GetType().Assembly.GetResourceText("crebase.sql", true);
@@ -330,7 +335,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
 
             var sql = this.GetType().Assembly.GetResourceText("SuperTable.sql", true);
             this.Connection.ExecuteSingleSql(sql);
-            var connection = TestHelper.CreateConnection("zeta");
+            using var connection = TestHelper.CreateConnection("zeta");
             var tableInspector = new MySqlTableInspectorLab(connection, "supertable");
 
             // Act
@@ -493,7 +498,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
         {
             // Arrange
             this.Connection.CreateSchema("bad_schema");
-            var connection = TestHelper.CreateConnection("bad_schema");
+            using var connection = TestHelper.CreateConnection("bad_schema");
             this.Connection.DropSchema("bad_schema");
 
             IDbTableInspector inspector = new MySqlTableInspectorLab(connection, "tab1");
@@ -576,7 +581,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
         {
             // Arrange
             this.Connection.CreateSchema("bad_schema");
-            var connection = TestHelper.CreateConnection("bad_schema");
+            using var connection = TestHelper.CreateConnection("bad_schema");
             this.Connection.DropSchema("bad_schema");
             IDbTableInspector inspector = new MySqlTableInspectorLab(connection, "tab1");
 
@@ -632,7 +637,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
         {
             // Arrange
             this.Connection.CreateSchema("bad_schema");
-            var connection = TestHelper.CreateConnection("bad_schema");
+            using var connection = TestHelper.CreateConnection("bad_schema");
             this.Connection.DropSchema("bad_schema");
             IDbTableInspector inspector = new MySqlTableInspectorLab(connection, "tab1");
 
@@ -792,7 +797,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
         {
             // Arrange
             this.Connection.CreateSchema("bad_schema");
-            var connection = TestHelper.CreateConnection("bad_schema");
+            using var connection = TestHelper.CreateConnection("bad_schema");
             IDbTableInspector inspector = new MySqlTableInspectorLab(connection, "tab1");
             this.Connection.DropSchema("bad_schema");
 
@@ -959,7 +964,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
         {
             // Arrange
             this.Connection.CreateSchema("bad_schema");
-            var connection = TestHelper.CreateConnection("bad_schema");
+            using var connection = TestHelper.CreateConnection("bad_schema");
             this.Connection.DropSchema("bad_schema");
             IDbTableInspector inspector = new MySqlTableInspectorLab(connection, "tab1");
 

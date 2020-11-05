@@ -193,11 +193,11 @@ VALUES(
         private void CreateMediumTable()
         {
             var sql = @"
-CREATE TABLE [zeta].[MediumTable](
-    [Id] int NOT NULL PRIMARY KEY,
+CREATE TABLE `zeta`.`MediumTable`(
+    `Id` int NOT NULL PRIMARY KEY,
 
-    [TheInt] int NULL DEFAULT 1599,
-    [TheNVarChar] nvarchar(100) NULL DEFAULT 'Semmi')
+    `TheInt` int NULL DEFAULT 1599,
+    `TheNVarChar` nvarchar(100) NULL DEFAULT 'Semmi')
 ";
 
             this.Connection.ExecuteSingleSql(sql);
@@ -226,7 +226,7 @@ CREATE TABLE [zeta].[SmallTable](
             // Arrange
 
             // Act
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, schemaName);
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Assert
             Assert.That(cruder.Connection, Is.SameAs(this.Connection));
@@ -242,7 +242,7 @@ CREATE TABLE [zeta].[SmallTable](
             // Arrange
 
             // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => new MySqlCruderLab(null, "foo"));
+            var ex = Assert.Throws<ArgumentNullException>(() => new MySqlCruderLab(null));
 
             // Assert
             Assert.That(ex.ParamName, Is.EqualTo("connection"));
@@ -255,7 +255,7 @@ CREATE TABLE [zeta].[SmallTable](
             using var connection = new MySqlConnection(TestHelper.ConnectionString);
 
             // Act
-            var ex = Assert.Throws<ArgumentException>(() => new MySqlCruderLab(connection, "foo"));
+            var ex = Assert.Throws<ArgumentException>(() => new MySqlCruderLab(connection));
 
             // Assert
             Assert.That(ex.ParamName, Is.EqualTo("connection"));
@@ -270,7 +270,7 @@ CREATE TABLE [zeta].[SmallTable](
         public void GetTableValuesConverter_ValidArgument_ReturnsProperConverter()
         {
             // Arrange
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var converter = cruder.GetTableValuesConverter("PersonData");
@@ -284,7 +284,7 @@ CREATE TABLE [zeta].[SmallTable](
         public void GetTableValuesConverter_ArgumentIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => cruder.GetTableValuesConverter(null));
@@ -297,7 +297,7 @@ CREATE TABLE [zeta].[SmallTable](
         public void GetTableValuesConverter_NotExistingSchema_ThrowsTauDbException()
         {
             // Arrange
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "bad_schema");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => cruder.GetTableValuesConverter("some_table"));
@@ -310,7 +310,7 @@ CREATE TABLE [zeta].[SmallTable](
         public void GetTableValuesConverter_NotExistingTable_ThrowsTauDbException()
         {
             // Arrange
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => cruder.GetTableValuesConverter("bad_table"));
@@ -321,18 +321,18 @@ CREATE TABLE [zeta].[SmallTable](
 
         #endregion
 
-        #region ResetTableValuesConverters
+        #region ResetTables
 
         [Test]
-        public void ResetTableValuesConverters_NoArguments_RunsOk()
+        public void ResetTables_NoArguments_RunsOk()
         {
             // Arrange
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
             cruder.GetTableValuesConverter("PersonData").SetColumnConverter("Id", new StringValueConverter());
             var oldDbValueConverter = cruder.GetTableValuesConverter("PersonData").GetColumnConverter("Id");
 
             // Act
-            cruder.ResetTableValuesConverters();
+            cruder.ResetTables();
             var resetDbValueConverter = cruder.GetTableValuesConverter("PersonData").GetColumnConverter("Id");
 
             // Assert
@@ -414,7 +414,7 @@ CREATE TABLE [zeta].[SmallTable](
 
             this.Connection.ExecuteSingleSql("ALTER TABLE [zeta].[HealthInfo] DROP CONSTRAINT [FK_healthInfo_Person]");
 
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             for (var i = 0; i < rows.Length; i++)
@@ -451,7 +451,7 @@ CREATE TABLE [zeta].[SmallTable](
             // Arrange
             this.CreateSuperTable();
 
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             dynamic row = new DynamicRow(new
             {
@@ -555,7 +555,7 @@ CREATE TABLE [zeta].[SmallTable](
 
             var insertedRows = new IReadOnlyDictionary<string, object>[rows.Length];
 
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             using var command = this.Connection.CreateCommand();
@@ -630,7 +630,7 @@ CREATE TABLE [zeta].[MyTab](
             };
 
             IReadOnlyDictionary<string, object>[] insertedRows = new IReadOnlyDictionary<string, object>[rows.Length];
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             for (var i = 0; i < rows.Length; i++)
@@ -671,7 +671,7 @@ CREATE TABLE [zeta].[MyTab](
                 NotExisting = 100,
             };
 
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => cruder.InsertRow("SmallTable", row));
@@ -684,7 +684,7 @@ CREATE TABLE [zeta].[MyTab](
         public void InsertRow_SchemaDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "bad_schema");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => cruder.InsertRow("some_table", new object()));
@@ -697,7 +697,7 @@ CREATE TABLE [zeta].[MyTab](
         public void InsertRow_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => cruder.InsertRow("bad_table", new object()));
@@ -710,7 +710,7 @@ CREATE TABLE [zeta].[MyTab](
         public void InsertRow_TableNameIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => cruder.InsertRow(null, new object(), x => true));
@@ -723,7 +723,7 @@ CREATE TABLE [zeta].[MyTab](
         public void InsertRow_RowIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => cruder.InsertRow("HealthInfo", null, x => true));
@@ -737,7 +737,7 @@ CREATE TABLE [zeta].[MyTab](
         {
             // Arrange
             this.CreateSuperTable();
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
             var row = new
             {
                 TheGuid = DBNull.Value,
@@ -824,7 +824,7 @@ CREATE TABLE [zeta].[MyTab](
 
             this.Connection.ExecuteSingleSql("ALTER TABLE [zeta].[HealthInfo] DROP CONSTRAINT [FK_healthInfo_Person]");
 
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             cruder.InsertRows("HealthInfo", rows, x => x != "NotExisting");
@@ -870,7 +870,7 @@ ORDER BY
                 row3,
             };
 
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             cruder.InsertRows("SmallTable", rows, x => false);
@@ -915,7 +915,7 @@ ORDER BY
 
             var rows = new[] { row1, row2 };
 
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             cruder.InsertRows("SmallTable", rows, x => false);
@@ -961,7 +961,7 @@ ORDER BY
 
             var rows = new[] { row1, row2 };
 
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             cruder.InsertRows("SmallTable", rows);
@@ -977,7 +977,7 @@ ORDER BY
     [Id]
 ";
 
-            var loadedRows = DbTools.GetCommandRows(command);
+            var loadedRows = command.GetCommandRows();
             Assert.That(loadedRows, Has.Count.EqualTo(2));
 
             var loadedRow = loadedRows[0];
@@ -1011,7 +1011,7 @@ ORDER BY
 
             var rows = new[] { row1, row2 };
 
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => cruder.InsertRows("SmallTable", rows, x => true));
@@ -1038,7 +1038,7 @@ ORDER BY
 
             var rows = new object[] { row1, row2 };
 
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentException>(() => cruder.InsertRows("SmallTable", rows, x => true));
@@ -1051,7 +1051,7 @@ ORDER BY
         public void InsertRows_SchemaDoesNotExist_TauDbException()
         {
             // Arrange
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "bad_schema");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => cruder.InsertRows("some_table", new object[] { }));
@@ -1064,7 +1064,7 @@ ORDER BY
         public void InsertRows_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => cruder.InsertRows("bad_table", new object[] { }));
@@ -1077,7 +1077,7 @@ ORDER BY
         public void InsertRows_TableNameIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => cruder.InsertRows(null, new object[] { }));
@@ -1090,7 +1090,7 @@ ORDER BY
         public void InsertRows_RowsIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => cruder.InsertRows("HealthInfo", null));
@@ -1111,7 +1111,7 @@ ORDER BY
                 null,
             };
 
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentException>(() => cruder.InsertRows("SmallTable", rows));
@@ -1139,7 +1139,7 @@ ORDER BY
                 },
             };
 
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => cruder.InsertRows("SmallTable", rows));
@@ -1160,7 +1160,7 @@ ORDER BY
             // Arrange
             this.CreateSmallTable();
 
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
             var sb1 = new StringBuilder();
 
             // Act
@@ -1191,7 +1191,7 @@ ORDER BY
             // Arrange
             this.CreateSmallTable();
 
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
             var sb1 = new StringBuilder();
 
             // Act
@@ -1213,7 +1213,7 @@ ORDER BY
             // Arrange
             this.CreateSmallTable();
 
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
             var sb1 = new StringBuilder();
 
             // Act
@@ -1253,7 +1253,7 @@ Table name: SmallTable; index: 1; int: 22
             // Arrange
             this.CreateSuperTable();
 
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             dynamic row = new DynamicRow(new
             {
@@ -1316,7 +1316,7 @@ Table name: SmallTable; index: 1; int: 22
             // Arrange
             this.CreateSuperTable();
 
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             dynamic row = new DynamicRow(new
             {
@@ -1409,7 +1409,7 @@ Table name: SmallTable; index: 1; int: 22
             // Arrange
             this.CreateSuperTable();
 
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             dynamic row = new DynamicRow(new
             {
@@ -1500,7 +1500,7 @@ Table name: SmallTable; index: 1; int: 22
         public void GetRow_SchemaDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "bad_schema");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => cruder.GetRow("some_table", 1));
@@ -1513,7 +1513,7 @@ Table name: SmallTable; index: 1; int: 22
         public void GetRow_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => cruder.GetRow("bad_table", 1));
@@ -1526,7 +1526,7 @@ Table name: SmallTable; index: 1; int: 22
         public void GetRow_TableNameIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => cruder.GetRow(null, 1));
@@ -1539,7 +1539,7 @@ Table name: SmallTable; index: 1; int: 22
         public void GetRow_IdIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => cruder.GetRow("some_table", null));
@@ -1554,7 +1554,7 @@ Table name: SmallTable; index: 1; int: 22
         {
             // Arrange
             this.Connection.ExecuteSingleSql("CREATE TABLE [zeta].[dummy](Foo int)"); // no PK
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentException>((() => cruder.GetRow("dummy", 1)));
@@ -1568,7 +1568,7 @@ Table name: SmallTable; index: 1; int: 22
         public void GetRow_TablePrimaryKeyIsMultiColumn_ThrowsArgumentException()
         {
             // Arrange
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentException>((() => cruder.GetRow("Person", "the_id")));
@@ -1583,7 +1583,7 @@ Table name: SmallTable; index: 1; int: 22
         public void GetRow_IdNotFound_ReturnsNull()
         {
             // Arrange
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
             const int nonExistingId = 133;
 
             // Act
@@ -1597,7 +1597,7 @@ Table name: SmallTable; index: 1; int: 22
         public void GetRow_SelectorIsFalser_ArgumentException()
         {
             // Arrange
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentException>(() => cruder.GetRow("NumericData", 111, x => false));
@@ -1618,7 +1618,7 @@ Table name: SmallTable; index: 1; int: 22
             var insertSql = this.GetType().Assembly.GetResourceText("InsertRows.sql", true);
             this.Connection.ExecuteCommentedScript(insertSql);
 
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var rows = cruder.GetAllRows("DateData", x => x == "Moment");
@@ -1640,7 +1640,7 @@ Table name: SmallTable; index: 1; int: 22
             var insertSql = this.GetType().Assembly.GetResourceText("InsertRows.sql", true);
             this.Connection.ExecuteCommentedScript(insertSql);
 
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var rows = cruder.GetAllRows("DateData", x => true);
@@ -1659,20 +1659,31 @@ Table name: SmallTable; index: 1; int: 22
         public void GetAllRows_SchemaDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "bad_schema");
+            this.Connection.CreateSchema("bad_schema");
+
+            this.Connection.Dispose();
+            this.Connection = TestHelper.CreateConnection("bad_schema");
+            this.Connection.ExecuteSingleSql("CREATE TABLE some_table(id int PRIMARY KEY)");
+
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
+            var dummy = cruder.GetTableValuesConverter("some_table");
+            this.Connection.DropSchema("bad_schema");
 
             // Act
-            var ex = Assert.Throws<TauDbException>(() => cruder.GetAllRows("some_table"));
+            var ex = Assert.Throws<MySqlException>(() => cruder.GetAllRows("some_table"));
 
             // Assert
-            Assert.That(ex.Message, Is.EqualTo("Schema 'bad_schema' does not exist."));
+            Assert.That(ex.Message, Is.EqualTo("Unknown database 'bad_schema'"));
         }
 
         [Test]
         public void GetAllRows_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            this.Connection.Dispose();
+            this.Connection = TestHelper.CreateConnection("zeta");
+
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => cruder.GetAllRows("bad_table"));
@@ -1685,7 +1696,7 @@ Table name: SmallTable; index: 1; int: 22
         public void GetAllRows_TableNameIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => cruder.GetAllRows(null));
@@ -1698,7 +1709,10 @@ Table name: SmallTable; index: 1; int: 22
         public void GetAllRows_SelectorIsFalser_ThrowsArgumentException()
         {
             // Arrange
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            this.Connection.Dispose();
+            this.Connection = TestHelper.CreateConnection("zeta");
+
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentException>(() => cruder.GetAllRows("HealthInfo", x => false));
@@ -1766,7 +1780,7 @@ Table name: SmallTable; index: 1; int: 22
 
             var loadedRows = new IReadOnlyDictionary<string, object>[updates.Length];
 
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             for (var i = 0; i < updates.Length; i++)
@@ -1884,7 +1898,7 @@ Table name: SmallTable; index: 1; int: 22
                 NotExisting = 777,
             };
 
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             cruder.UpdateRow("SuperTable", update, x => x != "NotExisting");
@@ -1934,7 +1948,7 @@ Table name: SmallTable; index: 1; int: 22
         public void UpdateRow_SchemaDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "bad_schema");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => cruder.UpdateRow("some_table", new { Id = 1, Name = 2 }));
@@ -1947,7 +1961,7 @@ Table name: SmallTable; index: 1; int: 22
         public void UpdateRow_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => cruder.UpdateRow("bad_table", new { Id = 1, Name = 2 }));
@@ -1960,7 +1974,7 @@ Table name: SmallTable; index: 1; int: 22
         public void UpdateRow_TableNameIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() =>
@@ -1974,7 +1988,7 @@ Table name: SmallTable; index: 1; int: 22
         public void UpdateRow_RowUpdateIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() =>
@@ -2038,7 +2052,7 @@ Table name: SmallTable; index: 1; int: 22
             var update = new DynamicRow(updateMold);
             update.DeleteValue("NotExisting");
 
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             cruder.UpdateRow("SuperTable", update, null);
@@ -2096,7 +2110,7 @@ Table name: SmallTable; index: 1; int: 22
                 TheGuid = new Guid("22222222-2222-2222-2222-222222222222"),
             };
 
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentException>(() => cruder.UpdateRow("SuperTable", update));
@@ -2118,7 +2132,7 @@ Table name: SmallTable; index: 1; int: 22
                 Id = 1,
             };
 
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentException>(() => cruder.UpdateRow("SuperTable", update));
@@ -2141,7 +2155,7 @@ Table name: SmallTable; index: 1; int: 22
                 TheGuid = Guid.NewGuid(),
             };
 
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentException>(() => cruder.UpdateRow("SuperTable", update));
@@ -2164,7 +2178,7 @@ Table name: SmallTable; index: 1; int: 22
                 NotExisting = 7,
             };
 
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => cruder.UpdateRow("SuperTable", update));
@@ -2179,7 +2193,7 @@ Table name: SmallTable; index: 1; int: 22
         {
             // Arrange
             this.Connection.ExecuteSingleSql("CREATE TABLE [zeta].[dummy](Foo int)"); // no PK
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentException>((() => cruder.UpdateRow("dummy", new { Foo = 1 })));
@@ -2193,7 +2207,7 @@ Table name: SmallTable; index: 1; int: 22
         public void UpdateRow_TablePrimaryKeyIsMultiColumn_ThrowsArgumentException()
         {
             // Arrange
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentException>((() => cruder.UpdateRow("Person", new { Key = 3 })));
@@ -2213,10 +2227,14 @@ Table name: SmallTable; index: 1; int: 22
         {
             // Arrange
             this.CreateMediumTable();
-            const int id = 1;
-            this.Connection.ExecuteSingleSql($"INSERT INTO [zeta].[MediumTable]([Id]) VALUES ({id})");
 
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            this.Connection.Dispose();
+            this.Connection = TestHelper.CreateConnection("zeta");
+
+            const int id = 1;
+            this.Connection.ExecuteSingleSql($"INSERT INTO `zeta`.`MediumTable`(`Id`) VALUES ({id})");
+
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var deleted = cruder.DeleteRow("MediumTable", id);
@@ -2233,7 +2251,11 @@ Table name: SmallTable; index: 1; int: 22
         {
             // Arrange
             this.CreateMediumTable();
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+
+            this.Connection.Dispose();
+            this.Connection = TestHelper.CreateConnection("zeta");
+            
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
             var notExistingId = 11;
 
             // Act
@@ -2247,20 +2269,31 @@ Table name: SmallTable; index: 1; int: 22
         public void DeleteRow_SchemaDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "bad_schema");
+            this.Connection.CreateSchema("bad_schema");
+
+            this.Connection.Dispose();
+            this.Connection = TestHelper.CreateConnection("bad_schema");
+            this.Connection.ExecuteSingleSql("CREATE TABLE some_table(id int PRIMARY KEY)");
+
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
+            var dummy = cruder.GetTableValuesConverter("some_table");
+            this.Connection.DropSchema("bad_schema");
 
             // Act
-            var ex = Assert.Throws<TauDbException>(() => cruder.DeleteRow("some_table", 17));
+            var ex = Assert.Throws<MySqlException>(() => cruder.DeleteRow("some_table", 17));
 
             // Assert
-            Assert.That(ex.Message, Is.EqualTo("Schema 'bad_schema' does not exist."));
+            Assert.That(ex.Message, Is.EqualTo("Unknown database 'bad_schema'"));
         }
 
         [Test]
         public void DeleteRow_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            this.Connection.Dispose();
+            this.Connection = TestHelper.CreateConnection("zeta");
+
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => cruder.DeleteRow("bad_table", 17));
@@ -2273,7 +2306,7 @@ Table name: SmallTable; index: 1; int: 22
         public void DeleteRow_TableNameIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => cruder.DeleteRow(null, 11));
@@ -2286,7 +2319,7 @@ Table name: SmallTable; index: 1; int: 22
         public void DeleteRow_IdIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => cruder.DeleteRow("MediumTable", null));
@@ -2299,8 +2332,13 @@ Table name: SmallTable; index: 1; int: 22
         public void DeleteRow_TableHasNoPrimaryKey_ThrowsArgumentException()
         {
             // Arrange
-            this.Connection.ExecuteSingleSql("CREATE TABLE [zeta].[dummy](Foo int)"); // no PK
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            this.Connection.ExecuteSingleSql("CREATE TABLE `zeta`.`dummy`(Foo int)"); // no PK
+
+
+            this.Connection.Dispose();
+            this.Connection = TestHelper.CreateConnection("zeta");
+
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentException>((() => cruder.DeleteRow("dummy", 1)));
@@ -2314,7 +2352,10 @@ Table name: SmallTable; index: 1; int: 22
         public void DeleteRow_PrimaryKeyIsMultiColumn_ThrowsArgumentException()
         {
             // Arrange
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            this.Connection.Dispose();
+            this.Connection = TestHelper.CreateConnection("zeta");
+
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
 
             // Act
 

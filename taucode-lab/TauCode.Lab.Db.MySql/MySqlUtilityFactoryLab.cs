@@ -4,6 +4,7 @@ using TauCode.Db;
 
 namespace TauCode.Lab.Db.MySql
 {
+    // todo: schema_name must be null, check & ut it.
     public class MySqlUtilityFactoryLab : IDbUtilityFactory
     {
         public static MySqlUtilityFactoryLab Instance { get; } = new MySqlUtilityFactoryLab();
@@ -25,7 +26,7 @@ namespace TauCode.Lab.Db.MySql
             new MySqlTableInspectorLab((MySqlConnection) connection, tableName);
 
         public IDbCruder CreateCruder(IDbConnection connection, string schemaName) =>
-            new MySqlCruderLab((MySqlConnection) connection, "todo");
+            new MySqlCruderLab((MySqlConnection) connection);
 
         public IDbSerializer CreateSerializer(IDbConnection connection, string schemaName) =>
             new MySqlSerializerLab((MySqlConnection) connection, "todo");

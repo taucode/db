@@ -8,7 +8,7 @@ namespace TauCode.Db
         string SchemaName { get; }
         IDbScriptBuilder ScriptBuilder { get; }
         IDbTableValuesConverter GetTableValuesConverter(string tableName);
-        void ResetTableValuesConverters();
+        void ResetTables();
         void InsertRow(string tableName, object row, Func<string, bool> propertySelector = null);
         void InsertRows(string tableName, IReadOnlyList<object> rows, Func<string, bool> propertySelector = null);
         Action<string, object, int> RowInsertedCallback { get; set; }

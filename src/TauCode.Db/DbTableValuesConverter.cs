@@ -49,8 +49,10 @@ namespace TauCode.Db
             {
                 _dbValueConverters[columnName] = dbValueConverter;
             }
-
-            else throw new ArgumentException($"Column '{columnName}' does not exist.");
+            else
+            {
+                throw new ArgumentException($"Column '{columnName}' does not exist.");
+            }
         }
     }
 }

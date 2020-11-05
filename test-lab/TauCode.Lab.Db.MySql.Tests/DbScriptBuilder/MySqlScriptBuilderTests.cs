@@ -21,6 +21,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
             var sql = this.GetType().Assembly.GetResourceText("crebase.sql", true);
             this.Connection.ExecuteCommentedScript(sql);
 
+            this.Connection.Dispose();
             this.Connection = TestHelper.CreateConnection("zeta");
         }
 
@@ -460,7 +461,10 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
             this.Connection.CreateSchema("zeta");
             var sql = this.GetType().Assembly.GetResourceText("SuperTable.sql", true);
             this.Connection.ExecuteSingleSql(sql);
+
+            this.Connection.Dispose();
             this.Connection = TestHelper.CreateConnection("zeta");
+
             IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "SuperTable");
             var tableMold = tableInspector.GetTable();
 

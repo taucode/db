@@ -369,7 +369,7 @@ ORDER BY
             {
                 throw new ArgumentNullException(nameof(connection));
             }
-            
+
             if (tableName == null)
             {
                 throw new ArgumentNullException(nameof(tableName));
@@ -397,6 +397,11 @@ WHERE
 
             using var reader = command.ExecuteReader();
             return reader.Read();
+        }
+
+        internal static string SafeGetValue(this IDictionary<string, string> dictionary, string key)
+        {
+            return ((Dictionary<string, string>)dictionary).GetValueOrDefault(key);
         }
     }
 }

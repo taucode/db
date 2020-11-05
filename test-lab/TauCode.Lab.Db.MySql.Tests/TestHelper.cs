@@ -15,7 +15,7 @@ namespace TauCode.Lab.Db.MySql.Tests
 
         internal static MySqlConnection CreateConnection()
         {
-            var connection = new MySqlConnection(ConnectionString);
+            using var connection = new MySqlConnection(ConnectionString);
             connection.Open();
             return connection;
         }
@@ -74,16 +74,16 @@ namespace TauCode.Lab.Db.MySql.Tests
             var table = tableInspector.GetTable();
             var pkColumnName = table.GetPrimaryKeySingleColumn().Name;
 
-            var schemaName = connection.GetSchema();
+            var schemaName = connection.GetSchemaName();
 
             using var command = connection.CreateCommand();
             command.CommandText = $@"
 SELECT
     *
 FROM
-    [{schemaName}].[{tableName}]
+    `{schemaName}`.`{tableName}`
 WHERE
-    [{pkColumnName}] = @p_id
+    `{pkColumnName}` = @p_id
 ";
             command.Parameters.AddWithValue("p_id", id);
             using var reader = command.ExecuteReader();

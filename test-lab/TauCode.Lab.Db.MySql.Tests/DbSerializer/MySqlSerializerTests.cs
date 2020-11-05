@@ -251,7 +251,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
                 });
 
             // Assert
-            IDbCruder cruder = new MySqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new MySqlCruderLab(this.Connection);
             var persons = cruder.GetAllRows("Person");
 
             Assert.That(persons, Has.Count.EqualTo(2));

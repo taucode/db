@@ -321,10 +321,10 @@ CREATE TABLE [zeta].[SmallTable](
 
         #endregion
 
-        #region ResetTableValuesConverters
+        #region ResetTables
 
         [Test]
-        public void ResetTableValuesConverters_NoArguments_RunsOk()
+        public void ResetTables_NoArguments_RunsOk()
         {
             // Arrange
             IDbCruder cruder = new SqlCruderLab(this.Connection, "zeta");
@@ -332,7 +332,7 @@ CREATE TABLE [zeta].[SmallTable](
             var oldDbValueConverter = cruder.GetTableValuesConverter("PersonData").GetColumnConverter("Id");
 
             // Act
-            cruder.ResetTableValuesConverters();
+            cruder.ResetTables();
             var resetDbValueConverter = cruder.GetTableValuesConverter("PersonData").GetColumnConverter("Id");
 
             // Assert
