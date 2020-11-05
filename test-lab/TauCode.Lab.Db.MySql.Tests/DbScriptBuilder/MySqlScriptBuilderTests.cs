@@ -20,12 +20,14 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
 
             var sql = this.GetType().Assembly.GetResourceText("crebase.sql", true);
             this.Connection.ExecuteCommentedScript(sql);
+
+            this.Connection = TestHelper.CreateConnection("zeta");
         }
 
         private void AssertCorruptedTableAction(Action<TableMold> action)
         {
             // Arrange
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection,  "HealthInfo");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "HealthInfo");
             IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab("zeta");
 
             var table = tableInspector.GetTable();
@@ -329,13 +331,13 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
             // Arrange
 
             // Act
-            IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab("dbo");
+            IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab("zeta");
 
             // Assert
             Assert.That(scriptBuilder.Connection, Is.Null);
             Assert.That(scriptBuilder.Factory, Is.EqualTo(MySqlUtilityFactoryLab.Instance));
-            Assert.That(scriptBuilder.SchemaName, Is.EqualTo("dbo"));
-            Assert.That(scriptBuilder.CurrentOpeningIdentifierDelimiter, Is.EqualTo('['));
+            Assert.That(scriptBuilder.SchemaName, Is.EqualTo("zeta"));
+            Assert.That(scriptBuilder.CurrentOpeningIdentifierDelimiter, Is.EqualTo('`'));
         }
 
         [Test]
@@ -344,13 +346,13 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
             // Arrange
 
             // Act
-            IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab(null);
+            IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab("zeta");
 
             // Assert
             Assert.That(scriptBuilder.Connection, Is.Null);
             Assert.That(scriptBuilder.Factory, Is.EqualTo(MySqlUtilityFactoryLab.Instance));
-            Assert.That(scriptBuilder.SchemaName, Is.EqualTo("dbo"));
-            Assert.That(scriptBuilder.CurrentOpeningIdentifierDelimiter, Is.EqualTo('['));
+            Assert.That(scriptBuilder.SchemaName, Is.EqualTo("zeta"));
+            Assert.That(scriptBuilder.CurrentOpeningIdentifierDelimiter, Is.EqualTo('`'));
         }
 
         #endregion
@@ -358,8 +360,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
         #region CurrentOpeningIdentifierDelimiter
 
         [Test]
-        [TestCase('[')]
-        [TestCase('"')]
+        [TestCase('`')]
         [TestCase(null)]
         public void CurrentOpeningIdentifierDelimiter_SetValidValue_ChangesValue(char? openingDelimiter)
         {
@@ -374,16 +375,16 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
         }
 
         [Test]
-        public void CurrentOpeningIdentifierDelimiter_SetInvalidValidValue_ThrowsTodo()
+        public void CurrentOpeningIdentifierDelimiter_SetInvalidValidValue_ThrowsTauDbException()
         {
             // Arrange
             IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab(null);
 
             // Act
-            var ex = Assert.Throws<TauDbException>(() => scriptBuilder.CurrentOpeningIdentifierDelimiter = '`');
+            var ex = Assert.Throws<TauDbException>(() => scriptBuilder.CurrentOpeningIdentifierDelimiter = '[');
 
             // Assert
-            Assert.That(ex, Has.Message.EqualTo("Invalid opening identifier delimiter: '`'."));
+            Assert.That(ex, Has.Message.EqualTo("Invalid opening identifier delimiter: '['."));
         }
 
         #endregion
@@ -391,8 +392,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
         #region BuildCreateTableScript
 
         [Test]
-        [TestCase('[')]
-        [TestCase('"')]
+        [TestCase('`')]
         public void BuildCreateTableScript_IncludeConstraints_ReturnsValidScript(char delimiter)
         {
             // Arrange
@@ -402,12 +402,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
             IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab("zeta");
             scriptBuilder.CurrentOpeningIdentifierDelimiter = delimiter;
 
-            string scriptName = "BuildCreateTableScript_Brackets.sql";
-
-            if (delimiter == '"')
-            {
-                scriptName = "BuildCreateTableScript_DoubleQuotes.sql";
-            }
+            string scriptName = "BuildCreateTableScript_BackQuotes.sql";
 
             // Act
             var sql = scriptBuilder.BuildCreateTableScript(table, true);
@@ -431,26 +426,20 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
         }
 
         [Test]
-        [TestCase('[')]
-        [TestCase('"')]
+        [TestCase('`')]
         public void BuildCreateTableScript_DoNotIncludeConstraints_ReturnsValidScript(char delimiter)
         {
             // Arrange
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection,  "TaxInfo");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "TaxInfo");
             var table = tableInspector.GetTable();
 
             IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab("zeta");
             scriptBuilder.CurrentOpeningIdentifierDelimiter = delimiter;
 
-            string scriptName = "BuildCreateTableScript_Brackets_NoConstraints.sql";
-
-            if (delimiter == '"')
-            {
-                scriptName = "BuildCreateTableScript_DoubleQuotes_NoConstraints.sql";
-            }
+            string scriptName = "BuildCreateTableScript_NoConstraints_BackQuotes.sql";
 
             // Act
-            var sql = scriptBuilder.BuildCreateTableScript(table, true);
+            var sql = scriptBuilder.BuildCreateTableScript(table, false);
 
             var expectedSql = this.GetType().Assembly.GetResourceText(scriptName, true);
 
@@ -461,6 +450,29 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
             TodoCompare(sql, expectedSql);
 
             Assert.That(sql, Is.EqualTo(expectedSql));
+        }
+
+        [Test]
+        public void BuildCreateTableScript_AllTypes_ReturnsValidScript()
+        {
+            // Arrange
+            this.Connection.Purge();
+            this.Connection.CreateSchema("zeta");
+            var sql = this.GetType().Assembly.GetResourceText("SuperTable.sql", true);
+            this.Connection.ExecuteSingleSql(sql);
+            this.Connection = TestHelper.CreateConnection("zeta");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "SuperTable");
+            var tableMold = tableInspector.GetTable();
+
+            IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab("zeta");
+
+            // Act
+            var builtSql = scriptBuilder.BuildCreateTableScript(tableMold, true);
+            
+            // Assert
+            var expectedSql = this.GetType().Assembly.GetResourceText("BuildCreateTableScript_SuperTable_BackQuotes.sql", true);
+
+            Assert.That(builtSql, Is.EqualTo(expectedSql));
         }
 
         [Test]
@@ -489,8 +501,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
         #region BuildCreateIndexScript
 
         [Test]
-        [TestCase('[')]
-        [TestCase('"')]
+        [TestCase('`')]
         public void BuildCreateIndexScript_UniqueIndex_ReturnsValidScript(char delimiter)
         {
             // Arrange
@@ -509,21 +520,13 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
             // Assert
             var expectedSql = this.GetType()
                 .Assembly
-                .GetResourceText("BuildCreateIndexScript_UniqueIndex_Brackets.sql", true);
-
-            if (delimiter == '"')
-            {
-                expectedSql = this.GetType()
-                    .Assembly
-                    .GetResourceText("BuildCreateIndexScript_UniqueIndex_DoubleQuotes.sql", true);
-            }
+                .GetResourceText("BuildCreateIndexScript_UniqueIndex_BackQuotes.sql", true);
 
             Assert.That(sql, Is.EqualTo(expectedSql));
         }
 
         [Test]
-        [TestCase('[')]
-        [TestCase('"')]
+        [TestCase('`')]
         public void BuildCreateIndexScript_NonUniqueIndex_ReturnsValidScript(char delimiter)
         {
             // Arrange
@@ -542,14 +545,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
             // Assert
             var expectedSql = this.GetType()
                 .Assembly
-                .GetResourceText("BuildCreateIndexScript_NonUniqueIndex_Brackets.sql", true);
-
-            if (delimiter == '"')
-            {
-                expectedSql = this.GetType()
-                    .Assembly
-                    .GetResourceText("BuildCreateIndexScript_NonUniqueIndex_DoubleQuotes.sql", true);
-            }
+                .GetResourceText("BuildCreateIndexScript_NonUniqueIndex_BackQuotes.sql", true);
 
             Assert.That(sql, Is.EqualTo(expectedSql));
         }
@@ -571,7 +567,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
         public void BuildCreateIndexScript_IndexIsCorrupted_ThrowsArgumentException()
         {
             // Arrange
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection,  "HealthInfo");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "HealthInfo");
             var table = tableInspector.GetTable();
             var index = table.Indexes.Single(x => x.Name == "IX_healthInfo_metricAmetricB");
 
@@ -622,8 +618,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
         #region BuildDropTableScript
 
         [Test]
-        [TestCase('[')]
-        [TestCase('"')]
+        [TestCase('`')]
         public void BuildDropTableScript_ValidArgument_ReturnsValidScript(char delimiter)
         {
             // Arrange
@@ -636,14 +631,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
             var sql = scriptBuilder.BuildDropTableScript("MyTable");
 
             // Assert
-            var expectedSql = "DROP TABLE [zeta].[MyTable]";
-
-            if (delimiter == '"')
-            {
-                expectedSql = expectedSql
-                    .Replace('[', '"')
-                    .Replace(']', '"');
-            }
+            var expectedSql = "DROP TABLE `zeta`.`MyTable`";
 
             Assert.That(sql, Is.EqualTo(expectedSql));
         }
@@ -666,8 +654,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
         #region BuildInsertScript
 
         [Test]
-        [TestCase('[')]
-        [TestCase('"')]
+        [TestCase('`')]
         public void BuildInsertScript_ValidArguments_ReturnsValidScript(char delimiter)
         {
             // Arrange
@@ -676,7 +663,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
                 CurrentOpeningIdentifierDelimiter = delimiter,
             };
 
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection,  "Person");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "Person");
             var table = tableInspector.GetTable();
 
             var columnToParameterMappings = new Dictionary<string, string>
@@ -697,13 +684,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
             // Assert
             var expectedSql = this.GetType()
                 .Assembly
-                .GetResourceText("BuildInsertScript_AllColumns_Brackets.sql", true);
-            if (delimiter == '"')
-            {
-                expectedSql = this.GetType()
-                    .Assembly
-                    .GetResourceText("BuildInsertScript_AllColumns_DoubleQuotes.sql", true);
-            }
+                .GetResourceText("BuildInsertScript_AllColumns_BackQuotes.sql", true);
 
             TodoCompare(sql, expectedSql);
 
@@ -711,8 +692,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
         }
 
         [Test]
-        [TestCase('[')]
-        [TestCase('"')]
+        [TestCase('`')]
         public void BuildInsertScript_ColumnToParameterMappingsIsEmpty_ReturnsValidScript(char delimiter)
         {
             // Arrange
@@ -730,13 +710,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
             var sql = scriptBuilder.BuildInsertScript(table, columnToParameterMappings);
 
             // Assert
-            var expectedSql = "INSERT INTO [zeta].[Person] DEFAULT VALUES";
-            if (delimiter == '"')
-            {
-                expectedSql = expectedSql
-                    .Replace('[', '"')
-                    .Replace(']', '"');
-            }
+            var expectedSql = "INSERT INTO `zeta`.`Person` VALUES()";
 
             TodoCompare(sql, expectedSql);
 
@@ -744,8 +718,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
         }
 
         [Test]
-        [TestCase('[')]
-        [TestCase('"')]
+        [TestCase('`')]
         public void BuildInsertScript_ColumnToParameterMappingsContainsBadColumns_ThrowsArgumentException(
             char delimiter)
         {
@@ -809,7 +782,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
         {
             // Arrange
             IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab("zeta");
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection,  "Person");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "Person");
             var table = tableInspector.GetTable();
 
             // Act
@@ -858,8 +831,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
         #region BuildUpdateScript
 
         [Test]
-        [TestCase('[')]
-        [TestCase('"')]
+        [TestCase('`')]
         public void BuildUpdateScript_ValidArguments_ReturnsValidScript(char delimiter)
         {
             // Arrange
@@ -889,12 +861,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
 
             // Assert
             var expectedSql = this.GetType().Assembly
-                .GetResourceText("BuildUpdateScript_AllColumns_Brackets.sql", true);
-            if (delimiter == '"')
-            {
-                expectedSql = this.GetType().Assembly
-                    .GetResourceText("BuildUpdateScript_AllColumns_DoubleQuotes.sql", true);
-            }
+                .GetResourceText("BuildUpdateScript_AllColumns_BackQuotes.sql", true);
 
             TodoCompare(sql, expectedSql);
 
@@ -907,7 +874,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
             // Arrange
             IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab("zeta");
 
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection,  "PersonData");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "PersonData");
             var table = tableInspector.GetTable();
 
             var columnToParameterMappings = new Dictionary<string, string>
@@ -964,7 +931,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
             // Arrange
             IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab("zeta");
 
-            this.Connection.ExecuteSingleSql("CREATE TABLE [zeta].[dummy](Foo int)"); // no PK
+            this.Connection.ExecuteSingleSql("CREATE TABLE `zeta`.`dummy`(Foo int)"); // no PK
             IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "dummy");
             var table = tableInspector.GetTable();
 
@@ -1055,7 +1022,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
             // Arrange
             IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab("zeta");
 
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection,  "PersonData");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "PersonData");
             var table = tableInspector.GetTable();
 
             // Act
@@ -1106,8 +1073,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
         #region BuildSelectByPrimaryKeyScript
 
         [Test]
-        [TestCase('[')]
-        [TestCase('"')]
+        [TestCase('`')]
         public void BuildSelectByPrimaryKeyScript_ValidArguments_ReturnsValidScript(char delimiter)
         {
             // Arrange
@@ -1137,14 +1103,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
             // Assert
             var expectedSql = this.GetType()
                 .Assembly
-                .GetResourceText("BuildSelectByPrimaryKeyScript_Brackets.sql", true);
-
-            if (delimiter == '"')
-            {
-                expectedSql = this.GetType()
-                    .Assembly
-                    .GetResourceText("BuildSelectByPrimaryKeyScript_DoubleQuotes.sql", true);
-            }
+                .GetResourceText("BuildSelectByPrimaryKeyScript_BackQuotes.sql", true);
 
             TodoCompare(sql, expectedSql);
 
@@ -1152,8 +1111,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
         }
 
         [Test]
-        [TestCase('[')]
-        [TestCase('"')]
+        [TestCase('`')]
         public void BuildSelectByPrimaryKeyScript_ColumnSelectorIsNull_ReturnsValidScript(char delimiter)
         {
             // Arrange
@@ -1171,14 +1129,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
             // Assert
             var expectedSql = this.GetType()
                 .Assembly
-                .GetResourceText("BuildSelectByPrimaryKeyScript_AllColumns_Brackets.sql", true);
-
-            if (delimiter == '"')
-            {
-                expectedSql = this.GetType()
-                    .Assembly
-                    .GetResourceText("BuildSelectByPrimaryKeyScript_AllColumns_DoubleQuotes.sql", true);
-            }
+                .GetResourceText("BuildSelectByPrimaryKeyScript_AllColumns_BackQuotes.sql", true);
 
             TodoCompare(sql, expectedSql);
 
@@ -1191,7 +1142,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
             // Arrange
             IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab("zeta");
 
-            this.Connection.ExecuteSingleSql("CREATE TABLE [zeta].[dummy](Foo int)"); // no PK
+            this.Connection.ExecuteSingleSql("CREATE TABLE `zeta`.`dummy`(Foo int)"); // no PK
             IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "dummy");
             var table = tableInspector.GetTable();
 
@@ -1297,8 +1248,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
         #region BuildSelectAllScript
 
         [Test]
-        [TestCase('[')]
-        [TestCase('"')]
+        [TestCase('`')]
         public void BuildSelectAllScript_ValidArguments_ReturnsValidScript(char delimiter)
         {
             // Arrange
@@ -1328,14 +1278,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
             // Assert
             var expectedSql = this.GetType()
                 .Assembly
-                .GetResourceText("BuildSelectAllScript_Brackets.sql", true);
-
-            if (delimiter == '"')
-            {
-                expectedSql = this.GetType()
-                    .Assembly
-                    .GetResourceText("BuildSelectAllScript_DoubleQuotes.sql", true);
-            }
+                .GetResourceText("BuildSelectAllScript_BackQuotes.sql", true);
 
             TodoCompare(sql, expectedSql);
 
@@ -1343,8 +1286,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
         }
 
         [Test]
-        [TestCase('[')]
-        [TestCase('"')]
+        [TestCase('`')]
         public void BuildSelectAllScript_ColumnSelectorIsNull_ReturnsValidScript(char delimiter)
         {
             // Arrange
@@ -1362,14 +1304,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
             // Assert
             var expectedSql = this.GetType()
                 .Assembly
-                .GetResourceText("BuildSelectAllScript_AllColumns_Brackets.sql", true);
-
-            if (delimiter == '"')
-            {
-                expectedSql = this.GetType()
-                    .Assembly
-                    .GetResourceText("BuildSelectAllScript_AllColumns_DoubleQuotes.sql", true);
-            }
+                .GetResourceText("BuildSelectAllScript_AllColumns_BackQuotes.sql", true);
 
             TodoCompare(sql, expectedSql);
 
@@ -1421,8 +1356,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
         #region BuildDeleteByPrimaryKeyScript
 
         [Test]
-        [TestCase('[')]
-        [TestCase('"')]
+        [TestCase('`')]
         public void BuildDeleteByPrimaryKeyScript_ValidArguments_ReturnsValidScript(char delimiter)
         {
             // Arrange
@@ -1438,14 +1372,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
             var sql = scriptBuilder.BuildDeleteByPrimaryKeyScript(table, "p_id");
 
             // Assert
-            var expectedSql = "DELETE FROM [zeta].[PersonData] WHERE [Id] = @p_id";
-
-            if (delimiter == '"')
-            {
-                expectedSql = expectedSql
-                    .Replace('[', '"')
-                    .Replace(']', '"');
-            }
+            var expectedSql = "DELETE FROM `zeta`.`PersonData` WHERE `Id` = @p_id";
 
             TodoCompare(sql, expectedSql);
 
@@ -1458,7 +1385,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
             // Arrange
             IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab("zeta");
 
-            this.Connection.ExecuteSingleSql("CREATE TABLE [zeta].[dummy](Foo int)"); // no PK
+            this.Connection.ExecuteSingleSql("CREATE TABLE `zeta`.`dummy`(Foo int)"); // no PK
             IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "dummy");
             var table = tableInspector.GetTable();
 
@@ -1477,7 +1404,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
         {
             // Arrange
             IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab("zeta");
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection,  "Person");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "Person");
             var table = tableInspector.GetTable();
 
             // Act
@@ -1496,7 +1423,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
             // Arrange
             IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab("zeta");
 
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection,  "PersonData");
+            IDbTableInspector tableInspector = new MySqlTableInspectorLab(this.Connection, "PersonData");
             var table = tableInspector.GetTable();
 
             // Act
@@ -1534,8 +1461,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
         #region BuildDeleteScript
 
         [Test]
-        [TestCase('[')]
-        [TestCase('"')]
+        [TestCase('`')]
         public void BuildDeleteScript_ValidArgument_ReturnsValidScript(char delimiter)
         {
             // Arrange
@@ -1550,14 +1476,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
             var sql = scriptBuilder.BuildDeleteScript(tableName);
 
             // Assert
-            var expectedSql = "DELETE FROM [zeta].[PersonData]";
-
-            if (delimiter == '"')
-            {
-                expectedSql = expectedSql
-                    .Replace('[', '"')
-                    .Replace(']', '"');
-            }
+            var expectedSql = "DELETE FROM `zeta`.`PersonData`";
 
             TodoCompare(sql, expectedSql);
 

@@ -66,17 +66,17 @@ ORDER BY
 
                 if (row.CharacterSetName != null)
                 {
-                    columnInfo.AdditionalProperties["character_set_name"] = (string)row.CharacterSetName;
+                    columnInfo.TypeProperties["character_set_name"] = (string)row.CharacterSetName;
                 }
 
                 if (row.CollationName != null)
                 {
-                    columnInfo.AdditionalProperties["collation_name"] = (string)row.CollationName;
+                    columnInfo.TypeProperties["collation_name"] = (string)row.CollationName;
                 }
 
                 if (((string)row.ColumnType).EndsWith(" unsigned"))
                 {
-                    columnInfo.AdditionalProperties["unsigned"] = "true";
+                    columnInfo.TypeProperties["unsigned"] = "true";
                 }
 
                 columnInfos.Add(columnInfo);
@@ -173,7 +173,8 @@ ORDER BY
                 column.Type.Scale = null;
             }
 
-            column.Properties = columnInfo.AdditionalProperties;
+            column.Properties = columnInfo.ColumnProperties;
+            column.Type.Properties = columnInfo.TypeProperties;
 
             return column;
         }

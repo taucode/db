@@ -53,3 +53,4 @@ x   1. Get rid of 'own' DbException.
     3. Get rid of 'dbo' in MySql tests.
     4. MySql: <binary> and <varbinary>; <bit> also etc.
     5. MySql: float -> float (C# Single), real -> double (C# Double), double -> double (C# double)
+    6. reserved words - review for all DB-s.

@@ -434,10 +434,10 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
             IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
             scriptBuilder.CurrentOpeningIdentifierDelimiter = delimiter;
 
-            var scriptName = "BuildCreateTableScript_DoubleQuotes_NoConstraints.sql";
+            var scriptName = "BuildCreateTableScript_NoConstraints_DoubleQuotes.sql";
 
             // Act
-            var sql = scriptBuilder.BuildCreateTableScript(table, true);
+            var sql = scriptBuilder.BuildCreateTableScript(table, false);
 
             var expectedSql = this.GetType().Assembly.GetResourceText(scriptName, true);
 

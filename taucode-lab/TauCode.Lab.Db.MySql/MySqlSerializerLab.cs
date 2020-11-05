@@ -1,11 +1,11 @@
-﻿using System.Data;
+﻿using MySql.Data.MySqlClient;
 using TauCode.Db;
 
 namespace TauCode.Lab.Db.MySql
 {
     public class MySqlSerializerLab : DbSerializerBase
     {
-        public MySqlSerializerLab(IDbConnection connection, string schemaName) : base(connection, schemaName)
+        public MySqlSerializerLab(MySqlConnection connection, string schemaName) : base(connection, schemaName)
         {
         }
 

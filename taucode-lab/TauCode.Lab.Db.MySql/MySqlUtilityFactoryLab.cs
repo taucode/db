@@ -1,4 +1,4 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
 using System.Data;
 using TauCode.Db;
 
@@ -9,42 +9,25 @@ namespace TauCode.Lab.Db.MySql
         public static MySqlUtilityFactoryLab Instance { get; } = new MySqlUtilityFactoryLab();
 
         private MySqlUtilityFactoryLab()
-        {   
+        {
         }
 
-        public IDbDialect GetDialect()
-        {
-            throw new NotImplementedException();
-        }
+        public IDbDialect GetDialect() => MySqlDialectLab.Instance;
 
-        public IDbScriptBuilder CreateScriptBuilder(string schemaName)
-        {
-            throw new NotImplementedException();
-        }
+        public IDbScriptBuilder CreateScriptBuilder(string schemaName) => new MySqlScriptBuilderLab(schemaName);
 
-        public IDbConnection CreateConnection()
-        {
-            throw new NotImplementedException();
-        }
+        public IDbConnection CreateConnection() => new MySqlConnection();
 
-        public IDbInspector CreateInspector(IDbConnection connection, string schemaName)
-        {
-            throw new NotImplementedException();
-        }
+        public IDbInspector CreateInspector(IDbConnection connection, string schemaName) =>
+            new MySqlInspectorLab((MySqlConnection) connection);
 
-        public IDbTableInspector CreateTableInspector(IDbConnection connection, string schemaName, string tableName)
-        {
-            throw new NotImplementedException();
-        }
+        public IDbTableInspector CreateTableInspector(IDbConnection connection, string schemaName, string tableName) =>
+            new MySqlTableInspectorLab((MySqlConnection) connection, tableName);
 
-        public IDbCruder CreateCruder(IDbConnection connection, string schemaName)
-        {
-            throw new NotImplementedException();
-        }
+        public IDbCruder CreateCruder(IDbConnection connection, string schemaName) =>
+            new MySqlCruderLab((MySqlConnection) connection, "todo");
 
-        public IDbSerializer CreateSerializer(IDbConnection connection, string schemaName)
-        {
-            throw new NotImplementedException();
-        }
+        public IDbSerializer CreateSerializer(IDbConnection connection, string schemaName) =>
+            new MySqlSerializerLab((MySqlConnection) connection, "todo");
     }
 }

@@ -1,0 +1,1 @@
+CREATE INDEX `IX_healthInfo_metricAmetricB` ON `zeta`.`healthinfo`(`MetricA` ASC, `MetricB` DESC)

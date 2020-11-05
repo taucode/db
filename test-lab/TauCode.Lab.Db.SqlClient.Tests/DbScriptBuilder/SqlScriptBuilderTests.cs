@@ -442,15 +442,15 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbScriptBuilder
             IDbScriptBuilder scriptBuilder = new SqlScriptBuilderLab("zeta");
             scriptBuilder.CurrentOpeningIdentifierDelimiter = delimiter;
 
-            string scriptName = "BuildCreateTableScript_Brackets_NoConstraints.sql";
+            string scriptName = "BuildCreateTableScript_NoConstraints_Brackets.sql";
 
             if (delimiter == '"')
             {
-                scriptName = "BuildCreateTableScript_DoubleQuotes_NoConstraints.sql";
+                scriptName = "BuildCreateTableScript_NoConstraints_DoubleQuotes.sql";
             }
 
             // Act
-            var sql = scriptBuilder.BuildCreateTableScript(table, true);
+            var sql = scriptBuilder.BuildCreateTableScript(table, false);
 
             var expectedSql = this.GetType().Assembly.GetResourceText(scriptName, true);
 
