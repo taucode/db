@@ -85,7 +85,7 @@ CREATE TABLE `zeta`.`TaxInfo`(
 
 /*** HealthInfo ***/
 CREATE TABLE `zeta`.`HealthInfo`(
-	`Id` char(16) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+	`Id` char(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
 	`PersonId` bigint NOT NULL,
 	`Weight` decimal(8, 2) NOT NULL,
 	`PersonMetaKey` smallint NOT NULL,

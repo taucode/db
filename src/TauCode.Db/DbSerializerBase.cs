@@ -136,8 +136,7 @@ namespace TauCode.Db
         public virtual string SerializeDbData(Func<string, bool> tableNamePredicate = null)
         {
             var tables = this.DbInspector.GetTables(true, tableNamePredicate);
-
-
+            
             var dbData =
                 new DynamicRow(); // it is strange to store entire data in 'dynamic' 'row', but why to invent new dynamic ancestor?
 
@@ -150,7 +149,7 @@ namespace TauCode.Db
 
                     var tableValuesConverter = this.Cruder.GetTableValuesConverter(table.Name);
 
-                    var rows = DbTools.GetCommandRows(command, tableValuesConverter);
+                    var rows = command.GetCommandRows(tableValuesConverter);
 
                     dbData.SetValue(table.Name, rows);
                 }

@@ -1,13 +1,13 @@
 ﻿/* harvey */
-INSERT INTO [zeta].[Person](
-	[Id],
-	[Tag],
-	[IsChecked],
-	[Birthday],
-	[FirstName],
-	[LastName],
-	[Initials],
-	[Gender]
+INSERT INTO `zeta`.`Person`(
+	`Id`,
+	`Tag`,
+	`IsChecked`,
+	`Birthday`,
+	`FirstName`,
+	`LastName`,
+	`Initials`,
+	`Gender`
 )
 VALUES(
 	1,
@@ -21,15 +21,15 @@ VALUES(
 )
 
 /* harvey data */
-INSERT INTO [zeta].[PersonData](
-	[Id],
-	[PersonId],
-	[BestAge],
-	[Hash],
-	[Height],
-	[Weight],
-	[UpdatedAt],
-	[Signature]
+INSERT INTO `zeta`.`PersonData`(
+	`Id`,
+	`PersonId`,
+	`BestAge`,
+	`Hash`,
+	`Height`,
+	`Weight`,
+	`UpdatedAt`,
+	`Signature`
 )
 VALUES(
 	101,
@@ -43,13 +43,13 @@ VALUES(
 )
 
 /* harvey photo 1 */
-INSERT INTO [zeta].[Photo](
-	[Id],
-	[PersonDataId],
-	[Content],
-	[ContentThumbnail],
-	[TakenAt],
-	[ValidUntil]
+INSERT INTO `zeta`.`Photo`(
+	`Id`,
+	`PersonDataId`,
+	`Content`,
+	`ContentThumbnail`,
+	`TakenAt`,
+	`ValidUntil`
 )
 VALUES(
 	'PH-1',
@@ -61,13 +61,13 @@ VALUES(
 )
 
 /* harvey photo 2 */
-INSERT INTO [zeta].[Photo](
-	[Id],
-	[PersonDataId],
-	[Content],
-	[ContentThumbnail],
-	[TakenAt],
-	[ValidUntil]
+INSERT INTO `zeta`.`Photo`(
+	`Id`,
+	`PersonDataId`,
+	`Content`,
+	`ContentThumbnail`,
+	`TakenAt`,
+	`ValidUntil`
 )
 VALUES(
 	'PH-2',
@@ -79,19 +79,19 @@ VALUES(
 )
 
 /* harvey work info */
-INSERT INTO [zeta].[WorkInfo](
-	[Id],
-	[PersonId],
-	[PositionCode],
-	[PositionDescription],
-	[PositionDescriptionEn],
-	[HiredOn],
-	[WorkStartDayTime],
-	[Salary],
-	[Bonus],
-	[OvertimeCoef],
-	[WeekendCoef],
-	[Url]
+INSERT INTO `zeta`.`WorkInfo`(
+	`Id`,
+	`PersonId`,
+	`PositionCode`,
+	`PositionDescription`,
+	`PositionDescriptionEn`,
+	`HiredOn`,
+	`WorkStartDayTime`,
+	`Salary`,
+	`Bonus`,
+	`OvertimeCoef`,
+	`WeekendCoef`,
+	`Url`
 )
 VALUES(
 	1001,
@@ -109,15 +109,15 @@ VALUES(
 )
 
 /* maria */
-INSERT INTO [zeta].[Person](
-	[Id],
-	[Tag],
-	[IsChecked],
-	[Birthday],
-	[FirstName],
-	[LastName],
-	[Initials],
-	[Gender]
+INSERT INTO `zeta`.`Person`(
+	`Id`,
+	`Tag`,
+	`IsChecked`,
+	`Birthday`,
+	`FirstName`,
+	`LastName`,
+	`Initials`,
+	`Gender`
 )
 VALUES(
 	2,
@@ -131,15 +131,15 @@ VALUES(
 )
 
 /* maria data */
-INSERT INTO [zeta].[PersonData](
-	[Id],
-	[PersonId],
-	[BestAge],
-	[Hash],
-	[Height],
-	[Weight],
-	[UpdatedAt],
-	[Signature]
+INSERT INTO `zeta`.`PersonData`(
+	`Id`,
+	`PersonId`,
+	`BestAge`,
+	`Hash`,
+	`Height`,
+	`Weight`,
+	`UpdatedAt`,
+	`Signature`
 )
 VALUES(
 	201,
@@ -153,13 +153,13 @@ VALUES(
 )
 
 /* maria photo 1 */
-INSERT INTO [zeta].[Photo](
-	[Id],
-	[PersonDataId],
-	[Content],
-	[ContentThumbnail],
-	[TakenAt],
-	[ValidUntil]
+INSERT INTO `zeta`.`Photo`(
+	`Id`,
+	`PersonDataId`,
+	`Content`,
+	`ContentThumbnail`,
+	`TakenAt`,
+	`ValidUntil`
 )
 VALUES(
 	'PM-1',
@@ -171,13 +171,13 @@ VALUES(
 )
 
 /* maria photo 2 */
-INSERT INTO [zeta].[Photo](
-	[Id],
-	[PersonDataId],
-	[Content],
-	[ContentThumbnail],
-	[TakenAt],
-	[ValidUntil]
+INSERT INTO `zeta`.`Photo`(
+	`Id`,
+	`PersonDataId`,
+	`Content`,
+	`ContentThumbnail`,
+	`TakenAt`,
+	`ValidUntil`
 )
 VALUES(
 	'PM-2',
@@ -189,19 +189,19 @@ VALUES(
 )
 
 /* maria work info */
-INSERT INTO [zeta].[WorkInfo](
-	[Id],
-	[PersonId],
-	[PositionCode],
-	[PositionDescription],
-	[PositionDescriptionEn],
-	[HiredOn],
-	[WorkStartDayTime],
-	[Salary],
-	[Bonus],
-	[OvertimeCoef],
-	[WeekendCoef],
-	[Url]
+INSERT INTO `zeta`.`WorkInfo`(
+	`Id`,
+	`PersonId`,
+	`PositionCode`,
+	`PositionDescription`,
+	`PositionDescriptionEn`,
+	`HiredOn`,
+	`WorkStartDayTime`,
+	`Salary`,
+	`Bonus`,
+	`OvertimeCoef`,
+	`WeekendCoef`,
+	`Url`
 )
 VALUES(
 	2001,

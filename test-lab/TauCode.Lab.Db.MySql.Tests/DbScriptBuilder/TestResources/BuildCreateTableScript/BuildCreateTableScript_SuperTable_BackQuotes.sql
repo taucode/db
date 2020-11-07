@@ -1,8 +1,10 @@
 CREATE TABLE `zeta`.`SuperTable`(
-    `TheInt` int NOT NULL AUTO_INCREMENT,
+    `TheInt` int NOT NULL,
     `TheIntUnsigned` int unsigned NULL,
     `TheBit` bit(1) NULL,
     `TheBit9` bit(9) NULL,
+    `TheBit17` bit(17) NULL,
+    `TheBit33` bit(33) NULL,
     `TheTinyInt` tinyint NULL,
     `TheTinyIntUnsigned` tinyint unsigned NULL,
     `TheBool` tinyint NULL,

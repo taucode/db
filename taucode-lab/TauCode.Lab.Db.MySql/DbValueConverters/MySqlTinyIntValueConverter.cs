@@ -17,6 +17,11 @@ namespace TauCode.Lab.Db.MySql.DbValueConverters
                 return Convert.ToSByte(boolValue);
             }
 
+            if (value is byte byteValue)
+            {
+                return Convert.ToSByte(byteValue);
+            }
+
             if (value is int intValue)
             {
                 return Convert.ToSByte(intValue);

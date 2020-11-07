@@ -112,11 +112,11 @@ WHERE
             return dictionary;
         }
 
-        internal static decimal GetLastIdentity(this MySqlConnection connection)
+        internal static ulong GetLastIdentity(this MySqlConnection connection)
         {
             using var command = connection.CreateCommand();
             command.CommandText = "SELECT @@IDENTITY";
-            return (decimal)command.ExecuteScalar();
+            return (ulong)command.ExecuteScalar();
         }
 
         internal static int GetTableRowCount(MySqlConnection connection, string schemaName, string tableName)

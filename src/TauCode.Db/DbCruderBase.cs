@@ -16,23 +16,20 @@ namespace TauCode.Db
 
         protected class TableInfo
         {
-            private readonly DbCruderBase _cruder;
-
             public TableInfo(DbCruderBase cruder, string tableName)
             {
-                _cruder = cruder;
                 this.TableMold = cruder
                     .Factory
                     .CreateTableInspector(cruder.Connection, cruder.SchemaName, tableName)
                     .GetTable();
 
                 this.PrimaryKeyColumnName = this.TableMold.GetPrimaryKeySingleColumn(nameof(tableName)).Name;
-                this.TableValuesConverter = _cruder.CreateTableValuesConverter(this.TableMold);
+                this.TableValuesConverter = cruder.CreateTableValuesConverter(this.TableMold);
             }
 
-            public TableMold TableMold { get; private set; }
-            public string PrimaryKeyColumnName { get; private set; }
-            public IDbTableValuesConverter TableValuesConverter { get; private set; }
+            public TableMold TableMold { get; }
+            public string PrimaryKeyColumnName { get; }
+            public IDbTableValuesConverter TableValuesConverter { get; }
         }
 
         protected class CommandHelper : IDisposable
@@ -340,31 +337,6 @@ namespace TauCode.Db
 
         public IDbTableValuesConverter GetTableValuesConverter(string tableName) =>
             this.GetOrCreateTableInfo(tableName).TableValuesConverter;
-
-        //{
-        //    if (tableName == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(tableName));
-        //    }
-
-        //    var tableInfo = _tableInfos.GetValueOrDefault(tableName);
-        //    if (tableInfo == null)
-        //    {
-        //        tableInfo = new TableInfo(this, tableName);
-        //        _tableInfos.Add(tableName, tableInfo);
-        //    }
-
-        //    return tableInfo.TableValuesConverter;
-
-        //    //var tableValuesConverter = _tableValuesConverters.GetValueOrDefault(tableName);
-        //    //if (tableValuesConverter == null)
-        //    //{
-        //    //    tableValuesConverter = this.CreateTableValuesConverter(tableName);
-        //    //    _tableValuesConverters.Add(tableName, tableValuesConverter);
-        //    //}
-
-        //    //return tableValuesConverter;
-        //}
 
         public void ResetTables()
         {

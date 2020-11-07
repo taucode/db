@@ -476,6 +476,8 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
             // Assert
             var expectedSql = this.GetType().Assembly.GetResourceText("BuildCreateTableScript_SuperTable_BackQuotes.sql", true);
 
+            TodoCompare(builtSql, expectedSql);
+
             Assert.That(builtSql, Is.EqualTo(expectedSql));
         }
 

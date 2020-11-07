@@ -12,6 +12,7 @@ using TauCode.Db;
 using TauCode.Db.DbValueConverters;
 using TauCode.Db.Exceptions;
 using TauCode.Extensions;
+using TauCode.Lab.Db.MySql.DbValueConverters;
 
 namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
 {
@@ -187,7 +188,12 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
         public void SerializeDbData_TableNamePredicateIsNull_SerializesDbData()
         {
             // Arrange
+            this.Connection.Dispose();
+            this.Connection = TestHelper.CreateConnection("zeta");
+
             IDbSerializer serializer = new MySqlSerializerLab(this.Connection, "zeta");
+            serializer.Cruder.GetTableValuesConverter("Person").SetColumnConverter("Tag", new MySqlGuidValueConverter(MySqlGuidBehaviour.Char36));
+
             serializer.JsonSerializerSettings.Converters = new List<JsonConverter>
             {
                 new StringEnumConverter(namingStrategy:new DefaultNamingStrategy()),
@@ -643,6 +649,9 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
             // Arrange
             IDbInspector dbInspector = new MySqlInspectorLab(this.Connection);
             dbInspector.DeleteDataFromAllTables();
+
+            this.Connection.Dispose();
+            this.Connection = TestHelper.CreateConnection("zeta");
 
             IDbSerializer serializer = new MySqlSerializerLab(this.Connection, "zeta");
             var json = this.GetType().Assembly.GetResourceText("DeserializeDbBadInput.json", true);

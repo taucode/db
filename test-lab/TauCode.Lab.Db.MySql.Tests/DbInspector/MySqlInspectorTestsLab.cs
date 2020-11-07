@@ -111,15 +111,15 @@ namespace TauCode.Lab.Db.MySql.Tests.DbInspector
             this.Connection.CreateSchema("zeta");
 
             this.Connection.ExecuteSingleSql(@"
-CREATE TABLE `zeta`.`tab2`(`id` int PRIMARY KEY)
+CREATE TABLE `zeta`.`Tab2`(`id` int PRIMARY KEY)
 ");
 
             this.Connection.ExecuteSingleSql(@"
-CREATE TABLE `zeta`.`tab1`(`id` int PRIMARY KEY)
+CREATE TABLE `zeta`.`Tab1`(`id` int PRIMARY KEY)
 ");
 
             this.Connection.ExecuteSingleSql(@"
-CREATE TABLE `foo`.`tab3`(`id` int PRIMARY KEY)
+CREATE TABLE `foo`.`Tab3`(`id` int PRIMARY KEY)
 ");
             using var connection = TestHelper.CreateConnection("zeta");
 
