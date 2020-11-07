@@ -8,7 +8,24 @@
             {
                 return uintValue;
             }
-            else if (value is long longValue)
+
+            if (value is int intValue)
+            {
+                checked
+                {
+                    return (uint)intValue;
+                }
+            }
+
+            if (value is ulong ulongValue)
+            {
+                checked
+                {
+                    return (uint)ulongValue;
+                }
+            }
+
+            if (value is long longValue)
             {
                 checked
                 {
@@ -21,7 +38,7 @@
 
         protected override object FromDbValueImpl(object dbValue)
         {
-            if (dbValue is int uintDbValue)
+            if (dbValue is uint uintDbValue)
             {
                 return uintDbValue;
             }

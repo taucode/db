@@ -175,7 +175,7 @@ namespace TauCode.Db
                         if (columnValue == null)
                         {
                             throw new TauDbException(
-                                $"Method '{nameof(IDbValueConverter.ToDbValue)}' of the instance of type '{dbValueConverter.GetType().FullName}' returned null.");
+                                $"Method '{nameof(IDbValueConverter.ToDbValue)}' of the instance of type '{dbValueConverter.GetType().FullName}' returned null. Table: '{this._table.Name}', column: '{columnName}'.");
                         }
 
                         parameter.Size = _parameterSizes[parameter.ParameterName];
@@ -222,7 +222,7 @@ namespace TauCode.Db
             internal IList<dynamic> FetchWithValues(object values)
             {
                 this.ApplyValuesToCommand(values);
-                var rows = DbTools.GetCommandRows(_command, _cruder.GetTableValuesConverter(_table.Name));
+                var rows = _command.GetCommandRows(_cruder.GetTableValuesConverter(_table.Name));
 
                 return rows;
             }

@@ -8,11 +8,20 @@
             {
                 return ushortValue;
             }
-            else if (value is long longValue)
+
+            if (value is long longValue)
             {
                 checked
                 {
                     return (ushort)longValue;
+                }
+            }
+
+            if (value is int intValue)
+            {
+                checked
+                {
+                    return (ushort)intValue;
                 }
             }
 
@@ -21,9 +30,9 @@
 
         protected override object FromDbValueImpl(object dbValue)
         {
-            if (dbValue is short shortDbValue)
+            if (dbValue is ushort ushortDbValue)
             {
-                return shortDbValue;
+                return ushortDbValue;
             }
 
             return null;

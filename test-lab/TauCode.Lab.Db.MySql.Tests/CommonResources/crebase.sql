@@ -118,7 +118,7 @@ CREATE TABLE `zeta`.`NumericData`(
 
 /*** DateData ***/
 CREATE TABLE `zeta`.`DateData`(
-	`Id` char(16) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+	`Id` char(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
 	`Moment` datetime NULL,
 	CONSTRAINT `PK_dateData` PRIMARY KEY (`Id`)
 )

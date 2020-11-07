@@ -8,13 +8,26 @@
             {
                 return shortValue;
             }
-            else if (value is long longValue)
+
+            if (value is int intValue)
             {
-                return longValue;
+                checked
+                {
+                    return (short)intValue;
+                }
             }
-            else if (value is byte byteValue)
+
+            if (value is long longValue)
             {
-                return byteValue;
+                checked
+                {
+                    return (short)longValue;
+                }
+            }
+
+            if (value is byte byteValue)
+            {
+                return (short)byteValue;
             }
 
             return null;
