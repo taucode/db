@@ -9,33 +9,30 @@ namespace TauCode.Lab.Db.SQLite.Tests
 {
     internal static class TestHelper
     {
-        internal const string ConnectionString = @"Server=.\mssqltest;Database=rho.test;Trusted_Connection=True;";
+        //internal const string ConnectionString = @"Server=.\mssqltest;Database=rho.test;Trusted_Connection=True;";
+
+        //internal static string ConnectionString { get; private set; }
 
         internal static SQLiteConnection CreateConnection()
         {
-            var connection = new SQLiteConnection(ConnectionString);
+            var tuple = SQLiteToolsLab.CreateSQLiteDatabase();
+
+            var connectionString = tuple.Item2;
+            var connection = new SQLiteConnection(connectionString);
             connection.Open();
+            connection.BoostSQLiteInsertions();
+
             return connection;
         }
 
         internal static void Purge(this SQLiteConnection connection)
         {
-            throw new NotImplementedException();
+            // todo: idle
 
-            //var schemata = connection.GetSchemata();
-
-            //foreach (var schema in schemata)
+            //var tableNames = connection.GetTableNames(false);
+            //foreach (var tableName in tableNames)
             //{
-            //    var tableNames = connection.GetTableNames(schema, false);
-            //    foreach (var tableName in tableNames)
-            //    {
-            //        connection.DropTable(schema, tableName);
-            //    }
-
-            //    if (schema != SqlToolsLab.DefaultSchemaName)
-            //    {
-            //        connection.DropSchema(schema);
-            //    }
+            //    connection.DropTable(tableName);
             //}
         }
 

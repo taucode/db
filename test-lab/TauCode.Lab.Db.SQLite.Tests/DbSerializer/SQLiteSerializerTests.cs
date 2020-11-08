@@ -5,8 +5,6 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SQLite;
-using System.Globalization;
 using System.Linq;
 using TauCode.Db;
 using TauCode.Db.DbValueConverters;
@@ -70,7 +68,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
         public void Constructor_ConnectionIsNotOpen_ArgumentException()
         {
             // Arrange
-            using var connection = new SQLiteConnection(TestHelper.ConnectionString);
+            using var connection = TestHelper.CreateConnection();
 
             // Act
             var ex = Assert.Throws<ArgumentException>(() => new SQLiteSerializerLab(connection, "dbo"));
@@ -348,7 +346,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
         public void DeserializeDbData_ValidArguments_RunsOk()
         {
             // Arrange
-            IDbInspector dbInspector = new SQLiteInspectorLab(this.Connection, "zeta");
+            IDbInspector dbInspector = new SQLiteInspectorLab(this.Connection);
             dbInspector.DeleteDataFromAllTables();
 
             IDbSerializer serializer = new SQLiteSerializerLab(this.Connection, "zeta");
@@ -486,7 +484,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
         public void DeserializeDbData_TablePredicateIsNull_DeserializesAll()
         {
             // Arrange
-            IDbInspector dbInspector = new SQLiteInspectorLab(this.Connection, "zeta");
+            IDbInspector dbInspector = new SQLiteInspectorLab(this.Connection);
             dbInspector.DeleteDataFromAllTables();
 
             IDbSerializer serializer = new SQLiteSerializerLab(this.Connection, "zeta");
@@ -639,7 +637,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
         public void DeserializeDbData_TablePredicateReturnsUnknownTable_ThrowsTauDbException()
         {
             // Arrange
-            IDbInspector dbInspector = new SQLiteInspectorLab(this.Connection, "zeta");
+            IDbInspector dbInspector = new SQLiteInspectorLab(this.Connection);
             dbInspector.DeleteDataFromAllTables();
 
             IDbSerializer serializer = new SQLiteSerializerLab(this.Connection, "zeta");

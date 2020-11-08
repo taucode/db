@@ -1,5 +1,4 @@
-﻿using System;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System.Data.SQLite;
 
 namespace TauCode.Lab.Db.SQLite.Tests
@@ -25,10 +24,7 @@ namespace TauCode.Lab.Db.SQLite.Tests
         [SetUp]
         public void SetUpBase()
         {
-
             this.Connection.Purge();
-
-            throw new NotImplementedException(); // todo boost inserts!
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using NUnit.Framework;
 using System;
-using System.Data.SQLite;
 using TauCode.Db;
 using TauCode.Db.Exceptions;
 using TauCode.Extensions;
@@ -58,7 +57,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbMigrator
         public void Constructor_ConnectionIsNotOpen_ArgumentException()
         {
             // Arrange
-            using var connection = new SQLiteConnection(TestHelper.ConnectionString);
+            using var connection = TestHelper.CreateConnection();
 
             // Act
             var ex = Assert.Throws<ArgumentException>(() => new SQLiteJsonMigratorLab(

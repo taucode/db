@@ -1,17 +1,88 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SQLite;
 using System.Linq;
-using TauCode.Algorithms.Graphs;
 using TauCode.Db;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
+using TauCode.Extensions;
 
 namespace TauCode.Lab.Db.SQLite
 {
     public static class SQLiteToolsLab
     {
+        /// <summary>
+        /// Boosts SQLite insertions
+        /// https://stackoverflow.com/questions/3852068/sqlite-insert-very-slow
+        /// </summary>
+        /// <param name="sqLiteConnection">SQLite connection to boost</param>
+        public static void BoostSQLiteInsertions(this SQLiteConnection sqLiteConnection)
+        {
+            if (sqLiteConnection == null)
+            {
+                throw new ArgumentNullException(nameof(sqLiteConnection));
+            }
+
+            using var command = sqLiteConnection.CreateCommand();
+            command.CommandText = "PRAGMA journal_mode = WAL";
+            command.ExecuteNonQuery();
+
+            command.CommandText = "PRAGMA synchronous = NORMAL";
+            command.ExecuteNonQuery();
+        }
+
+        // todo: move this to taucode.db
+        /// <summary>
+        /// Creates temporary .sqlite file and returns a SQLite connection string for this file.
+        /// </summary>
+        /// <returns>
+        /// Tuple with two strings. Item1 is temporary file path, Item2 is connection string.
+        /// </returns>
+        public static Tuple<string, string> CreateSQLiteDatabase()
+        {
+            var tempDbFilePath = FileTools.CreateTempFilePath("zunit", ".sqlite");
+            SQLiteConnection.CreateFile(tempDbFilePath);
+
+            var connectionString = $"Data Source={tempDbFilePath};Version=3;";
+
+            return Tuple.Create(tempDbFilePath, connectionString);
+        }
+
+        public static string GetTableCreationSqlFromDb(SQLiteConnection connection, string tableName)
+        {
+            using var command = connection.CreateCommand();
+            command.CommandText =
+                @"
+SELECT
+    T.name  Name,
+    T.sql   Sql
+FROM
+    sqlite_master T
+WHERE
+    T.type = @p_type
+    AND
+    T.name = @p_tableName
+";
+
+            command.Parameters.AddWithValue("p_type", "table");
+            command.Parameters.AddWithValue("p_tableName", tableName);
+
+            var rows = command.GetCommandRows();
+            if (rows.Count == 0)
+            {
+                throw DbTools.CreateTableDoesNotExistException(null, tableName);
+            }
+
+            if (rows.Count > 1)
+            {
+                throw new TauDbException($"Internal error: more than one metadata row returned.");
+            }
+
+            return rows
+                .Single()
+                .Sql;
+        }
+
         public static IReadOnlyList<string> GetTableNames(
             this SQLiteConnection connection,
             bool? independentFirst)
@@ -231,16 +302,11 @@ namespace TauCode.Lab.Db.SQLite
             throw new NotImplementedException();
         }
 
-        public static void DropTable(this SQLiteConnection connection, string schemaName, string tableName)
+        public static void DropTable(this SQLiteConnection connection, string tableName)
         {
             if (connection == null)
             {
                 throw new ArgumentNullException(nameof(connection));
-            }
-
-            if (schemaName == null)
-            {
-                throw new ArgumentNullException(nameof(schemaName));
             }
 
             if (tableName == null)
@@ -249,7 +315,7 @@ namespace TauCode.Lab.Db.SQLite
             }
 
             using var command = connection.CreateCommand();
-            command.CommandText = $"DROP TABLE `{schemaName}`.`{tableName}`";
+            command.CommandText = $"DROP TABLE [{tableName}]";
             command.ExecuteNonQuery();
         }
 

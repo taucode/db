@@ -1,7 +1,6 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Data.SQLite;
 using System.Linq;
 using TauCode.Db;
 using TauCode.Db.Exceptions;
@@ -85,7 +84,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbTableInspector
         public void Constructor_ConnectionIsNotOpen_ThrowsArgumentException()
         {
             // Arrange
-            using var connection = new SQLiteConnection(TestHelper.ConnectionString);
+            using var connection = TestHelper.CreateConnection();
 
             // Act
             var ex = Assert.Throws<ArgumentException>(() => new SQLiteTableInspectorLab(connection, "dbo", "tab1"));

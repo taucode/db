@@ -412,7 +412,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbScriptBuilder
 
             var expectedSql = this.GetType().Assembly.GetResourceText(scriptName, true);
 
-            this.Connection.DropTable("zeta", "TaxInfo");
+            this.Connection.DropTable("TaxInfo");
             this.Connection.ExecuteSingleSql(sql);
 
             IDbTableInspector tableInspector2 = new SQLiteTableInspectorLab(this.Connection, "zeta", "TaxInfo");
@@ -452,7 +452,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbScriptBuilder
 
             var expectedSql = this.GetType().Assembly.GetResourceText(scriptName, true);
 
-            this.Connection.DropTable("zeta", "TaxInfo");
+            this.Connection.DropTable("TaxInfo");
             this.Connection.ExecuteSingleSql(sql);
 
             // Assert

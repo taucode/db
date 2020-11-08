@@ -2,7 +2,6 @@
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using TauCode.Db;
@@ -249,7 +248,7 @@ CREATE TABLE [zeta].[SmallTable](
         public void Constructor_ConnectionIsNotOpen_ArgumentException()
         {
             // Arrange
-            using var connection = new SQLiteConnection(TestHelper.ConnectionString);
+            using var connection = TestHelper.CreateConnection();
 
             // Act
             var ex = Assert.Throws<ArgumentException>(() => new SQLiteCruderLab(connection));

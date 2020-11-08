@@ -1,31 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Data.SQLite;
 using TauCode.Db;
 
 namespace TauCode.Lab.Db.SQLite
 {
     public class SQLiteInspectorLab : DbInspectorBase
     {
-        public SQLiteInspectorLab(IDbConnection connection, string schemaName) : base(connection, schemaName)
+        public SQLiteInspectorLab(SQLiteConnection connection)
+            : base(connection, null)
         {
         }
 
-        public override IDbUtilityFactory Factory => throw new NotImplementedException();
+        public override IDbUtilityFactory Factory => SQLiteUtilityFactoryLab.Instance;
+
         protected override IReadOnlyList<string> GetTableNamesImpl(string schemaName)
         {
             throw new NotImplementedException();
         }
 
-        protected override HashSet<string> GetSystemSchemata()
-        {
-            throw new NotImplementedException();
-        }
+        protected override HashSet<string> GetSystemSchemata() => new HashSet<string>();
 
-        protected override bool NeedCheckSchemaExistence => throw new NotImplementedException();
+        protected override bool NeedCheckSchemaExistence => false;
+
         protected override bool SchemaExists(string schemaName)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
     }
 }
