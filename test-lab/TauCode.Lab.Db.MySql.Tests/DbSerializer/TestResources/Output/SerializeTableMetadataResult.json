@@ -18,11 +18,14 @@
     {
       "Name": "Tag",
       "Type": {
-        "Name": "uniqueidentifier",
-        "Size": null,
+        "Name": "char",
+        "Size": 36,
         "Precision": null,
         "Scale": null,
-        "Properties": {}
+        "Properties": {
+          "character_set_name": "ascii",
+          "collation_name": "ascii_bin"
+        }
       },
       "IsNullable": true,
       "Identity": null,
@@ -32,7 +35,7 @@
     {
       "Name": "IsChecked",
       "Type": {
-        "Name": "bit",
+        "Name": "tinyint",
         "Size": null,
         "Precision": null,
         "Scale": null,
@@ -46,7 +49,7 @@
     {
       "Name": "Birthday",
       "Type": {
-        "Name": "smalldatetime",
+        "Name": "datetime",
         "Size": null,
         "Precision": null,
         "Scale": null,
@@ -60,11 +63,14 @@
     {
       "Name": "FirstName",
       "Type": {
-        "Name": "nvarchar",
+        "Name": "varchar",
         "Size": 100,
         "Precision": null,
         "Scale": null,
-        "Properties": {}
+        "Properties": {
+          "character_set_name": "utf8mb4",
+          "collation_name": "utf8mb4_0900_ai_ci"
+        }
       },
       "IsNullable": true,
       "Identity": null,
@@ -74,11 +80,14 @@
     {
       "Name": "LastName",
       "Type": {
-        "Name": "nvarchar",
+        "Name": "varchar",
         "Size": 100,
         "Precision": null,
         "Scale": null,
-        "Properties": {}
+        "Properties": {
+          "character_set_name": "utf8mb4",
+          "collation_name": "utf8mb4_0900_ai_ci"
+        }
       },
       "IsNullable": true,
       "Identity": null,
@@ -88,11 +97,14 @@
     {
       "Name": "Initials",
       "Type": {
-        "Name": "nchar",
+        "Name": "char",
         "Size": 2,
         "Precision": null,
         "Scale": null,
-        "Properties": {}
+        "Properties": {
+          "character_set_name": "utf8mb4",
+          "collation_name": "utf8mb4_0900_ai_ci"
+        }
       },
       "IsNullable": true,
       "Identity": null,
@@ -106,7 +118,9 @@
         "Size": null,
         "Precision": null,
         "Scale": null,
-        "Properties": {}
+        "Properties": {
+          "unsigned": "true"
+        }
       },
       "IsNullable": true,
       "Identity": null,
@@ -115,7 +129,7 @@
     }
   ],
   "PrimaryKey": {
-    "Name": "PK_person",
+    "Name": "PRIMARY",
     "Columns": [
       "Id"
     ],
@@ -124,8 +138,8 @@
   "ForeignKeys": [],
   "Indexes": [
     {
-      "Name": "PK_person",
-      "TableName": "Person",
+      "Name": "PRIMARY",
+      "TableName": "person",
       "Columns": [
         {
           "Name": "Id",
@@ -138,7 +152,7 @@
     },
     {
       "Name": "UX_person_tag",
-      "TableName": "Person",
+      "TableName": "person",
       "Columns": [
         {
           "Name": "Tag",

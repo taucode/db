@@ -366,7 +366,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
         public void CurrentOpeningIdentifierDelimiter_SetValidValue_ChangesValue(char? openingDelimiter)
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab(null);
+            IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab("zeta");
 
             // Act
             scriptBuilder.CurrentOpeningIdentifierDelimiter = openingDelimiter;
@@ -379,7 +379,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
         public void CurrentOpeningIdentifierDelimiter_SetInvalidValidValue_ThrowsTauDbException()
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab(null);
+            IDbScriptBuilder scriptBuilder = new MySqlScriptBuilderLab("foo");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => scriptBuilder.CurrentOpeningIdentifierDelimiter = '[');

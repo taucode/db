@@ -12,7 +12,7 @@ namespace TauCode.Lab.Db.MySql
         {
             if (schemaName == null)
             {
-                throw new ArgumentException(nameof(schemaName));
+                throw new ArgumentNullException(nameof(schemaName)); // todo: ut this
             }
         }
 

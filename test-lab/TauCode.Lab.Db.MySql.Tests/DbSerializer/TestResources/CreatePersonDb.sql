@@ -1,16 +1,16 @@
 /* Person; `Gender` is enum */
 CREATE TABLE `zeta`.`Person`(
 	`Id` int NOT NULL,
-	`Tag` char(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+	`Tag` char(36) CHARACTER SET ascii COLLATE ascii_bin NULL,
 	`IsChecked` bool NULL,
 	`Birthday` datetime NULL,
-	`FirstName` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
-	`LastName` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
-	`Initials` char(2) CHARACTER SET utf8mb4 NULL,
+	`FirstName` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
+	`LastName` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
+	`Initials` char(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
 	`Gender` tinyint unsigned NULL, -- enum
 	CONSTRAINT `PK_person` PRIMARY KEY(`Id`))
 
-/* Index on birthday */
+/* Index: 'UX_person_tag' on table 'person' */
 CREATE UNIQUE INDEX `UX_person_tag` ON `zeta`.`Person`(`Tag`)
 
 /* PersonData */
@@ -28,7 +28,7 @@ CREATE TABLE `zeta`.`PersonData`(
 
 /* Photo */
 CREATE TABLE `zeta`.`Photo`(
-	`Id` char(4) NOT NULL,
+	`Id` char(4) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
 	`PersonDataId` smallint NOT NULL,
 	`Content` blob NOT NULL,
 	`ContentThumbnail` varbinary(4000) NULL,
@@ -41,8 +41,8 @@ CREATE TABLE `zeta`.`Photo`(
 CREATE TABLE `zeta`.`WorkInfo`(
 	`Id` int NOT NULL,
 	`PersonId` int NOT NULL,
-	`PositionCode` varchar(100) NOT NULL,
-	`PositionDescription` text CHARACTER SET utf8mb4 NOT NULL,
+	`PositionCode` varchar(100) CHARACTER SET ascii NULL,
+	`PositionDescription` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
 	`PositionDescriptionEn` text CHARACTER SET ascii NULL,
 	`HiredOn` datetime NULL,
 	`WorkStartDayTime` time NULL,
@@ -50,7 +50,7 @@ CREATE TABLE `zeta`.`WorkInfo`(
 	`Bonus` decimal(10, 2) NULL,
 	`OvertimeCoef` real NULL,
 	`WeekendCoef` float NULL,
-	`Url` text CHARACTER SET ascii NULL,
+	`Url` varchar(100) CHARACTER SET ascii NULL,
 	CONSTRAINT `PK_workInfo` PRIMARY KEY(`Id`),
 	CONSTRAINT `FK_workInfo_person` FOREIGN KEY(`PersonId`) REFERENCES `zeta`.`Person`(`Id`))
 

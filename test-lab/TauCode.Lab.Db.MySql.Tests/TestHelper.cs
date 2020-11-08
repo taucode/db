@@ -119,11 +119,11 @@ WHERE
             return (ulong)command.ExecuteScalar();
         }
 
-        internal static int GetTableRowCount(MySqlConnection connection, string schemaName, string tableName)
+        internal static long GetTableRowCount(MySqlConnection connection, string schemaName, string tableName)
         {
             using var command = connection.CreateCommand();
             command.CommandText = $"SELECT COUNT(*) FROM `{schemaName}`.`{tableName}`";
-            var count = (int)command.ExecuteScalar();
+            var count = (long)command.ExecuteScalar();
             return count;
         }
 

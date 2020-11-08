@@ -266,7 +266,7 @@ namespace TauCode.Db
             var dbMold = new DbMold
             {
                 Tables = tables
-                    .Select(x => x.CloneTable(false))
+                    .Select(x => x.CloneTable(true))
                     .ToList(),
             };
 

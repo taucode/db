@@ -1,5 +1,5 @@
-﻿using System;
-using System.Data;
+﻿using MySql.Data.MySqlClient;
+using System;
 using TauCode.Db;
 using TauCode.Db.Data;
 using TauCode.Db.Model;
@@ -9,16 +9,27 @@ namespace TauCode.Lab.Db.MySql
 {
     public class MySqlJsonMigratorLab : DbJsonMigratorBase
     {
-        public MySqlJsonMigratorLab(IDbConnection connection, string schemaName, Func<string> metadataJsonGetter, Func<string> dataJsonGetter, Func<string, bool> tableNamePredicate = null, Func<TableMold, DynamicRow, DynamicRow> rowTransformer = null) : base(connection, schemaName, metadataJsonGetter, dataJsonGetter, tableNamePredicate, rowTransformer)
+        public MySqlJsonMigratorLab(
+            MySqlConnection connection,
+            Func<string> metadataJsonGetter,
+            Func<string> dataJsonGetter,
+            Func<string, bool> tableNamePredicate = null,
+            Func<TableMold, DynamicRow, DynamicRow> rowTransformer = null)
+            : base(
+                connection,
+                connection.GetSchemaName(),
+                metadataJsonGetter,
+                dataJsonGetter,
+                tableNamePredicate,
+                rowTransformer)
         {
         }
 
         public override IDbUtilityFactory Factory => MySqlUtilityFactoryLab.Instance;
 
-        protected override bool NeedCheckSchemaExistence => throw new NotImplementedException();
-        protected override bool SchemaExists(string schemaName)
-        {
-            throw new NotImplementedException();
-        }
+        protected override bool NeedCheckSchemaExistence => true;
+
+        protected override bool SchemaExists(string schemaName) =>
+            ((MySqlConnection)this.Connection).SchemaExists(schemaName);
     }
 }

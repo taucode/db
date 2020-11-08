@@ -264,13 +264,18 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
         public void DeserializeTableData_ValidArguments_RunsOk()
         {
             // Arrange
+            this.Connection.Dispose();
+            this.Connection = TestHelper.CreateConnection("zeta");
+
             IDbSerializer serializer = new MySqlSerializerLab(this.Connection);
+            serializer.Cruder.GetTableValuesConverter("person").SetColumnConverter("Tag", new MySqlGuidValueConverter(MySqlGuidBehaviour.Char36));
+
             var json = this.GetType().Assembly.GetResourceText("DeserializeTableInput.json", true);
 
-            this.Connection.ExecuteSingleSql("DELETE FROM [zeta].[Photo]");
-            this.Connection.ExecuteSingleSql("DELETE FROM [zeta].[WorkInfo]");
-            this.Connection.ExecuteSingleSql("DELETE FROM [zeta].[PersonData]");
-            this.Connection.ExecuteSingleSql("DELETE FROM [zeta].[Person]");
+            this.Connection.ExecuteSingleSql("DELETE FROM `zeta`.`Photo`");
+            this.Connection.ExecuteSingleSql("DELETE FROM `zeta`.`WorkInfo`");
+            this.Connection.ExecuteSingleSql("DELETE FROM `zeta`.`PersonData`");
+            this.Connection.ExecuteSingleSql("DELETE FROM `zeta`.`Person`");
 
             // Act
             serializer.DeserializeTableData(
@@ -290,13 +295,15 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
 
             // Assert
             IDbCruder cruder = new MySqlCruderLab(this.Connection);
+            cruder.GetTableValuesConverter("person").SetColumnConverter("Tag", new MySqlGuidValueConverter(MySqlGuidBehaviour.Char36));
+
             var persons = cruder.GetAllRows("Person");
 
             Assert.That(persons, Has.Count.EqualTo(2));
 
             var wolf = persons.Single(x => x.Id.Equals(1));
             Assert.That(wolf.Tag, Is.EqualTo(new Guid("df601c43-fb4c-4a4d-ab05-e6bf5cfa68d1")));
-            Assert.That(wolf.IsChecked, Is.EqualTo(true));
+            Assert.That(wolf.IsChecked, Is.EqualTo(1));
             Assert.That(wolf.Birthday, Is.EqualTo(DateTime.Parse("1939-05-13")));
             Assert.That(wolf.FirstName, Is.EqualTo("Harvey"));
             Assert.That(wolf.LastName, Is.EqualTo("Keitel"));
@@ -331,7 +338,15 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
         public void DeserializeTableData_SchemaDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
+            this.Connection.CreateSchema("bad_schema");
+
+            this.Connection.Dispose();
+            this.Connection = TestHelper.CreateConnection("bad_schema");
+            this.Connection.ExecuteSingleSql("CREATE TABLE bad_schema.some_table(id int PRIMARY KEY)");
+
             IDbSerializer serializer = new MySqlSerializerLab(this.Connection);
+
+            this.Connection.DropSchema("bad_schema");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => serializer.DeserializeTableData("some_table", "[]"));
@@ -482,7 +497,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
             Assert.That(harveyPhoto1["PersonDataId"], Is.EqualTo(101));
             Assert.That(harveyPhoto1["Content"], Is.EqualTo(this.GetType().Assembly.GetResourceBytes("PicHarvey1.png", true)));
             Assert.That(harveyPhoto1["ContentThumbnail"], Is.EqualTo(this.GetType().Assembly.GetResourceBytes("PicHarvey1Thumb.png", true)));
-            Assert.That(harveyPhoto1["TakenAt"], Is.EqualTo(DateTimeOffset.Parse("1997-12-12T11:12:13+00:00")));
+            Assert.That(harveyPhoto1["TakenAt"], Is.EqualTo(DateTime.Parse("1997-12-12T11:12:13")));
             Assert.That(harveyPhoto1["ValidUntil"], Is.EqualTo(DateTime.Parse("1998-12-12")));
 
             var harveyPhoto2 = TestHelper.LoadRow(this.Connection, "Photo", "PH-2");
@@ -490,7 +505,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
             Assert.That(harveyPhoto2["PersonDataId"], Is.EqualTo(101));
             Assert.That(harveyPhoto2["Content"], Is.EqualTo(this.GetType().Assembly.GetResourceBytes("PicHarvey2.png", true)));
             Assert.That(harveyPhoto2["ContentThumbnail"], Is.EqualTo(this.GetType().Assembly.GetResourceBytes("PicHarvey2Thumb.png", true)));
-            Assert.That(harveyPhoto2["TakenAt"], Is.EqualTo(DateTimeOffset.Parse("1991-01-01T02:16:17+00:00")));
+            Assert.That(harveyPhoto2["TakenAt"], Is.EqualTo(DateTime.Parse("1991-01-01T02:16:17")));
             Assert.That(harveyPhoto2["ValidUntil"], Is.EqualTo(DateTime.Parse("1993-09-09")));
 
             var mariaPhoto1 = TestHelper.LoadRow(this.Connection, "Photo", "PM-1");
@@ -498,7 +513,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
             Assert.That(mariaPhoto1["PersonDataId"], Is.EqualTo(201));
             Assert.That(mariaPhoto1["Content"], Is.EqualTo(this.GetType().Assembly.GetResourceBytes("PicMaria1.png", true)));
             Assert.That(mariaPhoto1["ContentThumbnail"], Is.EqualTo(this.GetType().Assembly.GetResourceBytes("PicMaria1Thumb.png", true)));
-            Assert.That(mariaPhoto1["TakenAt"], Is.EqualTo(DateTimeOffset.Parse("1998-04-05T08:09:22+00:00")));
+            Assert.That(mariaPhoto1["TakenAt"], Is.EqualTo(DateTime.Parse("1998-04-05T08:09:22")));
             Assert.That(mariaPhoto1["ValidUntil"], Is.EqualTo(DateTime.Parse("1999-04-05")));
 
             var mariaPhoto2 = TestHelper.LoadRow(this.Connection, "Photo", "PM-2");
@@ -506,7 +521,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
             Assert.That(mariaPhoto2["PersonDataId"], Is.EqualTo(201));
             Assert.That(mariaPhoto2["Content"], Is.EqualTo(this.GetType().Assembly.GetResourceBytes("PicMaria2.png", true)));
             Assert.That(mariaPhoto2["ContentThumbnail"], Is.EqualTo(this.GetType().Assembly.GetResourceBytes("PicMaria2Thumb.png", true)));
-            Assert.That(mariaPhoto2["TakenAt"], Is.EqualTo(DateTimeOffset.Parse("2001-06-01T11:12:19+00:00")));
+            Assert.That(mariaPhoto2["TakenAt"], Is.EqualTo(DateTime.Parse("2001-06-01T11:12:19")));
             Assert.That(mariaPhoto2["ValidUntil"], Is.EqualTo(DateTime.Parse("2002-07-07")));
 
             #endregion
@@ -535,11 +550,11 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
         public void DeserializeDbData_TablePredicateIsNull_DeserializesAll()
         {
             // Arrange
-            IDbInspector dbInspector = new MySqlInspectorLab(this.Connection);
-            dbInspector.DeleteDataFromAllTables();
-
             this.Connection.Dispose();
             this.Connection = TestHelper.CreateConnection("zeta");
+
+            IDbInspector dbInspector = new MySqlInspectorLab(this.Connection);
+            dbInspector.DeleteDataFromAllTables();
 
             IDbSerializer serializer = new MySqlSerializerLab(this.Connection);
             var json = this.GetType().Assembly.GetResourceText("DeserializeDbInput.json", true);
@@ -623,7 +638,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
             Assert.That(harveyPhoto1["PersonDataId"], Is.EqualTo(101));
             Assert.That(harveyPhoto1["Content"], Is.EqualTo(this.GetType().Assembly.GetResourceBytes("PicHarvey1.png", true)));
             Assert.That(harveyPhoto1["ContentThumbnail"], Is.EqualTo(this.GetType().Assembly.GetResourceBytes("PicHarvey1Thumb.png", true)));
-            Assert.That(harveyPhoto1["TakenAt"], Is.EqualTo(DateTimeOffset.Parse("1997-12-12T11:12:13+00:00")));
+            Assert.That(harveyPhoto1["TakenAt"], Is.EqualTo(DateTime.Parse("1997-12-12T11:12:13")));
             Assert.That(harveyPhoto1["ValidUntil"], Is.EqualTo(DateTime.Parse("1998-12-12")));
 
             var harveyPhoto2 = TestHelper.LoadRow(this.Connection, "Photo", "PH-2");
@@ -631,7 +646,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
             Assert.That(harveyPhoto2["PersonDataId"], Is.EqualTo(101));
             Assert.That(harveyPhoto2["Content"], Is.EqualTo(this.GetType().Assembly.GetResourceBytes("PicHarvey2.png", true)));
             Assert.That(harveyPhoto2["ContentThumbnail"], Is.EqualTo(this.GetType().Assembly.GetResourceBytes("PicHarvey2Thumb.png", true)));
-            Assert.That(harveyPhoto2["TakenAt"], Is.EqualTo(DateTimeOffset.Parse("1991-01-01T02:16:17+00:00")));
+            Assert.That(harveyPhoto2["TakenAt"], Is.EqualTo(DateTime.Parse("1991-01-01T02:16:17")));
             Assert.That(harveyPhoto2["ValidUntil"], Is.EqualTo(DateTime.Parse("1993-09-09")));
 
             var mariaPhoto1 = TestHelper.LoadRow(this.Connection, "Photo", "PM-1");
@@ -639,7 +654,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
             Assert.That(mariaPhoto1["PersonDataId"], Is.EqualTo(201));
             Assert.That(mariaPhoto1["Content"], Is.EqualTo(this.GetType().Assembly.GetResourceBytes("PicMaria1.png", true)));
             Assert.That(mariaPhoto1["ContentThumbnail"], Is.EqualTo(this.GetType().Assembly.GetResourceBytes("PicMaria1Thumb.png", true)));
-            Assert.That(mariaPhoto1["TakenAt"], Is.EqualTo(DateTimeOffset.Parse("1998-04-05T08:09:22+00:00")));
+            Assert.That(mariaPhoto1["TakenAt"], Is.EqualTo(DateTime.Parse("1998-04-05T08:09:22")));
             Assert.That(mariaPhoto1["ValidUntil"], Is.EqualTo(DateTime.Parse("1999-04-05")));
 
             var mariaPhoto2 = TestHelper.LoadRow(this.Connection, "Photo", "PM-2");
@@ -647,7 +662,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
             Assert.That(mariaPhoto2["PersonDataId"], Is.EqualTo(201));
             Assert.That(mariaPhoto2["Content"], Is.EqualTo(this.GetType().Assembly.GetResourceBytes("PicMaria2.png", true)));
             Assert.That(mariaPhoto2["ContentThumbnail"], Is.EqualTo(this.GetType().Assembly.GetResourceBytes("PicMaria2Thumb.png", true)));
-            Assert.That(mariaPhoto2["TakenAt"], Is.EqualTo(DateTimeOffset.Parse("2001-06-01T11:12:19+00:00")));
+            Assert.That(mariaPhoto2["TakenAt"], Is.EqualTo(DateTime.Parse("2001-06-01T11:12:19")));
             Assert.That(mariaPhoto2["ValidUntil"], Is.EqualTo(DateTime.Parse("2002-07-07")));
 
             #endregion
@@ -667,7 +682,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
             Assert.That(harveyWorkInfo["Salary"], Is.EqualTo(20100.20m));
             Assert.That(harveyWorkInfo["Bonus"], Is.EqualTo(10500.70m));
             Assert.That(harveyWorkInfo["OvertimeCoef"], Is.EqualTo(1.2).Within(0.00001));
-            Assert.That(harveyWorkInfo["WeekendCoef"], Is.EqualTo(3.7));
+            Assert.That(harveyWorkInfo["WeekendCoef"], Is.EqualTo(3.7).Within(0.0000001));
             Assert.That(harveyWorkInfo["Url"], Is.EqualTo("https://example.com/wolf"));
 
             var mariaWorkInfo = TestHelper.LoadRow(this.Connection, "WorkInfo", 2001);
@@ -681,7 +696,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
             Assert.That(mariaWorkInfo["Salary"], Is.EqualTo(700.10m));
             Assert.That(mariaWorkInfo["Bonus"], Is.EqualTo(80.33m));
             Assert.That(mariaWorkInfo["OvertimeCoef"], Is.EqualTo(1.7).Within(0.00001));
-            Assert.That(mariaWorkInfo["WeekendCoef"], Is.EqualTo(2.6));
+            Assert.That(mariaWorkInfo["WeekendCoef"], Is.EqualTo(2.6).Within(0.00001));
             Assert.That(mariaWorkInfo["Url"], Is.EqualTo("https://example.com/fabienne"));
 
             #endregion
@@ -711,7 +726,15 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
         public void DeserializeDbData_SchemaDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
+            this.Connection.CreateSchema("bad_schema");
+
+            this.Connection.Dispose();
+            this.Connection = TestHelper.CreateConnection("bad_schema");
+            this.Connection.ExecuteSingleSql("CREATE TABLE bad_schema.some_table(id int PRIMARY KEY)");
+
             IDbSerializer serializer = new MySqlSerializerLab(this.Connection);
+
+            this.Connection.DropSchema("bad_schema");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => serializer.DeserializeDbData("{\"SomeTable\" : []}"));
@@ -805,6 +828,9 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
         public void SerializeDbMetadata_ValidArguments_RunsOk()
         {
             // Arrange
+            this.Connection.Dispose();
+            this.Connection = TestHelper.CreateConnection("zeta");
+
             IDbSerializer serializer = new MySqlSerializerLab(this.Connection);
             serializer.JsonSerializerSettings.Formatting = Formatting.Indented;
             serializer.JsonSerializerSettings.Converters = new JsonConverter[]
@@ -813,7 +839,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
             };
 
             // Act
-            var json = serializer.SerializeDbMetadata(x => x != "WorkInfo");
+            var json = serializer.SerializeDbMetadata(x => !string.Equals(x, "WorkInfo", StringComparison.InvariantCultureIgnoreCase));
 
             // Assert
             var expectedJson = this.GetType().Assembly.GetResourceText("SerializeDbMetadataCustomResult.json", true);
@@ -848,7 +874,15 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
         public void SerializeDbMetadata_SchemaDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
+            this.Connection.CreateSchema("bad_schema");
+
+            this.Connection.Dispose();
+            this.Connection = TestHelper.CreateConnection("bad_schema");
+            this.Connection.ExecuteSingleSql("CREATE TABLE bad_schema.some_table(id int PRIMARY KEY)");
+
             IDbSerializer serializer = new MySqlSerializerLab(this.Connection);
+
+            this.Connection.DropSchema("bad_schema");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => serializer.SerializeDbMetadata());

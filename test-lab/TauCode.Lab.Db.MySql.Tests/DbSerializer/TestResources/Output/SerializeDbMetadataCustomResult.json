@@ -1,7 +1,7 @@
 ﻿{
   "Tables": [
     {
-      "Name": "Person",
+      "Name": "person",
       "Columns": [
         {
           "Name": "Id",
@@ -20,11 +20,14 @@
         {
           "Name": "Tag",
           "Type": {
-            "Name": "uniqueidentifier",
-            "Size": null,
+            "Name": "char",
+            "Size": 36,
             "Precision": null,
             "Scale": null,
-            "Properties": {}
+            "Properties": {
+              "character_set_name": "ascii",
+              "collation_name": "ascii_bin"
+            }
           },
           "IsNullable": true,
           "Identity": null,
@@ -34,7 +37,7 @@
         {
           "Name": "IsChecked",
           "Type": {
-            "Name": "bit",
+            "Name": "tinyint",
             "Size": null,
             "Precision": null,
             "Scale": null,
@@ -48,7 +51,7 @@
         {
           "Name": "Birthday",
           "Type": {
-            "Name": "smalldatetime",
+            "Name": "datetime",
             "Size": null,
             "Precision": null,
             "Scale": null,
@@ -62,11 +65,14 @@
         {
           "Name": "FirstName",
           "Type": {
-            "Name": "nvarchar",
+            "Name": "varchar",
             "Size": 100,
             "Precision": null,
             "Scale": null,
-            "Properties": {}
+            "Properties": {
+              "character_set_name": "utf8mb4",
+              "collation_name": "utf8mb4_0900_ai_ci"
+            }
           },
           "IsNullable": true,
           "Identity": null,
@@ -76,11 +82,14 @@
         {
           "Name": "LastName",
           "Type": {
-            "Name": "nvarchar",
+            "Name": "varchar",
             "Size": 100,
             "Precision": null,
             "Scale": null,
-            "Properties": {}
+            "Properties": {
+              "character_set_name": "utf8mb4",
+              "collation_name": "utf8mb4_0900_ai_ci"
+            }
           },
           "IsNullable": true,
           "Identity": null,
@@ -90,11 +99,14 @@
         {
           "Name": "Initials",
           "Type": {
-            "Name": "nchar",
+            "Name": "char",
             "Size": 2,
             "Precision": null,
             "Scale": null,
-            "Properties": {}
+            "Properties": {
+              "character_set_name": "utf8mb4",
+              "collation_name": "utf8mb4_0900_ai_ci"
+            }
           },
           "IsNullable": true,
           "Identity": null,
@@ -108,7 +120,9 @@
             "Size": null,
             "Precision": null,
             "Scale": null,
-            "Properties": {}
+            "Properties": {
+              "unsigned": "true"
+            }
           },
           "IsNullable": true,
           "Identity": null,
@@ -117,7 +131,7 @@
         }
       ],
       "PrimaryKey": {
-        "Name": "PK_person",
+        "Name": "PRIMARY",
         "Columns": [
           "Id"
         ],
@@ -126,8 +140,8 @@
       "ForeignKeys": [],
       "Indexes": [
         {
-          "Name": "PK_person",
-          "TableName": "Person",
+          "Name": "PRIMARY",
+          "TableName": "person",
           "Columns": [
             {
               "Name": "Id",
@@ -140,7 +154,7 @@
         },
         {
           "Name": "UX_person_tag",
-          "TableName": "Person",
+          "TableName": "person",
           "Columns": [
             {
               "Name": "Tag",
@@ -155,7 +169,7 @@
       "Properties": {}
     },
     {
-      "Name": "PersonData",
+      "Name": "persondata",
       "Columns": [
         {
           "Name": "Id",
@@ -230,7 +244,7 @@
         {
           "Name": "Weight",
           "Type": {
-            "Name": "numeric",
+            "Name": "decimal",
             "Size": null,
             "Precision": 10,
             "Scale": 2,
@@ -244,7 +258,7 @@
         {
           "Name": "UpdatedAt",
           "Type": {
-            "Name": "datetime2",
+            "Name": "datetime",
             "Size": null,
             "Precision": null,
             "Scale": null,
@@ -271,7 +285,7 @@
         }
       ],
       "PrimaryKey": {
-        "Name": "PK_personData",
+        "Name": "PRIMARY",
         "Columns": [
           "Id"
         ],
@@ -283,7 +297,7 @@
           "ColumnNames": [
             "PersonId"
           ],
-          "ReferencedTableName": "Person",
+          "ReferencedTableName": "person",
           "ReferencedColumnNames": [
             "Id"
           ],
@@ -292,8 +306,21 @@
       ],
       "Indexes": [
         {
-          "Name": "PK_personData",
-          "TableName": "PersonData",
+          "Name": "FK_personData_person",
+          "TableName": "persondata",
+          "Columns": [
+            {
+              "Name": "PersonId",
+              "SortDirection": "Ascending",
+              "Properties": {}
+            }
+          ],
+          "IsUnique": false,
+          "Properties": {}
+        },
+        {
+          "Name": "PRIMARY",
+          "TableName": "persondata",
           "Columns": [
             {
               "Name": "Id",
@@ -308,7 +335,7 @@
       "Properties": {}
     },
     {
-      "Name": "Photo",
+      "Name": "photo",
       "Columns": [
         {
           "Name": "Id",
@@ -317,7 +344,10 @@
             "Size": 4,
             "Precision": null,
             "Scale": null,
-            "Properties": {}
+            "Properties": {
+              "character_set_name": "ascii",
+              "collation_name": "ascii_bin"
+            }
           },
           "IsNullable": false,
           "Identity": null,
@@ -341,8 +371,8 @@
         {
           "Name": "Content",
           "Type": {
-            "Name": "varbinary",
-            "Size": -1,
+            "Name": "blob",
+            "Size": null,
             "Precision": null,
             "Scale": null,
             "Properties": {}
@@ -369,7 +399,7 @@
         {
           "Name": "TakenAt",
           "Type": {
-            "Name": "datetimeoffset",
+            "Name": "datetime",
             "Size": null,
             "Precision": null,
             "Scale": null,
@@ -396,7 +426,7 @@
         }
       ],
       "PrimaryKey": {
-        "Name": "PK_photo",
+        "Name": "PRIMARY",
         "Columns": [
           "Id"
         ],
@@ -408,7 +438,7 @@
           "ColumnNames": [
             "PersonDataId"
           ],
-          "ReferencedTableName": "PersonData",
+          "ReferencedTableName": "persondata",
           "ReferencedColumnNames": [
             "Id"
           ],
@@ -417,8 +447,21 @@
       ],
       "Indexes": [
         {
-          "Name": "PK_photo",
-          "TableName": "Photo",
+          "Name": "FK_photo_personData",
+          "TableName": "photo",
+          "Columns": [
+            {
+              "Name": "PersonDataId",
+              "SortDirection": "Ascending",
+              "Properties": {}
+            }
+          ],
+          "IsUnique": false,
+          "Properties": {}
+        },
+        {
+          "Name": "PRIMARY",
+          "TableName": "photo",
           "Columns": [
             {
               "Name": "Id",

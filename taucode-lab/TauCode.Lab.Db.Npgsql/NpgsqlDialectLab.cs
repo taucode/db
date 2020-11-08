@@ -28,6 +28,7 @@ namespace TauCode.Lab.Db.Npgsql
 
         public override IList<IndexMold> GetCreatableIndexes(TableMold tableMold)
         {
+            // todo: null arg ex possible
             var pk = tableMold.PrimaryKey;
 
             return base.GetCreatableIndexes(tableMold)
