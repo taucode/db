@@ -1,5 +1,5 @@
 /* Person; [Gender] is enum */
-CREATE TABLE [zeta].[Person](
+CREATE TABLE [Person](
 	[Id] int NOT NULL,
 	[Tag] uniqueidentifier NULL,
 	[IsChecked] bit NULL,
@@ -11,10 +11,10 @@ CREATE TABLE [zeta].[Person](
 	CONSTRAINT [PK_person] PRIMARY KEY([Id]))
 
 /* Index on birthday */
-CREATE UNIQUE INDEX [UX_person_tag] ON [zeta].[Person]([Tag])
+CREATE UNIQUE INDEX [UX_person_tag] ON [Person]([Tag])
 
 /* PersonData */
-CREATE TABLE [zeta].[PersonData](
+CREATE TABLE [PersonData](
 	[Id] smallint NOT NULL,
 	[PersonId] int NOT NULL,
 	[BestAge] tinyint NULL,
@@ -24,10 +24,10 @@ CREATE TABLE [zeta].[PersonData](
 	[UpdatedAt] datetime2 NULL,
 	[Signature] binary(4) NULL,
 	CONSTRAINT [PK_personData] PRIMARY KEY([Id]),
-	CONSTRAINT [FK_personData_person] FOREIGN KEY([PersonId]) REFERENCES [zeta].[Person]([Id]))
+	CONSTRAINT [FK_personData_person] FOREIGN KEY([PersonId]) REFERENCES [Person]([Id]))
 
 /* Photo */
-CREATE TABLE [zeta].[Photo](
+CREATE TABLE [Photo](
 	[Id] char(4) NOT NULL,
 	[PersonDataId] smallint NOT NULL,
 	[Content] varbinary(max) NOT NULL,
@@ -35,10 +35,10 @@ CREATE TABLE [zeta].[Photo](
 	[TakenAt] datetimeoffset NULL,
 	[ValidUntil] date NULL,
 	CONSTRAINT [PK_photo] PRIMARY KEY([Id]),
-	CONSTRAINT [FK_photo_personData] FOREIGN KEY([PersonDataId]) REFERENCES [zeta].[PersonData]([Id]))
+	CONSTRAINT [FK_photo_personData] FOREIGN KEY([PersonDataId]) REFERENCES [PersonData]([Id]))
 
 /* WorkInfo; [PositionCode] is enum */
-CREATE TABLE [zeta].[WorkInfo](
+CREATE TABLE [WorkInfo](
 	[Id] int NOT NULL,
 	[PersonId] int NOT NULL,
 	[PositionCode] varchar(100) NOT NULL,
@@ -52,7 +52,7 @@ CREATE TABLE [zeta].[WorkInfo](
 	[WeekendCoef] float NULL,
 	[Url] varchar(200),
 	CONSTRAINT [PK_workInfo] PRIMARY KEY([Id]),
-	CONSTRAINT [FK_workInfo_person] FOREIGN KEY([PersonId]) REFERENCES [zeta].[Person]([Id]))
+	CONSTRAINT [FK_workInfo_person] FOREIGN KEY([PersonId]) REFERENCES [Person]([Id]))
 
 /* Index on salary, bonus */
-CREATE INDEX [IX_workInfo_salary_bonus] ON [zeta].[WorkInfo]([Salary] ASC, [Bonus] DESC)
+CREATE INDEX [IX_workInfo_salary_bonus] ON [WorkInfo]([Salary] ASC, [Bonus] DESC)

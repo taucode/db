@@ -8,4 +8,4 @@ SELECT
     "PersonOrdNumber",
     "PersonId"
 FROM
-    "zeta"."PersonData"
+    "PersonData"

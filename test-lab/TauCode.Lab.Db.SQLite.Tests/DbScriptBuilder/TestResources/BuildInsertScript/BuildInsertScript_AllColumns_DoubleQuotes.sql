@@ -1,4 +1,4 @@
-INSERT INTO "zeta"."Person"(
+INSERT INTO "Person"(
     "MetaKey",
     "OrdNumber",
     "Id",

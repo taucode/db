@@ -1,4 +1,4 @@
-UPDATE [zeta].[PersonData]
+UPDATE [PersonData]
 SET
     [Height] = @p_height,
     [Photo] = @p_photo,

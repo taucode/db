@@ -1,4 +1,4 @@
-CREATE TABLE "zeta"."TaxInfo"(
+CREATE TABLE "TaxInfo"(
     "Id" "uniqueidentifier" NOT NULL,
     "PersonId" "bigint" NOT NULL,
     "Tax" "money" NOT NULL,

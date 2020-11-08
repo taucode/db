@@ -3,9 +3,17 @@ using TauCode.Db;
 
 namespace TauCode.Lab.Db.SQLite
 {
+    // todo regions
+    [DbDialect(
+        typeof(SQLiteDialectLab),
+        "reserved-words.txt",
+        "[],\"\"")]
     public class SQLiteDialectLab : DbDialectBase
     {
-        public SQLiteDialectLab(string name) : base(name)
+        public static readonly SQLiteDialectLab Instance = new SQLiteDialectLab();
+
+        private SQLiteDialectLab()
+            : base(DbProviderNames.SQLite)
         {
         }
 

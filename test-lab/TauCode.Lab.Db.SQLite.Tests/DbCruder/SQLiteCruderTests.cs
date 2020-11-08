@@ -86,7 +86,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbCruder
         {
             using var command = this.Connection.CreateCommand();
             command.CommandText = @"
-INSERT INTO [zeta].[SuperTable](
+INSERT INTO [SuperTable](
     [TheGuid],
     [TheBit],
     [TheTinyInt],
@@ -189,7 +189,7 @@ VALUES(
         private void CreateMediumTable()
         {
             var sql = @"
-CREATE TABLE [zeta].[MediumTable](
+CREATE TABLE [MediumTable](
     [Id] int NOT NULL PRIMARY KEY,
 
     [TheInt] int NULL DEFAULT 1599,
@@ -202,7 +202,7 @@ CREATE TABLE [zeta].[MediumTable](
         private void CreateSmallTable()
         {
             var sql = @"
-CREATE TABLE [zeta].[SmallTable](
+CREATE TABLE [SmallTable](
     [Id] int NOT NULL PRIMARY KEY IDENTITY(1, 1),
 
     [TheInt] int NULL DEFAULT 1599,
@@ -312,7 +312,7 @@ CREATE TABLE [zeta].[SmallTable](
             var ex = Assert.Throws<TauDbException>(() => cruder.GetTableValuesConverter("bad_table"));
 
             // Assert
-            Assert.That(ex.Message, Is.EqualTo("Table 'bad_table' does not exist in schema 'zeta'."));
+            Assert.That(ex.Message, Is.EqualTo("Table 'bad_table' does not exist."));
         }
 
         #endregion
@@ -408,7 +408,7 @@ CREATE TABLE [zeta].[SmallTable](
 
             IReadOnlyDictionary<string, object>[] loadedRows = new IReadOnlyDictionary<string, object>[rows.Length];
 
-            this.Connection.ExecuteSingleSql("ALTER TABLE [zeta].[HealthInfo] DROP CONSTRAINT [FK_healthInfo_Person]");
+            this.Connection.ExecuteSingleSql("ALTER TABLE [HealthInfo] DROP CONSTRAINT [FK_healthInfo_Person]");
 
             IDbCruder cruder = new SQLiteCruderLab(this.Connection);
 
@@ -424,7 +424,7 @@ CREATE TABLE [zeta].[SmallTable](
 
                 loadedRows[i] = loadedRow;
 
-                this.Connection.ExecuteSingleSql("DELETE FROM [zeta].[HealthInfo]");
+                this.Connection.ExecuteSingleSql("DELETE FROM [HealthInfo]");
             }
 
             // Assert
@@ -561,7 +561,7 @@ CREATE TABLE [zeta].[SmallTable](
                 var row = rows[i];
 
                 var createTableSql = @"
-CREATE TABLE [zeta].[MyTab](
+CREATE TABLE [MyTab](
     [Id] int NOT NULL PRIMARY KEY IDENTITY(1, 1),
     [Length] int NULL DEFAULT NULL,
     [Name] nvarchar(100) DEFAULT 'Polly')
@@ -573,7 +573,7 @@ CREATE TABLE [zeta].[MyTab](
                 var insertedRow = TestHelper.LoadRow(this.Connection, "MyTab", 1);
                 insertedRows[i] = insertedRow;
 
-                this.Connection.ExecuteSingleSql("DROP TABLE [zeta].[MyTab]");
+                this.Connection.ExecuteSingleSql("DROP TABLE [MyTab]");
             }
 
             // Assert
@@ -643,7 +643,7 @@ CREATE TABLE [zeta].[MyTab](
 
                 insertedRows[i] = insertedRow;
 
-                this.Connection.ExecuteSingleSql("DELETE FROM [zeta].[SmallTable]");
+                this.Connection.ExecuteSingleSql("DELETE FROM [SmallTable]");
             }
 
             // Assert
@@ -677,19 +677,6 @@ CREATE TABLE [zeta].[MyTab](
         }
 
         [Test]
-        public void InsertRow_SchemaDoesNotExist_ThrowsTauDbException()
-        {
-            // Arrange
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
-
-            // Act
-            var ex = Assert.Throws<TauDbException>(() => cruder.InsertRow("some_table", new object()));
-
-            // Assert
-            Assert.That(ex.Message, Is.EqualTo("Schema 'bad_schema' does not exist."));
-        }
-
-        [Test]
         public void InsertRow_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
@@ -699,7 +686,7 @@ CREATE TABLE [zeta].[MyTab](
             var ex = Assert.Throws<TauDbException>(() => cruder.InsertRow("bad_table", new object()));
 
             // Assert
-            Assert.That(ex.Message, Is.EqualTo("Table 'bad_table' does not exist in schema 'zeta'."));
+            Assert.That(ex.Message, Is.EqualTo("Table 'bad_table' does not exist."));
         }
 
         [Test]
@@ -818,7 +805,7 @@ CREATE TABLE [zeta].[MyTab](
                 row4,
             };
 
-            this.Connection.ExecuteSingleSql("ALTER TABLE [zeta].[HealthInfo] DROP CONSTRAINT [FK_healthInfo_Person]");
+            this.Connection.ExecuteSingleSql("ALTER TABLE [HealthInfo] DROP CONSTRAINT [FK_healthInfo_Person]");
 
             IDbCruder cruder = new SQLiteCruderLab(this.Connection);
 
@@ -830,7 +817,7 @@ CREATE TABLE [zeta].[MyTab](
 SELECT
     *
 FROM
-    [zeta].[HealthInfo]
+    [HealthInfo]
 ORDER BY
     [Id]
 ";
@@ -877,7 +864,7 @@ ORDER BY
 SELECT
     *
 FROM
-    [zeta].[SmallTable]
+    [SmallTable]
 ORDER BY
     [Id]
 ";
@@ -922,7 +909,7 @@ ORDER BY
 SELECT
     *
 FROM
-    [zeta].[SmallTable]
+    [SmallTable]
 ORDER BY
     [Id]
 ";
@@ -968,7 +955,7 @@ ORDER BY
 SELECT
     *
 FROM
-    [zeta].[SmallTable]
+    [SmallTable]
 ORDER BY
     [Id]
 ";
@@ -1044,19 +1031,6 @@ ORDER BY
         }
 
         [Test]
-        public void InsertRows_SchemaDoesNotExist_TauDbException()
-        {
-            // Arrange
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
-
-            // Act
-            var ex = Assert.Throws<TauDbException>(() => cruder.InsertRows("some_table", new object[] { }));
-
-            // Assert
-            Assert.That(ex.Message, Is.EqualTo("Schema 'bad_schema' does not exist."));
-        }
-
-        [Test]
         public void InsertRows_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
@@ -1066,7 +1040,7 @@ ORDER BY
             var ex = Assert.Throws<TauDbException>(() => cruder.InsertRows("bad_table", new object[] { }));
 
             // Assert
-            Assert.That(ex.Message, Is.EqualTo("Table 'bad_table' does not exist in schema 'zeta'."));
+            Assert.That(ex.Message, Is.EqualTo("Table 'bad_table' does not exist."));
         }
 
         [Test]
@@ -1493,19 +1467,6 @@ Table name: SmallTable; index: 1; int: 22
         }
 
         [Test]
-        public void GetRow_SchemaDoesNotExist_ThrowsTauDbException()
-        {
-            // Arrange
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
-
-            // Act
-            var ex = Assert.Throws<TauDbException>(() => cruder.GetRow("some_table", 1));
-
-            // Assert
-            Assert.That(ex.Message, Is.EqualTo("Schema 'bad_schema' does not exist."));
-        }
-
-        [Test]
         public void GetRow_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
@@ -1515,7 +1476,7 @@ Table name: SmallTable; index: 1; int: 22
             var ex = Assert.Throws<TauDbException>(() => cruder.GetRow("bad_table", 1));
 
             // Assert
-            Assert.That(ex.Message, Is.EqualTo("Table 'bad_table' does not exist in schema 'zeta'."));
+            Assert.That(ex.Message, Is.EqualTo("Table 'bad_table' does not exist."));
         }
 
         [Test]
@@ -1549,7 +1510,7 @@ Table name: SmallTable; index: 1; int: 22
 
         {
             // Arrange
-            this.Connection.ExecuteSingleSql("CREATE TABLE [zeta].[dummy](Foo int)"); // no PK
+            this.Connection.ExecuteSingleSql("CREATE TABLE [dummy](Foo int)"); // no PK
             IDbCruder cruder = new SQLiteCruderLab(this.Connection);
 
             // Act
@@ -1652,19 +1613,6 @@ Table name: SmallTable; index: 1; int: 22
         }
 
         [Test]
-        public void GetAllRows_SchemaDoesNotExist_ThrowsTauDbException()
-        {
-            // Arrange
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
-
-            // Act
-            var ex = Assert.Throws<TauDbException>(() => cruder.GetAllRows("some_table"));
-
-            // Assert
-            Assert.That(ex.Message, Is.EqualTo("Schema 'bad_schema' does not exist."));
-        }
-
-        [Test]
         public void GetAllRows_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
@@ -1674,7 +1622,7 @@ Table name: SmallTable; index: 1; int: 22
             var ex = Assert.Throws<TauDbException>(() => cruder.GetAllRows("bad_table"));
 
             // Assert
-            Assert.That(ex.Message, Is.EqualTo("Table 'bad_table' does not exist in schema 'zeta'."));
+            Assert.That(ex.Message, Is.EqualTo("Table 'bad_table' does not exist."));
         }
 
         [Test]
@@ -1783,7 +1731,7 @@ Table name: SmallTable; index: 1; int: 22
                 var loadedRow = TestHelper.LoadRow(this.Connection, "SuperTable", 1);
                 loadedRows[i] = loadedRow;
 
-                this.Connection.ExecuteSingleSql("DROP TABLE [zeta].[SuperTable]");
+                this.Connection.ExecuteSingleSql("DROP TABLE [SuperTable]");
             }
 
             for (var i = 0; i < loadedRows.Length; i++)
@@ -1927,19 +1875,6 @@ Table name: SmallTable; index: 1; int: 22
         }
 
         [Test]
-        public void UpdateRow_SchemaDoesNotExist_ThrowsTauDbException()
-        {
-            // Arrange
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
-
-            // Act
-            var ex = Assert.Throws<TauDbException>(() => cruder.UpdateRow("some_table", new { Id = 1, Name = 2 }));
-
-            // Assert
-            Assert.That(ex.Message, Is.EqualTo("Schema 'bad_schema' does not exist."));
-        }
-
-        [Test]
         public void UpdateRow_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
@@ -1949,7 +1884,7 @@ Table name: SmallTable; index: 1; int: 22
             var ex = Assert.Throws<TauDbException>(() => cruder.UpdateRow("bad_table", new { Id = 1, Name = 2 }));
 
             // Assert
-            Assert.That(ex.Message, Is.EqualTo("Table 'bad_table' does not exist in schema 'zeta'."));
+            Assert.That(ex.Message, Is.EqualTo("Table 'bad_table' does not exist."));
         }
 
         [Test]
@@ -2174,7 +2109,7 @@ Table name: SmallTable; index: 1; int: 22
 
         {
             // Arrange
-            this.Connection.ExecuteSingleSql("CREATE TABLE [zeta].[dummy](Foo int)"); // no PK
+            this.Connection.ExecuteSingleSql("CREATE TABLE [dummy](Foo int)"); // no PK
             IDbCruder cruder = new SQLiteCruderLab(this.Connection);
 
             // Act
@@ -2210,7 +2145,7 @@ Table name: SmallTable; index: 1; int: 22
             // Arrange
             this.CreateMediumTable();
             const int id = 1;
-            this.Connection.ExecuteSingleSql($"INSERT INTO [zeta].[MediumTable]([Id]) VALUES ({id})");
+            this.Connection.ExecuteSingleSql($"INSERT INTO [MediumTable]([Id]) VALUES ({id})");
 
             IDbCruder cruder = new SQLiteCruderLab(this.Connection);
 
@@ -2240,19 +2175,6 @@ Table name: SmallTable; index: 1; int: 22
         }
 
         [Test]
-        public void DeleteRow_SchemaDoesNotExist_ThrowsTauDbException()
-        {
-            // Arrange
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
-
-            // Act
-            var ex = Assert.Throws<TauDbException>(() => cruder.DeleteRow("some_table", 17));
-
-            // Assert
-            Assert.That(ex.Message, Is.EqualTo("Schema 'bad_schema' does not exist."));
-        }
-
-        [Test]
         public void DeleteRow_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
@@ -2262,7 +2184,7 @@ Table name: SmallTable; index: 1; int: 22
             var ex = Assert.Throws<TauDbException>(() => cruder.DeleteRow("bad_table", 17));
 
             // Assert
-            Assert.That(ex.Message, Is.EqualTo("Table 'bad_table' does not exist in schema 'zeta'."));
+            Assert.That(ex.Message, Is.EqualTo("Table 'bad_table' does not exist."));
         }
 
         [Test]
@@ -2295,7 +2217,7 @@ Table name: SmallTable; index: 1; int: 22
         public void DeleteRow_TableHasNoPrimaryKey_ThrowsArgumentException()
         {
             // Arrange
-            this.Connection.ExecuteSingleSql("CREATE TABLE [zeta].[dummy](Foo int)"); // no PK
+            this.Connection.ExecuteSingleSql("CREATE TABLE [dummy](Foo int)"); // no PK
             IDbCruder cruder = new SQLiteCruderLab(this.Connection);
 
             // Act

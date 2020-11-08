@@ -1,4 +1,4 @@
-CREATE TABLE [zeta].[SuperTable](
+CREATE TABLE [SuperTable](
 	[Id] integer NOT NULL PRIMARY KEY AUTOINCREMENT,
 	[TheGuid] uniqueidentifier NULL,
 	[TheBigInt] integer NULL,

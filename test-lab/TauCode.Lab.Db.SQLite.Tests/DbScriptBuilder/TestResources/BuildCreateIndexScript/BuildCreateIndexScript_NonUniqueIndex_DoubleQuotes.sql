@@ -1,1 +1,1 @@
-CREATE INDEX "IX_healthInfo_metricAmetricB" ON "zeta"."HealthInfo"("MetricA" ASC, "MetricB" DESC)
+CREATE INDEX "IX_healthInfo_metricAmetricB" ON "HealthInfo"("MetricA" ASC, "MetricB" DESC)

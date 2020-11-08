@@ -1,5 +1,5 @@
 ﻿/* harvey */
-INSERT INTO [zeta].[Person](
+INSERT INTO [Person](
 	[Id],
 	[Tag],
 	[IsChecked],
@@ -21,7 +21,7 @@ VALUES(
 )
 
 /* harvey data */
-INSERT INTO [zeta].[PersonData](
+INSERT INTO [PersonData](
 	[Id],
 	[PersonId],
 	[BestAge],
@@ -43,7 +43,7 @@ VALUES(
 )
 
 /* harvey photo 1 */
-INSERT INTO [zeta].[Photo](
+INSERT INTO [Photo](
 	[Id],
 	[PersonDataId],
 	[Content],
@@ -61,7 +61,7 @@ VALUES(
 )
 
 /* harvey photo 2 */
-INSERT INTO [zeta].[Photo](
+INSERT INTO [Photo](
 	[Id],
 	[PersonDataId],
 	[Content],
@@ -79,7 +79,7 @@ VALUES(
 )
 
 /* harvey work info */
-INSERT INTO [zeta].[WorkInfo](
+INSERT INTO [WorkInfo](
 	[Id],
 	[PersonId],
 	[PositionCode],
@@ -109,7 +109,7 @@ VALUES(
 )
 
 /* maria */
-INSERT INTO [zeta].[Person](
+INSERT INTO [Person](
 	[Id],
 	[Tag],
 	[IsChecked],
@@ -131,7 +131,7 @@ VALUES(
 )
 
 /* maria data */
-INSERT INTO [zeta].[PersonData](
+INSERT INTO [PersonData](
 	[Id],
 	[PersonId],
 	[BestAge],
@@ -153,7 +153,7 @@ VALUES(
 )
 
 /* maria photo 1 */
-INSERT INTO [zeta].[Photo](
+INSERT INTO [Photo](
 	[Id],
 	[PersonDataId],
 	[Content],
@@ -171,7 +171,7 @@ VALUES(
 )
 
 /* maria photo 2 */
-INSERT INTO [zeta].[Photo](
+INSERT INTO [Photo](
 	[Id],
 	[PersonDataId],
 	[Content],
@@ -189,7 +189,7 @@ VALUES(
 )
 
 /* maria work info */
-INSERT INTO [zeta].[WorkInfo](
+INSERT INTO [WorkInfo](
 	[Id],
 	[PersonId],
 	[PositionCode],

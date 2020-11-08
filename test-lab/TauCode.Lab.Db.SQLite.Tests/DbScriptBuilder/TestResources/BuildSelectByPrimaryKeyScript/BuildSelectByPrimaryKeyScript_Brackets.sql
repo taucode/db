@@ -6,6 +6,6 @@ SELECT
     [PersonOrdNumber],
     [PersonId]
 FROM
-    [zeta].[PersonData]
+    [PersonData]
 WHERE
     [Id] = @p_id

@@ -1,15 +1,15 @@
-﻿using System;
-using System.Data;
+﻿using System.Data.SQLite;
 using TauCode.Db;
 
 namespace TauCode.Lab.Db.SQLite
 {
     public class SQLiteSerializerLab : DbSerializerBase
     {
-        public SQLiteSerializerLab(IDbConnection connection, string schemaName) : base(connection, schemaName)
+        public SQLiteSerializerLab(SQLiteConnection connection)
+            : base(connection, null)
         {
         }
 
-        public override IDbUtilityFactory Factory => throw new NotImplementedException();
+        public override IDbUtilityFactory Factory => SQLiteUtilityFactoryLab.Instance;
     }
 }

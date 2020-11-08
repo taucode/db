@@ -11,10 +11,7 @@ namespace TauCode.Lab.Db.SQLite
         {
         }
 
-        public IDbDialect GetDialect()
-        {
-            throw new System.NotImplementedException();
-        }
+        public IDbDialect GetDialect() => SQLiteDialectLab.Instance;
 
         public IDbScriptBuilder CreateScriptBuilder(string schemaName)
         {

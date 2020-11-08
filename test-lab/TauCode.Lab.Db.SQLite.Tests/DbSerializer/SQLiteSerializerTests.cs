@@ -11,6 +11,9 @@ using TauCode.Db.DbValueConverters;
 using TauCode.Db.Exceptions;
 using TauCode.Extensions;
 
+// todo: why use inflector, here & anywhere in tests?
+
+// todo clean
 namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
 {
     [TestFixture]
@@ -36,19 +39,17 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
         #region Constructor
 
         [Test]
-        [TestCase("dbo")]
-        [TestCase(null)]
-        public void Constructor_ValidArguments_RunsOk(string schemaName)
+        public void Constructor_ValidArguments_RunsOk()
         {
             // Arrange
 
             // Act
-            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection, schemaName);
+            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection);
 
             // Assert
             Assert.That(serializer.Connection, Is.SameAs(this.Connection));
             Assert.That(serializer.Factory, Is.SameAs(SQLiteUtilityFactoryLab.Instance));
-            Assert.That(serializer.SchemaName, Is.EqualTo("dbo"));
+            Assert.That(serializer.SchemaName, Is.EqualTo(null));
             Assert.That(serializer.Cruder, Is.TypeOf<SQLiteCruderLab>());
         }
 
@@ -58,7 +59,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
             // Arrange
 
             // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => new SQLiteSerializerLab(null, "dbo"));
+            var ex = Assert.Throws<ArgumentNullException>(() => new SQLiteSerializerLab(null));
 
             // Assert
             Assert.That(ex.ParamName, Is.EqualTo("connection"));
@@ -71,7 +72,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
             using var connection = TestHelper.CreateConnection();
 
             // Act
-            var ex = Assert.Throws<ArgumentException>(() => new SQLiteSerializerLab(connection, "dbo"));
+            var ex = Assert.Throws<ArgumentException>(() => new SQLiteSerializerLab(connection));
 
             // Assert
             Assert.That(ex.ParamName, Is.EqualTo("connection"));
@@ -86,7 +87,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
         public void SerializeTableData_ValidArguments_RunsOk()
         {
             // Arrange
-            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection);
             serializer.JsonSerializerSettings.Formatting = Formatting.Indented;
 
             // Act
@@ -102,7 +103,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
         public void SerializeTableData_TableNameIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => serializer.SerializeTableData(null));
@@ -112,23 +113,10 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
         }
 
         [Test]
-        public void SerializeTableData_SchemaDoesNotExist_ThrowsTauDbException()
-        {
-            // Arrange
-            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection, "bad_schema");
-
-            // Act
-            var ex = Assert.Throws<TauDbException>(() => serializer.SerializeTableData("some_table"));
-
-            // Assert
-            Assert.That(ex.Message, Is.EqualTo("Schema 'bad_schema' does not exist."));
-        }
-
-        [Test]
         public void SerializeTableData_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => serializer.SerializeTableData("bad_table"));
@@ -145,7 +133,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
         public void SerializeDbData_ValidArguments_RunsOk()
         {
             // Arrange
-            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection);
             serializer.JsonSerializerSettings.Converters = new List<JsonConverter>
             {
                 new StringEnumConverter(namingStrategy:new DefaultNamingStrategy()),
@@ -167,23 +155,10 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
         }
 
         [Test]
-        public void SerializeDbData_SchemaDoesNotExist_ThrowsTauDbException()
-        {
-            // Arrange
-            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection, "bad_schema");
-
-            // Act
-            var ex = Assert.Throws<TauDbException>(() => serializer.SerializeDbData());
-
-            // Assert
-            Assert.That(ex.Message, Is.EqualTo("Schema 'bad_schema' does not exist."));
-        }
-
-        [Test]
         public void SerializeDbData_TableNamePredicateIsNull_SerializesDbData()
         {
             // Arrange
-            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection);
             serializer.JsonSerializerSettings.Converters = new List<JsonConverter>
             {
                 new StringEnumConverter(namingStrategy:new DefaultNamingStrategy()),
@@ -205,7 +180,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
         public void SerializeDbData_TableNamePredicateIsFalser_ReturnsEmptyArray()
         {
             // Arrange
-            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection);
 
             // Act
             var json = serializer.SerializeDbData(x => false);
@@ -222,13 +197,13 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
         public void DeserializeTableData_ValidArguments_RunsOk()
         {
             // Arrange
-            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection);
             var json = this.GetType().Assembly.GetResourceText("DeserializeTableInput.json", true);
 
-            this.Connection.ExecuteSingleSql("DELETE FROM [zeta].[Photo]");
-            this.Connection.ExecuteSingleSql("DELETE FROM [zeta].[WorkInfo]");
-            this.Connection.ExecuteSingleSql("DELETE FROM [zeta].[PersonData]");
-            this.Connection.ExecuteSingleSql("DELETE FROM [zeta].[Person]");
+            this.Connection.ExecuteSingleSql("DELETE FROM [Photo]");
+            this.Connection.ExecuteSingleSql("DELETE FROM [WorkInfo]");
+            this.Connection.ExecuteSingleSql("DELETE FROM [PersonData]");
+            this.Connection.ExecuteSingleSql("DELETE FROM [Person]");
 
             // Act
             serializer.DeserializeTableData(
@@ -275,7 +250,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
         public void DeserializeTableData_TableNameIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection);
             var json = this.GetType().Assembly.GetResourceText("DeserializeTableInput.json", true);
 
             // Act
@@ -286,23 +261,10 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
         }
 
         [Test]
-        public void DeserializeTableData_SchemaDoesNotExist_ThrowsTauDbException()
-        {
-            // Arrange
-            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection, "bad_schema");
-
-            // Act
-            var ex = Assert.Throws<TauDbException>(() => serializer.DeserializeTableData("some_table", "[]"));
-
-            // Assert
-            Assert.That(ex.Message, Is.EqualTo("Schema 'bad_schema' does not exist."));
-        }
-
-        [Test]
         public void DeserializeTableData_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => serializer.DeserializeTableData("bad_table", "[]"));
@@ -315,7 +277,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
         public void DeserializeTableData_JsonIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => serializer.DeserializeTableData("Person", null));
@@ -328,7 +290,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
         public void DeserializeTableData_JsonContainsBadData_ThrowsTauDbException()
         {
             // Arrange
-            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection);
             var json = this.GetType().Assembly.GetResourceText("DeserializeTableBadInput.json", true);
 
             // Act
@@ -349,7 +311,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
             IDbInspector dbInspector = new SQLiteInspectorLab(this.Connection);
             dbInspector.DeleteDataFromAllTables();
 
-            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection);
             var json = this.GetType().Assembly.GetResourceText("DeserializeDbInput.json", true);
 
             // Act
@@ -471,7 +433,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
         public void DeserializeDbData_JsonIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => serializer.DeserializeDbData(null));
@@ -487,7 +449,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
             IDbInspector dbInspector = new SQLiteInspectorLab(this.Connection);
             dbInspector.DeleteDataFromAllTables();
 
-            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection);
             var json = this.GetType().Assembly.GetResourceText("DeserializeDbInput.json", true);
 
             // Act
@@ -640,7 +602,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
             IDbInspector dbInspector = new SQLiteInspectorLab(this.Connection);
             dbInspector.DeleteDataFromAllTables();
 
-            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection);
             var json = this.GetType().Assembly.GetResourceText("DeserializeDbBadInput.json", true);
 
             // Act
@@ -648,19 +610,6 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
 
             // Assert
             Assert.That(ex, Has.Message.EqualTo("Table 'BadTable' does not exist in schema 'zeta'."));
-        }
-
-        [Test]
-        public void DeserializeDbData_SchemaDoesNotExist_ThrowsTauDbException()
-        {
-            // Arrange
-            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection, "bad_schema");
-
-            // Act
-            var ex = Assert.Throws<TauDbException>(() => serializer.DeserializeDbData("{\"SomeTable\" : []}"));
-
-            // Assert
-            Assert.That(ex.Message, Is.EqualTo("Schema 'bad_schema' does not exist."));
         }
 
         #endregion
@@ -671,7 +620,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
         public void SerializeTableMetadata_ValidArguments_RunsOk()
         {
             // Arrange
-            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection);
             serializer.JsonSerializerSettings.Formatting = Formatting.Indented;
             serializer.JsonSerializerSettings.Converters = new JsonConverter[]
             {
@@ -691,7 +640,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
         public void SerializeTableMetadata_TableNameIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => serializer.SerializeTableMetadata(null));
@@ -701,23 +650,10 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
         }
 
         [Test]
-        public void SerializeTableMetadata_SchemaDoesNotExist_ThrowsTauDbException()
-        {
-            // Arrange
-            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection, "bad_schema");
-
-            // Act
-            var ex = Assert.Throws<TauDbException>(() => serializer.SerializeTableMetadata("some_table"));
-
-            // Assert
-            Assert.That(ex.Message, Is.EqualTo("Schema 'bad_schema' does not exist."));
-        }
-
-        [Test]
         public void SerializeTableMetadata_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => serializer.SerializeTableMetadata("bad_table"));
@@ -734,7 +670,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
         public void SerializeDbMetadata_ValidArguments_RunsOk()
         {
             // Arrange
-            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection);
             serializer.JsonSerializerSettings.Formatting = Formatting.Indented;
             serializer.JsonSerializerSettings.Converters = new JsonConverter[]
             {
@@ -754,7 +690,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
         public void SerializeDbMetadata_PredicateIsNull_SerializesAll()
         {
             // Arrange
-            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection);
             serializer.JsonSerializerSettings.Formatting = Formatting.Indented;
             serializer.JsonSerializerSettings.Converters = new JsonConverter[]
             {
@@ -768,19 +704,6 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
             var expectedJson = this.GetType().Assembly.GetResourceText("SerializeDbMetadataResult.json", true);
             TodoCompare(json, expectedJson, "json");
             Assert.That(json, Is.EqualTo(expectedJson));
-        }
-
-        [Test]
-        public void SerializeDbMetadata_SchemaDoesNotExist_ThrowsTauDbException()
-        {
-            // Arrange
-            IDbSerializer serializer = new SQLiteSerializerLab(this.Connection, "bad_schema");
-
-            // Act
-            var ex = Assert.Throws<TauDbException>(() => serializer.SerializeDbMetadata());
-
-            // Assert
-            Assert.That(ex.Message, Is.EqualTo("Schema 'bad_schema' does not exist."));
         }
 
         #endregion
