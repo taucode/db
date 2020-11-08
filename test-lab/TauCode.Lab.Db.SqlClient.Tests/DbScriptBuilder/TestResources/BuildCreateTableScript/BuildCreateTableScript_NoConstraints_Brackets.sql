@@ -8,6 +8,4 @@ CREATE TABLE [zeta].[TaxInfo](
     [RecordDate] [datetime] NULL,
     [CreatedAt] [datetimeoffset] NOT NULL,
     [PersonOrdNumber] [tinyint] NOT NULL,
-    [DueDate] [datetime2] NULL,
-    CONSTRAINT [PK_taxInfo] PRIMARY KEY([Id]),
-    CONSTRAINT [FK_taxInfo_Person] FOREIGN KEY([PersonId], [PersonMetaKey], [PersonOrdNumber]) REFERENCES [zeta].[Person]([Id], [MetaKey], [OrdNumber]))
+    [DueDate] [datetime2] NULL)

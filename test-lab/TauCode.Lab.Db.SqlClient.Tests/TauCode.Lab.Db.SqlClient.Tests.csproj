@@ -86,8 +86,8 @@
     <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateIndexScript\BuildCreateIndexScript_NonUniqueIndex_DoubleQuotes.sql" />
     <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateIndexScript\BuildCreateIndexScript_UniqueIndex_DoubleQuotes.sql" />
     <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateIndexScript\BuildCreateIndexScript_UniqueIndex_Brackets.sql" />
-    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateTableScript\BuildCreateTableScript_Brackets_NoConstraints.sql" />
-    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateTableScript\BuildCreateTableScript_DoubleQuotes_NoConstraints.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateTableScript\BuildCreateTableScript_NoConstraints_Brackets.sql" />
+    <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateTableScript\BuildCreateTableScript_NoConstraints_DoubleQuotes.sql" />
     <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateTableScript\BuildCreateTableScript_DoubleQuotes.sql" />
     <EmbeddedResource Include="DbScriptBuilder\TestResources\BuildCreateTableScript\BuildCreateTableScript_Brackets.sql" />
     <EmbeddedResource Include="CommonResources\Assets\PicHarvey1.png" />

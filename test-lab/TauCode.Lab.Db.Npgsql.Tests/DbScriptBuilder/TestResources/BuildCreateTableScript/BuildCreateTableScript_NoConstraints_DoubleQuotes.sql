@@ -8,6 +8,4 @@ CREATE TABLE "zeta"."TaxInfo"(
     "RecordDate" timestamp without time zone NULL,
     "CreatedAt" timestamp with time zone NOT NULL,
     "PersonOrdNumber" smallint NOT NULL,
-    "DueDate" timestamp without time zone NULL,
-    CONSTRAINT "PK_taxInfo" PRIMARY KEY("Id"),
-    CONSTRAINT "FK_taxInfo_Person" FOREIGN KEY("PersonId", "PersonMetaKey", "PersonOrdNumber") REFERENCES "zeta"."Person"("Id", "MetaKey", "OrdNumber"))
+    "DueDate" timestamp without time zone NULL)

@@ -19,7 +19,8 @@ namespace TauCode.Db
             public int? Size { get; set; }
             public int? Precision { get; set; }
             public int? Scale { get; set; }
-            public Dictionary<string, string> AdditionalProperties { get; set; } = new Dictionary<string, string>();
+            public Dictionary<string, string> ColumnProperties { get; set; } = new Dictionary<string, string>();
+            public Dictionary<string, string> TypeProperties { get; set; } = new Dictionary<string, string>();
         }
 
         #endregion

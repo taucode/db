@@ -10,7 +10,10 @@
             }
             else if (value is long longValue)
             {
-                return longValue;
+                checked
+                {
+                    return (byte)longValue; // todo: ut these checks
+                }
             }
 
             return null;
