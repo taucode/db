@@ -1,11 +1,11 @@
 CREATE TABLE [TaxInfo](
-    [Id] [uniqueidentifier] NOT NULL,
-    [PersonId] [bigint] NOT NULL,
-    [Tax] [money] NOT NULL,
-    [Ratio] [float] NULL,
-    [PersonMetaKey] [smallint] NOT NULL,
-    [SmallRatio] [real] NOT NULL,
-    [RecordDate] [datetime] NULL,
-    [CreatedAt] [datetimeoffset] NOT NULL,
-    [PersonOrdNumber] [tinyint] NOT NULL,
-    [DueDate] [datetime2] NULL)
+    [Id] uniqueidentifier NOT NULL,
+    [PersonId] integer NOT NULL,
+    [Tax] numeric NOT NULL,
+    [Ratio] real NULL,
+    [PersonMetaKey] integer NOT NULL,
+    [SmallRatio] real NOT NULL,
+    [RecordDate] datetime NULL,
+    [CreatedAt] datetime NOT NULL,
+    [PersonOrdNumber] integer NOT NULL,
+    [DueDate] datetime NULL)

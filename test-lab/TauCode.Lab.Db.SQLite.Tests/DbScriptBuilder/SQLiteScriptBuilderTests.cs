@@ -322,7 +322,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbScriptBuilder
         #region Constructor
 
         [Test]
-        public void Constructor_SchemaIsNotNull_RunsOk()
+        public void Constructor_NoArguments_RunsOk()
         {
             // Arrange
 
@@ -332,22 +332,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbScriptBuilder
             // Assert
             Assert.That(scriptBuilder.Connection, Is.Null);
             Assert.That(scriptBuilder.Factory, Is.EqualTo(SQLiteUtilityFactoryLab.Instance));
-            Assert.That(scriptBuilder.SchemaName, Is.EqualTo("dbo"));
-            Assert.That(scriptBuilder.CurrentOpeningIdentifierDelimiter, Is.EqualTo('['));
-        }
-
-        [Test]
-        public void Constructor_SchemaIsNull_RunsOk()
-        {
-            // Arrange
-
-            // Act
-            IDbScriptBuilder scriptBuilder = new SQLiteScriptBuilderLab();
-
-            // Assert
-            Assert.That(scriptBuilder.Connection, Is.Null);
-            Assert.That(scriptBuilder.Factory, Is.EqualTo(SQLiteUtilityFactoryLab.Instance));
-            Assert.That(scriptBuilder.SchemaName, Is.EqualTo("dbo"));
+            Assert.That(scriptBuilder.SchemaName, Is.EqualTo(null));
             Assert.That(scriptBuilder.CurrentOpeningIdentifierDelimiter, Is.EqualTo('['));
         }
 

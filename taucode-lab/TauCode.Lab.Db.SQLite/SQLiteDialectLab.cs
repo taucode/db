@@ -1,5 +1,4 @@
-﻿using System;
-using TauCode.Db;
+﻿using TauCode.Db;
 
 namespace TauCode.Lab.Db.SQLite
 {
@@ -17,6 +16,8 @@ namespace TauCode.Lab.Db.SQLite
         {
         }
 
-        public override IDbUtilityFactory Factory => throw new NotImplementedException();
+        public override bool CanDecorateTypeIdentifier => false;
+
+        public override IDbUtilityFactory Factory => SQLiteUtilityFactoryLab.Instance;
     }
 }
