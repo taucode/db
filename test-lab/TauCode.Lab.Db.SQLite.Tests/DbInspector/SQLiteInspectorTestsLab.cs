@@ -1,8 +1,9 @@
 ﻿using NUnit.Framework;
 using System;
 using TauCode.Db;
-using TauCode.Db.Exceptions;
 
+
+// todo clean
 namespace TauCode.Lab.Db.SQLite.Tests.DbInspector
 {
     [TestFixture]
@@ -40,7 +41,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbInspector
             Assert.That(inspector.Connection, Is.SameAs(this.Connection));
             Assert.That(inspector.Factory, Is.SameAs(SQLiteUtilityFactoryLab.Instance));
 
-            Assert.That(inspector.SchemaName, Is.EqualTo("dbo"));
+            Assert.That(inspector.SchemaName, Is.EqualTo(null));
         }
 
         [Test]
@@ -59,7 +60,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbInspector
         public void Constructor_ConnectionIsNotOpen_ThrowsArgumentException()
         {
             // Arrange
-            using var connection = TestHelper.CreateConnection();
+            using var connection = TestHelper.CreateConnection(false, false);
 
             // Act
             var ex = Assert.Throws<ArgumentException>(() => new SQLiteInspectorLab(connection));
@@ -83,15 +84,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbInspector
             var schemaNames = inspector.GetSchemaNames();
 
             // Assert
-            CollectionAssert.AreEqual(
-                new []
-                {
-                    "dbo",
-                    "HangFire",
-                    "hello",
-                    "zeta",
-                },
-                schemaNames);
+            Assert.That(schemaNames, Is.Empty);
         }
 
         #endregion
@@ -99,21 +92,20 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbInspector
         #region GetTableNames
 
         [Test]
-        public void GetTableNames_ExistingSchema_ReturnsTableNames()
+        public void GetTableNames_NoArguments_ReturnsTableNames()
         {
             // Arrange
             this.Connection.ExecuteSingleSql(@"
-CREATE TABLE [zeta].[tab2]([id] int PRIMARY KEY)
+CREATE TABLE [tab2]([id] int PRIMARY KEY)
 ");
 
             this.Connection.ExecuteSingleSql(@"
-CREATE TABLE [zeta].[tab1]([id] int PRIMARY KEY)
+CREATE TABLE [tab1]([id] int PRIMARY KEY)
 ");
 
             this.Connection.ExecuteSingleSql(@"
-CREATE TABLE [dbo].[tab3]([id] int PRIMARY KEY)
+CREATE TABLE [tab3]([id] int PRIMARY KEY)
 ");
-
 
             IDbInspector inspector = new SQLiteInspectorLab(this.Connection);
 
@@ -121,39 +113,23 @@ CREATE TABLE [dbo].[tab3]([id] int PRIMARY KEY)
             var tableNames = inspector.GetTableNames();
 
             // Assert
-            CollectionAssert.AreEqual(
-                new[]
+            Assert.That(
+                tableNames,
+                Is.EqualTo(new[]
                 {
                     "tab1",
                     "tab2",
-                },
-                tableNames);
-        }
+                    "tab3",
+                }));
 
-        [Test]
-        public void GetTableNames_NonExistingSchema_ReturnsEmptyList()
-        {
-            // Arrange
-
-            this.Connection.ExecuteSingleSql(@"
-CREATE TABLE [zeta].[tab2]([id] int PRIMARY KEY)
-");
-
-            this.Connection.ExecuteSingleSql(@"
-CREATE TABLE [zeta].[tab1]([id] int PRIMARY KEY)
-");
-
-            this.Connection.ExecuteSingleSql(@"
-CREATE TABLE [dbo].[tab3]([id] int PRIMARY KEY)
-");
-
-            IDbInspector inspector = new SQLiteInspectorLab(this.Connection);
-
-            // Act
-            var ex = Assert.Throws<TauDbException>(() => inspector.GetTableNames());
-            
-            // Assert
-            Assert.That(ex, Has.Message.EqualTo("Schema 'kappa' does not exist."));
+            //CollectionAssert.AreEqual(
+            //    new[]
+            //    {
+            //        "tab1",
+            //        "tab2",
+            //        "tab3",
+            //    },
+            //    tableNames);
         }
 
         #endregion

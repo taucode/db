@@ -13,14 +13,22 @@ namespace TauCode.Lab.Db.SQLite.Tests
 
         //internal static string ConnectionString { get; private set; }
 
-        internal static SQLiteConnection CreateConnection()
+        internal static SQLiteConnection CreateConnection(bool open = true, bool boost = true)
         {
             var tuple = SQLiteToolsLab.CreateSQLiteDatabase();
 
             var connectionString = tuple.Item2;
             var connection = new SQLiteConnection(connectionString);
-            connection.Open();
-            connection.BoostSQLiteInsertions();
+
+            if (open)
+            {
+                connection.Open();
+            }
+
+            if (boost)
+            {
+                connection.BoostSQLiteInsertions();
+            }
 
             return connection;
         }

@@ -12,12 +12,14 @@ namespace TauCode.Lab.Db.SQLite
         {
         }
 
+        public SQLiteConnection SQLiteConnection => (SQLiteConnection)this.Connection;
+
         public override IDbUtilityFactory Factory => SQLiteUtilityFactoryLab.Instance;
 
+        public override IReadOnlyList<string> GetSchemaNames() => new string[] { };
+
         protected override IReadOnlyList<string> GetTableNamesImpl(string schemaName)
-        {
-            throw new NotImplementedException();
-        }
+            => this.SQLiteConnection.GetTableNames(null);
 
         protected override HashSet<string> GetSystemSchemata() => new HashSet<string>();
 
