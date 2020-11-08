@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text.RegularExpressions;
 using TauCode.Algorithms.Graphs;
 using TauCode.Db;
 using TauCode.Db.Exceptions;
@@ -402,6 +403,21 @@ WHERE
         internal static string SafeGetValue(this IDictionary<string, string> dictionary, string key)
         {
             return ((Dictionary<string, string>)dictionary).GetValueOrDefault(key);
+        }
+
+        public static string TryExtractSchemaName(string connectionString)
+        {
+            // server=localhost;database=bad_schema;user id=root
+            var match = Regex.Match(connectionString, @"database=([_\w\d]+)");
+            if (match.Success)
+            {
+                var result = match.Result("$1");
+                return result;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

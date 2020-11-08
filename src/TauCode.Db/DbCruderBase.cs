@@ -18,6 +18,8 @@ namespace TauCode.Db
         {
             public TableInfo(DbCruderBase cruder, string tableName)
             {
+                cruder.CheckSchemaIfNeeded();
+
                 this.TableMold = cruder
                     .Factory
                     .CreateTableInspector(cruder.Connection, cruder.SchemaName, tableName)
@@ -263,6 +265,17 @@ namespace TauCode.Db
 
         private static bool PropertyTruer(string propertyName) => true;
 
+        private void CheckSchemaIfNeeded()
+        {
+            if (this.NeedCheckSchemaExistence)
+            {
+                if (!this.SchemaExists(this.SchemaName))
+                {
+                    throw DbTools.CreateSchemaDoesNotExistException(this.SchemaName);
+                }
+            }
+        }
+
         #endregion
 
         #region Abstract
@@ -271,12 +284,18 @@ namespace TauCode.Db
 
         protected abstract IDbDataParameter CreateParameter(string tableName, ColumnMold column);
 
+        protected abstract bool NeedCheckSchemaExistence { get; }
+
+        protected abstract bool SchemaExists(string schemaName);
+
         #endregion
 
         #region Protected
 
         protected TableInfo GetOrCreateTableInfo(string tableName)
         {
+            tableName = this.TransformTableName(tableName);
+
             if (tableName == null)
             {
                 throw new ArgumentNullException(nameof(tableName));
@@ -291,6 +310,8 @@ namespace TauCode.Db
 
             return tableInfo;
         }
+
+        protected virtual string TransformTableName(string tableName) => tableName;
 
         protected virtual IDictionary<string, object> ObjectToDataDictionary(object obj)
         {
@@ -335,8 +356,15 @@ namespace TauCode.Db
         public virtual IDbScriptBuilder ScriptBuilder =>
             _scriptBuilder ??= this.Factory.CreateScriptBuilder(this.SchemaName);
 
-        public IDbTableValuesConverter GetTableValuesConverter(string tableName) =>
-            this.GetOrCreateTableInfo(tableName).TableValuesConverter;
+        public IDbTableValuesConverter GetTableValuesConverter(string tableName)
+        {
+            if (tableName == null)
+            {
+                throw new ArgumentNullException(nameof(tableName));
+            }
+        
+            return this.GetOrCreateTableInfo(tableName).TableValuesConverter;
+        }
 
         public void ResetTables()
         {
@@ -453,10 +481,6 @@ namespace TauCode.Db
             {
                 throw new ArgumentNullException(nameof(tableName));
             }
-
-            //var table = this.Factory
-            //    .CreateTable-Inspector(this.Connection, this.SchemaName, tableName)
-            //    .GetTable();
 
             var table = this.GetOrCreateTableInfo(tableName).TableMold;
 

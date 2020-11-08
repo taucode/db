@@ -122,7 +122,7 @@ WHERE
         internal static int GetTableRowCount(MySqlConnection connection, string schemaName, string tableName)
         {
             using var command = connection.CreateCommand();
-            command.CommandText = $"SELECT COUNT(*) FROM [{schemaName}].[{tableName}]";
+            command.CommandText = $"SELECT COUNT(*) FROM `{schemaName}`.`{tableName}`";
             var count = (int)command.ExecuteScalar();
             return count;
         }

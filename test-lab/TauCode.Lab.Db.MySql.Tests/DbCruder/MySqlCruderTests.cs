@@ -15,6 +15,7 @@ using TauCode.Lab.Db.MySql.DbValueConverters;
 
 namespace TauCode.Lab.Db.MySql.Tests.DbCruder
 {
+    // todo clean up
     [TestFixture]
     public class MySqlCruderTests : TestBase
     {
@@ -865,15 +866,14 @@ CREATE TABLE `zeta`.`MyTab`(
             this.Connection.ExecuteSingleSql("CREATE TABLE bad_schema.some_table(id int PRIMARY KEY)");
 
             IDbCruder cruder = new MySqlCruderLab(this.Connection);
-            var dummy = cruder.GetTableValuesConverter("some_table");
 
             this.Connection.DropSchema("bad_schema");
 
             // Act
-            var ex = Assert.Throws<MySqlException>(() => cruder.InsertRow("some_table", new object()));
+            var ex = Assert.Throws<TauDbException>(() => cruder.InsertRow("some_table", new object()));
 
             // Assert
-            Assert.That(ex.Message, Is.EqualTo("Unknown database 'bad_schema'"));
+            Assert.That(ex.Message, Is.EqualTo("Schema 'bad_schema' does not exist."));
         }
 
         [Test]
@@ -939,7 +939,7 @@ CREATE TABLE `zeta`.`MyTab`(
             // Assert
             Assert.That(ex,
                 Has.Message.EqualTo(
-                    "Could not transform value '' of type 'System.DBNull'. Table name is 'SuperTable'. Column name is 'TheInt'."));
+                    "Could not transform value '' of type 'System.DBNull'. Table name is 'supertable'. Column name is 'TheInt'."));
         }
 
         #endregion
@@ -1267,15 +1267,15 @@ ORDER BY
             this.Connection.ExecuteSingleSql("CREATE TABLE bad_schema.some_table(id int PRIMARY KEY)");
 
             IDbCruder cruder = new MySqlCruderLab(this.Connection);
-            var dummy = cruder.GetTableValuesConverter("some_table");
+            //var du-mmy = cruder.GetTableValuesConverter("some_table");
 
             this.Connection.DropSchema("bad_schema");
 
             // Act
-            var ex = Assert.Throws<MySqlException>(() => cruder.InsertRows("some_table", new object[] { new { id = 1 } }));
+            var ex = Assert.Throws<TauDbException>(() => cruder.InsertRows("some_table", new object[] { new { id = 1 } }));
 
             // Assert
-            Assert.That(ex.Message, Is.EqualTo("Unknown database 'bad_schema'"));
+            Assert.That(ex.Message, Is.EqualTo("Schema 'bad_schema' does not exist."));
         }
 
         [Test]
@@ -1374,7 +1374,7 @@ ORDER BY
             // Assert
             Assert.That(ex,
                 Has.Message.StartWith(
-                    "Could not transform value '' of type 'System.DBNull'. Table name is 'SmallTable'. Column name is 'TheInt'."));
+                    "Could not transform value '' of type 'System.DBNull'. Table name is 'smalltable'. Column name is 'TheInt'."));
         }
 
         #endregion
@@ -1781,15 +1781,15 @@ Table name: SmallTable; index: 1; int: 22
             this.Connection.ExecuteSingleSql("CREATE TABLE bad_schema.some_table(id int PRIMARY KEY)");
 
             IDbCruder cruder = new MySqlCruderLab(this.Connection);
-            var dummy = cruder.GetTableValuesConverter("some_table");
+            //var du-mmy = cruder.GetTableValuesConverter("some_table");
 
             this.Connection.DropSchema("bad_schema");
 
             // Act
-            var ex = Assert.Throws<MySqlException>(() => cruder.GetRow("some_table", 1));
+            var ex = Assert.Throws<TauDbException>(() => cruder.GetRow("some_table", 1));
 
             // Assert
-            Assert.That(ex.Message, Is.EqualTo("Unknown database 'bad_schema'"));
+            Assert.That(ex.Message, Is.EqualTo("Schema 'bad_schema' does not exist."));
         }
 
         [Test]
@@ -1873,7 +1873,7 @@ Table name: SmallTable; index: 1; int: 22
 
             // Assert
             Assert.That(ex,
-                Has.Message.StartsWith("Failed to retrieve single primary key column name for table 'Person'."));
+                Has.Message.StartsWith("Failed to retrieve single primary key column name for table 'person'."));
             Assert.That(ex.ParamName, Is.EqualTo("tableName"));
         }
 
@@ -1979,14 +1979,13 @@ Table name: SmallTable; index: 1; int: 22
             this.Connection.ExecuteSingleSql("CREATE TABLE some_table(id int PRIMARY KEY)");
 
             IDbCruder cruder = new MySqlCruderLab(this.Connection);
-            var dummy = cruder.GetTableValuesConverter("some_table");
             this.Connection.DropSchema("bad_schema");
 
             // Act
-            var ex = Assert.Throws<MySqlException>(() => cruder.GetAllRows("some_table"));
+            var ex = Assert.Throws<TauDbException>(() => cruder.GetAllRows("some_table"));
 
             // Assert
-            Assert.That(ex.Message, Is.EqualTo("Unknown database 'bad_schema'"));
+            Assert.That(ex.Message, Is.EqualTo("Schema 'bad_schema' does not exist."));
         }
 
         [Test]
@@ -2431,15 +2430,14 @@ Table name: SmallTable; index: 1; int: 22
             this.Connection.ExecuteSingleSql("CREATE TABLE bad_schema.some_table(id int PRIMARY KEY, name varchar(10))");
 
             IDbCruder cruder = new MySqlCruderLab(this.Connection);
-            var dummy = cruder.GetTableValuesConverter("some_table");
-
+            
             this.Connection.DropSchema("bad_schema");
 
             // Act
-            var ex = Assert.Throws<MySqlException>(() => cruder.UpdateRow("some_table", new { id = 1, name = "a" }));
+            var ex = Assert.Throws<TauDbException>(() => cruder.UpdateRow("some_table", new { id = 1, name = "a" }));
 
             // Assert
-            Assert.That(ex.Message, Is.EqualTo("Unknown database 'bad_schema'"));
+            Assert.That(ex.Message, Is.EqualTo("Schema 'bad_schema' does not exist."));
         }
 
         [Test]
@@ -2812,7 +2810,7 @@ Table name: SmallTable; index: 1; int: 22
 
             // Assert
             Assert.That(ex,
-                Has.Message.StartsWith("Failed to retrieve single primary key column name for table 'Person'."));
+                Has.Message.StartsWith("Failed to retrieve single primary key column name for table 'person'."));
             Assert.That(ex.ParamName, Is.EqualTo("tableName"));
         }
 
@@ -2874,14 +2872,13 @@ Table name: SmallTable; index: 1; int: 22
             this.Connection.ExecuteSingleSql("CREATE TABLE some_table(id int PRIMARY KEY)");
 
             IDbCruder cruder = new MySqlCruderLab(this.Connection);
-            var dummy = cruder.GetTableValuesConverter("some_table");
             this.Connection.DropSchema("bad_schema");
 
             // Act
-            var ex = Assert.Throws<MySqlException>(() => cruder.DeleteRow("some_table", 17));
+            var ex = Assert.Throws<TauDbException>(() => cruder.DeleteRow("some_table", 17));
 
             // Assert
-            Assert.That(ex.Message, Is.EqualTo("Unknown database 'bad_schema'"));
+            Assert.That(ex.Message, Is.EqualTo("Schema 'bad_schema' does not exist."));
         }
 
         [Test]
@@ -2957,12 +2954,12 @@ Table name: SmallTable; index: 1; int: 22
 
             // Act
 
-            var ex = Assert.Throws<ArgumentException>((() => cruder.DeleteRow("Person", "the_id")));
+            var ex = Assert.Throws<ArgumentException>((() => cruder.DeleteRow("person", "the_id")));
 
             // Assert
             Assert.That(
                 ex,
-                Has.Message.StartsWith("Failed to retrieve single primary key column name for table 'Person'."));
+                Has.Message.StartsWith("Failed to retrieve single primary key column name for table 'person'.")); // todo: for _the_ table 'person'
             Assert.That(ex.ParamName, Is.EqualTo("tableName"));
         }
 

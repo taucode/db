@@ -27,6 +27,11 @@ namespace TauCode.Lab.Db.MySql.DbValueConverters
                 return Convert.ToSByte(intValue);
             }
 
+            if (value is long longValue)
+            {
+                return Convert.ToSByte(longValue);
+            }
+
             throw new NotImplementedException();
         }
 

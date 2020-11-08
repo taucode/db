@@ -231,7 +231,7 @@ namespace TauCode.Db
         public virtual string SerializeTableMetadata(string tableName)
         {
             var tableInspector = this.Factory.CreateTableInspector(this.Connection, this.SchemaName, tableName);
-            var table = tableInspector.GetTable().CloneTable(false);
+            var table = tableInspector.GetTable().CloneTable(true);
 
             table.ForeignKeys = table.ForeignKeys
                 .OrderBy(x => x.Name)

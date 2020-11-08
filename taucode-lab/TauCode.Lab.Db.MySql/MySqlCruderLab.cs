@@ -6,6 +6,7 @@ using TauCode.Db.DbValueConverters;
 using TauCode.Db.Model;
 using TauCode.Lab.Db.MySql.DbValueConverters;
 
+// todo regions
 namespace TauCode.Lab.Db.MySql
 {
     public class MySqlCruderLab : DbCruderBase
@@ -14,6 +15,13 @@ namespace TauCode.Lab.Db.MySql
             : base(connection, connection.GetSchemaName())
         {
         }
+
+        protected MySqlConnection MySqlConnection => (MySqlConnection)this.Connection;
+
+        protected override bool SchemaExists(string schemaName)
+            => this.MySqlConnection.SchemaExists(schemaName);
+
+        protected override string TransformTableName(string tableName) => tableName.ToLowerInvariant();
 
         public override IDbUtilityFactory Factory => MySqlUtilityFactoryLab.Instance;
 
@@ -230,5 +238,7 @@ namespace TauCode.Lab.Db.MySql
                     throw new NotImplementedException();
             }
         }
+
+        protected override bool NeedCheckSchemaExistence => true;
     }
 }

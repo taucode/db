@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using TauCode.Db;
 using TauCode.Db.Model;
 
@@ -6,8 +7,13 @@ namespace TauCode.Lab.Db.MySql
 {
     public class MySqlScriptBuilderLab : DbScriptBuilderBase
     {
-        public MySqlScriptBuilderLab(string schemaName) : base(schemaName)
+        public MySqlScriptBuilderLab(string schemaName)
+            : base(schemaName)
         {
+            if (schemaName == null)
+            {
+                throw new ArgumentException(nameof(schemaName));
+            }
         }
 
         public override IDbUtilityFactory Factory => MySqlUtilityFactoryLab.Instance;
