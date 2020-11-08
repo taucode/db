@@ -35,13 +35,11 @@ namespace TauCode.Lab.Db.SQLite.Tests
 
         internal static void Purge(this SQLiteConnection connection)
         {
-            // todo: idle
-
-            //var tableNames = connection.GetTableNames(false);
-            //foreach (var tableName in tableNames)
-            //{
-            //    connection.DropTable(tableName);
-            //}
+            var tableNames = connection.GetTableNames(false);
+            foreach (var tableName in tableNames)
+            {
+                connection.DropTable(tableName);
+            }
         }
 
         internal static void WriteDiff(string actual, string expected, string directory, string fileExtension, string reminder)

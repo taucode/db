@@ -23,7 +23,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbScriptBuilder
         private void AssertCorruptedTableAction(Action<TableMold> action)
         {
             // Arrange
-            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "zeta", "HealthInfo");
+            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "HealthInfo");
             IDbScriptBuilder scriptBuilder = new SQLiteScriptBuilderLab("zeta");
 
             var table = tableInspector.GetTable();
@@ -394,7 +394,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbScriptBuilder
         public void BuildCreateTableScript_IncludeConstraints_ReturnsValidScript(char delimiter)
         {
             // Arrange
-            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "zeta", "TaxInfo");
+            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "TaxInfo");
             var table = tableInspector.GetTable();
 
             IDbScriptBuilder scriptBuilder = new SQLiteScriptBuilderLab("zeta");
@@ -415,7 +415,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbScriptBuilder
             this.Connection.DropTable("TaxInfo");
             this.Connection.ExecuteSingleSql(sql);
 
-            IDbTableInspector tableInspector2 = new SQLiteTableInspectorLab(this.Connection, "zeta", "TaxInfo");
+            IDbTableInspector tableInspector2 = new SQLiteTableInspectorLab(this.Connection, "TaxInfo");
             var table2 = tableInspector2.GetTable();
 
             var json = JsonConvert.SerializeObject(table);
@@ -434,7 +434,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbScriptBuilder
         public void BuildCreateTableScript_DoNotIncludeConstraints_ReturnsValidScript(char delimiter)
         {
             // Arrange
-            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "zeta", "TaxInfo");
+            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "TaxInfo");
             var table = tableInspector.GetTable();
 
             IDbScriptBuilder scriptBuilder = new SQLiteScriptBuilderLab("zeta");
@@ -492,7 +492,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbScriptBuilder
         public void BuildCreateIndexScript_UniqueIndex_ReturnsValidScript(char delimiter)
         {
             // Arrange
-            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "zeta", "WorkInfo");
+            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "WorkInfo");
             var table = tableInspector.GetTable();
             var index = table.Indexes.Single(x => x.Name == "UX_workInfo_Hash");
 
@@ -525,7 +525,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbScriptBuilder
         public void BuildCreateIndexScript_NonUniqueIndex_ReturnsValidScript(char delimiter)
         {
             // Arrange
-            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "zeta", "HealthInfo");
+            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "HealthInfo");
             var table = tableInspector.GetTable();
             var index = table.Indexes.Single(x => x.Name == "IX_healthInfo_metricAmetricB");
 
@@ -569,7 +569,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbScriptBuilder
         public void BuildCreateIndexScript_IndexIsCorrupted_ThrowsArgumentException()
         {
             // Arrange
-            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "zeta", "HealthInfo");
+            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "HealthInfo");
             var table = tableInspector.GetTable();
             var index = table.Indexes.Single(x => x.Name == "IX_healthInfo_metricAmetricB");
 
@@ -674,7 +674,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbScriptBuilder
                 CurrentOpeningIdentifierDelimiter = delimiter,
             };
 
-            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "zeta", "Person");
+            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "Person");
             var table = tableInspector.GetTable();
 
             var columnToParameterMappings = new Dictionary<string, string>
@@ -719,7 +719,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbScriptBuilder
                 CurrentOpeningIdentifierDelimiter = delimiter,
             };
 
-            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "zeta", "Person");
+            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "Person");
             var table = tableInspector.GetTable();
 
             var columnToParameterMappings = new Dictionary<string, string>();
@@ -753,7 +753,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbScriptBuilder
                 CurrentOpeningIdentifierDelimiter = delimiter,
             };
 
-            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "zeta", "Person");
+            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "Person");
             var table = tableInspector.GetTable();
 
             var columnToParameterMappings = new Dictionary<string, string>
@@ -807,7 +807,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbScriptBuilder
         {
             // Arrange
             IDbScriptBuilder scriptBuilder = new SQLiteScriptBuilderLab("zeta");
-            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "zeta", "Person");
+            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "Person");
             var table = tableInspector.GetTable();
 
             // Act
@@ -822,7 +822,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbScriptBuilder
         {
             // Arrange
             IDbScriptBuilder scriptBuilder = new SQLiteScriptBuilderLab("zeta");
-            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "zeta", "Person");
+            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "Person");
             var table = tableInspector.GetTable();
 
             var columnToParameterMappings = new Dictionary<string, string>
@@ -866,7 +866,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbScriptBuilder
                 CurrentOpeningIdentifierDelimiter = delimiter,
             };
 
-            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "PersonData");
             var table = tableInspector.GetTable();
 
             var columnToParameterMappings = new Dictionary<string, string>
@@ -905,7 +905,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbScriptBuilder
             // Arrange
             IDbScriptBuilder scriptBuilder = new SQLiteScriptBuilderLab("zeta");
 
-            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "PersonData");
             var table = tableInspector.GetTable();
 
             var columnToParameterMappings = new Dictionary<string, string>
@@ -963,7 +963,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbScriptBuilder
             IDbScriptBuilder scriptBuilder = new SQLiteScriptBuilderLab("zeta");
 
             this.Connection.ExecuteSingleSql("CREATE TABLE [zeta].[dummy](Foo int)"); // no PK
-            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "zeta", "dummy");
+            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "dummy");
             var table = tableInspector.GetTable();
 
             var columnToParameterMappings = new Dictionary<string, string>
@@ -986,7 +986,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbScriptBuilder
         {
             // Arrange
             IDbScriptBuilder scriptBuilder = new SQLiteScriptBuilderLab("zeta");
-            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "zeta", "Person");
+            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "Person");
             var table = tableInspector.GetTable();
 
             var columnToParameterMappings = new Dictionary<string, string>
@@ -1053,7 +1053,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbScriptBuilder
             // Arrange
             IDbScriptBuilder scriptBuilder = new SQLiteScriptBuilderLab("zeta");
 
-            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "PersonData");
             var table = tableInspector.GetTable();
 
             // Act
@@ -1069,7 +1069,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbScriptBuilder
             // Arrange
             IDbScriptBuilder scriptBuilder = new SQLiteScriptBuilderLab("zeta");
 
-            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "PersonData");
             var table = tableInspector.GetTable();
 
             var columnToParameterMappings = new Dictionary<string, string>
@@ -1114,7 +1114,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbScriptBuilder
                 CurrentOpeningIdentifierDelimiter = delimiter,
             };
 
-            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "PersonData");
             var table = tableInspector.GetTable();
 
             var columns = new[]
@@ -1160,7 +1160,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbScriptBuilder
                 CurrentOpeningIdentifierDelimiter = delimiter,
             };
 
-            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "PersonData");
             var table = tableInspector.GetTable();
 
             // Act
@@ -1190,7 +1190,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbScriptBuilder
             IDbScriptBuilder scriptBuilder = new SQLiteScriptBuilderLab("zeta");
 
             this.Connection.ExecuteSingleSql("CREATE TABLE [zeta].[dummy](Foo int)"); // no PK
-            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "zeta", "dummy");
+            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "dummy");
             var table = tableInspector.GetTable();
 
             // Act
@@ -1208,7 +1208,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbScriptBuilder
         {
             // Arrange
             IDbScriptBuilder scriptBuilder = new SQLiteScriptBuilderLab("zeta");
-            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "zeta", "Person");
+            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "Person");
             var table = tableInspector.GetTable();
 
             // Act
@@ -1227,7 +1227,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbScriptBuilder
             // Arrange
             IDbScriptBuilder scriptBuilder = new SQLiteScriptBuilderLab("zeta");
 
-            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "PersonData");
             var table = tableInspector.GetTable();
 
             var columns = new[]
@@ -1256,7 +1256,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbScriptBuilder
             // Arrange
             IDbScriptBuilder scriptBuilder = new SQLiteScriptBuilderLab("zeta");
 
-            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "PersonData");
             var table = tableInspector.GetTable();
 
             // Act
@@ -1305,7 +1305,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbScriptBuilder
                 CurrentOpeningIdentifierDelimiter = delimiter,
             };
 
-            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "PersonData");
             var table = tableInspector.GetTable();
 
             var columns = new[]
@@ -1351,7 +1351,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbScriptBuilder
                 CurrentOpeningIdentifierDelimiter = delimiter,
             };
 
-            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "PersonData");
             var table = tableInspector.GetTable();
 
             // Act
@@ -1380,7 +1380,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbScriptBuilder
             // Arrange
             IDbScriptBuilder scriptBuilder = new SQLiteScriptBuilderLab("zeta");
 
-            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "PersonData");
             var table = tableInspector.GetTable();
 
             // Act
@@ -1429,7 +1429,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbScriptBuilder
                 CurrentOpeningIdentifierDelimiter = delimiter,
             };
 
-            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "PersonData");
             var table = tableInspector.GetTable();
             
             // Act
@@ -1457,7 +1457,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbScriptBuilder
             IDbScriptBuilder scriptBuilder = new SQLiteScriptBuilderLab("zeta");
 
             this.Connection.ExecuteSingleSql("CREATE TABLE [zeta].[dummy](Foo int)"); // no PK
-            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "zeta", "dummy");
+            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "dummy");
             var table = tableInspector.GetTable();
 
             // Act
@@ -1475,7 +1475,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbScriptBuilder
         {
             // Arrange
             IDbScriptBuilder scriptBuilder = new SQLiteScriptBuilderLab("zeta");
-            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "zeta", "Person");
+            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "Person");
             var table = tableInspector.GetTable();
 
             // Act
@@ -1494,7 +1494,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbScriptBuilder
             // Arrange
             IDbScriptBuilder scriptBuilder = new SQLiteScriptBuilderLab("zeta");
 
-            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "PersonData");
             var table = tableInspector.GetTable();
 
             // Act

@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SQLite;
 using System.Linq;
+using TauCode.Algorithms.Graphs;
 using TauCode.Db;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
 using TauCode.Extensions;
+using TauCode.Lab.Db.SQLite.Parsing;
 
+// todo clean
 namespace TauCode.Lab.Db.SQLite
 {
     public static class SQLiteToolsLab
@@ -50,10 +54,12 @@ namespace TauCode.Lab.Db.SQLite
 
         public static string GetTableCreationSqlFromDb(SQLiteConnection connection, string tableName)
         {
+            throw new NotImplementedException();
+
             using var command = connection.CreateCommand();
             command.CommandText =
                 @"
-SELECT
+SE-LECT
     T.name  Name,
     T.sql   Sql
 FROM
@@ -101,16 +107,62 @@ SELECT
 FROM
     sqlite_master T
 WHERE
-    T.type = 'table'
+    T.type = 'table' AND
+    T.name NOT LIKE 'sqlite_%'
 ORDER BY
     T.name
 ";
 
             var rows = command.GetCommandRows();
 
+            if (rows.Count == 0)
+            {
+                return new List<string>();
+            }
+
             if (independentFirst.HasValue)
             {
-                throw new NotImplementedException();
+                var tableMolds = rows
+                    .Select(x => (TableMold)ParseTableCreationSql(x.Sql))
+                    .ToList();
+
+                var graph = new Graph<TableMold>();
+
+                var dictionary = tableMolds.ToDictionary(
+                    x => x.Name,
+                    x => graph.AddNode(x));
+
+                foreach (var tableMold in tableMolds)
+                {
+                    var tableNode = dictionary[tableMold.Name];
+
+                    foreach (var foreignKey in tableMold.ForeignKeys)
+                    {
+                        var referencedTableNode = dictionary.GetValueOrDefault(foreignKey.ReferencedTableName);
+                        if (referencedTableNode == null)
+                        {
+                            throw new TauDbException(
+                                $"Table '{foreignKey.ReferencedTableName}' not found."); // todo: standard exception 'object not found' to avoid copy/paste
+                        }
+
+                        tableNode.DrawEdgeTo(referencedTableNode);
+                    }
+                }
+
+                var algorithm = new GraphSlicingAlgorithm<TableMold>(graph);
+                var slices = algorithm.Slice();
+
+                if (!independentFirst.Value)
+                {
+                    slices = slices.Reverse().ToArray();
+                }
+
+                var arrangedTableNames = slices
+                    .SelectMany(x => x.Nodes.OrderBy(y => y.Value.Name))
+                    .Select(x => x.Value.Name)
+                    .ToList();
+
+                return arrangedTableNames;
             }
             else
             {
@@ -134,7 +186,7 @@ ORDER BY
 
             //            using var command = connection.CreateCommand();
             //            command.CommandText = @"
-            //SELECT
+            //SE-LECT
             //    T.table_name TableName
             //FROM
             //    information_schema.tables T
@@ -209,6 +261,24 @@ ORDER BY
             //            return tableNames;
         }
 
+        public static TableMold ParseTableCreationSql(string sql)
+        {
+            if (sql == null)
+            {
+                throw new ArgumentNullException(sql);
+            }
+
+            var parser = SQLiteParser.Instance;
+            var objs = parser.Parse(sql);
+
+            if (objs.Length != 1 || !(objs.Single() is TableMold))
+            {
+                throw new ArgumentException($"Could not build table definition from script:{Environment.NewLine}{sql}", nameof(sql));
+            }
+
+            return objs.Single() as TableMold;
+        }
+
         public static IList<ForeignKeyMold> GetTableForeignKeys(
             this SQLiteConnection connection,
             string tableName,
@@ -233,7 +303,7 @@ ORDER BY
 
             //            using var command = connection.CreateCommand();
             //            command.CommandText = @"
-            //SELECT
+            //SE-LECT
             //    TC.constraint_name ConstraintName,
             //    RC.unique_constraint_name UniqueConstraintName,
             //    TC2.table_name ReferencedTableName
@@ -276,7 +346,7 @@ ORDER BY
             //            if (loadColumns)
             //            {
             //                command.CommandText = @"
-            //SELECT
+            //SE-LECT
             //    CU.constraint_name  ConstraintName,
             //    CU.column_name      ColumnName,
             //    CU2.column_name     ReferencedColumnName
@@ -364,6 +434,92 @@ ORDER BY
             //return tableNames
             //    .Select(x => inspector.Factory.CreateTableInspector(connection, schemaName, x).GetTable())
             //    .ToList();
+        }
+
+        public static bool TableExists(this SQLiteConnection connection, string tableName)
+            => connection.GetTableNames(null).Contains(tableName); // todo optimize
+
+        public static TableMold GetTableMold(this SQLiteConnection connection, string tableName)
+        {
+            if (connection == null)
+            {
+                throw new ArgumentNullException(nameof(connection));
+            }
+
+            if (tableName == null)
+            {
+                throw new ArgumentNullException(nameof(tableName));
+            }
+
+            using var command = connection.CreateCommand();
+            command.CommandText =
+                @"
+SELECT
+    T.name  Name,
+    T.sql   Sql
+FROM
+    sqlite_master T
+WHERE
+    T.type = 'table' AND
+    T.name NOT LIKE 'sqlite_%' AND
+    T.name = @p_tableName
+ORDER BY
+    T.name
+";
+
+            command.Parameters.AddWithValue("p_tableName", tableName);
+
+            var rows = command.GetCommandRows();
+
+            if (rows.Count == 0)
+            {
+                throw DbTools.CreateTableDoesNotExistException(null, tableName);
+            }
+
+            var row = rows.Single();
+            var tableMold = ParseTableCreationSql(row.Sql);
+            return tableMold;
+        }
+
+        public static IList<IndexMold> GetTableIndexes(this SQLiteConnection connection, string tableName)
+        {
+            if (connection == null)
+            {
+                throw new ArgumentNullException(nameof(connection));
+            }
+
+            if (tableName == null)
+            {
+                throw new ArgumentNullException(nameof(tableName));
+            }
+
+            using var command = connection.CreateCommand();
+            command.CommandText =
+                @"
+SELECT
+    T.name    Name,
+    T.sql     Sql
+FROM
+    sqlite_master T
+WHERE
+    T.type = 'index' AND
+    T.tbl_name = @p_tableName AND
+    T.name NOT LIKE 'sqlite_%'
+ORDER BY
+    T.name
+";
+
+            command.Parameters.AddWithValue("p_tableName", tableName);
+            //command.Parameters.AddWithValue("p_antiPattern", "sqlite_autoindex_%");
+
+            var parser = SQLiteParser.Instance;
+
+            var indexes = command
+                .GetCommandRows()
+                .Select(x => (IndexMold)parser.Parse((string)x.Sql).Single())
+                .ToList();
+
+            return indexes;
         }
     }
 }
