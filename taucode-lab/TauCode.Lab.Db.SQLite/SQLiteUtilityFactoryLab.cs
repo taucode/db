@@ -26,7 +26,7 @@ namespace TauCode.Lab.Db.SQLite
 
         public IDbInspector CreateInspector(IDbConnection connection, string schemaName)
         {
-            throw new System.NotImplementedException();
+            return new SQLiteInspectorLab((SQLiteConnection)connection);
         }
 
         public IDbTableInspector CreateTableInspector(IDbConnection connection, string schemaName, string tableName)
@@ -37,7 +37,7 @@ namespace TauCode.Lab.Db.SQLite
 
         public IDbCruder CreateCruder(IDbConnection connection, string schemaName)
         {
-            throw new System.NotImplementedException();
+            return new SQLiteCruderLab((SQLiteConnection)connection);
         }
 
         public IDbSerializer CreateSerializer(IDbConnection connection, string schemaName)

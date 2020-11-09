@@ -16,7 +16,9 @@ namespace TauCode.Db.DbValueConverters
                 typeof(int),
                 typeof(uint),
                 typeof(long),
-                typeof(ulong)))
+                typeof(ulong),
+                
+                typeof(bool)))
             {
                 return Convert.ToInt64(value);
             }

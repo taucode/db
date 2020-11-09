@@ -9,6 +9,7 @@ namespace TauCode.Lab.Db.SQLite.Parsing
     {
         protected override ITokenProducer[] CreateProducers()
         {
+            // todo: support sql comments: /* some comment */, --some comment
             return new ITokenProducer[]
             {
                 new WhiteSpaceProducer(),

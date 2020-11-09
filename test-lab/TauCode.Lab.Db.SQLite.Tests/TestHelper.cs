@@ -114,11 +114,11 @@ WHERE
         //    return (decimal)command.ExecuteScalar();
         //}
 
-        internal static int GetTableRowCount(SQLiteConnection connection, string tableName)
+        internal static long GetTableRowCount(SQLiteConnection connection, string tableName)
         {
             using var command = connection.CreateCommand();
             command.CommandText = $"SELECT COUNT(*) FROM [{tableName}]";
-            var count = (int)command.ExecuteScalar();
+            var count = (long)command.ExecuteScalar();
             return count;
         }
     }

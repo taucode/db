@@ -5,9 +5,15 @@ namespace TauCode.Db.Model
 {
     public static class ModelExtensions
     {
-        public static IDictionary<string, string> ClonePropertiesIfNeeded(this IMold dbMold, bool needed)
+        public static IDictionary<string, string> ClonePropertiesIfNeeded(this IMold mold, bool needed)
         {
-            return needed ? dbMold.Properties.ToDictionary(x => x.Key, x => x.Value) : new Dictionary<string, string>();
+            return needed ? mold
+                .Properties
+                .Where(x => !x.Key.StartsWith("#"))
+                .ToDictionary(
+                    x => x.Key,
+                    x => x.Value)
+                : new Dictionary<string, string>();
         }
 
         public static ColumnMold CloneColumn(this ColumnMold column, bool includeProperties)

@@ -69,7 +69,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
         public void Constructor_ConnectionIsNotOpen_ThrowsArgumentException()
         {
             // Arrange
-            using var connection = TestHelper.CreateConnection();
+            using var connection = TestHelper.CreateConnection(false, false);
 
             // Act
             var ex = Assert.Throws<ArgumentException>(() => new SQLiteSerializerLab(connection));
@@ -122,7 +122,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
             var ex = Assert.Throws<TauDbException>(() => serializer.SerializeTableData("bad_table"));
 
             // Assert
-            Assert.That(ex.Message, Is.EqualTo("Table 'bad_table' does not exist in schema 'zeta'."));
+            Assert.That(ex.Message, Is.EqualTo("Table 'bad_table' does not exist."));
         }
 
         #endregion
@@ -229,7 +229,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
 
             var wolf = persons.Single(x => x.Id.Equals(1));
             Assert.That(wolf.Tag, Is.EqualTo(new Guid("df601c43-fb4c-4a4d-ab05-e6bf5cfa68d1")));
-            Assert.That(wolf.IsChecked, Is.EqualTo(true));
+            Assert.That(wolf.IsChecked, Is.EqualTo(1));
             Assert.That(wolf.Birthday, Is.EqualTo(DateTime.Parse("1939-05-13")));
             Assert.That(wolf.FirstName, Is.EqualTo("Harvey"));
             Assert.That(wolf.LastName, Is.EqualTo("Keitel"));
@@ -270,7 +270,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
             var ex = Assert.Throws<TauDbException>(() => serializer.DeserializeTableData("bad_table", "[]"));
 
             // Assert
-            Assert.That(ex.Message, Is.EqualTo("Table 'bad_table' does not exist in schema 'zeta'."));
+            Assert.That(ex.Message, Is.EqualTo("Table 'bad_table' does not exist."));
         }
 
         [Test]
@@ -339,7 +339,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
             var harvey = TestHelper.LoadRow(this.Connection, "Person", 1);
             Assert.That(harvey["Id"], Is.EqualTo(1));
             Assert.That(harvey["Tag"], Is.EqualTo(new Guid("df601c43-fb4c-4a4d-ab05-e6bf5cfa68d1")));
-            Assert.That(harvey["IsChecked"], Is.EqualTo(true));
+            Assert.That(harvey["IsChecked"], Is.EqualTo(1));
             Assert.That(harvey["Birthday"], Is.EqualTo(DateTime.Parse("1939-05-13")));
             Assert.That(harvey["FirstName"], Is.EqualTo("Harvey"));
             Assert.That(harvey["LastName"], Is.EqualTo("Keitel"));
@@ -393,7 +393,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
             Assert.That(harveyPhoto1["PersonDataId"], Is.EqualTo(101));
             Assert.That(harveyPhoto1["Content"], Is.EqualTo(this.GetType().Assembly.GetResourceBytes("PicHarvey1.png", true)));
             Assert.That(harveyPhoto1["ContentThumbnail"], Is.EqualTo(this.GetType().Assembly.GetResourceBytes("PicHarvey1Thumb.png", true)));
-            Assert.That(harveyPhoto1["TakenAt"], Is.EqualTo(DateTimeOffset.Parse("1997-12-12T11:12:13+00:00")));
+            Assert.That(harveyPhoto1["TakenAt"], Is.EqualTo(DateTime.Parse("1997-12-12T11:12:13")));
             Assert.That(harveyPhoto1["ValidUntil"], Is.EqualTo(DateTime.Parse("1998-12-12")));
 
             var harveyPhoto2 = TestHelper.LoadRow(this.Connection, "Photo", "PH-2");
@@ -401,7 +401,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
             Assert.That(harveyPhoto2["PersonDataId"], Is.EqualTo(101));
             Assert.That(harveyPhoto2["Content"], Is.EqualTo(this.GetType().Assembly.GetResourceBytes("PicHarvey2.png", true)));
             Assert.That(harveyPhoto2["ContentThumbnail"], Is.EqualTo(this.GetType().Assembly.GetResourceBytes("PicHarvey2Thumb.png", true)));
-            Assert.That(harveyPhoto2["TakenAt"], Is.EqualTo(DateTimeOffset.Parse("1991-01-01T02:16:17+00:00")));
+            Assert.That(harveyPhoto2["TakenAt"], Is.EqualTo(DateTime.Parse("1991-01-01T02:16:17")));
             Assert.That(harveyPhoto2["ValidUntil"], Is.EqualTo(DateTime.Parse("1993-09-09")));
 
             var mariaPhoto1 = TestHelper.LoadRow(this.Connection, "Photo", "PM-1");
@@ -409,7 +409,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
             Assert.That(mariaPhoto1["PersonDataId"], Is.EqualTo(201));
             Assert.That(mariaPhoto1["Content"], Is.EqualTo(this.GetType().Assembly.GetResourceBytes("PicMaria1.png", true)));
             Assert.That(mariaPhoto1["ContentThumbnail"], Is.EqualTo(this.GetType().Assembly.GetResourceBytes("PicMaria1Thumb.png", true)));
-            Assert.That(mariaPhoto1["TakenAt"], Is.EqualTo(DateTimeOffset.Parse("1998-04-05T08:09:22+00:00")));
+            Assert.That(mariaPhoto1["TakenAt"], Is.EqualTo(DateTime.Parse("1998-04-05T08:09:22")));
             Assert.That(mariaPhoto1["ValidUntil"], Is.EqualTo(DateTime.Parse("1999-04-05")));
 
             var mariaPhoto2 = TestHelper.LoadRow(this.Connection, "Photo", "PM-2");
@@ -417,7 +417,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
             Assert.That(mariaPhoto2["PersonDataId"], Is.EqualTo(201));
             Assert.That(mariaPhoto2["Content"], Is.EqualTo(this.GetType().Assembly.GetResourceBytes("PicMaria2.png", true)));
             Assert.That(mariaPhoto2["ContentThumbnail"], Is.EqualTo(this.GetType().Assembly.GetResourceBytes("PicMaria2Thumb.png", true)));
-            Assert.That(mariaPhoto2["TakenAt"], Is.EqualTo(DateTimeOffset.Parse("2001-06-01T11:12:19+00:00")));
+            Assert.That(mariaPhoto2["TakenAt"], Is.EqualTo(DateTime.Parse("2001-06-01T11:12:19")));
             Assert.That(mariaPhoto2["ValidUntil"], Is.EqualTo(DateTime.Parse("2002-07-07")));
 
             #endregion
@@ -477,7 +477,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
             var harvey = TestHelper.LoadRow(this.Connection, "Person", 1);
             Assert.That(harvey["Id"], Is.EqualTo(1));
             Assert.That(harvey["Tag"], Is.EqualTo(new Guid("df601c43-fb4c-4a4d-ab05-e6bf5cfa68d1")));
-            Assert.That(harvey["IsChecked"], Is.EqualTo(true));
+            Assert.That(harvey["IsChecked"], Is.EqualTo(1));
             Assert.That(harvey["Birthday"], Is.EqualTo(DateTime.Parse("1939-05-13")));
             Assert.That(harvey["FirstName"], Is.EqualTo("Harvey"));
             Assert.That(harvey["LastName"], Is.EqualTo("Keitel"));
@@ -609,7 +609,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
             var ex = Assert.Throws<TauDbException>(() => serializer.DeserializeDbData(json));
 
             // Assert
-            Assert.That(ex, Has.Message.EqualTo("Table 'BadTable' does not exist in schema 'zeta'."));
+            Assert.That(ex, Has.Message.EqualTo("Table 'BadTable' does not exist."));
         }
 
         #endregion
@@ -659,7 +659,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
             var ex = Assert.Throws<TauDbException>(() => serializer.SerializeTableMetadata("bad_table"));
 
             // Assert
-            Assert.That(ex.Message, Is.EqualTo("Table 'bad_table' does not exist in schema 'zeta'."));
+            Assert.That(ex.Message, Is.EqualTo("Table 'bad_table' does not exist."));
         }
 
         #endregion
