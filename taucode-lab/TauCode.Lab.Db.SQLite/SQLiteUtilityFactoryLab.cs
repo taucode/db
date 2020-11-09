@@ -42,7 +42,7 @@ namespace TauCode.Lab.Db.SQLite
 
         public IDbSerializer CreateSerializer(IDbConnection connection, string schemaName)
         {
-            throw new System.NotImplementedException();
+            return new SQLiteSerializerLab((SQLiteConnection)connection);
         }
     }
 }

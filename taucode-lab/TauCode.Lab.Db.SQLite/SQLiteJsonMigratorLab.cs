@@ -24,13 +24,13 @@ namespace TauCode.Lab.Db.SQLite
         {
         }
 
-        public override IDbUtilityFactory Factory => throw new NotImplementedException();
+        public override IDbUtilityFactory Factory => SQLiteUtilityFactoryLab.Instance;
 
-        protected override bool NeedCheckSchemaExistence => throw new NotImplementedException();
+        protected override bool NeedCheckSchemaExistence => false;
 
         protected override bool SchemaExists(string schemaName)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
     }
 }

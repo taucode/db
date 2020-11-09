@@ -6,7 +6,7 @@
         {
           "Name": "Id",
           "Type": {
-            "Name": "int",
+            "Name": "integer",
             "Size": null,
             "Precision": null,
             "Scale": null,
@@ -34,7 +34,7 @@
         {
           "Name": "IsChecked",
           "Type": {
-            "Name": "bit",
+            "Name": "integer",
             "Size": null,
             "Precision": null,
             "Scale": null,
@@ -48,7 +48,7 @@
         {
           "Name": "Birthday",
           "Type": {
-            "Name": "smalldatetime",
+            "Name": "datetime",
             "Size": null,
             "Precision": null,
             "Scale": null,
@@ -62,8 +62,8 @@
         {
           "Name": "FirstName",
           "Type": {
-            "Name": "nvarchar",
-            "Size": 100,
+            "Name": "text",
+            "Size": null,
             "Precision": null,
             "Scale": null,
             "Properties": {}
@@ -76,8 +76,8 @@
         {
           "Name": "LastName",
           "Type": {
-            "Name": "nvarchar",
-            "Size": 100,
+            "Name": "text",
+            "Size": null,
             "Precision": null,
             "Scale": null,
             "Properties": {}
@@ -90,8 +90,8 @@
         {
           "Name": "Initials",
           "Type": {
-            "Name": "nchar",
-            "Size": 2,
+            "Name": "text",
+            "Size": null,
             "Precision": null,
             "Scale": null,
             "Properties": {}
@@ -104,7 +104,7 @@
         {
           "Name": "Gender",
           "Type": {
-            "Name": "tinyint",
+            "Name": "integer",
             "Size": null,
             "Precision": null,
             "Scale": null,
@@ -125,19 +125,6 @@
       },
       "ForeignKeys": [],
       "Indexes": [
-        {
-          "Name": "PK_person",
-          "TableName": "Person",
-          "Columns": [
-            {
-              "Name": "Id",
-              "SortDirection": "Ascending",
-              "Properties": {}
-            }
-          ],
-          "IsUnique": true,
-          "Properties": {}
-        },
         {
           "Name": "UX_person_tag",
           "TableName": "Person",
@@ -160,7 +147,7 @@
         {
           "Name": "Id",
           "Type": {
-            "Name": "smallint",
+            "Name": "integer",
             "Size": null,
             "Precision": null,
             "Scale": null,
@@ -174,7 +161,7 @@
         {
           "Name": "PersonId",
           "Type": {
-            "Name": "int",
+            "Name": "integer",
             "Size": null,
             "Precision": null,
             "Scale": null,
@@ -188,7 +175,7 @@
         {
           "Name": "BestAge",
           "Type": {
-            "Name": "tinyint",
+            "Name": "integer",
             "Size": null,
             "Precision": null,
             "Scale": null,
@@ -202,7 +189,7 @@
         {
           "Name": "Hash",
           "Type": {
-            "Name": "bigint",
+            "Name": "integer",
             "Size": null,
             "Precision": null,
             "Scale": null,
@@ -216,10 +203,10 @@
         {
           "Name": "Height",
           "Type": {
-            "Name": "decimal",
+            "Name": "numeric",
             "Size": null,
-            "Precision": 10,
-            "Scale": 2,
+            "Precision": null,
+            "Scale": null,
             "Properties": {}
           },
           "IsNullable": true,
@@ -232,8 +219,8 @@
           "Type": {
             "Name": "numeric",
             "Size": null,
-            "Precision": 10,
-            "Scale": 2,
+            "Precision": null,
+            "Scale": null,
             "Properties": {}
           },
           "IsNullable": true,
@@ -244,7 +231,7 @@
         {
           "Name": "UpdatedAt",
           "Type": {
-            "Name": "datetime2",
+            "Name": "datetime",
             "Size": null,
             "Precision": null,
             "Scale": null,
@@ -258,8 +245,8 @@
         {
           "Name": "Signature",
           "Type": {
-            "Name": "binary",
-            "Size": 4,
+            "Name": "blob",
+            "Size": null,
             "Precision": null,
             "Scale": null,
             "Properties": {}
@@ -290,21 +277,7 @@
           "Properties": {}
         }
       ],
-      "Indexes": [
-        {
-          "Name": "PK_personData",
-          "TableName": "PersonData",
-          "Columns": [
-            {
-              "Name": "Id",
-              "SortDirection": "Ascending",
-              "Properties": {}
-            }
-          ],
-          "IsUnique": true,
-          "Properties": {}
-        }
-      ],
+      "Indexes": [],
       "Properties": {}
     },
     {
@@ -313,8 +286,8 @@
         {
           "Name": "Id",
           "Type": {
-            "Name": "char",
-            "Size": 4,
+            "Name": "text",
+            "Size": null,
             "Precision": null,
             "Scale": null,
             "Properties": {}
@@ -327,7 +300,7 @@
         {
           "Name": "PersonDataId",
           "Type": {
-            "Name": "smallint",
+            "Name": "integer",
             "Size": null,
             "Precision": null,
             "Scale": null,
@@ -341,8 +314,8 @@
         {
           "Name": "Content",
           "Type": {
-            "Name": "varbinary",
-            "Size": -1,
+            "Name": "blob",
+            "Size": null,
             "Precision": null,
             "Scale": null,
             "Properties": {}
@@ -355,8 +328,8 @@
         {
           "Name": "ContentThumbnail",
           "Type": {
-            "Name": "varbinary",
-            "Size": 4000,
+            "Name": "blob",
+            "Size": null,
             "Precision": null,
             "Scale": null,
             "Properties": {}
@@ -369,7 +342,7 @@
         {
           "Name": "TakenAt",
           "Type": {
-            "Name": "datetimeoffset",
+            "Name": "datetime",
             "Size": null,
             "Precision": null,
             "Scale": null,
@@ -383,7 +356,7 @@
         {
           "Name": "ValidUntil",
           "Type": {
-            "Name": "date",
+            "Name": "datetime",
             "Size": null,
             "Precision": null,
             "Scale": null,
@@ -415,21 +388,7 @@
           "Properties": {}
         }
       ],
-      "Indexes": [
-        {
-          "Name": "PK_photo",
-          "TableName": "Photo",
-          "Columns": [
-            {
-              "Name": "Id",
-              "SortDirection": "Ascending",
-              "Properties": {}
-            }
-          ],
-          "IsUnique": true,
-          "Properties": {}
-        }
-      ],
+      "Indexes": [],
       "Properties": {}
     }
   ],

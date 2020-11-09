@@ -10,7 +10,7 @@ CREATE TABLE [Person](
 	[Gender] integer NULL,
 	CONSTRAINT [PK_person] PRIMARY KEY([Id]))
 
-/* Index on birthday */
+/* Index on tag */
 CREATE UNIQUE INDEX [UX_person_tag] ON [Person]([Tag])
 
 /* PersonData */
