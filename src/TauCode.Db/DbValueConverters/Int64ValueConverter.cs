@@ -1,16 +1,26 @@
-﻿namespace TauCode.Db.DbValueConverters
+﻿using System;
+using TauCode.Extensions;
+
+namespace TauCode.Db.DbValueConverters
 {
     public class Int64ValueConverter : DbValueConverterBase
     {
         protected override object ToDbValueImpl(object value)
         {
-            if (value is long longValue)
+            if (value.GetType().IsIn(
+                
+                typeof(byte),
+                typeof(sbyte),
+                typeof(short),
+                typeof(ushort),
+                typeof(int),
+                typeof(uint),
+                typeof(long),
+                typeof(ulong),
+                
+                typeof(bool)))
             {
-                return longValue;
-            }
-            else if (value is int intValue)
-            {
-                return intValue;
+                return Convert.ToInt64(value);
             }
 
             return null;

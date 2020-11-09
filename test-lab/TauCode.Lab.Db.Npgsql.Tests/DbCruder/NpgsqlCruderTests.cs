@@ -249,7 +249,7 @@ CREATE TABLE ""zeta"".""SmallTable""(
         }
 
         [Test]
-        public void Constructor_ConnectionIsNotOpen_ArgumentException()
+        public void Constructor_ConnectionIsNotOpen_ThrowsArgumentException()
         {
             // Arrange
             using var connection = new NpgsqlConnection(TestHelper.ConnectionString);
@@ -1555,7 +1555,7 @@ Table name: SmallTable; index: 1; int: 22
         }
 
         [Test]
-        public void GetRow_TableHasNoPrimaryKey_ArgumentException()
+        public void GetRow_TableHasNoPrimaryKey_ThrowsArgumentException()
 
         {
             // Arrange
@@ -1600,7 +1600,7 @@ Table name: SmallTable; index: 1; int: 22
         }
 
         [Test]
-        public void GetRow_SelectorIsFalser_ArgumentException()
+        public void GetRow_SelectorIsFalser_ThrowsArgumentException()
         {
             // Arrange
             IDbCruder cruder = new NpgsqlCruderLab(this.Connection, "zeta");
@@ -2103,7 +2103,7 @@ Table name: SmallTable; index: 1; int: 22
         }
 
         [Test]
-        public void UpdateRow_PropertySelectorDoesNotContainPkColumn_ArgumentException()
+        public void UpdateRow_PropertySelectorDoesNotContainPkColumn_ThrowsArgumentException()
         {
             // Arrange
             this.CreateSuperTable();
@@ -2192,7 +2192,7 @@ Table name: SmallTable; index: 1; int: 22
         }
 
         [Test]
-        public void UpdateRow_TableHasNoPrimaryKey_ArgumentException()
+        public void UpdateRow_TableHasNoPrimaryKey_ThrowsArgumentException()
 
         {
             // Arrange
