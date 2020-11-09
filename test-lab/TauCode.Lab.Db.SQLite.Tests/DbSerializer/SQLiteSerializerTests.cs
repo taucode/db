@@ -531,7 +531,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
             Assert.That(harveyPhoto1["PersonDataId"], Is.EqualTo(101));
             Assert.That(harveyPhoto1["Content"], Is.EqualTo(this.GetType().Assembly.GetResourceBytes("PicHarvey1.png", true)));
             Assert.That(harveyPhoto1["ContentThumbnail"], Is.EqualTo(this.GetType().Assembly.GetResourceBytes("PicHarvey1Thumb.png", true)));
-            Assert.That(harveyPhoto1["TakenAt"], Is.EqualTo(DateTimeOffset.Parse("1997-12-12T11:12:13+00:00")));
+            Assert.That(harveyPhoto1["TakenAt"], Is.EqualTo(DateTime.Parse("1997-12-12T11:12:13")));
             Assert.That(harveyPhoto1["ValidUntil"], Is.EqualTo(DateTime.Parse("1998-12-12")));
 
             var harveyPhoto2 = TestHelper.LoadRow(this.Connection, "Photo", "PH-2");
@@ -539,7 +539,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
             Assert.That(harveyPhoto2["PersonDataId"], Is.EqualTo(101));
             Assert.That(harveyPhoto2["Content"], Is.EqualTo(this.GetType().Assembly.GetResourceBytes("PicHarvey2.png", true)));
             Assert.That(harveyPhoto2["ContentThumbnail"], Is.EqualTo(this.GetType().Assembly.GetResourceBytes("PicHarvey2Thumb.png", true)));
-            Assert.That(harveyPhoto2["TakenAt"], Is.EqualTo(DateTimeOffset.Parse("1991-01-01T02:16:17+00:00")));
+            Assert.That(harveyPhoto2["TakenAt"], Is.EqualTo(DateTime.Parse("1991-01-01T02:16:17")));
             Assert.That(harveyPhoto2["ValidUntil"], Is.EqualTo(DateTime.Parse("1993-09-09")));
 
             var mariaPhoto1 = TestHelper.LoadRow(this.Connection, "Photo", "PM-1");
@@ -547,7 +547,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
             Assert.That(mariaPhoto1["PersonDataId"], Is.EqualTo(201));
             Assert.That(mariaPhoto1["Content"], Is.EqualTo(this.GetType().Assembly.GetResourceBytes("PicMaria1.png", true)));
             Assert.That(mariaPhoto1["ContentThumbnail"], Is.EqualTo(this.GetType().Assembly.GetResourceBytes("PicMaria1Thumb.png", true)));
-            Assert.That(mariaPhoto1["TakenAt"], Is.EqualTo(DateTimeOffset.Parse("1998-04-05T08:09:22+00:00")));
+            Assert.That(mariaPhoto1["TakenAt"], Is.EqualTo(DateTime.Parse("1998-04-05T08:09:22")));
             Assert.That(mariaPhoto1["ValidUntil"], Is.EqualTo(DateTime.Parse("1999-04-05")));
 
             var mariaPhoto2 = TestHelper.LoadRow(this.Connection, "Photo", "PM-2");
@@ -555,7 +555,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
             Assert.That(mariaPhoto2["PersonDataId"], Is.EqualTo(201));
             Assert.That(mariaPhoto2["Content"], Is.EqualTo(this.GetType().Assembly.GetResourceBytes("PicMaria2.png", true)));
             Assert.That(mariaPhoto2["ContentThumbnail"], Is.EqualTo(this.GetType().Assembly.GetResourceBytes("PicMaria2Thumb.png", true)));
-            Assert.That(mariaPhoto2["TakenAt"], Is.EqualTo(DateTimeOffset.Parse("2001-06-01T11:12:19+00:00")));
+            Assert.That(mariaPhoto2["TakenAt"], Is.EqualTo(DateTime.Parse("2001-06-01T11:12:19")));
             Assert.That(mariaPhoto2["ValidUntil"], Is.EqualTo(DateTime.Parse("2002-07-07")));
 
             #endregion
@@ -571,7 +571,11 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
             Assert.That(harveyWorkInfo["PositionDescription"], Is.EqualTo("Человек, решающий пробемы"));
             Assert.That(harveyWorkInfo["PositionDescriptionEn"], Is.EqualTo("Man who fixes problems"));
             Assert.That(harveyWorkInfo["HiredOn"], Is.EqualTo(DateTime.Parse("1990-02-07T11:12:44")));
-            Assert.That(harveyWorkInfo["WorkStartDayTime"], Is.EqualTo(TimeSpan.Parse("07:11:22")));
+
+            var dateTime = (DateTime)harveyWorkInfo["WorkStartDayTime"];
+            var time = dateTime.TimeOfDay;
+            Assert.That(time, Is.EqualTo(TimeSpan.Parse("07:11:22")));
+
             Assert.That(harveyWorkInfo["Salary"], Is.EqualTo(20100.20m));
             Assert.That(harveyWorkInfo["Bonus"], Is.EqualTo(10500.70m));
             Assert.That(harveyWorkInfo["OvertimeCoef"], Is.EqualTo(1.2).Within(0.00001));
@@ -585,7 +589,11 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
             Assert.That(mariaWorkInfo["PositionDescription"], Is.EqualTo("Девушка, любящая Бутча"));
             Assert.That(mariaWorkInfo["PositionDescriptionEn"], Is.EqualTo("The girl who loves Butch"));
             Assert.That(mariaWorkInfo["HiredOn"], Is.EqualTo(DateTime.Parse("1989-08-11T01:08:05")));
-            Assert.That(mariaWorkInfo["WorkStartDayTime"], Is.EqualTo(TimeSpan.Parse("01:44:33")));
+
+            dateTime = (DateTime)mariaWorkInfo["WorkStartDayTime"];
+            time = dateTime.TimeOfDay;
+            Assert.That(time, Is.EqualTo(TimeSpan.Parse("01:44:33")));
+
             Assert.That(mariaWorkInfo["Salary"], Is.EqualTo(700.10m));
             Assert.That(mariaWorkInfo["Bonus"], Is.EqualTo(80.33m));
             Assert.That(mariaWorkInfo["OvertimeCoef"], Is.EqualTo(1.7).Within(0.00001));
