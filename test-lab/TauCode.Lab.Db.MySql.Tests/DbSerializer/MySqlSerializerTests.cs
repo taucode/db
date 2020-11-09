@@ -70,7 +70,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
         }
 
         [Test]
-        public void Constructor_ConnectionIsNotOpen_ArgumentException()
+        public void Constructor_ConnectionIsNotOpen_ThrowsArgumentException()
         {
             // Arrange
             using var connection = new MySqlConnection(TestHelper.ConnectionString);

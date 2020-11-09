@@ -152,7 +152,7 @@ namespace TauCode.Lab.Db.SQLite.Parsing
             {
                 var tableMold = accumulator.GetLastResult<TableMold>();
                 var columnMold = tableMold.Columns.Last();
-                    //columnMold.MarkAsExplicitPrimaryKey();
+                columnMold.Properties["#is_explicit_primary_key"] = "true";
             };
 
             var autoincrement = (ActionNode)allSqlNodes.Single(x =>
@@ -161,7 +161,7 @@ namespace TauCode.Lab.Db.SQLite.Parsing
             {
                 var tableMold = accumulator.GetLastResult<TableMold>();
                 var columnMold = tableMold.Columns.Last();
-                columnMold.Identity = new ColumnIdentityMold();
+                columnMold.Identity = new ColumnIdentityMold("1", "1");
             };
 
             var defaultNull = (ActionNode)allSqlNodes.Single(x =>
@@ -362,7 +362,7 @@ namespace TauCode.Lab.Db.SQLite.Parsing
                 var index = accumulator.GetLastResult<IndexMold>();
                 var columnInfo = index.Columns.Last();
 
-                var ascOrDesc = ((TextToken) token).Text.ToLowerInvariant();
+                var ascOrDesc = ((TextToken)token).Text.ToLowerInvariant();
                 columnInfo.SortDirection = SQLiteParsingHelper.SqlToSortDirection(ascOrDesc);
             };
 

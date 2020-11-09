@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Data.SQLite;
 using TauCode.Db;
 
 namespace TauCode.Lab.Db.SQLite
@@ -15,7 +16,7 @@ namespace TauCode.Lab.Db.SQLite
 
         public IDbScriptBuilder CreateScriptBuilder(string schemaName)
         {
-            throw new System.NotImplementedException();
+            return new SQLiteScriptBuilderLab();
         }
 
         public IDbConnection CreateConnection()
@@ -30,7 +31,8 @@ namespace TauCode.Lab.Db.SQLite
 
         public IDbTableInspector CreateTableInspector(IDbConnection connection, string schemaName, string tableName)
         {
-            throw new System.NotImplementedException();
+            // todo: check schema is null, here & anywhere.
+            return new SQLiteTableInspectorLab((SQLiteConnection)connection, tableName);
         }
 
         public IDbCruder CreateCruder(IDbConnection connection, string schemaName)

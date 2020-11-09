@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SQLite;
 using System.IO;
 using System.Text;
+using TauCode.Db;
 
 // todo clean
 namespace TauCode.Lab.Db.SQLite.Tests
@@ -66,45 +67,44 @@ namespace TauCode.Lab.Db.SQLite.Tests
             string tableName,
             object id)
         {
-            throw new NotImplementedException();
-//            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(connection, schemaName, tableName);
-//            var table = tableInspector.GetTable();
-//            var pkColumnName = table.GetPrimaryKeySingleColumn().Name;
+            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(connection, tableName);
+            var table = tableInspector.GetTable();
+            var pkColumnName = table.GetPrimaryKeySingleColumn().Name;
 
-//            using var command = connection.CreateCommand();
-//            command.CommandText = $@"
-//SELECT
-//    *
-//FROM
-//    [{schemaName}].[{tableName}]
-//WHERE
-//    [{pkColumnName}] = @p_id
-//";
-//            command.Parameters.AddWithValue("p_id", id);
-//            using var reader = command.ExecuteReader();
+            using var command = connection.CreateCommand();
+            command.CommandText = $@"
+SELECT
+    *
+FROM
+    [{tableName}]
+WHERE
+    [{pkColumnName}] = @p_id
+";
+            command.Parameters.AddWithValue("p_id", id);
+            using var reader = command.ExecuteReader();
 
-//            var read = reader.Read();
-//            if (!read)
-//            {
-//                return null;
-//            }
+            var read = reader.Read();
+            if (!read)
+            {
+                return null;
+            }
 
-//            var dictionary = new Dictionary<string, object>();
+            var dictionary = new Dictionary<string, object>();
 
-//            for (var i = 0; i < reader.FieldCount; i++)
-//            {
-//                var fieldName = reader.GetName(i);
-//                var value = reader[fieldName];
+            for (var i = 0; i < reader.FieldCount; i++)
+            {
+                var fieldName = reader.GetName(i);
+                var value = reader[fieldName];
 
-//                if (value == DBNull.Value)
-//                {
-//                    value = null;
-//                }
+                if (value == DBNull.Value)
+                {
+                    value = null;
+                }
 
-//                dictionary[fieldName] = value;
-//            }
+                dictionary[fieldName] = value;
+            }
 
-//            return dictionary;
+            return dictionary;
         }
 
         //internal static decimal GetLastIdentity(this SqlConnection connection)

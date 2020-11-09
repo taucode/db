@@ -55,7 +55,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbMigrator
         }
 
         [Test]
-        public void Constructor_ConnectionIsNotOpen_ArgumentException()
+        public void Constructor_ConnectionIsNotOpen_ThrowsArgumentException()
         {
             // Arrange
             using var connection = new NpgsqlConnection(TestHelper.ConnectionString);

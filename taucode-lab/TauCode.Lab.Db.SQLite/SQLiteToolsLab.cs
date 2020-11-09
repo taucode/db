@@ -402,7 +402,9 @@ ORDER BY
 
         public static long GetLastIdentity(this SQLiteConnection connection)
         {
-            throw new NotImplementedException();
+            using var command = connection.CreateCommand();
+            command.CommandText = "SELECT last_insert_rowid()";
+            return (long)command.ExecuteScalar();
         }
 
         public static void DropTable(this SQLiteConnection connection, string tableName)
@@ -477,7 +479,7 @@ ORDER BY
             }
 
             var row = rows.Single();
-            var tableMold = ParseTableCreationSql(row.Sql);
+            var tableMold = ParseTableCreationSql((string)row.Sql).ResolveExplicitPrimaryKey();
             return tableMold;
         }
 
@@ -520,6 +522,26 @@ ORDER BY
                 .ToList();
 
             return indexes;
+        }
+
+        internal static TableMold ResolveExplicitPrimaryKey(this TableMold tableMold)
+        {
+            var pkColumn = tableMold.Columns.SingleOrDefault(x =>
+                ((Dictionary<string, string>)x.Properties).GetValueOrDefault("#is_explicit_primary_key") == "true");
+
+            if (pkColumn != null)
+            {
+                tableMold.PrimaryKey = new PrimaryKeyMold
+                {
+                    Name = $"PK_{tableMold.Name}",
+                    Columns = new List<string>
+                    {
+                        pkColumn.Name
+                    },
+                };
+            }
+
+            return tableMold;
         }
     }
 }

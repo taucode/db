@@ -18,6 +18,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbCruder
         [SetUp]
         public void SetUp()
         {
+            // todo: get rid of inflector in tests
             //Inflector.Inflector.SetDefaultCultureFunc = () => new CultureInfo("en-US");
 
             var sql = this.GetType().Assembly.GetResourceText("crebase.sql", true);
@@ -39,44 +40,15 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbCruder
         {
             return new SuperTableRowDto
             {
-                Id = 1,
-
-                TheGuid = new Guid("11111111-1111-1111-1111-111111111111"),
-
-                TheBit = true,
-
-                TheTinyInt = 1,
-                TheSmallInt = 11,
-                TheInt = 111,
-                TheBigInt = 1111,
-
-                TheDecimal = 11.10m,
-                TheNumeric = 111.10m,
-
-                TheSmallMoney = 1111.1100m,
-                TheMoney = 11111.1100m,
-
-                TheReal = (float)111111.0,
-                TheFloat = 1111111.0,
-
-                TheDate = DateTime.Parse("1990-01-01"),
-                TheDateTime = DateTime.Parse("1991-01-01"),
-                TheDateTime2 = DateTime.Parse("1992-01-01"),
-                TheDateTimeOffset = DateTime.Parse("1993-01-01"),
-                TheSmallDateTime = DateTime.Parse("1994-01-01"),
-                TheTime = TimeSpan.Parse("01:01:01"),
-
-                TheChar = "a",
-                TheVarChar = "aa",
-                TheVarCharMax = "aaa",
-
-                TheNChar = "ц",
-                TheNVarChar = "цц",
-                TheNVarCharMax = "ццц",
-
-                TheBinary = new byte[] { 1 },
-                TheVarBinary = new byte[] { 10, 11, },
-                TheVarBinaryMax = new byte[] { 100, 101, 102 },
+                Id = 17,
+                TheGuid = new Guid("8e816a5f-b97c-43df-95e9-4fbfe7172dd0"),
+                TheBigInt = 3891231123,
+                TheDecimal = 11.2m,
+                TheReal = 15.99,
+                TheDateTime = DateTime.Parse("2011-11-12T10:10:10"),
+                TheTime = TimeSpan.Parse("03:03:03"),
+                TheText = "Андрей Коваленко",
+                TheBlob = new byte[] { 0x10, 0x20, 0x33 },
 
                 NotExisting = 777,
             };
@@ -87,101 +59,38 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbCruder
             using var command = this.Connection.CreateCommand();
             command.CommandText = @"
 INSERT INTO [SuperTable](
+    [Id],
     [TheGuid],
-    [TheBit],
-    [TheTinyInt],
-    [TheSmallInt],
-    [TheInt],
     [TheBigInt],
     [TheDecimal],
-    [TheNumeric],
-    [TheSmallMoney],
-    [TheMoney],
     [TheReal],
-    [TheFloat],
-    [TheDate],
     [TheDateTime],
-    [TheDateTime2],
-    [TheDateTimeOffset],
-    [TheSmallDateTime],
     [TheTime],
-    [TheChar],
-    [TheVarChar],
-    [TheVarCharMax],
-    [TheNChar],
-    [TheNVarChar],
-    [TheNVarCharMax],
-    [TheBinary],
-    [TheVarBinary],
-    [TheVarBinaryMax])
+    [TheText],
+    [TheBlob])
 VALUES(
+    @p_id,
     @p_theGuid,
-    @p_theBit,
-    @p_theTinyInt,
-    @p_theSmallInt,
-    @p_theInt,
     @p_theBigInt,
     @p_theDecimal,
-    @p_theNumeric,
-    @p_theSmallMoney,
-    @p_theMoney,
     @p_theReal,
-    @p_theFloat,
-    @p_theDate,
     @p_theDateTime,
-    @p_theDateTime2,
-    @p_theDateTimeOffset,
-    @p_theSmallDateTime,
     @p_theTime,
-    @p_theChar,
-    @p_theVarChar,
-    @p_theVarCharMax,
-    @p_theNChar,
-    @p_theNVarChar,
-    @p_theNVarCharMax,
-    @p_theBinary,
-    @p_theVarBinary,
-    @p_theVarBinaryMax)
+    @p_theText,
+    @p_theBlob)
 ";
 
             var row = this.CreateSuperTableRowDto();
 
+            command.Parameters.AddWithValue("@p_id", row.Id);
             command.Parameters.AddWithValue("@p_theGuid", row.TheGuid);
-
-            command.Parameters.AddWithValue("@p_theBit", row.TheBit);
-
-            command.Parameters.AddWithValue("@p_theTinyInt", row.TheTinyInt);
-            command.Parameters.AddWithValue("@p_theSmallInt", row.TheSmallInt);
-            command.Parameters.AddWithValue("@p_theInt", row.TheInt);
             command.Parameters.AddWithValue("@p_theBigInt", row.TheBigInt);
-
             command.Parameters.AddWithValue("@p_theDecimal", row.TheDecimal);
-            command.Parameters.AddWithValue("@p_theNumeric", row.TheNumeric);
-
-            command.Parameters.AddWithValue("@p_theSmallMoney", row.TheSmallMoney);
-            command.Parameters.AddWithValue("@p_theMoney", row.TheMoney);
-
             command.Parameters.AddWithValue("@p_theReal", row.TheReal);
-            command.Parameters.AddWithValue("@p_theFloat", row.TheFloat);
-
-            command.Parameters.AddWithValue("@p_theDate", row.TheDate);
             command.Parameters.AddWithValue("@p_theDateTime", row.TheDateTime);
-            command.Parameters.AddWithValue("@p_theDateTime2", row.TheDateTime2);
-            command.Parameters.AddWithValue("@p_theDateTimeOffset", row.TheDateTimeOffset);
-            command.Parameters.AddWithValue("@p_theSmallDateTime", row.TheSmallDateTime);
             command.Parameters.AddWithValue("@p_theTime", row.TheTime);
-
-            command.Parameters.AddWithValue("@p_theChar", row.TheChar);
-            command.Parameters.AddWithValue("@p_theVarChar", row.TheVarChar);
-            command.Parameters.AddWithValue("@p_theVarCharMax", row.TheVarCharMax);
-
-            command.Parameters.AddWithValue("@p_theNChar", row.TheNChar);
-            command.Parameters.AddWithValue("@p_theNVarChar", row.TheNVarChar);
-            command.Parameters.AddWithValue("@p_theNVarCharMax", row.TheNVarCharMax);
-
-            command.Parameters.AddWithValue("@p_theBinary", row.TheBinary);
-            command.Parameters.AddWithValue("@p_theVarBinary", row.TheVarBinary);
-            command.Parameters.AddWithValue("@p_theVarBinaryMax", row.TheVarBinaryMax);
+            command.Parameters.AddWithValue("@p_theText", row.TheText);
+            command.Parameters.AddWithValue("@p_theBlob", row.TheBlob);
 
             command.ExecuteNonQuery();
         }
@@ -190,10 +99,10 @@ VALUES(
         {
             var sql = @"
 CREATE TABLE [MediumTable](
-    [Id] int NOT NULL PRIMARY KEY,
+    [Id] integer NOT NULL PRIMARY KEY,
 
-    [TheInt] int NULL DEFAULT 1599,
-    [TheNVarChar] nvarchar(100) NULL DEFAULT 'Semmi')
+    [TheInt] integer NULL DEFAULT 1599,
+    [TheNVarChar] text NULL DEFAULT 'Semmi')
 ";
 
             this.Connection.ExecuteSingleSql(sql);
@@ -203,10 +112,10 @@ CREATE TABLE [MediumTable](
         {
             var sql = @"
 CREATE TABLE [SmallTable](
-    [Id] int NOT NULL PRIMARY KEY IDENTITY(1, 1),
+    [Id] integer NOT NULL PRIMARY KEY AUTOINCREMENT,
 
-    [TheInt] int NULL DEFAULT 1599,
-    [TheNVarChar] nvarchar(100) NULL DEFAULT 'Semmi')
+    [TheInt] integer NULL DEFAULT 1599,
+    [TheNVarChar] text NULL DEFAULT 'Semmi')
 ";
 
             this.Connection.ExecuteSingleSql(sql);
@@ -215,9 +124,7 @@ CREATE TABLE [SmallTable](
         #region Constructor
 
         [Test]
-        [TestCase("dbo")]
-        [TestCase(null)]
-        public void Constructor_ValidArguments_RunsOk(string schemaName)
+        public void Constructor_ValidArguments_RunsOk()
         {
             // Arrange
 
@@ -227,7 +134,7 @@ CREATE TABLE [SmallTable](
             // Assert
             Assert.That(cruder.Connection, Is.SameAs(this.Connection));
             Assert.That(cruder.Factory, Is.SameAs(SQLiteUtilityFactoryLab.Instance));
-            Assert.That(cruder.SchemaName, Is.EqualTo("dbo"));
+            Assert.That(cruder.SchemaName, Is.EqualTo(null));
             Assert.That(cruder.ScriptBuilder, Is.TypeOf<SQLiteScriptBuilderLab>());
             Assert.That(cruder.RowInsertedCallback, Is.Null);
         }
@@ -245,10 +152,10 @@ CREATE TABLE [SmallTable](
         }
 
         [Test]
-        public void Constructor_ConnectionIsNotOpen_ArgumentException()
+        public void Constructor_ConnectionIsNotOpen_ThrowsArgumentException()
         {
             // Arrange
-            using var connection = TestHelper.CreateConnection();
+            using var connection = TestHelper.CreateConnection(false, false);
 
             // Act
             var ex = Assert.Throws<ArgumentException>(() => new SQLiteCruderLab(connection));
@@ -287,19 +194,6 @@ CREATE TABLE [SmallTable](
 
             // Assert
             Assert.That(ex.ParamName, Is.EqualTo("tableName"));
-        }
-
-        [Test]
-        public void GetTableValuesConverter_NotExistingSchema_ThrowsTauDbException()
-        {
-            // Arrange
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
-
-            // Act
-            var ex = Assert.Throws<TauDbException>(() => cruder.GetTableValuesConverter("some_table"));
-
-            // Assert
-            Assert.That(ex.Message, Is.EqualTo("Schema 'bad_schema' does not exist."));
         }
 
         [Test]
@@ -348,9 +242,9 @@ CREATE TABLE [SmallTable](
             {
                 {"Id", new Guid("a776fd76-f2a8-4e09-9e69-b6d08e96c075")},
                 {"PersonId", 101},
-                {"Weight", 69.20m},
+                {"Weight", 69.2m},
                 {"PersonMetaKey", (short) 12},
-                {"IQ", 101.60m},
+                {"IQ", 101.6m},
                 {"Temper", (short) 4},
                 {"PersonOrdNumber", (byte) 3},
                 {"MetricB", -3},
@@ -361,9 +255,9 @@ CREATE TABLE [SmallTable](
             var row2 = new DynamicRow();
             row2.SetValue("Id", new Guid("a776fd76-f2a8-4e09-9e69-b6d08e96c075"));
             row2.SetValue("PersonId", 101);
-            row2.SetValue("Weight", 69.20m);
+            row2.SetValue("Weight", 69.2m);
             row2.SetValue("PersonMetaKey", (short)12);
-            row2.SetValue("IQ", 101.60m);
+            row2.SetValue("IQ", 101.6m);
             row2.SetValue("Temper", (short)4);
             row2.SetValue("PersonOrdNumber", (byte)3);
             row2.SetValue("MetricB", -3);
@@ -374,9 +268,9 @@ CREATE TABLE [SmallTable](
             {
                 Id = new Guid("a776fd76-f2a8-4e09-9e69-b6d08e96c075"),
                 PersonId = 101,
-                Weight = 69.20m,
+                Weight = 69.2m,
                 PersonMetaKey = (short)12,
-                IQ = 101.60m,
+                IQ = 101.6m,
                 Temper = (short)4,
                 PersonOrdNumber = (byte)3,
                 MetricB = -3,
@@ -388,9 +282,9 @@ CREATE TABLE [SmallTable](
             {
                 Id = new Guid("a776fd76-f2a8-4e09-9e69-b6d08e96c075"),
                 PersonId = 101,
-                Weight = 69.20m,
+                Weight = 69.2m,
                 PersonMetaKey = 12,
-                IQ = 101.60m,
+                IQ = 101.6m,
                 Temper = 4,
                 PersonOrdNumber = 3,
                 MetricB = -3,
@@ -407,8 +301,6 @@ CREATE TABLE [SmallTable](
             };
 
             IReadOnlyDictionary<string, object>[] loadedRows = new IReadOnlyDictionary<string, object>[rows.Length];
-
-            this.Connection.ExecuteSingleSql("ALTER TABLE [HealthInfo] DROP CONSTRAINT [FK_healthInfo_Person]");
 
             IDbCruder cruder = new SQLiteCruderLab(this.Connection);
 
@@ -437,6 +329,8 @@ CREATE TABLE [SmallTable](
                 var originalRowJson = JsonConvert.SerializeObject(cleanOriginalRow);
                 var loadedJson = JsonConvert.SerializeObject(loadedRows[i]);
 
+                TodoCompare(loadedJson, originalRowJson, "json");
+
                 Assert.That(loadedJson, Is.EqualTo(originalRowJson));
             }
         }
@@ -449,89 +343,45 @@ CREATE TABLE [SmallTable](
 
             IDbCruder cruder = new SQLiteCruderLab(this.Connection);
 
-            dynamic row = new DynamicRow(new
-            {
-                TheGuid = new Guid("8e816a5f-b97c-43df-95e9-4fbfe7172dd0"),
+            var superRow = this.CreateSuperTableRowDto();
+            var dynamicRow = new DynamicRow(superRow);
+            dynamicRow.DeleteValue("NotExisting");
 
-                TheBit = true,
-
-                TheTinyInt = (byte)17,
-                TheSmallInt = (short)11,
-                TheInt = 44,
-                TheBigInt = 777L,
-
-                TheDecimal = 11.2m,
-                TheNumeric = 22.3m,
-
-                TheSmallMoney = 123.06m,
-                TheMoney = 60.77m,
-
-                TheReal = (float)15.99,
-                TheFloat = 7001.555,
-
-                TheDate = DateTime.Parse("2010-01-02"),
-                TheDateTime = DateTime.Parse("2011-11-12T10:10:10"),
-                TheDateTime2 = DateTime.Parse("2015-03-07T05:06:33.777"),
-                TheDateTimeOffset = DateTimeOffset.Parse("2011-11-12T10:10:10+03:00"),
-                TheSmallDateTime = DateTime.Parse("1970-04-08T11:11:11"),
-                TheTime = TimeSpan.Parse("03:03:03"),
-
-                TheChar = "abc",
-                TheVarChar = "Andrey Kovalenko",
-                TheVarCharMax = "Rocky Marciano",
-
-                TheNChar = "АБВ",
-                TheNVarChar = "Андрей Коваленко",
-                TheNVarCharMax = "Роки Марчиано",
-
-                TheBinary = new byte[] { 0x10, 0x20, 0x33 },
-                TheVarBinary = new byte[] { 0xff, 0xee, 0xbb },
-                TheVarBinaryMax = new byte[] { 0x80, 0x90, 0xa0 },
-            });
+            dynamic row = dynamicRow;
 
             // Act
             cruder.InsertRow("SuperTable", row, (Func<string, bool>)(x => true));
 
             // Assert
-            var insertedRow = TestHelper.LoadRow(this.Connection, "SuperTable", 1);
+            var loadedRow = TestHelper.LoadRow(this.Connection, "SuperTable", 17);
 
-            Assert.That(insertedRow["TheGuid"], Is.EqualTo(new Guid("8e816a5f-b97c-43df-95e9-4fbfe7172dd0")));
+            Assert.That(loadedRow["Id"], Is.EqualTo(17));
+            Assert.That(loadedRow["Id"], Is.TypeOf<long>());
 
-            Assert.That(insertedRow["TheBit"], Is.EqualTo(true));
+            Assert.That(loadedRow["TheGuid"], Is.EqualTo(new Guid("8e816a5f-b97c-43df-95e9-4fbfe7172dd0")));
+            Assert.That(loadedRow["TheGuid"], Is.TypeOf<Guid>());
 
-            Assert.That(insertedRow["TheTinyInt"], Is.EqualTo((byte)17));
-            Assert.That(insertedRow["TheSmallInt"], Is.EqualTo((short)11));
-            Assert.That(insertedRow["TheInt"], Is.EqualTo(44));
-            Assert.That(insertedRow["TheBigInt"], Is.EqualTo(777L));
+            Assert.That(loadedRow["TheBigInt"], Is.EqualTo(3891231123));
+            Assert.That(loadedRow["TheBigInt"], Is.TypeOf<long>());
 
-            Assert.That(insertedRow["TheDecimal"], Is.EqualTo(11.2m));
-            Assert.That(insertedRow["TheNumeric"], Is.EqualTo(22.3m));
+            Assert.That(loadedRow["TheDecimal"], Is.EqualTo(11.2m));
+            Assert.That(loadedRow["TheDecimal"], Is.TypeOf<decimal>());
 
-            Assert.That(insertedRow["TheSmallMoney"], Is.EqualTo(123.06m));
-            Assert.That(insertedRow["TheMoney"], Is.EqualTo(60.77m));
+            Assert.That(loadedRow["TheReal"], Is.EqualTo(15.99));
+            Assert.That(loadedRow["TheReal"], Is.TypeOf<double>());
 
-            Assert.That(insertedRow["TheReal"], Is.EqualTo((float)15.99));
-            Assert.That(insertedRow["TheFloat"], Is.EqualTo(7001.555));
+            Assert.That(loadedRow["TheDateTime"], Is.EqualTo(DateTime.Parse("2011-11-12T10:10:10")));
+            Assert.That(loadedRow["TheDateTime"], Is.TypeOf<DateTime>());
 
-            Assert.That(insertedRow["TheDate"], Is.EqualTo(DateTime.Parse("2010-01-02")));
-            Assert.That(insertedRow["TheDateTime"], Is.EqualTo(DateTime.Parse("2011-11-12T10:10:10")));
-            Assert.That(insertedRow["TheDateTime2"], Is.EqualTo(DateTime.Parse("2015-03-07T05:06:33.777")));
-            Assert.That(insertedRow["TheDateTimeOffset"],
-                Is.EqualTo(DateTimeOffset.Parse("2011-11-12T10:10:10+03:00")));
-            Assert.That(insertedRow["TheSmallDateTime"], Is.EqualTo(DateTime.Parse("1970-04-08T11:11")));
-            Assert.That(insertedRow["TheTime"], Is.EqualTo(TimeSpan.Parse("03:03:03")));
+            var dateTime = (DateTime)loadedRow["TheTime"];
+            Assert.That(dateTime.TimeOfDay, Is.EqualTo(TimeSpan.Parse("03:03:03")));
+            Assert.That(loadedRow["TheTime"], Is.TypeOf<DateTime>());
 
-            Assert.That(insertedRow["TheChar"], Does.StartWith("abc"));
-            Assert.That(insertedRow["TheVarChar"], Is.EqualTo("Andrey Kovalenko"));
-            Assert.That(insertedRow["TheVarCharMax"], Is.EqualTo("Rocky Marciano"));
+            Assert.That(loadedRow["TheText"], Is.EqualTo("Андрей Коваленко"));
+            Assert.That(loadedRow["TheText"], Is.TypeOf<string>());
 
-            Assert.That(insertedRow["TheNChar"], Does.StartWith("АБВ"));
-            Assert.That(insertedRow["TheNVarChar"], Is.EqualTo("Андрей Коваленко"));
-            Assert.That(insertedRow["TheNVarCharMax"], Is.EqualTo("Роки Марчиано"));
-
-            CollectionAssert.AreEqual(new byte[] { 0x10, 0x20, 0x33 }, ((byte[])insertedRow["TheBinary"]).Take(3));
-            CollectionAssert.AreEqual(new byte[] { 0xff, 0xee, 0xbb }, (byte[])insertedRow["TheVarBinary"]);
-            CollectionAssert.AreEqual(new byte[] { 0x80, 0x90, 0xa0 }, (byte[])insertedRow["TheVarBinaryMax"]);
+            Assert.That(loadedRow["TheBlob"], Is.EqualTo(new byte[] { 0x10, 0x20, 0x33 }));
+            Assert.That(loadedRow["TheBlob"], Is.TypeOf<byte[]>());
         }
 
         [Test]
@@ -562,9 +412,9 @@ CREATE TABLE [SmallTable](
 
                 var createTableSql = @"
 CREATE TABLE [MyTab](
-    [Id] int NOT NULL PRIMARY KEY IDENTITY(1, 1),
-    [Length] int NULL DEFAULT NULL,
-    [Name] nvarchar(100) DEFAULT 'Polly')
+    [Id] integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+    [Length] integer NULL DEFAULT NULL,
+    [Name] text DEFAULT 'Polly')
 ";
                 command.CommandText = createTableSql;
                 command.ExecuteNonQuery();
@@ -747,9 +597,9 @@ CREATE TABLE [MyTab](
             {
                 {"Id", new Guid("11111111-1111-1111-1111-111111111111")},
                 {"PersonId", 101},
-                {"Weight", 69.20m},
+                {"Weight", 69.2m},
                 {"PersonMetaKey", (short) 12},
-                {"IQ", 101.60m},
+                {"IQ", 101.6m},
                 {"Temper", (short) 4},
                 {"PersonOrdNumber", (byte) 3},
                 {"MetricB", -3},
@@ -760,9 +610,9 @@ CREATE TABLE [MyTab](
             var row2 = new DynamicRow();
             row2.SetValue("Id", new Guid("22222222-2222-2222-2222-222222222222"));
             row2.SetValue("PersonId", 101);
-            row2.SetValue("Weight", 69.20m);
+            row2.SetValue("Weight", 69.2m);
             row2.SetValue("PersonMetaKey", (short)12);
-            row2.SetValue("IQ", 101.60m);
+            row2.SetValue("IQ", 101.6m);
             row2.SetValue("Temper", (short)4);
             row2.SetValue("PersonOrdNumber", (byte)3);
             row2.SetValue("MetricB", -3);
@@ -773,9 +623,9 @@ CREATE TABLE [MyTab](
             {
                 Id = new Guid("33333333-3333-3333-3333-333333333333"),
                 PersonId = 101,
-                Weight = 69.20m,
+                Weight = 69.2m,
                 PersonMetaKey = (short)12,
-                IQ = 101.60m,
+                IQ = 101.6m,
                 Temper = (short)4,
                 PersonOrdNumber = (byte)3,
                 MetricB = -3,
@@ -787,9 +637,9 @@ CREATE TABLE [MyTab](
             {
                 Id = new Guid("44444444-4444-4444-4444-444444444444"),
                 PersonId = 101,
-                Weight = 69.20m,
+                Weight = 69.2m,
                 PersonMetaKey = 12,
-                IQ = 101.60m,
+                IQ = 101.6m,
                 Temper = 4,
                 PersonOrdNumber = 3,
                 MetricB = -3,
@@ -805,7 +655,7 @@ CREATE TABLE [MyTab](
                 row4,
             };
 
-            this.Connection.ExecuteSingleSql("ALTER TABLE [HealthInfo] DROP CONSTRAINT [FK_healthInfo_Person]");
+            //this.Connection.ExecuteSingleSql("ALTER TABLE [HealthInfo] DROP CONSTRAINT [FK_healthInfo_Person]");
 
             IDbCruder cruder = new SQLiteCruderLab(this.Connection);
 
@@ -1225,59 +1075,25 @@ Table name: SmallTable; index: 1; int: 22
 
             IDbCruder cruder = new SQLiteCruderLab(this.Connection);
 
-            dynamic row = new DynamicRow(new
-            {
-                TheGuid = new Guid("8e816a5f-b97c-43df-95e9-4fbfe7172dd0"),
+            var superRow = this.CreateSuperTableRowDto();
+            var dynamicRow = new DynamicRow(superRow);
+            dynamicRow.DeleteValue("NotExisting");
 
-                TheBit = true,
-
-                TheTinyInt = (byte)17,
-                TheSmallInt = (short)11,
-                TheInt = 44,
-                TheBigInt = 777L,
-
-                TheDecimal = 11.2m,
-                TheNumeric = 22.3m,
-
-                TheSmallMoney = 123.06m,
-                TheMoney = 60.77m,
-
-                TheReal = (float)15.99,
-                TheFloat = 7001.555,
-
-                TheDate = DateTime.Parse("2010-01-02"),
-                TheDateTime = DateTime.Parse("2011-11-12T10:10:10"),
-                TheDateTime2 = DateTime.Parse("2015-03-07T05:06:33.777"),
-                TheDateTimeOffset = DateTimeOffset.Parse("2011-11-12T10:10:10+03:00"),
-                TheSmallDateTime = DateTime.Parse("1970-04-08T11:11:11"),
-                TheTime = TimeSpan.Parse("03:03:03"),
-
-                TheChar = "abc",
-                TheVarChar = "Andrey Kovalenko",
-                TheVarCharMax = "Rocky Marciano",
-
-                TheNChar = "АБВ",
-                TheNVarChar = "Андрей Коваленко",
-                TheNVarCharMax = "Роки Марчиано",
-
-                TheBinary = new byte[] { 0x10, 0x20, 0x33 },
-                TheVarBinary = new byte[] { 0xff, 0xee, 0xbb },
-                TheVarBinaryMax = new byte[] { 0x80, 0x90, 0xa0 },
-            });
+            dynamic row = dynamicRow;
 
             cruder.InsertRow("SuperTable", row, (Func<string, bool>)(x => true)); // InsertRow is ut'ed already :)
 
             // Act
-            var insertedRow = ((DynamicRow)cruder.GetRow("SuperTable", 1, x => x.Contains("DateTime"))).ToDictionary();
+            var loadedRow = ((DynamicRow)cruder.GetRow("SuperTable", 17, x => x.Contains("Time"))).ToDictionary();
 
             // Assert
-            Assert.That(insertedRow, Has.Count.EqualTo(4));
+            Assert.That(loadedRow, Has.Count.EqualTo(2));
 
-            Assert.That(insertedRow["TheDateTime"], Is.EqualTo(DateTime.Parse("2011-11-12T10:10:10")));
-            Assert.That(insertedRow["TheDateTime2"], Is.EqualTo(DateTime.Parse("2015-03-07T05:06:33.777")));
-            Assert.That(insertedRow["TheDateTimeOffset"],
-                Is.EqualTo(DateTimeOffset.Parse("2011-11-12T10:10:10+03:00")));
-            Assert.That(insertedRow["TheSmallDateTime"], Is.EqualTo(DateTime.Parse("1970-04-08T11:11")));
+            Assert.That(loadedRow["TheDateTime"], Is.EqualTo(DateTime.Parse("2011-11-12T10:10:10")));
+            Assert.That(loadedRow["TheDateTime"], Is.TypeOf<DateTime>());
+
+            Assert.That(loadedRow["TheTime"], Is.EqualTo(TimeSpan.Parse("03:03:03")));
+            Assert.That(loadedRow["TheTime"], Is.TypeOf<TimeSpan>());
         }
 
         [Test]
@@ -1288,89 +1104,44 @@ Table name: SmallTable; index: 1; int: 22
 
             IDbCruder cruder = new SQLiteCruderLab(this.Connection);
 
-            dynamic row = new DynamicRow(new
-            {
-                TheGuid = new Guid("8e816a5f-b97c-43df-95e9-4fbfe7172dd0"),
+            var superRow = this.CreateSuperTableRowDto();
+            var dynamicRow = new DynamicRow(superRow);
+            dynamicRow.DeleteValue("NotExisting");
 
-                TheBit = true,
-
-                TheTinyInt = (byte)17,
-                TheSmallInt = (short)11,
-                TheInt = 44,
-                TheBigInt = 777L,
-
-                TheDecimal = 11.2m,
-                TheNumeric = 22.3m,
-
-                TheSmallMoney = 123.06m,
-                TheMoney = 60.77m,
-
-                TheReal = (float)15.99,
-                TheFloat = 7001.555,
-
-                TheDate = DateTime.Parse("2010-01-02"),
-                TheDateTime = DateTime.Parse("2011-11-12T10:10:10"),
-                TheDateTime2 = DateTime.Parse("2015-03-07T05:06:33.777"),
-                TheDateTimeOffset = DateTimeOffset.Parse("2011-11-12T10:10:10+03:00"),
-                TheSmallDateTime = DateTime.Parse("1970-04-08T11:11:11"),
-                TheTime = TimeSpan.Parse("03:03:03"),
-
-                TheChar = "abc",
-                TheVarChar = "Andrey Kovalenko",
-                TheVarCharMax = "Rocky Marciano",
-
-                TheNChar = "АБВ",
-                TheNVarChar = "Андрей Коваленко",
-                TheNVarCharMax = "Роки Марчиано",
-
-                TheBinary = new byte[] { 0x10, 0x20, 0x33 },
-                TheVarBinary = new byte[] { 0xff, 0xee, 0xbb },
-                TheVarBinaryMax = new byte[] { 0x80, 0x90, 0xa0 },
-            });
+            dynamic row = dynamicRow;
 
             cruder.InsertRow("SuperTable", row, (Func<string, bool>)(x => true)); // InsertRow is ut'ed already :)
 
             // Act
-            var insertedRow = ((DynamicRow)cruder.GetRow("SuperTable", 1)).ToDictionary();
+            var loadedRow = ((DynamicRow)cruder.GetRow("SuperTable", 17)).ToDictionary();
 
             // Assert
-            Assert.That(insertedRow["TheGuid"], Is.EqualTo(new Guid("8e816a5f-b97c-43df-95e9-4fbfe7172dd0")));
+            Assert.That(loadedRow["Id"], Is.EqualTo(17));
+            Assert.That(loadedRow["Id"], Is.TypeOf<long>());
 
-            Assert.That(insertedRow["TheBit"], Is.EqualTo(true));
+            Assert.That(loadedRow["TheGuid"], Is.EqualTo(new Guid("8e816a5f-b97c-43df-95e9-4fbfe7172dd0")));
+            Assert.That(loadedRow["TheGuid"], Is.TypeOf<Guid>());
 
-            Assert.That(insertedRow["TheTinyInt"], Is.EqualTo((byte)17));
-            Assert.That(insertedRow["TheSmallInt"], Is.EqualTo((short)11));
-            Assert.That(insertedRow["TheInt"], Is.EqualTo(44));
-            Assert.That(insertedRow["TheBigInt"], Is.EqualTo(777L));
+            Assert.That(loadedRow["TheBigInt"], Is.EqualTo(3891231123));
+            Assert.That(loadedRow["TheBigInt"], Is.TypeOf<long>());
 
-            Assert.That(insertedRow["TheDecimal"], Is.EqualTo(11.2m));
-            Assert.That(insertedRow["TheNumeric"], Is.EqualTo(22.3m));
+            Assert.That(loadedRow["TheDecimal"], Is.EqualTo(11.2m));
+            Assert.That(loadedRow["TheDecimal"], Is.TypeOf<decimal>());
 
-            Assert.That(insertedRow["TheSmallMoney"], Is.EqualTo(123.06m));
-            Assert.That(insertedRow["TheMoney"], Is.EqualTo(60.77m));
+            Assert.That(loadedRow["TheReal"], Is.EqualTo(15.99));
+            Assert.That(loadedRow["TheReal"], Is.TypeOf<double>());
 
-            Assert.That(insertedRow["TheReal"], Is.EqualTo((float)15.99));
-            Assert.That(insertedRow["TheFloat"], Is.EqualTo(7001.555));
+            Assert.That(loadedRow["TheDateTime"], Is.EqualTo(DateTime.Parse("2011-11-12T10:10:10")));
+            Assert.That(loadedRow["TheDateTime"], Is.TypeOf<DateTime>());
 
-            Assert.That(insertedRow["TheDate"], Is.EqualTo(DateTime.Parse("2010-01-02")));
-            Assert.That(insertedRow["TheDateTime"], Is.EqualTo(DateTime.Parse("2011-11-12T10:10:10")));
-            Assert.That(insertedRow["TheDateTime2"], Is.EqualTo(DateTime.Parse("2015-03-07T05:06:33.777")));
-            Assert.That(insertedRow["TheDateTimeOffset"],
-                Is.EqualTo(DateTimeOffset.Parse("2011-11-12T10:10:10+03:00")));
-            Assert.That(insertedRow["TheSmallDateTime"], Is.EqualTo(DateTime.Parse("1970-04-08T11:11")));
-            Assert.That(insertedRow["TheTime"], Is.EqualTo(TimeSpan.Parse("03:03:03")));
+            Assert.That(loadedRow["TheTime"], Is.EqualTo(TimeSpan.Parse("03:03:03")));
+            Assert.That(loadedRow["TheTime"], Is.TypeOf<TimeSpan>());
 
-            Assert.That(insertedRow["TheChar"], Does.StartWith("abc"));
-            Assert.That(insertedRow["TheVarChar"], Is.EqualTo("Andrey Kovalenko"));
-            Assert.That(insertedRow["TheVarCharMax"], Is.EqualTo("Rocky Marciano"));
+            Assert.That(loadedRow["TheText"], Is.EqualTo("Андрей Коваленко"));
+            Assert.That(loadedRow["TheText"], Is.TypeOf<string>());
 
-            Assert.That(insertedRow["TheNChar"], Does.StartWith("АБВ"));
-            Assert.That(insertedRow["TheNVarChar"], Is.EqualTo("Андрей Коваленко"));
-            Assert.That(insertedRow["TheNVarCharMax"], Is.EqualTo("Роки Марчиано"));
-
-            CollectionAssert.AreEqual(new byte[] { 0x10, 0x20, 0x33 }, ((byte[])insertedRow["TheBinary"]).Take(3));
-            CollectionAssert.AreEqual(new byte[] { 0xff, 0xee, 0xbb }, (byte[])insertedRow["TheVarBinary"]);
-            CollectionAssert.AreEqual(new byte[] { 0x80, 0x90, 0xa0 }, (byte[])insertedRow["TheVarBinaryMax"]);
+            Assert.That(loadedRow["TheBlob"], Is.EqualTo(new byte[] { 0x10, 0x20, 0x33 }));
+            Assert.That(loadedRow["TheBlob"], Is.TypeOf<byte[]>());
         }
 
         [Test]
@@ -1380,90 +1151,44 @@ Table name: SmallTable; index: 1; int: 22
             this.CreateSuperTable();
 
             IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            var strongTypedRow = this.CreateSuperTableRowDto();
+            var dynamicRow = new DynamicRow(strongTypedRow);
+            dynamicRow.DeleteValue("NotExisting");
 
-            dynamic row = new DynamicRow(new
-            {
-                TheGuid = new Guid("8e816a5f-b97c-43df-95e9-4fbfe7172dd0"),
-
-                TheBit = true,
-
-                TheTinyInt = (byte)17,
-                TheSmallInt = (short)11,
-                TheInt = 44,
-                TheBigInt = 777L,
-
-                TheDecimal = 11.2m,
-                TheNumeric = 22.3m,
-
-                TheSmallMoney = 123.06m,
-                TheMoney = 60.77m,
-
-                TheReal = (float)15.99,
-                TheFloat = 7001.555,
-
-                TheDate = DateTime.Parse("2010-01-02"),
-                TheDateTime = DateTime.Parse("2011-11-12T10:10:10"),
-                TheDateTime2 = DateTime.Parse("2015-03-07T05:06:33.777"),
-                TheDateTimeOffset = DateTimeOffset.Parse("2011-11-12T10:10:10+03:00"),
-                TheSmallDateTime = DateTime.Parse("1970-04-08T11:11:11"),
-                TheTime = TimeSpan.Parse("03:03:03"),
-
-                TheChar = "abc",
-                TheVarChar = "Andrey Kovalenko",
-                TheVarCharMax = "Rocky Marciano",
-
-                TheNChar = "АБВ",
-                TheNVarChar = "Андрей Коваленко",
-                TheNVarCharMax = "Роки Марчиано",
-
-                TheBinary = new byte[] { 0x10, 0x20, 0x33 },
-                TheVarBinary = new byte[] { 0xff, 0xee, 0xbb },
-                TheVarBinaryMax = new byte[] { 0x80, 0x90, 0xa0 },
-            });
+            dynamic row = dynamicRow;
 
             cruder.InsertRow("SuperTable", row, (Func<string, bool>)(x => true)); // InsertRow is ut'ed already :)
 
             // Act
-            var insertedRow = ((DynamicRow)cruder.GetRow("SuperTable", 1, x => true)).ToDictionary();
+            var loadedRow = ((DynamicRow)cruder.GetRow("SuperTable", 17, x => true)).ToDictionary();
 
             // Assert
-            Assert.That(insertedRow["TheGuid"], Is.EqualTo(new Guid("8e816a5f-b97c-43df-95e9-4fbfe7172dd0")));
+            Assert.That(loadedRow["Id"], Is.EqualTo(17));
+            Assert.That(loadedRow["Id"], Is.TypeOf<long>());
 
-            Assert.That(insertedRow["TheBit"], Is.EqualTo(true));
+            Assert.That(loadedRow["TheGuid"], Is.EqualTo(new Guid("8e816a5f-b97c-43df-95e9-4fbfe7172dd0")));
+            Assert.That(loadedRow["TheGuid"], Is.TypeOf<Guid>());
 
-            Assert.That(insertedRow["TheTinyInt"], Is.EqualTo((byte)17));
-            Assert.That(insertedRow["TheSmallInt"], Is.EqualTo((short)11));
-            Assert.That(insertedRow["TheInt"], Is.EqualTo(44));
-            Assert.That(insertedRow["TheBigInt"], Is.EqualTo(777L));
+            Assert.That(loadedRow["TheBigInt"], Is.EqualTo(3891231123));
+            Assert.That(loadedRow["TheBigInt"], Is.TypeOf<long>());
 
-            Assert.That(insertedRow["TheDecimal"], Is.EqualTo(11.2m));
-            Assert.That(insertedRow["TheNumeric"], Is.EqualTo(22.3m));
+            Assert.That(loadedRow["TheDecimal"], Is.EqualTo(11.2m));
+            Assert.That(loadedRow["TheDecimal"], Is.TypeOf<decimal>());
 
-            Assert.That(insertedRow["TheSmallMoney"], Is.EqualTo(123.06m));
-            Assert.That(insertedRow["TheMoney"], Is.EqualTo(60.77m));
+            Assert.That(loadedRow["TheReal"], Is.EqualTo(15.99));
+            Assert.That(loadedRow["TheReal"], Is.TypeOf<double>());
 
-            Assert.That(insertedRow["TheReal"], Is.EqualTo((float)15.99));
-            Assert.That(insertedRow["TheFloat"], Is.EqualTo(7001.555));
+            Assert.That(loadedRow["TheDateTime"], Is.EqualTo(DateTime.Parse("2011-11-12T10:10:10")));
+            Assert.That(loadedRow["TheDateTime"], Is.TypeOf<DateTime>());
 
-            Assert.That(insertedRow["TheDate"], Is.EqualTo(DateTime.Parse("2010-01-02")));
-            Assert.That(insertedRow["TheDateTime"], Is.EqualTo(DateTime.Parse("2011-11-12T10:10:10")));
-            Assert.That(insertedRow["TheDateTime2"], Is.EqualTo(DateTime.Parse("2015-03-07T05:06:33.777")));
-            Assert.That(insertedRow["TheDateTimeOffset"],
-                Is.EqualTo(DateTimeOffset.Parse("2011-11-12T10:10:10+03:00")));
-            Assert.That(insertedRow["TheSmallDateTime"], Is.EqualTo(DateTime.Parse("1970-04-08T11:11")));
-            Assert.That(insertedRow["TheTime"], Is.EqualTo(TimeSpan.Parse("03:03:03")));
+            Assert.That(loadedRow["TheTime"], Is.EqualTo(TimeSpan.Parse("03:03:03")));
+            Assert.That(loadedRow["TheTime"], Is.TypeOf<TimeSpan>());
 
-            Assert.That(insertedRow["TheChar"], Does.StartWith("abc"));
-            Assert.That(insertedRow["TheVarChar"], Is.EqualTo("Andrey Kovalenko"));
-            Assert.That(insertedRow["TheVarCharMax"], Is.EqualTo("Rocky Marciano"));
+            Assert.That(loadedRow["TheText"], Is.EqualTo("Андрей Коваленко"));
+            Assert.That(loadedRow["TheText"], Is.TypeOf<string>());
 
-            Assert.That(insertedRow["TheNChar"], Does.StartWith("АБВ"));
-            Assert.That(insertedRow["TheNVarChar"], Is.EqualTo("Андрей Коваленко"));
-            Assert.That(insertedRow["TheNVarCharMax"], Is.EqualTo("Роки Марчиано"));
-
-            CollectionAssert.AreEqual(new byte[] { 0x10, 0x20, 0x33 }, ((byte[])insertedRow["TheBinary"]).Take(3));
-            CollectionAssert.AreEqual(new byte[] { 0xff, 0xee, 0xbb }, (byte[])insertedRow["TheVarBinary"]);
-            CollectionAssert.AreEqual(new byte[] { 0x80, 0x90, 0xa0 }, (byte[])insertedRow["TheVarBinaryMax"]);
+            Assert.That(loadedRow["TheBlob"], Is.EqualTo(new byte[] { 0x10, 0x20, 0x33 }));
+            Assert.That(loadedRow["TheBlob"], Is.TypeOf<byte[]>());
         }
 
         [Test]
@@ -1506,7 +1231,7 @@ Table name: SmallTable; index: 1; int: 22
         }
 
         [Test]
-        public void GetRow_TableHasNoPrimaryKey_ArgumentException()
+        public void GetRow_TableHasNoPrimaryKey_ThrowsArgumentException()
 
         {
             // Arrange
@@ -1551,7 +1276,7 @@ Table name: SmallTable; index: 1; int: 22
         }
 
         [Test]
-        public void GetRow_SelectorIsFalser_ArgumentException()
+        public void GetRow_SelectorIsFalser_ThrowsArgumentException()
         {
             // Arrange
             IDbCruder cruder = new SQLiteCruderLab(this.Connection);
@@ -1583,11 +1308,11 @@ Table name: SmallTable; index: 1; int: 22
             // Assert
             var row = (DynamicRow)rows[0];
             Assert.That(row.GetDynamicMemberNames().Count(), Is.EqualTo(1));
-            Assert.That(row.GetValue("Moment"), Is.EqualTo(DateTimeOffset.Parse("2020-01-01T05:05:05+00:00")));
+            Assert.That(row.GetValue("Moment"), Is.EqualTo(DateTime.Parse("2020-01-01T05:05:05")));
 
             row = rows[1];
             Assert.That(row.GetDynamicMemberNames().Count(), Is.EqualTo(1));
-            Assert.That(row.GetValue("Moment"), Is.EqualTo(DateTimeOffset.Parse("2020-02-02T06:06:06+00:00")));
+            Assert.That(row.GetValue("Moment"), Is.EqualTo(DateTime.Parse("2020-02-02T06:06:06")));
         }
 
         [Test]
@@ -1605,11 +1330,11 @@ Table name: SmallTable; index: 1; int: 22
             // Assert
             var row = rows[0];
             Assert.That(row.Id, Is.EqualTo(new Guid("11111111-1111-1111-1111-111111111111")));
-            Assert.That(row.Moment, Is.EqualTo(DateTimeOffset.Parse("2020-01-01T05:05:05+00:00")));
+            Assert.That(row.Moment, Is.EqualTo(DateTime.Parse("2020-01-01T05:05:05")));
 
             row = rows[1];
             Assert.That(row.Id, Is.EqualTo(new Guid("22222222-2222-2222-2222-222222222222")));
-            Assert.That(row.Moment, Is.EqualTo(DateTimeOffset.Parse("2020-02-02T06:06:06+00:00")));
+            Assert.That(row.Moment, Is.EqualTo(DateTime.Parse("2020-02-02T06:06:06")));
         }
 
         [Test]
@@ -1660,43 +1385,35 @@ Table name: SmallTable; index: 1; int: 22
         public void UpdateRow_ValidArguments_UpdatesRow()
         {
             // Arrange
-            var id = 1; // will be inserted by IDENTITY
+            var id = 17;
 
             var update1 = new Dictionary<string, object>
             {
                 {"Id", id},
-                {"TheTinyInt", (byte) 2},
-                {"TheSmallInt", (short) 22},
-                {"TheInt", 222},
-                {"TheBigInt", 2222L},
+                {"TheDateTime", DateTime.Parse("1978-07-05T08:08:08")},
+                {"TheTime", TimeSpan.Parse("11:11:11")},
                 {"NotExisting", 777},
             };
 
             var update2 = new DynamicRow();
             update2.SetValue("Id", id);
-            update2.SetValue("TheTinyInt", (byte)2);
-            update2.SetValue("TheSmallInt", (short)22);
-            update2.SetValue("TheInt", 222);
-            update2.SetValue("TheBigInt", 2222L);
+            update2.SetValue("TheDateTime", DateTime.Parse("1978-07-05T08:08:08"));
+            update2.SetValue("TheTime", TimeSpan.Parse("11:11:11"));
             update2.SetValue("NotExisting", 777);
 
             var update3 = new
             {
                 Id = id,
-                TheTinyInt = (byte)2,
-                TheSmallInt = (short)22,
-                TheInt = 222,
-                TheBigInt = 2222L,
+                TheDateTime = DateTime.Parse("1978-07-05T08:08:08"),
+                TheTime = TimeSpan.Parse("11:11:11"),
                 NotExisting = 777,
             };
 
             var update4 = new SuperTableRowDto
             {
                 Id = id,
-                TheTinyInt = (byte)2,
-                TheSmallInt = (short)22,
-                TheInt = 222,
-                TheBigInt = 2222L,
+                TheDateTime = DateTime.Parse("1978-07-05T08:08:08"),
+                TheTime = TimeSpan.Parse("11:11:11"),
                 NotExisting = 777,
             };
 
@@ -1721,14 +1438,9 @@ Table name: SmallTable; index: 1; int: 22
                 cruder.UpdateRow(
                     "SuperTable",
                     updates[i],
-                    x => x.IsIn(
-                        "Id",
-                        "TheTinyInt",
-                        "TheSmallInt",
-                        "TheInt",
-                        "TheBigInt"));
+                    x => x.Contains("Time") || x == "Id");
 
-                var loadedRow = TestHelper.LoadRow(this.Connection, "SuperTable", 1);
+                var loadedRow = TestHelper.LoadRow(this.Connection, "SuperTable", 17);
                 loadedRows[i] = loadedRow;
 
                 this.Connection.ExecuteSingleSql("DROP TABLE [SuperTable]");
@@ -1738,42 +1450,33 @@ Table name: SmallTable; index: 1; int: 22
             {
                 var loadedRow = loadedRows[i];
 
-                Assert.That(loadedRow["TheGuid"], Is.EqualTo(new Guid("11111111-1111-1111-1111-111111111111")));
+                Assert.That(loadedRow["Id"], Is.EqualTo(17));
+                Assert.That(loadedRow["Id"], Is.TypeOf<long>());
 
-                Assert.That(loadedRow["TheBit"], Is.EqualTo(true));
+                Assert.That(loadedRow["TheGuid"], Is.EqualTo(new Guid("8e816a5f-b97c-43df-95e9-4fbfe7172dd0")));
+                Assert.That(loadedRow["TheGuid"], Is.TypeOf<Guid>());
 
-                Assert.That(loadedRow["TheTinyInt"], Is.EqualTo((byte)2));
-                Assert.That(loadedRow["TheSmallInt"], Is.EqualTo((short)22));
-                Assert.That(loadedRow["TheInt"], Is.EqualTo(222));
-                Assert.That(loadedRow["TheBigInt"], Is.EqualTo(2222L));
+                Assert.That(loadedRow["TheBigInt"], Is.EqualTo(3891231123));
+                Assert.That(loadedRow["TheBigInt"], Is.TypeOf<long>());
 
-                Assert.That(loadedRow["TheDecimal"], Is.EqualTo(11.10m));
-                Assert.That(loadedRow["TheNumeric"], Is.EqualTo(111.10m));
+                Assert.That(loadedRow["TheDecimal"], Is.EqualTo(11.2m));
+                Assert.That(loadedRow["TheDecimal"], Is.TypeOf<decimal>());
 
-                Assert.That(loadedRow["TheSmallMoney"], Is.EqualTo(1111.1100m));
-                Assert.That(loadedRow["TheMoney"], Is.EqualTo(11111.1100m));
+                Assert.That(loadedRow["TheReal"], Is.EqualTo(15.99));
+                Assert.That(loadedRow["TheReal"], Is.TypeOf<double>());
 
-                Assert.That(loadedRow["TheReal"], Is.EqualTo((float)111111.0));
-                Assert.That(loadedRow["TheFloat"], Is.EqualTo(1111111.0));
+                Assert.That(loadedRow["TheDateTime"], Is.EqualTo(DateTime.Parse("1978-07-05T08:08:08")));
+                Assert.That(loadedRow["TheDateTime"], Is.TypeOf<DateTime>());
 
-                Assert.That(loadedRow["TheDate"], Is.EqualTo(DateTime.Parse("1990-01-01")));
-                Assert.That(loadedRow["TheDateTime"], Is.EqualTo(DateTime.Parse("1991-01-01")));
-                Assert.That(loadedRow["TheDateTime2"], Is.EqualTo(DateTime.Parse("1992-01-01")));
-                Assert.That(loadedRow["TheDateTimeOffset"], Is.EqualTo(DateTimeOffset.Parse("1993-01-01")));
-                Assert.That(loadedRow["TheSmallDateTime"], Is.EqualTo(DateTime.Parse("1994-01-01")));
-                Assert.That(loadedRow["TheTime"], Is.EqualTo(TimeSpan.Parse("01:01:01")));
+                var dateTime = (DateTime)loadedRow["TheTime"];
+                Assert.That(dateTime.TimeOfDay, Is.EqualTo(TimeSpan.Parse("11:11:11")));
+                Assert.That(loadedRow["TheTime"], Is.TypeOf<DateTime>());
 
-                Assert.That(loadedRow["TheChar"], Is.EqualTo("a         "));
-                Assert.That(loadedRow["TheVarChar"], Is.EqualTo("aa"));
-                Assert.That(loadedRow["TheVarCharMax"], Is.EqualTo("aaa"));
+                Assert.That(loadedRow["TheText"], Is.EqualTo("Андрей Коваленко"));
+                Assert.That(loadedRow["TheText"], Is.TypeOf<string>());
 
-                Assert.That(loadedRow["TheNChar"], Is.EqualTo("ц         "));
-                Assert.That(loadedRow["TheNVarChar"], Is.EqualTo("цц"));
-                Assert.That(loadedRow["TheNVarCharMax"], Is.EqualTo("ццц"));
-
-                Assert.That(loadedRow["TheBinary"], Is.EqualTo(new byte[] { 1, 0, 0, 0 }));
-                Assert.That(loadedRow["TheVarBinary"], Is.EqualTo(new byte[] { 10, 11, }));
-                Assert.That(loadedRow["TheVarBinaryMax"], Is.EqualTo(new byte[] { 100, 101, 102 }));
+                Assert.That(loadedRow["TheBlob"], Is.EqualTo(new byte[] { 0x10, 0x20, 0x33 }));
+                Assert.That(loadedRow["TheBlob"], Is.TypeOf<byte[]>());
             }
         }
 
@@ -1784,94 +1487,59 @@ Table name: SmallTable; index: 1; int: 22
             this.CreateSuperTable();
             this.InsertSuperTableRow();
 
-            var update = new SuperTableRowDto
+            var updateDto = new SuperTableRowDto
             {
-                Id = 1,
-
+                Id = 17,
                 TheGuid = new Guid("22222222-2222-2222-2222-222222222222"),
-
-                TheBit = false,
-
-                TheTinyInt = 2,
-                TheSmallInt = 22,
-                TheInt = 222,
-                TheBigInt = 2222,
-
-                TheDecimal = 22.20m,
-                TheNumeric = 222.20m,
-
-                TheSmallMoney = 2222.2200m,
-                TheMoney = 22222.2200m,
-
-                TheReal = (float)222222.0,
-                TheFloat = 2222222.0,
-
-                TheDate = DateTime.Parse("2002-02-02"),
-                TheDateTime = DateTime.Parse("2003-03-03"),
-                TheDateTime2 = DateTime.Parse("2004-04-04"),
-                TheDateTimeOffset = DateTime.Parse("2005-05-05"),
-                TheSmallDateTime = DateTime.Parse("2006-06-06"),
-                TheTime = TimeSpan.Parse("02:02:02"),
-
-                TheChar = "b",
-                TheVarChar = "bb",
-                TheVarCharMax = "bbb",
-
-                TheNChar = "щ",
-                TheNVarChar = "щщ",
-                TheNVarCharMax = "щщщ",
-
-                TheBinary = new byte[] { 2 },
-                TheVarBinary = new byte[] { 20, 22, },
-                TheVarBinaryMax = new byte[] { 17, 177, 179 },
-
-                NotExisting = 777,
+                TheBigInt = 178811,
+                TheDecimal = 99.13m,
+                TheReal = 2.69,
+                TheDateTime = DateTime.Parse("2001-01-01T17:18:19"),
+                TheTime = TimeSpan.Parse("07:07:07"),
+                TheText = "Whats up",
+                TheBlob = new byte[] { 0xda, 0x77, 0x88 },
             };
+
+            var updateDynamic = new DynamicRow(updateDto);
+            updateDynamic.DeleteValue("NotExisting");
 
             IDbCruder cruder = new SQLiteCruderLab(this.Connection);
 
             // Act
-            cruder.UpdateRow("SuperTable", update, x => x != "NotExisting");
+            var updated = cruder.UpdateRow("SuperTable", updateDynamic, x => x != "NotExisting");
 
             // Assert
-            var loadedRow = TestHelper.LoadRow(this.Connection, "SuperTable", 1);
+            Assert.That(updated, Is.True);
+
+            var loadedRow = TestHelper.LoadRow(this.Connection, "SuperTable", 17);
+
+            Assert.That(loadedRow["Id"], Is.EqualTo(17));
+            Assert.That(loadedRow["Id"], Is.TypeOf<long>());
 
             Assert.That(loadedRow["TheGuid"], Is.EqualTo(new Guid("22222222-2222-2222-2222-222222222222")));
+            Assert.That(loadedRow["TheGuid"], Is.TypeOf<Guid>());
 
-            Assert.That(loadedRow["TheBit"], Is.EqualTo(false));
+            Assert.That(loadedRow["TheBigInt"], Is.EqualTo(178811));
+            Assert.That(loadedRow["TheBigInt"], Is.TypeOf<long>());
 
-            Assert.That(loadedRow["TheTinyInt"], Is.EqualTo((byte)2));
-            Assert.That(loadedRow["TheSmallInt"], Is.EqualTo((short)22));
-            Assert.That(loadedRow["TheInt"], Is.EqualTo(222));
-            Assert.That(loadedRow["TheBigInt"], Is.EqualTo(2222L));
+            Assert.That(loadedRow["TheDecimal"], Is.EqualTo(99.13m));
+            Assert.That(loadedRow["TheDecimal"], Is.TypeOf<decimal>());
 
-            Assert.That(loadedRow["TheDecimal"], Is.EqualTo(22.20m));
-            Assert.That(loadedRow["TheNumeric"], Is.EqualTo(222.20m));
+            Assert.That(loadedRow["TheReal"], Is.EqualTo(2.69));
+            Assert.That(loadedRow["TheReal"], Is.TypeOf<double>());
 
-            Assert.That(loadedRow["TheSmallMoney"], Is.EqualTo(2222.2200m));
-            Assert.That(loadedRow["TheMoney"], Is.EqualTo(22222.2200m));
+            Assert.That(loadedRow["TheDateTime"], Is.EqualTo(DateTime.Parse("2001-01-01T17:18:19")));
+            Assert.That(loadedRow["TheDateTime"], Is.TypeOf<DateTime>());
 
-            Assert.That(loadedRow["TheReal"], Is.EqualTo((float)222222.0));
-            Assert.That(loadedRow["TheFloat"], Is.EqualTo(2222222.0));
+            var dateTime = (DateTime)loadedRow["TheTime"];
+            Assert.That(dateTime.TimeOfDay, Is.EqualTo(TimeSpan.Parse("07:07:07")));
+            Assert.That(loadedRow["TheTime"], Is.TypeOf<DateTime>());
 
-            Assert.That(loadedRow["TheDate"], Is.EqualTo(DateTime.Parse("2002-02-02")));
-            Assert.That(loadedRow["TheDateTime"], Is.EqualTo(DateTime.Parse("2003-03-03")));
-            Assert.That(loadedRow["TheDateTime2"], Is.EqualTo(DateTime.Parse("2004-04-04")));
-            Assert.That(loadedRow["TheDateTimeOffset"], Is.EqualTo(DateTimeOffset.Parse("2005-05-05")));
-            Assert.That(loadedRow["TheSmallDateTime"], Is.EqualTo(DateTime.Parse("2006-06-06")));
-            Assert.That(loadedRow["TheTime"], Is.EqualTo(TimeSpan.Parse("02:02:02")));
+            Assert.That(loadedRow["TheText"], Is.EqualTo("Whats up"));
+            Assert.That(loadedRow["TheText"], Is.TypeOf<string>());
 
-            Assert.That(loadedRow["TheChar"], Is.EqualTo("b         "));
-            Assert.That(loadedRow["TheVarChar"], Is.EqualTo("bb"));
-            Assert.That(loadedRow["TheVarCharMax"], Is.EqualTo("bbb"));
-
-            Assert.That(loadedRow["TheNChar"], Is.EqualTo("щ         "));
-            Assert.That(loadedRow["TheNVarChar"], Is.EqualTo("щщ"));
-            Assert.That(loadedRow["TheNVarCharMax"], Is.EqualTo("щщщ"));
-
-            Assert.That(loadedRow["TheBinary"], Is.EqualTo(new byte[] { 2, 0, 0, 0 }));
-            Assert.That(loadedRow["TheVarBinary"], Is.EqualTo(new byte[] { 20, 22, }));
-            Assert.That(loadedRow["TheVarBinaryMax"], Is.EqualTo(new byte[] { 17, 177, 179 }));
+            Assert.That(loadedRow["TheBlob"], Is.EqualTo(new byte[] { 0xda, 0x77, 0x88 }));
+            Assert.That(loadedRow["TheBlob"], Is.TypeOf<byte[]>());
         }
 
         [Test]
@@ -1922,101 +1590,64 @@ Table name: SmallTable; index: 1; int: 22
             this.CreateSuperTable();
             this.InsertSuperTableRow();
 
-            var updateMold = new SuperTableRowDto
+            var updateDto = new SuperTableRowDto
             {
-                Id = 1,
-
+                Id = 17,
                 TheGuid = new Guid("22222222-2222-2222-2222-222222222222"),
-
-                TheBit = false,
-
-                TheTinyInt = 2,
-                TheSmallInt = 22,
-                TheInt = 222,
-                TheBigInt = 2222,
-
-                TheDecimal = 22.20m,
-                TheNumeric = 222.20m,
-
-                TheSmallMoney = 2222.2200m,
-                TheMoney = 22222.2200m,
-
-                TheReal = (float)222222.0,
-                TheFloat = 2222222.0,
-
-                TheDate = DateTime.Parse("2002-02-02"),
-                TheDateTime = DateTime.Parse("2003-03-03"),
-                TheDateTime2 = DateTime.Parse("2004-04-04"),
-                TheDateTimeOffset = DateTime.Parse("2005-05-05"),
-                TheSmallDateTime = DateTime.Parse("2006-06-06"),
-                TheTime = TimeSpan.Parse("02:02:02"),
-
-                TheChar = "b",
-                TheVarChar = "bb",
-                TheVarCharMax = "bbb",
-
-                TheNChar = "щ",
-                TheNVarChar = "щщ",
-                TheNVarCharMax = "щщщ",
-
-                TheBinary = new byte[] { 2 },
-                TheVarBinary = new byte[] { 20, 22, },
-                TheVarBinaryMax = new byte[] { 17, 177, 179 },
-
+                TheBigInt = 178811,
+                TheDecimal = 99.13m,
+                TheReal = 2.69,
+                TheDateTime = DateTime.Parse("2001-01-01T17:18:19"),
+                TheTime = TimeSpan.Parse("07:07:07"),
+                TheText = "Whats up",
+                TheBlob = new byte[] { 0xda, 0x77, 0x88 },
                 NotExisting = 777,
             };
 
-            var update = new DynamicRow(updateMold);
+            var update = new DynamicRow(updateDto);
             update.DeleteValue("NotExisting");
 
             IDbCruder cruder = new SQLiteCruderLab(this.Connection);
 
             // Act
-            cruder.UpdateRow("SuperTable", update, null);
+            var updated = cruder.UpdateRow("SuperTable", update, null);
 
             // Assert
-            var loadedRow = TestHelper.LoadRow(this.Connection, "SuperTable", 1);
+            Assert.That(updated, Is.True); // todo: same for other DB-s
+
+            var loadedRow = TestHelper.LoadRow(this.Connection, "SuperTable", 17);
+
+            Assert.That(loadedRow["Id"], Is.EqualTo(17));
+            Assert.That(loadedRow["Id"], Is.TypeOf<long>());
 
             Assert.That(loadedRow["TheGuid"], Is.EqualTo(new Guid("22222222-2222-2222-2222-222222222222")));
+            Assert.That(loadedRow["TheGuid"], Is.TypeOf<Guid>());
 
-            Assert.That(loadedRow["TheBit"], Is.EqualTo(false));
+            Assert.That(loadedRow["TheBigInt"], Is.EqualTo(178811));
+            Assert.That(loadedRow["TheBigInt"], Is.TypeOf<long>());
 
-            Assert.That(loadedRow["TheTinyInt"], Is.EqualTo((byte)2));
-            Assert.That(loadedRow["TheSmallInt"], Is.EqualTo((short)22));
-            Assert.That(loadedRow["TheInt"], Is.EqualTo(222));
-            Assert.That(loadedRow["TheBigInt"], Is.EqualTo(2222L));
+            Assert.That(loadedRow["TheDecimal"], Is.EqualTo(99.13m));
+            Assert.That(loadedRow["TheDecimal"], Is.TypeOf<decimal>());
 
-            Assert.That(loadedRow["TheDecimal"], Is.EqualTo(22.20m));
-            Assert.That(loadedRow["TheNumeric"], Is.EqualTo(222.20m));
+            Assert.That(loadedRow["TheReal"], Is.EqualTo(2.69));
+            Assert.That(loadedRow["TheReal"], Is.TypeOf<double>());
 
-            Assert.That(loadedRow["TheSmallMoney"], Is.EqualTo(2222.2200m));
-            Assert.That(loadedRow["TheMoney"], Is.EqualTo(22222.2200m));
+            Assert.That(loadedRow["TheDateTime"], Is.EqualTo(DateTime.Parse("2001-01-01T17:18:19")));
+            Assert.That(loadedRow["TheDateTime"], Is.TypeOf<DateTime>());
 
-            Assert.That(loadedRow["TheReal"], Is.EqualTo((float)222222.0));
-            Assert.That(loadedRow["TheFloat"], Is.EqualTo(2222222.0));
+            var dateTime = (DateTime)loadedRow["TheTime"];
+            Assert.That(dateTime.TimeOfDay, Is.EqualTo(TimeSpan.Parse("07:07:07")));
+            Assert.That(loadedRow["TheTime"], Is.TypeOf<DateTime>());
 
-            Assert.That(loadedRow["TheDate"], Is.EqualTo(DateTime.Parse("2002-02-02")));
-            Assert.That(loadedRow["TheDateTime"], Is.EqualTo(DateTime.Parse("2003-03-03")));
-            Assert.That(loadedRow["TheDateTime2"], Is.EqualTo(DateTime.Parse("2004-04-04")));
-            Assert.That(loadedRow["TheDateTimeOffset"], Is.EqualTo(DateTimeOffset.Parse("2005-05-05")));
-            Assert.That(loadedRow["TheSmallDateTime"], Is.EqualTo(DateTime.Parse("2006-06-06")));
-            Assert.That(loadedRow["TheTime"], Is.EqualTo(TimeSpan.Parse("02:02:02")));
+            Assert.That(loadedRow["TheText"], Is.EqualTo("Whats up"));
+            Assert.That(loadedRow["TheText"], Is.TypeOf<string>());
 
-            Assert.That(loadedRow["TheChar"], Is.EqualTo("b         "));
-            Assert.That(loadedRow["TheVarChar"], Is.EqualTo("bb"));
-            Assert.That(loadedRow["TheVarCharMax"], Is.EqualTo("bbb"));
-
-            Assert.That(loadedRow["TheNChar"], Is.EqualTo("щ         "));
-            Assert.That(loadedRow["TheNVarChar"], Is.EqualTo("щщ"));
-            Assert.That(loadedRow["TheNVarCharMax"], Is.EqualTo("щщщ"));
-
-            Assert.That(loadedRow["TheBinary"], Is.EqualTo(new byte[] { 2, 0, 0, 0 }));
-            Assert.That(loadedRow["TheVarBinary"], Is.EqualTo(new byte[] { 20, 22, }));
-            Assert.That(loadedRow["TheVarBinaryMax"], Is.EqualTo(new byte[] { 17, 177, 179 }));
+            Assert.That(loadedRow["TheBlob"], Is.EqualTo(new byte[] { 0xda, 0x77, 0x88 }));
+            Assert.That(loadedRow["TheBlob"], Is.TypeOf<byte[]>());
         }
 
         [Test]
-        public void UpdateRow_PropertySelectorDoesNotContainPkColumn_ArgumentException()
+        public void UpdateRow_PropertySelectorDoesNotContainPkColumn_ThrowsArgumentException()
         {
             // Arrange
             this.CreateSuperTable();
@@ -2105,7 +1736,7 @@ Table name: SmallTable; index: 1; int: 22
         }
 
         [Test]
-        public void UpdateRow_TableHasNoPrimaryKey_ArgumentException()
+        public void UpdateRow_TableHasNoPrimaryKey_ThrowsArgumentException()
 
         {
             // Arrange

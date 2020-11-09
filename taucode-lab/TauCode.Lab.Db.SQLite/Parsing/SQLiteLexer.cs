@@ -14,7 +14,8 @@ namespace TauCode.Lab.Db.SQLite.Parsing
                 new WhiteSpaceProducer(),
                 new WordTokenProducer(),
                 new SqlPunctuationTokenProducer(),
-                new IntegerProducer(IsAcceptableIntegerTerminator),
+                new IntegerProducer(IsAcceptableIntegerTerminator), // todo: ...TokenProducer, here & anywhere?
+                new SqlStringTokenProducer(),
                 new SqlIdentifierTokenProducer(),
             };
         }

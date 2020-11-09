@@ -52,7 +52,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbMigrator
         }
 
         [Test]
-        public void Constructor_ConnectionIsNotOpen_ArgumentException()
+        public void Constructor_ConnectionIsNotOpen_ThrowsArgumentException()
         {
             // Arrange
             using var connection = TestHelper.CreateConnection();
