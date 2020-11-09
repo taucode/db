@@ -112,8 +112,6 @@ namespace TauCode.Db.DbValueConverters
             return null;
         }
 
-     
-
         protected override object FromDbValueImpl(object dbValue)
         {
             switch (this.DbType)
@@ -154,24 +152,5 @@ namespace TauCode.Db.DbValueConverters
 
             return null;
         }
-
-        //protected virtual object FromDbValueAsInteger(object dbValue)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //protected virtual TEnum? FromDbValueAsString(object dbValue)
-        //{
-        //    if (dbValue is string stringDbValue)
-        //    {
-        //        var parsed = Enum.TryParse<TEnum>(stringDbValue, out var result);
-        //        if (parsed)
-        //        {
-        //            return result;
-        //        }
-        //    }
-
-        //    return null;
-        //}
     }
 }

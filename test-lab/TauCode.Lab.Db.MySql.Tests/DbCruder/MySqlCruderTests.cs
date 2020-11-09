@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using TauCode.Db;
@@ -22,8 +21,6 @@ namespace TauCode.Lab.Db.MySql.Tests.DbCruder
         [SetUp]
         public void SetUp()
         {
-            Inflector.Inflector.SetDefaultCultureFunc = () => new CultureInfo("en-US");
-
             this.Connection.CreateSchema("zeta");
 
             var sql = this.GetType().Assembly.GetResourceText("crebase.sql", true);

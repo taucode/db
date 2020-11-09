@@ -11,8 +11,6 @@ using TauCode.Db.DbValueConverters;
 using TauCode.Db.Exceptions;
 using TauCode.Extensions;
 
-// todo: why use inflector, here & anywhere in tests?
-
 // todo clean
 namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
 {
@@ -22,8 +20,6 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbSerializer
         [SetUp]
         public void SetUp()
         {
-            //Inflector.Inflector.SetDefaultCultureFunc = () => new CultureInfo("en-US");
-
             var sql = this.GetType().Assembly.GetResourceText("CreatePersonDb.sql", true);
             this.Connection.ExecuteCommentedScript(sql);
 
