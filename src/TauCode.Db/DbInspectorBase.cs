@@ -47,6 +47,7 @@ namespace TauCode.Db
 
         public string SchemaName { get; }
 
+        // todo: move to metadata explorer (ex-schema-explorer)
         public virtual IReadOnlyList<string> GetSchemaNames()
         {
             var systemSchemata = this.GetSystemSchemata();

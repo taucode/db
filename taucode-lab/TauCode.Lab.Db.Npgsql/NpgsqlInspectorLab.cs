@@ -1,6 +1,7 @@
 ﻿using Npgsql;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TauCode.Db;
 using TauCode.Db.Schema;
 
@@ -23,7 +24,9 @@ namespace TauCode.Lab.Db.Npgsql
             //this.NpgsqlConnection.GetTableNames(this.SchemaName, null);
             throw new NotImplementedException();
 
-        protected override HashSet<string> GetSystemSchemata() => NpgsqlToolsLab.SystemSchemata;
+        protected override HashSet<string> GetSystemSchemata() =>
+            //NpgsqlToolsLab.SystemSchemata;
+            this.SchemaExplorer.GetSystemSchemata().ToHashSet();
 
         public override IReadOnlyList<string> GetTableNames()
         {

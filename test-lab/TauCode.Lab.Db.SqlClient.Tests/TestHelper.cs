@@ -106,5 +106,11 @@ WHERE
 
         internal static IReadOnlyList<string> GetTableNames(this SqlConnection connection, string schemaName, bool independentFirst)
             => new SqlSchemaExplorer(connection).GetTableNames(schemaName, independentFirst);
+
+        internal static void DropTable(this SqlConnection connection, string schemaName, string tableName)
+            => new SqlSchemaExplorer(connection).DropTable(schemaName, tableName);
+
+        internal static void CreateSchema(this SqlConnection connection, string schemaName)
+            => new SqlSchemaExplorer(connection).CreateSchema(schemaName);
     }
 }

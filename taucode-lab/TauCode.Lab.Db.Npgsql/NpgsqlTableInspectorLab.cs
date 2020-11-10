@@ -201,8 +201,6 @@ ORDER BY
                 .GetTableIndexes(this.SchemaName, this.TableName, true);
         }
 
-
-
         protected override bool NeedCheckSchemaExistence => throw new NotImplementedException();
 
         protected override bool SchemaExists(string schemaName) => throw new NotImplementedException();
@@ -210,7 +208,8 @@ ORDER BY
         protected override bool TableExists(string tableName) => throw new NotImplementedException();
 
         protected override PrimaryKeyMold GetPrimaryKeyImpl() =>
-            this.NpgsqlConnection.GetTablePrimaryKey(this.SchemaName, this.TableName);
+            //this.NpgsqlConnection.GetTablePrimaryKey(this.SchemaName, this.TableName);
+            throw new NotImplementedException();
 
         protected override IReadOnlyList<ForeignKeyMold> GetForeignKeysImpl()
             //=> this.NpgsqlConnection.GetTableForeignKeys(this.SchemaName, this.TableName, true).ToList();

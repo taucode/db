@@ -125,5 +125,11 @@ WHERE
 
         internal static IReadOnlyList<string> GetTableNames(this NpgsqlConnection connection, string schemaName, bool independentFirst)
             => new NpgsqlSchemaExplorer(connection).GetTableNames(schemaName, independentFirst);
+
+        internal static void CreateSchema(this NpgsqlConnection connection, string schemaName)
+            => new NpgsqlSchemaExplorer(connection).CreateSchema(schemaName);
+        
+        internal static void DropTable(this NpgsqlConnection connection, string schemaName, string tableName)
+            => new NpgsqlSchemaExplorer(connection).DropTable(schemaName, tableName);
     }
 }

@@ -149,7 +149,12 @@ WHERE
 
         public override IReadOnlyList<string> GetSystemSchemata()
         {
-            return NpgsqlToolsLab.SystemSchemata.ToList(); // todo!
+            return new HashSet<string>(new[]
+            {
+                "information_schema",
+                "pg_catalog",
+                "pg_toast",
+            }).ToList(); // todo
         }
 
         public override string DefaultSchemaName => "public";
