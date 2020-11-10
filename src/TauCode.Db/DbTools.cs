@@ -564,5 +564,10 @@ namespace TauCode.Db
                 throw new ArgumentException("Primary key's columns cannot contain nulls.", argumentName);
             }
         }
+
+        public static List<TableMold> ArrangeTables(List<TableMold> tables, bool independentFirst)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

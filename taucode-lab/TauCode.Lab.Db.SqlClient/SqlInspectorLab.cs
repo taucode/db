@@ -1,7 +1,9 @@
 ﻿using Microsoft.Data.SqlClient;
 using System.Collections.Generic;
 using TauCode.Db;
+using TauCode.Db.Schema;
 
+// todo clean & regions.
 namespace TauCode.Lab.Db.SqlClient
 {
     public class SqlInspectorLab : DbInspectorBase
@@ -9,14 +11,18 @@ namespace TauCode.Lab.Db.SqlClient
         public SqlInspectorLab(SqlConnection connection, string schemaName)
             : base(connection, schemaName ?? SqlToolsLab.DefaultSchemaName)
         {
+            this.SchemaExplorer = new SqlSchemaExplorer(this.SqlConnection);
         }
 
         protected SqlConnection SqlConnection => (SqlConnection)this.Connection;
 
+        protected IDbSchemaExplorer SchemaExplorer { get; }
+
         public override IDbUtilityFactory Factory => SqlUtilityFactoryLab.Instance;
 
         protected override IReadOnlyList<string> GetTableNamesImpl(string schemaName) =>
-            this.SqlConnection.GetTableNames(this.SchemaName, null);
+            this.SchemaExplorer.GetTableNames(schemaName);
+            //this.SqlConnection.GetTableNames(this.SchemaName, null);
 
         protected override HashSet<string> GetSystemSchemata() => SqlToolsLab.SystemSchemata;
 

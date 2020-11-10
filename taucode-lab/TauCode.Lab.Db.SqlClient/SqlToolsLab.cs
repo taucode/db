@@ -149,18 +149,18 @@ ORDER BY
             return tableNames;
         }
 
-        public static IReadOnlyList<TableMold> GetTableMolds(
-            this SqlConnection connection,
-            string schemaName,
-            bool? independentFirst)
-        {
-            var tableNames = GetTableNames(connection, schemaName, independentFirst);
-            var inspector = new SqlInspectorLab(connection, schemaName);
+        //public static IReadOnlyList<TableMold> GetTableMolds(
+        //    this SqlConnection connection,
+        //    string schemaName,
+        //    bool? independentFirst)
+        //{
+        //    var tableNames = GetTableNames(connection, schemaName, independentFirst);
+        //    var inspector = new SqlInspectorLab(connection, schemaName);
 
-            return tableNames
-                .Select(x => inspector.Factory.CreateTableInspector(connection, schemaName, x).GetTable())
-                .ToList();
-        }
+        //    return tableNames
+        //        .Select(x => inspector.Factory.CreateTableInspector(connection, schemaName, x).GetTable())
+        //        .ToList();
+        //}
 
         public static void DropTable(this SqlConnection connection, string schemaName, string tableName)
         {
