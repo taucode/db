@@ -134,45 +134,45 @@ ORDER BY
 
         protected override Dictionary<string, ColumnIdentityMold> GetIdentities()
         {
-            using var command = (NpgsqlCommand)this.Connection.CreateCommand();
-            command.CommandText = @"
-SELECT
-    C.column_name           ColumnName,
-    C.identity_start        Seed,
-    C.identity_increment    TheIncrement
-FROM
-    information_schema.columns C
-WHERE
-    C.table_name = @p_tableName AND
-    C.table_schema = @p_schemaName AND
-    C.is_identity = 'YES'
-";
+            throw new NotImplementedException();
+//            using var command = (NpgsqlCommand)this.Connection.CreateCommand();
+//            command.CommandText = @"
+//SELECT
+//    C.column_name           ColumnName,
+//    C.identity_start        Seed,
+//    C.identity_increment    TheIncrement
+//FROM
+//    information_schema.columns C
+//WHERE
+//    C.table_name = @p_tableName AND
+//    C.table_schema = @p_schemaName AND
+//    C.is_identity = 'YES'
+//";
 
-            command.Parameters.AddWithValue("p_tableName", this.TableName);
-            command.Parameters.AddWithValue("p_schemaName", this.SchemaName);
+//            command.Parameters.AddWithValue("p_tableName", this.TableName);
+//            command.Parameters.AddWithValue("p_schemaName", this.SchemaName);
 
-            var rows = command.GetCommandRows();
-            if (rows.Count != 0)
-            {
-                return rows
-                    .ToDictionary(
-                        x => (string)x.ColumnName,
-                        x => new ColumnIdentityMold
-                        {
-                            Seed = x.Seed.ToString(),
-                            Increment = x.TheIncrement.ToString(),
-                        });
-            }
+//            var rows = command.GetCommandRows();
+//            if (rows.Count != 0)
+//            {
+//                return rows
+//                    .ToDictionary(
+//                        x => (string)x.ColumnName,
+//                        x => new ColumnIdentityMold
+//                        {
+//                            Seed = x.Seed.ToString(),
+//                            Increment = x.TheIncrement.ToString(),
+//                        });
+//            }
 
-            return new Dictionary<string, ColumnIdentityMold>();
+//            return new Dictionary<string, ColumnIdentityMold>();
         }
 
-        protected override bool NeedCheckSchemaExistence => true;
+        protected override bool NeedCheckSchemaExistence => throw new NotImplementedException();
 
-        protected override bool SchemaExists(string schemaName) => this.NpgsqlConnection.SchemaExists(schemaName);
+        protected override bool SchemaExists(string schemaName) => throw new NotImplementedException();
 
-        protected override bool TableExists(string tableName) =>
-            this.NpgsqlConnection.TableExists(this.SchemaName, this.TableName);
+        protected override bool TableExists(string tableName) => throw new NotImplementedException();
 
         protected override PrimaryKeyMold GetPrimaryKeyImpl() =>
             this.NpgsqlConnection.GetTablePrimaryKey(this.SchemaName, this.TableName);

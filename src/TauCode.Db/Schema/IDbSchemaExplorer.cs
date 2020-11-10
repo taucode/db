@@ -1,11 +1,16 @@
 ﻿using System.Collections.Generic;
+using System.Data;
 using TauCode.Db.Model;
 
 namespace TauCode.Db.Schema
 {
     public interface IDbSchemaExplorer
     {
+        IDbConnection Connection { get; }
+
         IReadOnlyList<string> GetSystemSchemata();
+
+        string DefaultSchemaName { get; }
 
         IReadOnlyList<string> GetSchemata();
 
@@ -42,5 +47,11 @@ namespace TauCode.Db.Schema
             bool includeForeignKeys,
             bool includeIndexes,
             bool? independentFirst);
+
+        string BuildCreateSchemaScript(string schemaName);
+
+        string BuildDropSchemaScript(string schemaName);
+
+        string BuildDropTableScript(string schemaName, string tableName);
     }
 }

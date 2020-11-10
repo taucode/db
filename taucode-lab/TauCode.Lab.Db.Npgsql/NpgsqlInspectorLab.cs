@@ -1,4 +1,5 @@
 ﻿using Npgsql;
+using System;
 using System.Collections.Generic;
 using TauCode.Db;
 
@@ -20,7 +21,8 @@ namespace TauCode.Lab.Db.Npgsql
 
         protected override HashSet<string> GetSystemSchemata() => NpgsqlToolsLab.SystemSchemata;
 
-        protected override bool NeedCheckSchemaExistence => true;
-        protected override bool SchemaExists(string schemaName) => this.NpgsqlConnection.SchemaExists(schemaName);
+        protected override bool NeedCheckSchemaExistence => throw new NotImplementedException();
+
+        protected override bool SchemaExists(string schemaName) => throw new NotImplementedException();
     }
 }

@@ -36,8 +36,8 @@ namespace TauCode.Lab.Db.Npgsql
             return new NpgsqlSchemaExplorer(this.NpgsqlConnection);
         }
 
-        protected override bool NeedCheckSchemaExistence => true;
+        protected override bool NeedCheckSchemaExistence => throw new NotImplementedException();
 
-        protected override bool SchemaExists(string schemaName) => this.NpgsqlConnection.SchemaExists(schemaName);
+        protected override bool SchemaExists(string schemaName) => throw new NotImplementedException();
     }
 }

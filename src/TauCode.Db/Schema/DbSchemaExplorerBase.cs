@@ -58,8 +58,6 @@ namespace TauCode.Db.Schema
         protected char? OpeningDelimiter { get; }
         protected char? ClosingDelimiter { get; }
 
-        protected IDbConnection Connection { get; }
-
         protected virtual IList<string> GetAdditionalColumnTableColumnNames() => new string[0];
 
         protected virtual bool ParseBoolean(object value)
@@ -196,7 +194,11 @@ ORDER BY
 
         #region IDbSchemaExplorer Members
 
+        public IDbConnection Connection { get; }
+
         public abstract IReadOnlyList<string> GetSystemSchemata();
+
+        public string DefaultSchemaName => "dbo";
 
         public IReadOnlyList<string> GetSchemata()
         {
@@ -684,6 +686,49 @@ ORDER BY
             }
 
             return tables;
+        }
+
+        public string BuildCreateSchemaScript(string schemaName)
+        {
+
+            var sb = new StringBuilder();
+
+            sb.AppendLine("CREATE SCHEMA ");
+            if (schemaName != null)
+            {
+                sb.Append($"{this.OpeningDelimiter}{schemaName}{this.ClosingDelimiter}");
+            }
+
+            return sb.ToString();
+        }
+
+        public string BuildDropSchemaScript(string schemaName)
+        {
+            var sb = new StringBuilder();
+
+            sb.AppendLine("DROP SCHEMA ");
+            if (schemaName != null)
+            {
+                sb.Append($"{this.OpeningDelimiter}{schemaName}{this.ClosingDelimiter}");
+            }
+
+            return sb.ToString();
+        }
+
+        public string BuildDropTableScript(string schemaName, string tableName)
+        {
+            var sb = new StringBuilder();
+
+            sb.AppendLine("DROP TABLE ");
+            if (schemaName != null)
+            {
+                sb.Append($"{this.OpeningDelimiter}{schemaName}{this.ClosingDelimiter}");
+                sb.Append(".");
+            }
+
+            sb.Append($"{this.OpeningDelimiter}{tableName}{this.ClosingDelimiter}");
+
+            return sb.ToString();
         }
 
         #endregion

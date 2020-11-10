@@ -39,29 +39,29 @@ namespace TauCode.Lab.Db.Npgsql
             command.ExecuteNonQuery();
         }
 
-        public static IReadOnlyList<string> GetSchemata(this NpgsqlConnection connection)
-        {
-            if (connection == null)
-            {
-                throw new ArgumentNullException(nameof(connection));
-            }
+//        public static IReadOnlyList<string> GetSchemata(this NpgsqlConnection connection)
+//        {
+//            if (connection == null)
+//            {
+//                throw new ArgumentNullException(nameof(connection));
+//            }
 
-            using var command = connection.CreateCommand();
-            command.CommandText = @"
-SELECT
-    S.schema_name SchemaName
-FROM
-    information_schema.schemata S
-";
+//            using var command = connection.CreateCommand();
+//            command.CommandText = @"
+//SELECT
+//    S.schema_name SchemaName
+//FROM
+//    information_schema.schemata S
+//";
 
-            var schemata = command
-                .GetCommandRows()
-                .Select(x => (string)x.SchemaName)
-                .Except(SystemSchemata)
-                .ToList();
+//            var schemata = command
+//                .GetCommandRows()
+//                .Select(x => (string)x.SchemaName)
+//                .Except(SystemSchemata)
+//                .ToList();
 
-            return schemata;
-        }
+//            return schemata;
+//        }
 
         public static void DropTable(this NpgsqlConnection connection, string schemaName, string tableName)
         {
@@ -318,15 +318,15 @@ ORDER BY
             return tableNames;
         }
 
-        public static bool SchemaExists(this NpgsqlConnection connection, string schemaName)
-        {
-            if (schemaName == null)
-            {
-                throw new ArgumentNullException(nameof(schemaName));
-            }
+        //public static bool SchemaExists(this NpgsqlConnection connection, string schemaName)
+        //{
+        //    if (schemaName == null)
+        //    {
+        //        throw new ArgumentNullException(nameof(schemaName));
+        //    }
 
-            return GetSchemata(connection).Contains(schemaName); // todo optimize
-        }
+        //    return GetSchemata(connection).Contains(schemaName); // todo optimize
+        //}
 
         public static bool TableExists(this NpgsqlConnection connection, string schemaName, string tableName)
         {
