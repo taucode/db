@@ -427,58 +427,58 @@ ORDER BY
                 .ToList();
         }
 
-        public static IReadOnlyList<string> GetTableForeignKeyNames(
-            this SqlConnection connection,
-            string schemaName,
-            string tableName)
-        {
-            if (connection == null)
-            {
-                throw new ArgumentNullException(nameof(connection));
-            }
+//        public static IReadOnlyList<string> GetTableForeignKeyNames(
+//            this SqlConnection connection,
+//            string schemaName,
+//            string tableName)
+//        {
+//            if (connection == null)
+//            {
+//                throw new ArgumentNullException(nameof(connection));
+//            }
 
-            if (schemaName == null)
-            {
-                throw new ArgumentNullException(nameof(schemaName));
-            }
+//            if (schemaName == null)
+//            {
+//                throw new ArgumentNullException(nameof(schemaName));
+//            }
 
-            if (tableName == null)
-            {
-                throw new ArgumentNullException(nameof(tableName));
-            }
+//            if (tableName == null)
+//            {
+//                throw new ArgumentNullException(nameof(tableName));
+//            }
 
-            using var command = connection.CreateCommand();
-            command.CommandText = @"
-SELECT
-    TC.constraint_name ConstraintName
-FROM
-    information_schema.table_constraints TC
-WHERE
-    TC.constraint_schema = @p_schemaName AND
-    TC.table_schema = @p_schemaName AND
-    TC.table_name = @p_tableName AND
-    TC.constraint_type = 'FOREIGN KEY'
-";
+//            using var command = connection.CreateCommand();
+//            command.CommandText = @"
+//SELECT
+//    TC.constraint_name ConstraintName
+//FROM
+//    information_schema.table_constraints TC
+//WHERE
+//    TC.constraint_schema = @p_schemaName AND
+//    TC.table_schema = @p_schemaName AND
+//    TC.table_name = @p_tableName AND
+//    TC.constraint_type = 'FOREIGN KEY'
+//";
 
-            command.Parameters.AddWithValue("p_schemaName", schemaName);
-            command.Parameters.AddWithValue("p_tableName", tableName);
+//            command.Parameters.AddWithValue("p_schemaName", schemaName);
+//            command.Parameters.AddWithValue("p_tableName", tableName);
 
-            var names = DbTools
-                .GetCommandRows(command)
-                .Select(x => (string) x.ConstraintName)
-                .ToList();
+//            var names = DbTools
+//                .GetCommandRows(command)
+//                .Select(x => (string) x.ConstraintName)
+//                .ToList();
 
-            return names;
-        }
+//            return names;
+//        }
 
-        public static void DropForeignKey(
-            this SqlConnection connection,
-            string schemaName,
-            string tableName,
-            string foreignKeyName)
-        {
-            throw new NotImplementedException();
-        }
+        //public static void DropForeignKey(
+        //    this SqlConnection connection,
+        //    string schemaName,
+        //    string tableName,
+        //    string foreignKeyName)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public static bool SchemaExists(this SqlConnection connection, string schemaName)
         {

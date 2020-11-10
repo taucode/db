@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using TauCode.Db;
 using TauCode.Db.Model;
-using TauCode.Extensions;
+using TauCode.Db.Schema;
 
 // todo: nice regions
+// todo clean
 namespace TauCode.Lab.Db.SqlClient
 {
     public class SqlTableInspectorLab : DbTableInspectorBase
@@ -17,115 +18,133 @@ namespace TauCode.Lab.Db.SqlClient
                 schemaName ?? SqlToolsLab.DefaultSchemaName,
                 tableName)
         {
+            this.SchemaExplorer = new SqlSchemaExplorer(this.SqlConnection);
         }
+
+        protected IDbSchemaExplorer SchemaExplorer { get; }
 
         protected SqlConnection SqlConnection => (SqlConnection)this.Connection;
 
         public override IDbUtilityFactory Factory => SqlUtilityFactoryLab.Instance;
 
+        //        protected override List<ColumnInfo> GetColumnInfos()
+        //        {
+        //            using var command = this.Connection.CreateCommand();
+        //            command.CommandText =
+        //                @"
+        //SELECT
+        //    C.column_name               ColumnName,
+        //    C.is_nullable               IsNullable,
+        //    C.data_type                 DataType,
+        //    C.character_maximum_length  MaxLen,
+        //    C.numeric_precision         NumericPrecision,
+        //    C.numeric_scale             NumericScale
+        //FROM
+        //    information_schema.columns C
+        //WHERE
+        //    C.table_name = @p_tableName AND
+        //    C.table_schema = @p_schema
+        //ORDER BY
+        //    C.ordinal_position
+        //";
+
+        //            command.AddParameterWithValue("p_tableName", this.TableName);
+        //            command.AddParameterWithValue("p_schema", this.SchemaName);
+
+        //            var columnInfos = command
+        //                .GetCommandRows()
+        //                .Select(x => new ColumnInfo
+        //                {
+        //                    Name = x.ColumnName,
+        //                    TypeName = x.DataType,
+        //                    IsNullable = ParseBoolean(x.IsNullable),
+        //                    Size = GetDbValueAsInt(x.MaxLen),
+        //                    Precision = GetDbValueAsInt(x.NumericPrecision),
+        //                    Scale = GetDbValueAsInt(x.NumericScale),
+        //                })
+        //                .ToList();
+
+        //            return columnInfos;
+        //        }
+
         protected override List<ColumnInfo> GetColumnInfos()
         {
-            using var command = this.Connection.CreateCommand();
-            command.CommandText =
-                @"
-SELECT
-    C.column_name               ColumnName,
-    C.is_nullable               IsNullable,
-    C.data_type                 DataType,
-    C.character_maximum_length  MaxLen,
-    C.numeric_precision         NumericPrecision,
-    C.numeric_scale             NumericScale
-FROM
-    information_schema.columns C
-WHERE
-    C.table_name = @p_tableName AND
-    C.table_schema = @p_schema
-ORDER BY
-    C.ordinal_position
-";
-
-            command.AddParameterWithValue("p_tableName", this.TableName);
-            command.AddParameterWithValue("p_schema", this.SchemaName);
-
-            var columnInfos = command
-                .GetCommandRows()
-                .Select(x => new ColumnInfo
-                {
-                    Name = x.ColumnName,
-                    TypeName = x.DataType,
-                    IsNullable = ParseBoolean(x.IsNullable),
-                    Size = GetDbValueAsInt(x.MaxLen),
-                    Precision = GetDbValueAsInt(x.NumericPrecision),
-                    Scale = GetDbValueAsInt(x.NumericScale),
-                })
-                .ToList();
-
-            return columnInfos;
+            throw new NotImplementedException();
         }
 
         protected override ColumnMold ColumnInfoToColumnMold(ColumnInfo columnInfo)
         {
-            var column = new ColumnMold
-            {
-                Name = columnInfo.Name,
-                Type = new DbTypeMold
-                {
-                    Name = columnInfo.TypeName,
-                    Size = columnInfo.Size,
-                    Precision = columnInfo.Precision,
-                    Scale = columnInfo.Scale,
-                },
-                IsNullable = columnInfo.IsNullable,
-            };
-
-            if (column.Type.Name.ToLowerInvariant().IsIn("text", "ntext"))
-            {
-                column.Type.Size = null;
-            }
-            else if (column.Type.Name.ToLowerInvariant().IsIn(
-                "tinyint",
-                "smallint",
-                "int",
-                "bigint",
-                "smallmoney",
-                "money",
-                "float",
-                "real"))
-            {
-                column.Type.Precision = null;
-                column.Type.Scale = null;
-            }
-
-            return column;
+            throw new NotImplementedException();
         }
+
+        //protected override ColumnMold ColumnInfoToColumnMold(ColumnInfo columnInfo)
+        //{
+        //    var column = new ColumnMold
+        //    {
+        //        Name = columnInfo.Name,
+        //        Type = new DbTypeMold
+        //        {
+        //            Name = columnInfo.TypeName,
+        //            Size = columnInfo.Size,
+        //            Precision = columnInfo.Precision,
+        //            Scale = columnInfo.Scale,
+        //        },
+        //        IsNullable = columnInfo.IsNullable,
+        //    };
+
+        //    if (column.Type.Name.ToLowerInvariant().IsIn("text", "ntext"))
+        //    {
+        //        column.Type.Size = null;
+        //    }
+        //    else if (column.Type.Name.ToLowerInvariant().IsIn(
+        //        "tinyint",
+        //        "smallint",
+        //        "int",
+        //        "bigint",
+        //        "smallmoney",
+        //        "money",
+        //        "float",
+        //        "real"))
+        //    {
+        //        column.Type.Precision = null;
+        //        column.Type.Scale = null;
+        //    }
+
+        //    return column;
+        //}
+
+        public override IReadOnlyList<ColumnMold> GetColumnsImpl() =>
+            this.SchemaExplorer.GetTableColumns(this.SchemaName, this.TableName);
 
         protected override Dictionary<string, ColumnIdentityMold> GetIdentities()
         {
-            var objectId = this.GetTableObjectId();
+            throw new NotImplementedException();
 
-            using var command = this.Connection.CreateCommand();
-            command.CommandText =
-                @"
-SELECT
-    IC.name             Name,
-    IC.seed_value       SeedValue,
-    IC.increment_value  IncrementValue
-FROM
-    sys.identity_columns IC
-WHERE
-    IC.object_id = @p_objectId
-";
-            command.AddParameterWithValue("p_objectId", objectId);
+//            var objectId = this.GetTableObjectId();
 
-            return DbTools
-                .GetCommandRows(command)
-                .ToDictionary(
-                    x => (string)x.Name,
-                    x => new ColumnIdentityMold
-                    {
-                        Seed = ((object)x.SeedValue).ToString(),
-                        Increment = ((object)x.IncrementValue).ToString(),
-                    });
+//            using var command = this.Connection.CreateCommand();
+//            command.CommandText =
+//                @"
+//SELECT
+//    IC.name             Name,
+//    IC.seed_value       SeedValue,
+//    IC.increment_value  IncrementValue
+//FROM
+//    sys.identity_columns IC
+//WHERE
+//    IC.object_id = @p_objectId
+//";
+//            command.AddParameterWithValue("p_objectId", objectId);
+
+//            return command
+//                .GetCommandRows()
+//                .ToDictionary(
+//                    x => (string)x.Name,
+//                    x => new ColumnIdentityMold
+//                    {
+//                        Seed = ((object)x.SeedValue).ToString(),
+//                        Increment = ((object)x.IncrementValue).ToString(),
+//                    });
         }
 
         protected override bool NeedCheckSchemaExistence => true;
@@ -145,47 +164,47 @@ WHERE
         protected override IReadOnlyList<IndexMold> GetIndexesImpl()
             => this.SqlConnection.GetTableIndexes(this.SchemaName, this.TableName).ToList();
 
-        private static bool ParseBoolean(object value)
-        {
-            if (value == null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
+        //private static bool ParseBoolean(object value)
+        //{
+        //    if (value == null)
+        //    {
+        //        throw new ArgumentNullException(nameof(value));
+        //    }
 
-            if (value is bool b)
-            {
-                return b;
-            }
+        //    if (value is bool b)
+        //    {
+        //        return b;
+        //    }
 
-            if (value is string s)
-            {
-                if (s.ToLower() == "yes")
-                {
-                    return true;
-                }
-                else if (s.ToLower() == "no")
-                {
-                    return false;
-                }
-                else
-                {
-                    throw new ArgumentException($"Could not parse value '{s}' as boolean.");
-                }
-            }
+        //    if (value is string s)
+        //    {
+        //        if (s.ToLower() == "yes")
+        //        {
+        //            return true;
+        //        }
+        //        else if (s.ToLower() == "no")
+        //        {
+        //            return false;
+        //        }
+        //        else
+        //        {
+        //            throw new ArgumentException($"Could not parse value '{s}' as boolean.");
+        //        }
+        //    }
 
-            throw new ArgumentException(
-                $"Could not parse value '{value}' of type '{value.GetType().FullName}' as boolean.");
-        }
+        //    throw new ArgumentException(
+        //        $"Could not parse value '{value}' of type '{value.GetType().FullName}' as boolean.");
+        //}
 
-        private static int? GetDbValueAsInt(object dbValue)
-        {
-            if (dbValue == null)
-            {
-                return null;
-            }
+        //private static int? GetDbValueAsInt(object dbValue)
+        //{
+        //    if (dbValue == null)
+        //    {
+        //        return null;
+        //    }
 
-            return int.Parse(dbValue.ToString());
-        }
+        //    return int.Parse(dbValue.ToString());
+        //}
 
         private int GetTableObjectId()
         {

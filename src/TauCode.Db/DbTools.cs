@@ -567,7 +567,49 @@ namespace TauCode.Db
 
         public static List<TableMold> ArrangeTables(List<TableMold> tables, bool independentFirst)
         {
-            throw new NotImplementedException();
+            var graph = new Graph<TableMold>();
+
+            foreach (var tableMold in tables)
+            {
+                graph.AddNode(tableMold);
+            }
+
+            foreach (var node in graph.Nodes)
+            {
+                var table = node.Value;
+                foreach (var foreignKey in table.ForeignKeys)
+                {
+                    var referencedNode =
+                        graph.Nodes.SingleOrDefault(x => x.Value.Name == foreignKey.ReferencedTableName);
+
+                    if (referencedNode == null)
+                    {
+                        throw new NotImplementedException();
+                    }
+
+                    node.DrawEdgeTo(referencedNode);
+                }
+            }
+
+            var algorithm = new GraphSlicingAlgorithm<TableMold>(graph);
+            var slices = algorithm.Slice();
+            if (!independentFirst)
+            {
+                slices = slices.Reverse().ToArray();
+            }
+
+            var list = new List<TableMold>();
+
+            foreach (var slice in slices)
+            {
+                var sliceTables = slice.Nodes
+                    .Select(x => x.Value)
+                    .OrderBy(x => x.Name);
+
+                list.AddRange(sliceTables);
+            }
+
+            return list;
         }
     }
 }
