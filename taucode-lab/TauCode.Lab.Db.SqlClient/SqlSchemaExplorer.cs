@@ -143,6 +143,8 @@ WHERE
             "db_denydatawriter",
         };
 
+        public override string DefaultSchemaName => "dbo";
+
         protected override IReadOnlyList<IndexMold> GetTableIndexesImpl(string schemaName, string tableName)
         {
             if (schemaName == null)

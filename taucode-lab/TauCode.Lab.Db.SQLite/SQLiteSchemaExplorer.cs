@@ -33,5 +33,7 @@ namespace TauCode.Lab.Db.SQLite
         {
             throw new NotImplementedException();
         }
+
+        public override string DefaultSchemaName => null;
     }
 }

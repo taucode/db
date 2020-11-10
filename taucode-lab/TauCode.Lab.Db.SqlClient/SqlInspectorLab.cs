@@ -31,6 +31,7 @@ namespace TauCode.Lab.Db.SqlClient
             => this.SchemaExplorer.GetSystemSchemata().ToHashSet(); // todo ugly!
 
         protected override bool NeedCheckSchemaExistence => throw new NotImplementedException();
+
         protected override bool SchemaExists(string schemaName)
         {
             throw new System.NotImplementedException();

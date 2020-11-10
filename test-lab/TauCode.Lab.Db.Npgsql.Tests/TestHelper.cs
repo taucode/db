@@ -122,5 +122,8 @@ WHERE
             var count = (int)(long)command.ExecuteScalar();
             return count;
         }
+
+        internal static IReadOnlyList<string> GetTableNames(this NpgsqlConnection connection, string schemaName, bool independentFirst)
+            => new NpgsqlSchemaExplorer(connection).GetTableNames(schemaName, independentFirst);
     }
 }

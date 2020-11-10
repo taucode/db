@@ -115,24 +115,21 @@ namespace TauCode.Lab.Db.SqlClient
         //public override IReadOnlyList<ColumnMold> GetColumnsImpl() =>
         //    this.SchemaExplorer.GetTableColumns(this.SchemaName, this.TableName);
 
-        protected override PrimaryKeyMold GetPrimaryKeyImpl()
-        {
-            throw new NotImplementedException();
-        }
+        protected override PrimaryKeyMold GetPrimaryKeyImpl() => throw new NotImplementedException();
 
-        protected override IReadOnlyList<ForeignKeyMold> GetForeignKeysImpl()
-        {
-            throw new NotImplementedException();
-        }
+        protected override IReadOnlyList<ForeignKeyMold> GetForeignKeysImpl() => throw new NotImplementedException();
 
         public override IReadOnlyList<ForeignKeyMold> GetForeignKeys()
         {
-            return this.SchemaExplorer.GetTableForeignKeys(this.SchemaName, this.TableName, true, true);
+            return this
+                .SchemaExplorer
+                .GetTableForeignKeys(this.SchemaName, this.TableName, true, true);
         }
 
         public override PrimaryKeyMold GetPrimaryKey()
         {
-            return this.SchemaExplorer.GetTablePrimaryKey(this.SchemaName, this.TableName, true);
+            return this.SchemaExplorer
+                .GetTablePrimaryKey(this.SchemaName, this.TableName, true);
         }
 
         protected override Dictionary<string, ColumnIdentityMold> GetIdentities()
@@ -171,15 +168,8 @@ namespace TauCode.Lab.Db.SqlClient
         //protected override bool SchemaExists(string schemaName) =>
         //    this.SqlConnection.SchemaExists(this.SchemaName);
 
-        protected override bool SchemaExists(string schemaName)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override bool TableExists(string tableName)
-        {
-            throw new NotImplementedException();
-        }
+        protected override bool SchemaExists(string schemaName) => throw new NotImplementedException();
+        protected override bool TableExists(string tableName) => throw new NotImplementedException();
 
         //protected override bool TableExists(string tableName) =>
         //    this.SqlConnection.TableExists(this.SchemaName, this.TableName);
@@ -190,7 +180,9 @@ namespace TauCode.Lab.Db.SqlClient
 
         public override IReadOnlyList<ColumnMold> GetColumns()
         {
-            return this.SchemaExplorer.GetTableColumns(this.SchemaName, this.TableName, true);
+            return this
+                .SchemaExplorer
+                .GetTableColumns(this.SchemaName, this.TableName, true);
         }
 
         //protected override IReadOnlyList<ForeignKeyMold> GetForeignKeysImpl()
@@ -210,7 +202,8 @@ namespace TauCode.Lab.Db.SqlClient
 
         public override IReadOnlyList<IndexMold> GetIndexes()
         {
-            return this.SchemaExplorer.GetTableIndexes(this.SchemaName, this.TableName, true);
+            return this.SchemaExplorer
+                .GetTableIndexes(this.SchemaName, this.TableName, true);
         }
 
 

@@ -105,7 +105,7 @@ namespace TauCode.Db.Schema
                 return null;
             }
 
-            return (int) longValue;
+            return (int)longValue;
         }
 
         protected virtual List<ColumnInfo2> GetColumnInfos(string schemaName, string tableName)
@@ -162,11 +162,11 @@ ORDER BY
                     Scale = this.GetDbValueAsInt(row.numeric_scale),
                 };
 
-                var dynamicRow = (DynamicRow) row;
+                var dynamicRow = (DynamicRow)row;
                 foreach (var additionalColumnName in additionalColumnNames)
                 {
                     var additionalValue = dynamicRow.GetValue(additionalColumnName);
-                    if (additionalValue == DBNull.Value)
+                    if (additionalValue == null)
                     {
                         continue;
                     }
@@ -184,7 +184,6 @@ ORDER BY
 
         protected abstract IReadOnlyList<IndexMold> GetTableIndexesImpl(string schemaName, string tableName);
 
-
         protected abstract void ResolveIdentities(
             string schemaName,
             string tableName,
@@ -198,7 +197,7 @@ ORDER BY
 
         public abstract IReadOnlyList<string> GetSystemSchemata();
 
-        public string DefaultSchemaName => "dbo";
+        public abstract string DefaultSchemaName { get; }
 
         public IReadOnlyList<string> GetSchemata()
         {
@@ -212,7 +211,7 @@ FROM
 
             var schemata = command
                 .GetCommandRows()
-                .Select(x => (string) x.SchemaName)
+                .Select(x => (string)x.SchemaName)
                 .Except(this.GetSystemSchemata())
                 .ToList();
 
@@ -234,7 +233,7 @@ WHERE
 
             var schemata = command
                 .GetCommandRows()
-                .Select(x => (string) x.SchemaName)
+                .Select(x => (string)x.SchemaName)
                 .Except(this.GetSystemSchemata())
                 .ToList();
 
@@ -296,7 +295,7 @@ ORDER BY
 
             var tableNames = command
                 .GetCommandRows()
-                .Select(x => (string) x.TableName)
+                .Select(x => (string)x.TableName)
                 .ToList();
 
             return tableNames;
@@ -413,9 +412,9 @@ ORDER BY
                 return null; // no PK
             }
 
-            var constraintName = (string) rows[0].ConstraintName;
+            var constraintName = (string)rows[0].ConstraintName;
             var columnNames = rows
-                .Select(x => (string) x.ColumnName)
+                .Select(x => (string)x.ColumnName)
                 .ToList();
 
             var pk = new PrimaryKeyMold
@@ -547,11 +546,11 @@ ORDER BY
                     var rows = command.GetCommandRows();
 
                     fk.ColumnNames = rows
-                        .Select(x => (string) x.ColumnName)
+                        .Select(x => (string)x.ColumnName)
                         .ToList();
 
                     fk.ReferencedColumnNames = rows
-                        .Select(x => (string) x.ReferencedColumnName)
+                        .Select(x => (string)x.ReferencedColumnName)
                         .ToList();
                 }
             }

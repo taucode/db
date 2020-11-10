@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using TauCode.Db;
 using TauCode.Db.Model;
+using TauCode.Db.Schema;
 using TauCode.Extensions;
 
 namespace TauCode.Lab.Db.Npgsql
@@ -13,8 +14,12 @@ namespace TauCode.Lab.Db.Npgsql
     public class NpgsqlTableInspectorLab : DbTableInspectorBase
     {
         public NpgsqlTableInspectorLab(NpgsqlConnection connection, string schemaName, string tableName)
-            : base(connection, schemaName ?? NpgsqlToolsLab.DefaultSchemaName, tableName)
+            : base(
+                connection,
+                schemaName ?? NpgsqlToolsLab.DefaultSchemaName,
+                tableName)
         {
+            this.SchemaExplorer = new NpgsqlSchemaExplorer(this.NpgsqlConnection);
         }
 
         private static int? GetDbValueAsInt(object dbValue)
@@ -58,6 +63,8 @@ namespace TauCode.Lab.Db.Npgsql
             throw new ArgumentException(
                 $"Could not parse value '{value}' of type '{value.GetType().FullName}' as boolean.");
         }
+
+        protected IDbSchemaExplorer SchemaExplorer { get; }
 
         protected NpgsqlConnection NpgsqlConnection => (NpgsqlConnection)this.Connection;
 
@@ -132,6 +139,13 @@ ORDER BY
             return column;
         }
 
+        public override IReadOnlyList<ColumnMold> GetColumns()
+        {
+            return this
+                .SchemaExplorer
+                .GetTableColumns(this.SchemaName, this.TableName, true);
+        }
+
         protected override Dictionary<string, ColumnIdentityMold> GetIdentities()
         {
             throw new NotImplementedException();
@@ -168,6 +182,27 @@ ORDER BY
 //            return new Dictionary<string, ColumnIdentityMold>();
         }
 
+        public override IReadOnlyList<ForeignKeyMold> GetForeignKeys()
+        {
+            return this
+                .SchemaExplorer
+                .GetTableForeignKeys(this.SchemaName, this.TableName, true, true);
+        }
+
+        public override PrimaryKeyMold GetPrimaryKey()
+        {
+            return this.SchemaExplorer
+                .GetTablePrimaryKey(this.SchemaName, this.TableName, true);
+        }
+
+        public override IReadOnlyList<IndexMold> GetIndexes()
+        {
+            return this.SchemaExplorer
+                .GetTableIndexes(this.SchemaName, this.TableName, true);
+        }
+
+
+
         protected override bool NeedCheckSchemaExistence => throw new NotImplementedException();
 
         protected override bool SchemaExists(string schemaName) => throw new NotImplementedException();
@@ -178,7 +213,8 @@ ORDER BY
             this.NpgsqlConnection.GetTablePrimaryKey(this.SchemaName, this.TableName);
 
         protected override IReadOnlyList<ForeignKeyMold> GetForeignKeysImpl()
-            => this.NpgsqlConnection.GetTableForeignKeys(this.SchemaName, this.TableName, true).ToList();
+            //=> this.NpgsqlConnection.GetTableForeignKeys(this.SchemaName, this.TableName, true).ToList();
+            => throw new NotImplementedException();
 
         protected override IReadOnlyList<IndexMold> GetIndexesImpl()
         {
@@ -205,6 +241,14 @@ WHERE
                 .OrderBy(x => x.Name)
                 .ToList();
         }
+
+        public override TableMold GetTable() => this.SchemaExplorer.GetTable(
+            this.SchemaName,
+            this.TableName,
+            true,
+            true,
+            true,
+            true);
 
         private IndexMold BuildIndexMold(string indexName, string indexDefinition)
         {

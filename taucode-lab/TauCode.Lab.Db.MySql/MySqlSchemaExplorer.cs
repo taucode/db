@@ -33,5 +33,7 @@ namespace TauCode.Lab.Db.MySql
         {
             return MySqlToolsLab.SystemSchemata.ToList(); // todo!
         }
+
+        public override string DefaultSchemaName => null;
     }
 }

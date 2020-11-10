@@ -52,8 +52,7 @@ namespace TauCode.Db
             var systemSchemata = this.GetSystemSchemata();
 
             using var command = this.Connection.CreateCommand();
-            command.CommandText =
-                @"
+            command.CommandText = @"
 SELECT
     S.schema_name SchemaName
 FROM
@@ -62,8 +61,8 @@ ORDER BY
     S.schema_name
 ";
 
-            var schemata = DbTools
-                .GetCommandRows(command)
+            var schemata = command
+                .GetCommandRows()
                 .Select(x => (string)x.SchemaName)
                 .Except(systemSchemata)
                 .ToList();
