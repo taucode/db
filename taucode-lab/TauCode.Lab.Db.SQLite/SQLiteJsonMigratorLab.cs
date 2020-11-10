@@ -26,11 +26,17 @@ namespace TauCode.Lab.Db.SQLite
         {
         }
 
+        protected override void CheckSchemaIfNeeded()
+        {
+        }
+
+        public SQLiteConnection SQLiteConnection => (SQLiteConnection)this.Connection;
+
         public override IDbUtilityFactory Factory => SQLiteUtilityFactoryLab.Instance;
 
         protected override IDbSchemaExplorer CreateSchemaExplorer(IDbConnection connection)
         {
-            throw new NotImplementedException();
+            return new SQLiteSchemaExplorer(this.SQLiteConnection);
         }
 
         protected override bool NeedCheckSchemaExistence => false;

@@ -33,7 +33,7 @@ namespace TauCode.Lab.Db.Npgsql
 
         protected override IDbSchemaExplorer CreateSchemaExplorer(IDbConnection connection)
         {
-            throw new NotImplementedException();
+            return new NpgsqlSchemaExplorer(this.NpgsqlConnection);
         }
 
         protected override bool NeedCheckSchemaExistence => true;

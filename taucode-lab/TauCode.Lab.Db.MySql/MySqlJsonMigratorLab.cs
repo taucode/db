@@ -27,16 +27,18 @@ namespace TauCode.Lab.Db.MySql
         {
         }
 
+        protected MySqlConnection MySqlConnection => (MySqlConnection)this.Connection;
+
         public override IDbUtilityFactory Factory => MySqlUtilityFactoryLab.Instance;
 
         protected override IDbSchemaExplorer CreateSchemaExplorer(IDbConnection connection)
         {
-            throw new NotImplementedException();
+            return new MySqlSchemaExplorer(this.MySqlConnection);
         }
 
         protected override bool NeedCheckSchemaExistence => true;
 
         protected override bool SchemaExists(string schemaName) =>
-            ((MySqlConnection)this.Connection).SchemaExists(schemaName);
+            this.MySqlConnection.SchemaExists(schemaName);
     }
 }
