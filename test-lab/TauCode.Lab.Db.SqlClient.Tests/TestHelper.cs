@@ -116,5 +116,8 @@ WHERE
             var count = (int)command.ExecuteScalar();
             return count;
         }
+
+        internal static IReadOnlyList<string> GetTableNames(this SqlConnection connection, string schemaName, bool independentFirst)
+            => new SqlSchemaExplorer(connection).GetTableNames(schemaName, independentFirst);
     }
 }

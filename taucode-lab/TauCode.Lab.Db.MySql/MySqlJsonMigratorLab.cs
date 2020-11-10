@@ -1,8 +1,10 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
+using System.Data;
 using TauCode.Db;
 using TauCode.Db.Data;
 using TauCode.Db.Model;
+using TauCode.Db.Schema;
 
 // todo everything
 namespace TauCode.Lab.Db.MySql
@@ -26,6 +28,11 @@ namespace TauCode.Lab.Db.MySql
         }
 
         public override IDbUtilityFactory Factory => MySqlUtilityFactoryLab.Instance;
+
+        protected override IDbSchemaExplorer CreateSchemaExplorer(IDbConnection connection)
+        {
+            throw new NotImplementedException();
+        }
 
         protected override bool NeedCheckSchemaExistence => true;
 

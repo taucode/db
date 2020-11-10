@@ -3,7 +3,9 @@ using System;
 using System.Data;
 using TauCode.Db.Data;
 using TauCode.Db.Exceptions;
+using TauCode.Db.Extensions;
 using TauCode.Db.Model;
+using TauCode.Db.Schema;
 
 // todo clean up
 namespace TauCode.Db
@@ -13,6 +15,7 @@ namespace TauCode.Db
         #region Fields
 
         private IDbSerializer _serializer;
+        private IDbSchemaExplorer _schemaExplorer;
 
         #endregion
 
@@ -36,17 +39,15 @@ namespace TauCode.Db
 
         #endregion
 
-        #region Private
+        #region Protected
 
-        private void CheckSchemaIfNeeded()
+        protected abstract IDbSchemaExplorer CreateSchemaExplorer(IDbConnection connection);
+
+        protected IDbSchemaExplorer SchemaExplorer => _schemaExplorer ??= this.CreateSchemaExplorer(this.Connection);
+
+        protected virtual void CheckSchemaIfNeeded()
         {
-            if (this.NeedCheckSchemaExistence)
-            {
-                if (!this.SchemaExists(this.SchemaName))
-                {
-                    throw DbTools.CreateSchemaDoesNotExistException(this.SchemaName);
-                }
-            }
+            this.SchemaExplorer.CheckSchema(this.SchemaName);
         }
 
         #endregion

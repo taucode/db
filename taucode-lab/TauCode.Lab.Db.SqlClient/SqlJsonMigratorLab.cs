@@ -1,8 +1,10 @@
 ﻿using Microsoft.Data.SqlClient;
 using System;
+using System.Data;
 using TauCode.Db;
 using TauCode.Db.Data;
 using TauCode.Db.Model;
+using TauCode.Db.Schema;
 
 // todo clean up, regions, here & in other classes.
 namespace TauCode.Lab.Db.SqlClient
@@ -30,8 +32,10 @@ namespace TauCode.Lab.Db.SqlClient
 
         public override IDbUtilityFactory Factory => SqlUtilityFactoryLab.Instance;
 
-        protected override bool NeedCheckSchemaExistence => true;
+        protected override IDbSchemaExplorer CreateSchemaExplorer(IDbConnection connection) => new SqlSchemaExplorer(this.SqlConnection);
 
-        protected override bool SchemaExists(string schemaName) => this.SqlConnection.SchemaExists(schemaName);
+        protected override bool NeedCheckSchemaExistence => throw new NotImplementedException();
+
+        protected override bool SchemaExists(string schemaName) => throw new NotImplementedException();
     }
 }

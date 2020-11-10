@@ -1,8 +1,10 @@
 ﻿using Npgsql;
 using System;
+using System.Data;
 using TauCode.Db;
 using TauCode.Db.Data;
 using TauCode.Db.Model;
+using TauCode.Db.Schema;
 
 namespace TauCode.Lab.Db.Npgsql
 {
@@ -28,6 +30,11 @@ namespace TauCode.Lab.Db.Npgsql
         protected NpgsqlConnection NpgsqlConnection => (NpgsqlConnection)this.Connection;
 
         public override IDbUtilityFactory Factory => NpgsqlUtilityFactoryLab.Instance;
+
+        protected override IDbSchemaExplorer CreateSchemaExplorer(IDbConnection connection)
+        {
+            throw new NotImplementedException();
+        }
 
         protected override bool NeedCheckSchemaExistence => true;
 

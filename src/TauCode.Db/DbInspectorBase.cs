@@ -71,7 +71,7 @@ ORDER BY
             return schemata;
         }
 
-        public IReadOnlyList<string> GetTableNames()
+        public virtual IReadOnlyList<string> GetTableNames()
         {
             this.CheckSchemaIfNeeded();
 

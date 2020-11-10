@@ -1,7 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using TauCode.Db;
 using TauCode.Db.Model;
 using TauCode.Db.Schema;
@@ -113,8 +112,28 @@ namespace TauCode.Lab.Db.SqlClient
         //    return column;
         //}
 
-        public override IReadOnlyList<ColumnMold> GetColumnsImpl() =>
-            this.SchemaExplorer.GetTableColumns(this.SchemaName, this.TableName);
+        //public override IReadOnlyList<ColumnMold> GetColumnsImpl() =>
+        //    this.SchemaExplorer.GetTableColumns(this.SchemaName, this.TableName);
+
+        protected override PrimaryKeyMold GetPrimaryKeyImpl()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override IReadOnlyList<ForeignKeyMold> GetForeignKeysImpl()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override IReadOnlyList<ForeignKeyMold> GetForeignKeys()
+        {
+            return this.SchemaExplorer.GetTableForeignKeys(this.SchemaName, this.TableName, true, true);
+        }
+
+        public override PrimaryKeyMold GetPrimaryKey()
+        {
+            return this.SchemaExplorer.GetTablePrimaryKey(this.SchemaName, this.TableName, true);
+        }
 
         protected override Dictionary<string, ColumnIdentityMold> GetIdentities()
         {
@@ -147,22 +166,53 @@ namespace TauCode.Lab.Db.SqlClient
 //                    });
         }
 
-        protected override bool NeedCheckSchemaExistence => true;
+        protected override bool NeedCheckSchemaExistence => throw new NotSupportedException();
 
-        protected override bool SchemaExists(string schemaName) =>
-            this.SqlConnection.SchemaExists(this.SchemaName);
+        //protected override bool SchemaExists(string schemaName) =>
+        //    this.SqlConnection.SchemaExists(this.SchemaName);
 
-        protected override bool TableExists(string tableName) =>
-            this.SqlConnection.TableExists(this.SchemaName, this.TableName);
+        protected override bool SchemaExists(string schemaName)
+        {
+            throw new NotImplementedException();
+        }
 
-        protected override PrimaryKeyMold GetPrimaryKeyImpl() =>
-            this.SqlConnection.GetTablePrimaryKey(this.SchemaName, this.TableName);
+        protected override bool TableExists(string tableName)
+        {
+            throw new NotImplementedException();
+        }
 
-        protected override IReadOnlyList<ForeignKeyMold> GetForeignKeysImpl()
-            => this.SqlConnection.GetTableForeignKeys(this.SchemaName, this.TableName, true).ToList();
+        //protected override bool TableExists(string tableName) =>
+        //    this.SqlConnection.TableExists(this.SchemaName, this.TableName);
+
+        //protected override PrimaryKeyMold GetPrimaryKeyImpl() =>
+        //    this.SqlConnection.GetTablePrimaryKey(this.SchemaName, this.TableName);
+
+
+        public override IReadOnlyList<ColumnMold> GetColumns()
+        {
+            return this.SchemaExplorer.GetTableColumns(this.SchemaName, this.TableName, true);
+        }
+
+        //protected override IReadOnlyList<ForeignKeyMold> GetForeignKeysImpl()
+        //    => this.SqlConnection.GetTableForeignKeys(this.SchemaName, this.TableName, true).ToList();
+
+        public override TableMold GetTable() => this.SchemaExplorer.GetTable(
+            this.SchemaName,
+            this.TableName,
+            true,
+            true,
+            true,
+            true);
 
         protected override IReadOnlyList<IndexMold> GetIndexesImpl()
-            => this.SqlConnection.GetTableIndexes(this.SchemaName, this.TableName).ToList();
+            // => this.SqlConnection.GetTableIndexes(this.SchemaName, this.TableName).ToList();
+            => throw new NotImplementedException();
+
+        public override IReadOnlyList<IndexMold> GetIndexes()
+        {
+            return this.SchemaExplorer.GetTableIndexes(this.SchemaName, this.TableName, true);
+        }
+
 
         //private static bool ParseBoolean(object value)
         //{
@@ -206,36 +256,36 @@ namespace TauCode.Lab.Db.SqlClient
         //    return int.Parse(dbValue.ToString());
         //}
 
-        private int GetTableObjectId()
-        {
-            using var command = this.Connection.CreateCommand();
-            command.CommandText =
-                @"
-SELECT
-    T.object_id
-FROM
-    sys.tables T
-INNER JOIN
-    sys.schemas S
-ON
-    T.schema_id = S.schema_id
-WHERE
-    T.name = @p_tableName AND
-    S.name = @p_schemaName
-";
-            command.AddParameterWithValue("p_tableName", this.TableName);
-            command.AddParameterWithValue("p_schemaName", this.SchemaName);
+//        private int GetTableObjectId()
+//        {
+//            using var command = this.Connection.CreateCommand();
+//            command.CommandText =
+//                @"
+//SELECT
+//    T.object_id
+//FROM
+//    sys.tables T
+//INNER JOIN
+//    sys.schemas S
+//ON
+//    T.schema_id = S.schema_id
+//WHERE
+//    T.name = @p_tableName AND
+//    S.name = @p_schemaName
+//";
+//            command.AddParameterWithValue("p_tableName", this.TableName);
+//            command.AddParameterWithValue("p_schemaName", this.SchemaName);
 
-            var objectResult = command.ExecuteScalar();
+//            var objectResult = command.ExecuteScalar();
 
-            if (objectResult == null)
-            {
-                // should not happen, we are checking table existence.
-                throw DbTools.CreateInternalErrorException();
-            }
+//            if (objectResult == null)
+//            {
+//                // should not happen, we are checking table existence.
+//                throw DbTools.CreateInternalErrorException();
+//            }
 
-            var objectId = (int)objectResult;
-            return objectId;
-        }
+//            var objectId = (int)objectResult;
+//            return objectId;
+//        }
     }
 }

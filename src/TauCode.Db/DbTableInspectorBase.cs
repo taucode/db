@@ -7,6 +7,7 @@ using TauCode.Db.Model;
 namespace TauCode.Db
 {
     // todo clean
+    // todo rearrange regions
     public abstract class DbTableInspectorBase : DbUtilityBase, IDbTableInspector
     {
         #region Nested
@@ -115,7 +116,7 @@ namespace TauCode.Db
 
         public string TableName { get; }
 
-        public IReadOnlyList<ColumnMold> GetColumns()
+        public virtual IReadOnlyList<ColumnMold> GetColumns()
         {
             this.CheckSchemaIfNeeded();
             this.CheckTable();
@@ -124,7 +125,7 @@ namespace TauCode.Db
             return columns;
         }
 
-        public PrimaryKeyMold GetPrimaryKey()
+        public virtual PrimaryKeyMold GetPrimaryKey()
         {
             this.CheckSchemaIfNeeded();
             this.CheckTable();
@@ -133,7 +134,7 @@ namespace TauCode.Db
             return primaryKey;
         }
 
-        public IReadOnlyList<ForeignKeyMold> GetForeignKeys()
+        public virtual IReadOnlyList<ForeignKeyMold> GetForeignKeys()
         {
             this.CheckSchemaIfNeeded();
             this.CheckTable();
@@ -142,7 +143,7 @@ namespace TauCode.Db
             return foreignKeys;
         }
 
-        public IReadOnlyList<IndexMold> GetIndexes()
+        public virtual IReadOnlyList<IndexMold> GetIndexes()
         {
             this.CheckSchemaIfNeeded();
             this.CheckTable();

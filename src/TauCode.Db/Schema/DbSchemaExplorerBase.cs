@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using TauCode.Db.Data;
+using TauCode.Db.Extensions;
 using TauCode.Db.Model;
 
 namespace TauCode.Db.Schema
@@ -12,6 +13,8 @@ namespace TauCode.Db.Schema
     // todo clean
     public abstract class DbSchemaExplorerBase : IDbSchemaExplorer
     {
+        #region Constants
+
         protected static readonly string[] StandardColumnTableColumnNames =
         {
             "column_name",
@@ -22,10 +25,38 @@ namespace TauCode.Db.Schema
             "numeric_scale",
         };
 
-        protected DbSchemaExplorerBase(IDbConnection connection)
+        #endregion
+
+        #region Constructor
+
+        protected DbSchemaExplorerBase(IDbConnection connection, string delimiters)
         {
             this.Connection = connection ?? throw new ArgumentNullException(nameof(connection));
+
+            if (delimiters == null)
+            {
+                this.OpeningDelimiter = null;
+                this.ClosingDelimiter = null;
+            }
+            else
+            {
+                if (delimiters.Length != 2)
+                {
+                    throw new ArgumentException($"'{nameof(delimiters)}' should contain exactly 2 chars.",
+                        nameof(delimiters));
+                }
+
+                this.OpeningDelimiter = delimiters[0];
+                this.ClosingDelimiter = delimiters[1];
+            }
         }
+
+        #endregion
+
+        #region Protected
+
+        protected char? OpeningDelimiter { get; }
+        protected char? ClosingDelimiter { get; }
 
         protected IDbConnection Connection { get; }
 
@@ -153,12 +184,98 @@ ORDER BY
 
         protected abstract ColumnMold ColumnInfoToColumn(ColumnInfo2 columnInfo);
 
+        protected abstract IReadOnlyList<IndexMold> GetTableIndexesImpl(string schemaName, string tableName);
+
+
+        protected abstract void ResolveIdentities(
+            string schemaName,
+            string tableName,
+            IList<ColumnInfo2> columnInfos);
+
+        #endregion
+
+        #region IDbSchemaExplorer Members
+
+        public abstract IReadOnlyList<string> GetSystemSchemata();
+
+        public IReadOnlyList<string> GetSchemata()
+        {
+            using var command = this.Connection.CreateCommand();
+            command.CommandText = @"
+SELECT
+    S.schema_name SchemaName
+FROM
+    information_schema.schemata S
+";
+
+            var schemata = command
+                .GetCommandRows()
+                .Select(x => (string) x.SchemaName)
+                .Except(this.GetSystemSchemata())
+                .ToList();
+
+            return schemata;
+        }
+
+        public virtual bool SchemaExists(string schemaName)
+        {
+            using var command = this.Connection.CreateCommand();
+            command.CommandText = @"
+SELECT
+    S.schema_name SchemaName
+FROM
+    information_schema.schemata S
+WHERE
+    S.schema_name = @p_schemaName
+";
+            command.AddParameterWithValue("p_schemaName", schemaName);
+
+            var schemata = command
+                .GetCommandRows()
+                .Select(x => (string) x.SchemaName)
+                .Except(this.GetSystemSchemata())
+                .ToList();
+
+            return schemata.Count == 1;
+        }
+
+        public virtual bool TableExists(string schemaName, string tableName)
+        {
+            if (schemaName == null)
+            {
+                throw new ArgumentNullException(nameof(schemaName));
+            }
+
+            if (tableName == null)
+            {
+                throw new ArgumentNullException(nameof(tableName));
+            }
+
+            using var command = this.Connection.CreateCommand();
+            command.CommandText = @"
+SELECT
+    T.table_name
+FROM
+    information_schema.tables T
+WHERE
+    T.table_schema = @p_schemaName AND
+    T.table_name = @p_tableName
+";
+            command.AddParameterWithValue("p_schemaName", schemaName);
+            command.AddParameterWithValue("p_tableName", tableName);
+
+            using var reader = command.ExecuteReader();
+            return reader.Read();
+        }
+
         public virtual IReadOnlyList<string> GetTableNames(string schemaName)
         {
             if (schemaName == null)
             {
                 throw new ArgumentNullException(nameof(schemaName));
             }
+
+            this.CheckSchema(schemaName);
 
             using var command = this.Connection.CreateCommand();
             command.CommandText = @"
@@ -185,11 +302,37 @@ ORDER BY
 
         public virtual IReadOnlyList<string> GetTableNames(string schemaName, bool independentFirst)
         {
-            throw new NotImplementedException();
+            var tables = this.GetTables(
+                schemaName,
+                false,
+                false,
+                true,
+                false,
+                independentFirst);
+
+            return tables.Select(x => x.Name).ToList();
         }
 
-        public virtual IReadOnlyList<ColumnMold> GetTableColumns(string schemaName, string tableName)
+        public virtual IReadOnlyList<ColumnMold> GetTableColumns(
+            string schemaName,
+            string tableName,
+            bool checkExistence)
         {
+            if (schemaName == null)
+            {
+                throw new ArgumentNullException(nameof(schemaName));
+            }
+
+            if (tableName == null)
+            {
+                throw new ArgumentNullException(nameof(tableName));
+            }
+
+            if (checkExistence)
+            {
+                this.CheckSchemaAndTable(schemaName, tableName);
+            }
+
             var columnInfos = this.GetColumnInfos(schemaName, tableName);
             this.ResolveIdentities(schemaName, tableName, columnInfos);
 
@@ -217,7 +360,7 @@ ORDER BY
             //    .ToList();
         }
 
-        public virtual PrimaryKeyMold GetTablePrimaryKey(string schemaName, string tableName)
+        public virtual PrimaryKeyMold GetTablePrimaryKey(string schemaName, string tableName, bool checkExistence)
         {
             if (schemaName == null)
             {
@@ -227,6 +370,11 @@ ORDER BY
             if (tableName == null)
             {
                 throw new ArgumentNullException(nameof(tableName));
+            }
+
+            if (checkExistence)
+            {
+                this.CheckSchemaAndTable(schemaName, tableName);
             }
 
             using var command = this.Connection.CreateCommand();
@@ -277,12 +425,11 @@ ORDER BY
             return pk;
         }
 
-        public abstract void ResolveIdentities(string schemaName, string tableName, IList<ColumnInfo2> columnInfos);
-
         public virtual IReadOnlyList<ForeignKeyMold> GetTableForeignKeys(
             string schemaName,
             string tableName,
-            bool loadColumns)
+            bool loadColumns,
+            bool checkExistence)
         {
             if (schemaName == null)
             {
@@ -292,6 +439,11 @@ ORDER BY
             if (tableName == null)
             {
                 throw new ArgumentNullException(nameof(tableName));
+            }
+
+            if (checkExistence)
+            {
+                this.CheckSchemaAndTable(schemaName, tableName);
             }
 
             using var command = this.Connection.CreateCommand();
@@ -393,11 +545,11 @@ ORDER BY
                     var rows = command.GetCommandRows();
 
                     fk.ColumnNames = rows
-                        .Select(x => (string)x.ColumnName)
+                        .Select(x => (string) x.ColumnName)
                         .ToList();
 
                     fk.ReferencedColumnNames = rows
-                        .Select(x => (string)x.ReferencedColumnName)
+                        .Select(x => (string) x.ReferencedColumnName)
                         .ToList();
                 }
             }
@@ -405,16 +557,70 @@ ORDER BY
             return foreignKeyMolds;
         }
 
-        public abstract IReadOnlyList<IndexMold> GetTableIndexes(string schemaName, string tableName);
+        public virtual IReadOnlyList<IndexMold> GetTableIndexes(
+            string schemaName,
+            string tableName,
+            bool checkExistence)
+        {
+            if (schemaName == null)
+            {
+                throw new ArgumentNullException(nameof(schemaName));
+            }
+
+            if (tableName == null)
+            {
+                throw new ArgumentNullException(nameof(tableName));
+            }
+
+            if (checkExistence)
+            {
+                this.CheckSchemaAndTable(schemaName, tableName);
+            }
+
+            return this.GetTableIndexesImpl(schemaName, tableName);
+        }
 
         public virtual TableMold GetTable(
             string schemaName,
+            string tableName,
             bool includeColumns,
             bool includePrimaryKey,
             bool includeForeignKeys,
             bool includeIndexes)
         {
-            throw new NotImplementedException();
+            // todo checks
+
+            this.CheckSchemaAndTable(schemaName, tableName);
+
+            var tableMold = new TableMold
+            {
+                Name = tableName,
+            };
+
+            if (includeColumns)
+            {
+                var columns = this.GetTableColumns(schemaName, tableName, false);
+                tableMold.Columns = columns.ToList();
+            }
+
+            if (includePrimaryKey)
+            {
+                tableMold.PrimaryKey = this.GetTablePrimaryKey(schemaName, tableName, false);
+            }
+
+            if (includeForeignKeys)
+            {
+                var foreignKeys = this.GetTableForeignKeys(schemaName, tableName, true, false);
+                tableMold.ForeignKeys = foreignKeys.ToList();
+            }
+
+            if (includeIndexes)
+            {
+                var indexes = this.GetTableIndexes(schemaName, tableName, false);
+                tableMold.Indexes = indexes.ToList();
+            }
+
+            return tableMold;
         }
 
         public virtual IReadOnlyList<TableMold> GetTables(
@@ -448,24 +654,24 @@ ORDER BY
 
                 if (includeColumns)
                 {
-                    var columns = this.GetTableColumns(schemaName, tableName);
+                    var columns = this.GetTableColumns(schemaName, tableName, false);
                     tableMold.Columns = columns.ToList();
                 }
 
                 if (includePrimaryKey)
                 {
-                    tableMold.PrimaryKey = this.GetTablePrimaryKey(schemaName, tableName);
+                    tableMold.PrimaryKey = this.GetTablePrimaryKey(schemaName, tableName, false);
                 }
 
                 if (includeForeignKeys)
                 {
-                    var foreignKeys = this.GetTableForeignKeys(schemaName, tableName, true);
+                    var foreignKeys = this.GetTableForeignKeys(schemaName, tableName, true, false);
                     tableMold.ForeignKeys = foreignKeys.ToList();
                 }
 
                 if (includeIndexes)
                 {
-                    var indexes = this.GetTableIndexes(schemaName, tableName);
+                    var indexes = this.GetTableIndexes(schemaName, tableName, false);
                     tableMold.Indexes = indexes.ToList();
                 }
 
@@ -479,5 +685,7 @@ ORDER BY
 
             return tables;
         }
+
+        #endregion
     }
 }

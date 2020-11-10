@@ -12,7 +12,7 @@ namespace TauCode.Lab.Db.SqlClient
     public class SqlSchemaExplorer : DbSchemaExplorerBase
     {
         public SqlSchemaExplorer(SqlConnection connection)
-            : base(connection)
+            : base(connection, "[]")
         {
         }
 
@@ -83,7 +83,7 @@ WHERE
             return column;
         }
 
-        public override void ResolveIdentities(string schemaName, string tableName, IList<ColumnInfo2> columnInfos)
+        protected override void ResolveIdentities(string schemaName, string tableName, IList<ColumnInfo2> columnInfos)
         {
             var objectId = this.GetTableObjectId(schemaName, tableName);
 
@@ -127,7 +127,23 @@ WHERE
             }
         }
 
-        public override IReadOnlyList<IndexMold> GetTableIndexes(string schemaName, string tableName)
+        public override IReadOnlyList<string> GetSystemSchemata() => new[]
+        {
+            "guest",
+            "INFORMATION_SCHEMA",
+            "sys",
+            "db_owner",
+            "db_accessadmin",
+            "db_securityadmin",
+            "db_ddladmin",
+            "db_backupoperator",
+            "db_datareader",
+            "db_datawriter",
+            "db_denydatareader",
+            "db_denydatawriter",
+        };
+
+        protected override IReadOnlyList<IndexMold> GetTableIndexesImpl(string schemaName, string tableName)
         {
             if (schemaName == null)
             {

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
+using System;
 using System.Collections.Generic;
 using TauCode.Db;
 using TauCode.Db.Schema;
@@ -25,9 +26,19 @@ namespace TauCode.Lab.Db.SqlClient
             //this.SqlConnection.GetTableNames(this.SchemaName, null);
 
         protected override HashSet<string> GetSystemSchemata() => SqlToolsLab.SystemSchemata;
+        protected override bool NeedCheckSchemaExistence => throw new NotImplementedException();
+        protected override bool SchemaExists(string schemaName)
+        {
+            throw new System.NotImplementedException();
+        }
 
-        protected override bool NeedCheckSchemaExistence => true;
+        public override IReadOnlyList<string> GetTableNames()
+        {
+            return this.SchemaExplorer.GetTableNames(this.SchemaName);
+        }
 
-        protected override bool SchemaExists(string schemaName) => this.SqlConnection.SchemaExists(schemaName);
+        //protected override bool NeedCheckSchemaExistence => true;
+
+        //protected override bool SchemaExists(string schemaName) => this.SqlConnection.SchemaExists(schemaName);
     }
 }

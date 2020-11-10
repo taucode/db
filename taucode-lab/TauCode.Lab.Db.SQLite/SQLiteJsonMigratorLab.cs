@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Data;
 using System.Data.SQLite;
 using TauCode.Db;
 using TauCode.Db.Data;
 using TauCode.Db.Model;
+using TauCode.Db.Schema;
 
 namespace TauCode.Lab.Db.SQLite
 {
@@ -25,6 +27,11 @@ namespace TauCode.Lab.Db.SQLite
         }
 
         public override IDbUtilityFactory Factory => SQLiteUtilityFactoryLab.Instance;
+
+        protected override IDbSchemaExplorer CreateSchemaExplorer(IDbConnection connection)
+        {
+            throw new NotImplementedException();
+        }
 
         protected override bool NeedCheckSchemaExistence => false;
 
