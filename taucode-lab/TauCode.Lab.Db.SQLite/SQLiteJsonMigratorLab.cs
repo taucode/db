@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Data;
 using System.Data.SQLite;
 using TauCode.Db;
 using TauCode.Db.Data;
 using TauCode.Db.Model;
+using TauCode.Db.Schema;
 
 namespace TauCode.Lab.Db.SQLite
 {
@@ -24,13 +26,17 @@ namespace TauCode.Lab.Db.SQLite
         {
         }
 
+        protected override void CheckSchemaIfNeeded()
+        {
+        }
+
+        public SQLiteConnection SQLiteConnection => (SQLiteConnection)this.Connection;
+
         public override IDbUtilityFactory Factory => SQLiteUtilityFactoryLab.Instance;
 
-        protected override bool NeedCheckSchemaExistence => false;
-
-        protected override bool SchemaExists(string schemaName)
+        protected override IDbSchemaExplorer CreateSchemaExplorer(IDbConnection connection)
         {
-            throw new NotSupportedException();
+            return new SQLiteSchemaExplorer(this.SQLiteConnection);
         }
     }
 }

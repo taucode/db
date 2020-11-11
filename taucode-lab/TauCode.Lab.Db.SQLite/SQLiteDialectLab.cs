@@ -2,7 +2,6 @@
 
 namespace TauCode.Lab.Db.SQLite
 {
-    // todo regions
     [DbDialect(
         typeof(SQLiteDialectLab),
         "reserved-words.txt",

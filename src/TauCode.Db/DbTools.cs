@@ -14,19 +14,40 @@ namespace TauCode.Db
 {
     public static class DbTools
     {
-        private static readonly HashSet<Type> IntegerTypes = new HashSet<Type>(new[]
-        {
-            typeof(byte),
-            typeof(sbyte),
-            typeof(short),
-            typeof(ushort),
-            typeof(int),
-            typeof(uint),
-            typeof(long),
-            typeof(ulong),
-        });
+        private static readonly HashSet<Type> IntegerTypes;
 
-        public static bool IsIntegerType(Type type) => IntegerTypes.Contains(type);
+        private static readonly HashSet<Type> NumericTypes;
+
+        static DbTools()
+        {
+            IntegerTypes = new HashSet<Type>(new[]
+            {
+                typeof(byte),
+                typeof(sbyte),
+                typeof(short),
+                typeof(ushort),
+                typeof(int),
+                typeof(uint),
+                typeof(long),
+                typeof(ulong),
+            });
+
+            var nonIntegerTypes = new[]
+            {
+                typeof(float),
+                typeof(double),
+                typeof(decimal),
+            };
+
+            var list = new List<Type>(IntegerTypes);
+            list.AddRange(nonIntegerTypes);
+
+            NumericTypes = list.ToHashSet();
+        }
+
+        public static bool IsIntegerType(this Type type) => IntegerTypes.Contains(type ?? throw new ArgumentNullException(nameof(type)));
+
+        public static bool IsNumericType(this Type type) => NumericTypes.Contains(type ?? throw new ArgumentNullException(nameof(type)));
 
         public static IList<string> SplitScriptByComments(string script)
         {
@@ -264,21 +285,6 @@ namespace TauCode.Db
             }
         }
 
-        //public static string ConvertDbToJson(
-        //    this IDbMetadataConverter dbConverter,
-        //    DbMold originDb,
-        //    IReadOnlyDictionary<string, string> options = null)
-        //{
-        //    if (dbConverter == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(dbConverter));
-        //    }
-
-        //    var convertedDb = dbConverter.ConvertDb(originDb, options);
-        //    var json = DbTools.FineSerializeToJson(convertedDb);
-        //    return json;
-        //}
-
         public static void AddParameterWithValue(
             this IDbCommand command,
             string parameterName,
@@ -289,31 +295,6 @@ namespace TauCode.Db
             parameter.Value = parameterValue;
             command.Parameters.Add(parameter);
         }
-
-        //public static string FineSerializeToJson(object obj)
-        //{
-        //    var contractResolver = new DefaultContractResolver
-        //    {
-        //        NamingStrategy = new CamelCaseNamingStrategy
-        //        {
-        //            ProcessDictionaryKeys = false,
-        //        },
-        //    };
-
-        //    var json = JsonConvert.SerializeObject(
-        //        obj,
-        //        new JsonSerializerSettings
-        //        {
-        //            ContractResolver = contractResolver,
-        //            Formatting = Formatting.Indented,
-        //            Converters = new List<JsonConverter>
-        //            {
-        //                new StringEnumConverter(new CamelCaseNamingStrategy())
-        //            }
-        //        });
-
-        //    return json;
-        //}
 
         public static TauDbException CreateSchemaDoesNotExistException(string schemaName)
         {
@@ -603,6 +584,53 @@ namespace TauCode.Db
             {
                 throw new ArgumentException("Primary key's columns cannot contain nulls.", argumentName);
             }
+        }
+
+        public static List<TableMold> ArrangeTables(List<TableMold> tables, bool independentFirst)
+        {
+            var graph = new Graph<TableMold>();
+
+            foreach (var tableMold in tables)
+            {
+                graph.AddNode(tableMold);
+            }
+
+            foreach (var node in graph.Nodes)
+            {
+                var table = node.Value;
+                foreach (var foreignKey in table.ForeignKeys)
+                {
+                    var referencedNode =
+                        graph.Nodes.SingleOrDefault(x => x.Value.Name == foreignKey.ReferencedTableName);
+
+                    if (referencedNode == null)
+                    {
+                        throw new NotImplementedException();
+                    }
+
+                    node.DrawEdgeTo(referencedNode);
+                }
+            }
+
+            var algorithm = new GraphSlicingAlgorithm<TableMold>(graph);
+            var slices = algorithm.Slice();
+            if (!independentFirst)
+            {
+                slices = slices.Reverse().ToArray();
+            }
+
+            var list = new List<TableMold>();
+
+            foreach (var slice in slices)
+            {
+                var sliceTables = slice.Nodes
+                    .Select(x => x.Value)
+                    .OrderBy(x => x.Name);
+
+                list.AddRange(sliceTables);
+            }
+
+            return list;
         }
     }
 }

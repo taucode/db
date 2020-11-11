@@ -6,7 +6,6 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Globalization;
 using System.Linq;
 using TauCode.Db;
 using TauCode.Db.DbValueConverters;
@@ -21,8 +20,6 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbSerializer
         [SetUp]
         public void SetUp()
         {
-            Inflector.Inflector.SetDefaultCultureFunc = () => new CultureInfo("en-US");
-
             this.Connection.CreateSchema("zeta");
 
             var sql = this.GetType().Assembly.GetResourceText("CreatePersonDb.sql", true);

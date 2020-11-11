@@ -7,32 +7,12 @@ namespace TauCode.Lab.Db.MySql.DbValueConverters
     {
         protected override object ToDbValueImpl(object value)
         {
-            if (value is sbyte sbyteValue)
+            if (value.GetType().IsIntegerType() || value is bool)
             {
-                return sbyteValue;
+                return Convert.ToSByte(value);
             }
 
-            if (value is bool boolValue)
-            {
-                return Convert.ToSByte(boolValue);
-            }
-
-            if (value is byte byteValue)
-            {
-                return Convert.ToSByte(byteValue);
-            }
-
-            if (value is int intValue)
-            {
-                return Convert.ToSByte(intValue);
-            }
-
-            if (value is long longValue)
-            {
-                return Convert.ToSByte(longValue);
-            }
-
-            throw new NotImplementedException();
+            return null;
         }
 
         protected override object FromDbValueImpl(object dbValue)

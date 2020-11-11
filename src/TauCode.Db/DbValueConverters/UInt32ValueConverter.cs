@@ -1,36 +1,14 @@
-﻿namespace TauCode.Db.DbValueConverters
+﻿using System;
+
+namespace TauCode.Db.DbValueConverters
 {
     public class UInt32ValueConverter : DbValueConverterBase
     {
         protected override object ToDbValueImpl(object value)
         {
-            if (value is uint uintValue)
+            if (value.GetType().IsIntegerType())
             {
-                return uintValue;
-            }
-
-            if (value is int intValue)
-            {
-                checked
-                {
-                    return (uint)intValue;
-                }
-            }
-
-            if (value is ulong ulongValue)
-            {
-                checked
-                {
-                    return (uint)ulongValue;
-                }
-            }
-
-            if (value is long longValue)
-            {
-                checked
-                {
-                    return (uint)longValue;
-                }
+                return Convert.ToUInt32(value);
             }
 
             return null;

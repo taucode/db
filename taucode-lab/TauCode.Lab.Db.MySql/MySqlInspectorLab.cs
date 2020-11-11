@@ -1,13 +1,14 @@
 ﻿using MySql.Data.MySqlClient;
-using System.Collections.Generic;
+using System.Data;
 using TauCode.Db;
+using TauCode.Db.Schema;
 
 namespace TauCode.Lab.Db.MySql
 {
     public class MySqlInspectorLab : DbInspectorBase
     {
         public MySqlInspectorLab(MySqlConnection connection)
-            : base(connection, connection.GetSchemaName())
+            : base(connection, connection?.Database)
         {
         }
 
@@ -15,13 +16,7 @@ namespace TauCode.Lab.Db.MySql
 
         public override IDbUtilityFactory Factory => MySqlUtilityFactoryLab.Instance;
 
-        protected override IReadOnlyList<string> GetTableNamesImpl(string schemaName) =>
-            this.MySqlConnection.GetTableNames(this.SchemaName, null);
-
-        protected override HashSet<string> GetSystemSchemata() => MySqlToolsLab.SystemSchemata;
-
-        protected override bool NeedCheckSchemaExistence => true;
-
-        protected override bool SchemaExists(string schemaName) => this.MySqlConnection.SchemaExists(schemaName);
+        protected override IDbSchemaExplorer CreateSchemaExplorer(IDbConnection connection) =>
+            new MySqlSchemaExplorer(this.MySqlConnection);
     }
 }

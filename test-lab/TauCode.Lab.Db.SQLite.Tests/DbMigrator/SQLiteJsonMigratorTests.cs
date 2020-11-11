@@ -2,6 +2,7 @@
 using System;
 using TauCode.Db;
 using TauCode.Db.Exceptions;
+using TauCode.Db.Schema;
 using TauCode.Extensions;
 
 // todo clean up
@@ -128,11 +129,13 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbMigrator
             migrator.Migrate();
 
             // Assert
+            IDbSchemaExplorer schemaExplorer = new SQLiteSchemaExplorer(this.Connection);
 
             #region metadata
 
             var scriptBuilder = new SQLiteScriptBuilderLab();
-            var tableMolds = this.Connection.GetTableMolds(true, true);
+            //var tableMolds = this.Connection.GetTableMolds(true, true);
+            var tableMolds = schemaExplorer.GetTables(null, true, true, true, true, true);
             var script = scriptBuilder.BuildCreateAllTablesScript(tableMolds);
             var expectedScript = this.GetType().Assembly.GetResourceText("MigratedDbCustomOutput.sql", true);
 
@@ -264,12 +267,15 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbMigrator
             migrator.Migrate();
 
             // Assert
+            IDbSchemaExplorer schemaExplorer = new SQLiteSchemaExplorer(this.Connection);
 
             #region metadata
 
             var scriptBuilder = new SQLiteScriptBuilderLab();
-            var tableMolds = this.Connection.GetTableMolds(true, true);
+            //var tableMolds = this.Connection.GetTableMolds(true, true);
+            var tableMolds = schemaExplorer.GetTables(null, true, true, true, true, true);
             var script = scriptBuilder.BuildCreateAllTablesScript(tableMolds);
+
             var expectedScript = this.GetType().Assembly.GetResourceText("MigratedDbOutput.sql", true);
 
             TodoCompare(script, expectedScript);

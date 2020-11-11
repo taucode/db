@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using TauCode.Db;
+using TauCode.Db.Extensions;
 
 namespace TauCode.Lab.Db.Npgsql.Tests
 {
@@ -18,24 +19,29 @@ namespace TauCode.Lab.Db.Npgsql.Tests
             return connection;
         }
 
-        internal static void Purge(this NpgsqlConnection connection)
+        internal static void PurgeDatabase(this NpgsqlConnection connection)
         {
-            var schemata = connection.GetSchemata();
-
-            foreach (var schema in schemata)
-            {
-                var tableNames = connection.GetTableNames(schema, false);
-                foreach (var tableName in tableNames)
-                {
-                    connection.DropTable(schema, tableName);
-                }
-
-                if (schema != NpgsqlToolsLab.DefaultSchemaName)
-                {
-                    connection.DropSchema(schema);
-                }
-            }
+            new NpgsqlSchemaExplorer(connection).PurgeDatabase();
         }
+
+        //internal static void Purge(this NpgsqlConnection connection)
+        //{
+        //    var schemata = connection.GetSchemata();
+
+        //    foreach (var schema in schemata)
+        //    {
+        //        var tableNames = connection.GetTableNames(schema, false);
+        //        foreach (var tableName in tableNames)
+        //        {
+        //            connection.DropTable(schema, tableName);
+        //        }
+
+        //        if (schema != NpgsqlToolsLab.DefaultSchemaName)
+        //        {
+        //            connection.DropSchema(schema);
+        //        }
+        //    }
+        //}
 
         internal static void WriteDiff(string actual, string expected, string directory, string fileExtension, string reminder)
         {
@@ -116,5 +122,14 @@ WHERE
             var count = (int)(long)command.ExecuteScalar();
             return count;
         }
+
+        internal static IReadOnlyList<string> GetTableNames(this NpgsqlConnection connection, string schemaName, bool independentFirst)
+            => new NpgsqlSchemaExplorer(connection).GetTableNames(schemaName, independentFirst);
+
+        internal static void CreateSchema(this NpgsqlConnection connection, string schemaName)
+            => new NpgsqlSchemaExplorer(connection).CreateSchema(schemaName);
+        
+        internal static void DropTable(this NpgsqlConnection connection, string schemaName, string tableName)
+            => new NpgsqlSchemaExplorer(connection).DropTable(schemaName, tableName);
     }
 }

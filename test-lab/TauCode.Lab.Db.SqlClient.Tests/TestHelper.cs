@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using TauCode.Db;
+using TauCode.Db.Extensions;
 
 namespace TauCode.Lab.Db.SqlClient.Tests
 {
@@ -18,23 +19,9 @@ namespace TauCode.Lab.Db.SqlClient.Tests
             return connection;
         }
 
-        internal static void Purge(this SqlConnection connection)
+        internal static void PurgeDatabase(this SqlConnection connection)
         {
-            var schemata = connection.GetSchemata();
-
-            foreach (var schema in schemata)
-            {
-                var tableNames = connection.GetTableNames(schema, false);
-                foreach (var tableName in tableNames)
-                {
-                    connection.DropTable(schema, tableName);
-                }
-
-                if (schema != SqlToolsLab.DefaultSchemaName)
-                {
-                    connection.DropSchema(schema);
-                }
-            }
+            new SqlSchemaExplorer(connection).PurgeDatabase();
         }
 
         internal static void WriteDiff(string actual, string expected, string directory, string fileExtension, string reminder)
@@ -116,5 +103,14 @@ WHERE
             var count = (int)command.ExecuteScalar();
             return count;
         }
+
+        internal static IReadOnlyList<string> GetTableNames(this SqlConnection connection, string schemaName, bool independentFirst)
+            => new SqlSchemaExplorer(connection).GetTableNames(schemaName, independentFirst);
+
+        internal static void DropTable(this SqlConnection connection, string schemaName, string tableName)
+            => new SqlSchemaExplorer(connection).DropTable(schemaName, tableName);
+
+        internal static void CreateSchema(this SqlConnection connection, string schemaName)
+            => new SqlSchemaExplorer(connection).CreateSchema(schemaName);
     }
 }

@@ -319,7 +319,8 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbTableInspector
         public void GetPrimaryKey_ValidInput_ReturnsPrimaryKey()
         {
             // Arrange
-            var tableNames = this.Connection.GetTableNames("zeta", null);
+            //var tableNames = this.Connection.GetTableNames("zeta", null);
+            var tableNames = this.Connection.GetTableNames("zeta", true);
 
             // Act
             var dictionary = tableNames

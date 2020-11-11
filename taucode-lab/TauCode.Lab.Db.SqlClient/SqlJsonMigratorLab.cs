@@ -1,10 +1,11 @@
 ﻿using Microsoft.Data.SqlClient;
 using System;
+using System.Data;
 using TauCode.Db;
 using TauCode.Db.Data;
 using TauCode.Db.Model;
+using TauCode.Db.Schema;
 
-// todo clean up, regions, here & in other classes.
 namespace TauCode.Lab.Db.SqlClient
 {
     public class SqlJsonMigratorLab : DbJsonMigratorBase
@@ -30,8 +31,6 @@ namespace TauCode.Lab.Db.SqlClient
 
         public override IDbUtilityFactory Factory => SqlUtilityFactoryLab.Instance;
 
-        protected override bool NeedCheckSchemaExistence => true;
-
-        protected override bool SchemaExists(string schemaName) => this.SqlConnection.SchemaExists(schemaName);
+        protected override IDbSchemaExplorer CreateSchemaExplorer(IDbConnection connection) => new SqlSchemaExplorer(this.SqlConnection);
     }
 }

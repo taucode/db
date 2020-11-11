@@ -26,7 +26,7 @@ namespace TauCode.Lab.Db.SQLite
                     return new GuidValueConverter();
 
                 case "integer":
-                    return new Int64ValueConverter();
+                    return new SQLiteIntegerValueConverter();
 
                 case "numeric":
                     return new DecimalValueConverter();
@@ -86,13 +86,6 @@ namespace TauCode.Lab.Db.SQLite
                 default:
                     throw new NotImplementedException();
             }
-        }
-
-        protected override bool NeedCheckSchemaExistence => false;
-
-        protected override bool SchemaExists(string schemaName)
-        {
-            throw new NotSupportedException();
         }
     }
 }

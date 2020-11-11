@@ -1,12 +1,14 @@
-﻿namespace TauCode.Db.DbValueConverters
+﻿using System;
+
+namespace TauCode.Db.DbValueConverters
 {
     public class SByteValueConverter : IDbValueConverter
     {
         public object ToDbValue(object value)
         {
-            if (value is long longValue)
+            if (value.GetType().IsIntegerType())
             {
-                return (sbyte)longValue;
+                return Convert.ToSByte(value);
             }
 
             return null;

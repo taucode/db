@@ -4,16 +4,13 @@ using System.Data.SQLite;
 using System.IO;
 using System.Text;
 using TauCode.Db;
+using TauCode.Db.Extensions;
 
 // todo clean
 namespace TauCode.Lab.Db.SQLite.Tests
 {
     internal static class TestHelper
     {
-        //internal const string ConnectionString = @"Server=.\mssqltest;Database=rho.test;Trusted_Connection=True;";
-
-        //internal static string ConnectionString { get; private set; }
-
         internal static SQLiteConnection CreateConnection(bool open = true, bool boost = true)
         {
             var tuple = SQLiteToolsLab.CreateSQLiteDatabase();
@@ -34,13 +31,9 @@ namespace TauCode.Lab.Db.SQLite.Tests
             return connection;
         }
 
-        internal static void Purge(this SQLiteConnection connection)
+        internal static void PurgeDatabase(this SQLiteConnection connection)
         {
-            var tableNames = connection.GetTableNames(false);
-            foreach (var tableName in tableNames)
-            {
-                connection.DropTable(tableName);
-            }
+            new SQLiteSchemaExplorer(connection).DropAllTables(null);
         }
 
         internal static void WriteDiff(string actual, string expected, string directory, string fileExtension, string reminder)
@@ -107,13 +100,6 @@ WHERE
             return dictionary;
         }
 
-        //internal static decimal GetLastIdentity(this SqlConnection connection)
-        //{
-        //    using var command = connection.CreateCommand();
-        //    command.CommandText = "SELECT @@IDENTITY";
-        //    return (decimal)command.ExecuteScalar();
-        //}
-
         internal static long GetTableRowCount(SQLiteConnection connection, string tableName)
         {
             using var command = connection.CreateCommand();
@@ -121,5 +107,15 @@ WHERE
             var count = (long)command.ExecuteScalar();
             return count;
         }
+
+        internal static long GetLastIdentity(this SQLiteConnection connection)
+        {
+            using var command = connection.CreateCommand();
+            command.CommandText = "SELECT last_insert_rowid()";
+            return (long)command.ExecuteScalar();
+        }
+
+        internal static void DropTable(this SQLiteConnection connection, string tableName)
+            => new SQLiteSchemaExplorer(connection).DropTable(null, tableName);
     }
 }

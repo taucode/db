@@ -333,7 +333,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
         public void GetColumns_AllTypes_ReturnsColumns()
         {
             // Arrange
-            this.Connection.Purge();
+            this.Connection.PurgeDatabase();
             this.Connection.CreateSchema("zeta");
 
             var sql = this.GetType().Assembly.GetResourceText("SuperTable.sql", true);
@@ -541,7 +541,8 @@ namespace TauCode.Lab.Db.MySql.Tests.DbTableInspector
         public void GetPrimaryKey_ValidInput_ReturnsPrimaryKey()
         {
             // Arrange
-            var tableNames = this.Connection.GetTableNames("zeta", null);
+            //var tableNames = this.Connection.GetTableNames("zeta", null);
+            var tableNames = this.Connection.GetTableNames("zeta", true);
 
             // Act
             var dictionary = tableNames

@@ -18,9 +18,6 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbCruder
         [SetUp]
         public void SetUp()
         {
-            // todo: get rid of inflector in tests
-            //Inflector.Inflector.SetDefaultCultureFunc = () => new CultureInfo("en-US");
-
             var sql = this.GetType().Assembly.GetResourceText("crebase.sql", true);
             this.Connection.ExecuteCommentedScript(sql);
         }

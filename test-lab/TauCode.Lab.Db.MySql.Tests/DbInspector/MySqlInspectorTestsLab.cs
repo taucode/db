@@ -89,7 +89,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbInspector
             var schemaNames = inspector.GetSchemaNames();
 
             // Assert
-            CollectionAssert.AreEqual(
+            CollectionAssert.AreEquivalent(
                 new []
                 {
                     "foo",

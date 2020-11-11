@@ -1,6 +1,7 @@
 ﻿using Npgsql;
-using System.Collections.Generic;
+using System.Data;
 using TauCode.Db;
+using TauCode.Db.Schema;
 
 namespace TauCode.Lab.Db.Npgsql
 {
@@ -15,12 +16,7 @@ namespace TauCode.Lab.Db.Npgsql
 
         public override IDbUtilityFactory Factory => NpgsqlUtilityFactoryLab.Instance;
 
-        protected override IReadOnlyList<string> GetTableNamesImpl(string schemaName) =>
-            this.NpgsqlConnection.GetTableNames(this.SchemaName, null);
-
-        protected override HashSet<string> GetSystemSchemata() => NpgsqlToolsLab.SystemSchemata;
-
-        protected override bool NeedCheckSchemaExistence => true;
-        protected override bool SchemaExists(string schemaName) => this.NpgsqlConnection.SchemaExists(schemaName);
+        protected override IDbSchemaExplorer CreateSchemaExplorer(IDbConnection connection) =>
+            new NpgsqlSchemaExplorer(this.NpgsqlConnection);
     }
 }

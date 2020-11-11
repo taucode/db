@@ -3,6 +3,7 @@ using NUnit.Framework;
 using System;
 using TauCode.Db;
 using TauCode.Db.Exceptions;
+using TauCode.Db.Schema;
 using TauCode.Extensions;
 
 // todo clean up
@@ -139,11 +140,15 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbMigrator
             migrator.Migrate();
 
             // Assert
+            IDbSchemaExplorer schemaExplorer = new SqlSchemaExplorer(this.Connection);
 
             #region metadata
 
             var scriptBuilder = new SqlScriptBuilderLab("zeta");
-            var tableMolds = this.Connection.GetTableMolds("zeta", true);
+
+            //var tableMolds = this.Connection.GetTableMolds("zeta", true);
+            var tableMolds = schemaExplorer.GetTables("zeta", true, true, true, true, true);
+
             var script = scriptBuilder.BuildCreateAllTablesScript(tableMolds);
             var expectedScript = this.GetType().Assembly.GetResourceText("MigratedDbCustomOutput.sql", true);
 
@@ -278,11 +283,15 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbMigrator
             migrator.Migrate();
 
             // Assert
+            IDbSchemaExplorer schemaExplorer = new SqlSchemaExplorer(this.Connection);
 
             #region metadata
 
             var scriptBuilder = new SqlScriptBuilderLab("zeta");
-            var tableMolds = this.Connection.GetTableMolds("zeta", true);
+
+            //var tableMolds = this.Connection.GetTableMolds("zeta", true);
+            var tableMolds = schemaExplorer.GetTables("zeta", true, true, true, true, true);
+
             var script = scriptBuilder.BuildCreateAllTablesScript(tableMolds);
             var expectedScript = this.GetType().Assembly.GetResourceText("MigratedDbOutput.sql", true);
 

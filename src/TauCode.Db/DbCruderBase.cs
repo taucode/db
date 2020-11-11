@@ -7,7 +7,6 @@ using TauCode.Db.Data;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
 
-// todo clean up; get rid of TableInspector creation (except of really necessary ones)
 namespace TauCode.Db
 {
     public abstract class DbCruderBase : DbUtilityBase, IDbCruder
@@ -18,8 +17,6 @@ namespace TauCode.Db
         {
             public TableInfo(DbCruderBase cruder, string tableName)
             {
-                cruder.CheckSchemaIfNeeded();
-
                 this.TableMold = cruder
                     .Factory
                     .CreateTableInspector(cruder.Connection, cruder.SchemaName, tableName)
@@ -265,17 +262,6 @@ namespace TauCode.Db
 
         private static bool PropertyTruer(string propertyName) => true;
 
-        private void CheckSchemaIfNeeded()
-        {
-            if (this.NeedCheckSchemaExistence)
-            {
-                if (!this.SchemaExists(this.SchemaName))
-                {
-                    throw DbTools.CreateSchemaDoesNotExistException(this.SchemaName);
-                }
-            }
-        }
-
         #endregion
 
         #region Abstract
@@ -283,10 +269,6 @@ namespace TauCode.Db
         protected abstract IDbValueConverter CreateDbValueConverter(ColumnMold column);
 
         protected abstract IDbDataParameter CreateParameter(string tableName, ColumnMold column);
-
-        protected abstract bool NeedCheckSchemaExistence { get; }
-
-        protected abstract bool SchemaExists(string schemaName);
 
         #endregion
 
@@ -335,9 +317,6 @@ namespace TauCode.Db
 
         protected virtual IDbTableValuesConverter CreateTableValuesConverter(TableMold tableMold)
         {
-            //var table-Inspector = this.Factory.CreateTable-Inspector(this.Connection, this.SchemaName, tableName);
-            //var table = table-Inspector.GetTable();
-
             var dictionary = tableMold.Columns
                 .ToDictionary(
                     x => x.Name,
@@ -369,8 +348,6 @@ namespace TauCode.Db
         public void ResetTables()
         {
             _tableInfos.Clear();
-
-            //_tableValuesConverters.Clear();
         }
 
         public virtual void InsertRow(
@@ -402,8 +379,6 @@ namespace TauCode.Db
             }
 
             propertySelector ??= PropertyTruer;
-
-            //var table = this.Factory.CreateTable-Inspector(this.Connection, this.SchemaName, tableName).GetTable();
 
             var table = this.GetOrCreateTableInfo(tableName).TableMold;
 
@@ -457,10 +432,6 @@ namespace TauCode.Db
 
             var table = this.GetOrCreateTableInfo(tableName).TableMold;
 
-            //var table = this.Factory
-            //    .CreateTable-Inspector(this.Connection, this.SchemaName, tableName)
-            //    .GetTable();
-
             var idColumnName = table.GetPrimaryKeySingleColumn(nameof(tableName)).Name;
 
             using var helper = new CommandHelper(this, table, new[] { idColumnName });
@@ -506,10 +477,6 @@ namespace TauCode.Db
             propertySelector ??= PropertyTruer;
 
             var table = this.GetOrCreateTableInfo(tableName).TableMold;
-
-            //var table = this.Factory
-            //    .CreateTable-Inspector(this.Connection, this.SchemaName, tableName)
-            //    .GetTable();
 
             var dataDictionary = this.ObjectToDataDictionary(rowUpdate);
 
@@ -559,11 +526,6 @@ namespace TauCode.Db
             var tableInfo = this.GetOrCreateTableInfo(tableName);
             var table = tableInfo.TableMold;
 
-            //var table = this.Factory
-            //    .CreateTable-Inspector(this.Connection, this.SchemaName, tableName)
-            //    .GetTable();
-
-            //var idColumnName = table.GetPrimaryKeySingleColumn(nameof(tableName)).Name;
             var idColumnName = tableInfo.PrimaryKeyColumnName;
 
             using var helper = new CommandHelper(this, table, new[] { idColumnName });

@@ -20,8 +20,6 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbCruder
         [SetUp]
         public void SetUp()
         {
-            Inflector.Inflector.SetDefaultCultureFunc = () => new CultureInfo("en-US");
-
             this.Connection.CreateSchema("zeta");
 
             var sql = this.GetType().Assembly.GetResourceText("crebase.sql", true);

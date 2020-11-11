@@ -12,14 +12,9 @@ namespace TauCode.Lab.Db.MySql
     public class MySqlCruderLab : DbCruderBase
     {
         public MySqlCruderLab(MySqlConnection connection)
-            : base(connection, connection.GetSchemaName())
+            : base(connection, connection?.Database)
         {
         }
-
-        protected MySqlConnection MySqlConnection => (MySqlConnection)this.Connection;
-
-        protected override bool SchemaExists(string schemaName)
-            => this.MySqlConnection.SchemaExists(schemaName);
 
         protected override string TransformTableName(string tableName) => tableName.ToLowerInvariant();
 
@@ -238,7 +233,5 @@ namespace TauCode.Lab.Db.MySql
                     throw new NotImplementedException();
             }
         }
-
-        protected override bool NeedCheckSchemaExistence => true;
     }
 }

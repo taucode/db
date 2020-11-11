@@ -457,7 +457,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbScriptBuilder
         public void BuildCreateTableScript_AllTypes_ReturnsValidScript()
         {
             // Arrange
-            this.Connection.Purge();
+            this.Connection.PurgeDatabase();
             this.Connection.CreateSchema("zeta");
             var sql = this.GetType().Assembly.GetResourceText("SuperTable.sql", true);
             this.Connection.ExecuteSingleSql(sql);

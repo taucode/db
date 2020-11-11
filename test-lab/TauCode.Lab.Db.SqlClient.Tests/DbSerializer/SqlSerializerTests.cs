@@ -21,8 +21,6 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbSerializer
         [SetUp]
         public void SetUp()
         {
-            Inflector.Inflector.SetDefaultCultureFunc = () => new CultureInfo("en-US");
-
             this.Connection.CreateSchema("zeta");
 
             var sql = this.GetType().Assembly.GetResourceText("CreatePersonDb.sql", true);
