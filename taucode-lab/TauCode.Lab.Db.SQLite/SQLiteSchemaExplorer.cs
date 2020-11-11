@@ -17,7 +17,7 @@ namespace TauCode.Lab.Db.SQLite
         {
         }
 
-        public override IReadOnlyList<string> GetSchemata() => throw new NotSupportedException();
+        public override IReadOnlyList<string> GetSchemata() => new string[] { };
 
         public override IReadOnlyList<string> GetTableNames(string schemaName)
         {

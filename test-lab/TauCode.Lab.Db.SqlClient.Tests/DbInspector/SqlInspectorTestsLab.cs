@@ -88,15 +88,15 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbInspector
             var schemaNames = inspector.GetSchemaNames();
 
             // Assert
-            CollectionAssert.AreEqual(
-                new []
+            Assert.That(
+                schemaNames,
+                Is.EquivalentTo(new[]
                 {
                     "dbo",
                     "HangFire",
                     "hello",
                     "zeta",
-                },
-                schemaNames);
+                }));
         }
 
         #endregion

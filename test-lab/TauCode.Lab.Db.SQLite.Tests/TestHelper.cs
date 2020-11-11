@@ -11,10 +11,6 @@ namespace TauCode.Lab.Db.SQLite.Tests
 {
     internal static class TestHelper
     {
-        //internal const string ConnectionString = @"Server=.\mssqltest;Database=rho.test;Trusted_Connection=True;";
-
-        //internal static string ConnectionString { get; private set; }
-
         internal static SQLiteConnection CreateConnection(bool open = true, bool boost = true)
         {
             var tuple = SQLiteToolsLab.CreateSQLiteDatabase();
@@ -38,12 +34,6 @@ namespace TauCode.Lab.Db.SQLite.Tests
         internal static void PurgeDatabase(this SQLiteConnection connection)
         {
             new SQLiteSchemaExplorer(connection).DropAllTables(null);
-
-            //var tableNames = connection.GetTableNames(false);
-            //foreach (var tableName in tableNames)
-            //{
-            //    connection.DropTable(tableName);
-            //}
         }
 
         internal static void WriteDiff(string actual, string expected, string directory, string fileExtension, string reminder)
@@ -110,13 +100,6 @@ WHERE
             return dictionary;
         }
 
-        //internal static decimal GetLastIdentity(this SqlConnection connection)
-        //{
-        //    using var command = connection.CreateCommand();
-        //    command.CommandText = "SELECT @@IDENTITY";
-        //    return (decimal)command.ExecuteScalar();
-        //}
-
         internal static long GetTableRowCount(SQLiteConnection connection, string tableName)
         {
             using var command = connection.CreateCommand();
@@ -134,6 +117,5 @@ WHERE
 
         internal static void DropTable(this SQLiteConnection connection, string tableName)
             => new SQLiteSchemaExplorer(connection).DropTable(null, tableName);
-
     }
 }

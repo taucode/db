@@ -1,11 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Data;
-using System.Linq;
+using TauCode.Db.Schema;
 
 namespace TauCode.Db
 {
+    // todo get rid of '2'
     public abstract class DbInspectorBase : DbUtilityBase, IDbInspector
     {
+        #region Fields
+
+        private IDbSchemaExplorer _schemaExplorer;
+
+        #endregion
+
         #region Constructor
 
         protected DbInspectorBase(IDbConnection connection, string schemaName)
@@ -16,30 +23,11 @@ namespace TauCode.Db
 
         #endregion
 
-        #region Private
+        #region Protected
 
-        private void CheckSchemaIfNeeded()
-        {
-            if (this.NeedCheckSchemaExistence)
-            {
-                if (!this.SchemaExists(this.SchemaName))
-                {
-                    throw DbTools.CreateSchemaDoesNotExistException(this.SchemaName);
-                }
-            }
-        }
+        protected IDbSchemaExplorer SchemaExplorer2 => _schemaExplorer ??= this.CreateSchemaExplorer2(this.Connection);
 
-        #endregion
-
-        #region Abstract & Virtual
-
-        protected abstract IReadOnlyList<string> GetTableNamesImpl(string schemaName);
-
-        protected abstract HashSet<string> GetSystemSchemata();
-
-        protected abstract bool NeedCheckSchemaExistence { get; }
-
-        protected abstract bool SchemaExists(string schemaName);
+        protected abstract IDbSchemaExplorer CreateSchemaExplorer2(IDbConnection connection);
 
         #endregion
 
@@ -47,38 +35,9 @@ namespace TauCode.Db
 
         public string SchemaName { get; }
 
-        // todo: move to metadata explorer (ex-schema-explorer)
-        public virtual IReadOnlyList<string> GetSchemaNames()
-        {
-            var systemSchemata = this.GetSystemSchemata();
+        public virtual IReadOnlyList<string> GetSchemaNames() => this.SchemaExplorer2.GetSchemata();
 
-            using var command = this.Connection.CreateCommand();
-            command.CommandText = @"
-SELECT
-    S.schema_name SchemaName
-FROM
-    information_schema.schemata S
-ORDER BY
-    S.schema_name
-";
-
-            var schemata = command
-                .GetCommandRows()
-                .Select(x => (string)x.SchemaName)
-                .Except(systemSchemata)
-                .ToList();
-
-            return schemata;
-        }
-
-        public virtual IReadOnlyList<string> GetTableNames()
-        {
-            this.CheckSchemaIfNeeded();
-
-            var tableNames = this.GetTableNamesImpl(this.SchemaName);
-
-            return tableNames;
-        }
+        public virtual IReadOnlyList<string> GetTableNames() => this.SchemaExplorer2.GetTableNames(this.SchemaName);
 
         #endregion
     }

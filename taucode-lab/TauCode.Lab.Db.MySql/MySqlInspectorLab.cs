@@ -1,6 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
-using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using TauCode.Db;
 using TauCode.Db.Schema;
@@ -21,24 +21,10 @@ namespace TauCode.Lab.Db.MySql
 
         public override IDbUtilityFactory Factory => MySqlUtilityFactoryLab.Instance;
 
-        protected override IReadOnlyList<string> GetTableNamesImpl(string schemaName) =>
-            //this.MySqlConnection.GetTableNames(this.SchemaName, null);
-            throw new NotImplementedException();
+        protected override IDbSchemaExplorer CreateSchemaExplorer2(IDbConnection connection) =>
+            new MySqlSchemaExplorer(this.MySqlConnection);
 
         public override IReadOnlyList<string> GetTableNames()
             => this.SchemaExplorer.GetTableNames(this.SchemaName).ToList(); // todo
-
-        protected override HashSet<string> GetSystemSchemata() => new List<string>
-        {
-            "mysql",
-            "information_schema",
-            "performance_schema",
-        }.ToHashSet(); // todo
-
-        protected override bool NeedCheckSchemaExistence => throw new NotImplementedException();
-
-        protected override bool SchemaExists(string schemaName)
-            //=> this.MySqlConnection.SchemaExists(schemaName);
-            => throw new NotImplementedException();
     }
 }
