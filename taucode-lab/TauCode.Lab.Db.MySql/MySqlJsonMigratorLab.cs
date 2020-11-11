@@ -36,9 +36,10 @@ namespace TauCode.Lab.Db.MySql
             return new MySqlSchemaExplorer(this.MySqlConnection);
         }
 
-        protected override bool NeedCheckSchemaExistence => true;
+        protected override bool NeedCheckSchemaExistence => throw new NotImplementedException();
 
-        protected override bool SchemaExists(string schemaName) =>
-            this.MySqlConnection.SchemaExists(schemaName);
+        protected override bool SchemaExists(string schemaName)
+        //this.MySqlConnection.SchemaExists(schemaName);
+        => throw new NotImplementedException();
     }
 }

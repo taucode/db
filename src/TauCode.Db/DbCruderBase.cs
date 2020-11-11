@@ -18,7 +18,7 @@ namespace TauCode.Db
         {
             public TableInfo(DbCruderBase cruder, string tableName)
             {
-                cruder.CheckSchemaIfNeeded();
+                //cruder.CheckSchemaIfNeeded();
 
                 this.TableMold = cruder
                     .Factory

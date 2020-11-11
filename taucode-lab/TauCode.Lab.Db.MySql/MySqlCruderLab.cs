@@ -19,7 +19,8 @@ namespace TauCode.Lab.Db.MySql
         protected MySqlConnection MySqlConnection => (MySqlConnection)this.Connection;
 
         protected override bool SchemaExists(string schemaName)
-            => this.MySqlConnection.SchemaExists(schemaName);
+            //=> this.MySqlConnection.SchemaExists(schemaName);
+            => throw new NotImplementedException();
 
         protected override string TransformTableName(string tableName) => tableName.ToLowerInvariant();
 

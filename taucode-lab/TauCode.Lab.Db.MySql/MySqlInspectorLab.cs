@@ -30,8 +30,10 @@ namespace TauCode.Lab.Db.MySql
 
         protected override HashSet<string> GetSystemSchemata() => MySqlToolsLab.SystemSchemata;
 
-        protected override bool NeedCheckSchemaExistence => true;
+        protected override bool NeedCheckSchemaExistence => throw new NotImplementedException();
 
-        protected override bool SchemaExists(string schemaName) => this.MySqlConnection.SchemaExists(schemaName);
+        protected override bool SchemaExists(string schemaName)
+            //=> this.MySqlConnection.SchemaExists(schemaName);
+            => throw new NotImplementedException();
     }
 }
