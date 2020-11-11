@@ -42,7 +42,7 @@ namespace TauCode.Db.DbValueConverters
                     break;
 
                 case DbType.Byte:
-                    if (value is TEnum || DbTools.IsIntegerType(value.GetType()))
+                    if (value is TEnum || value.GetType().IsIntegerType())
                     {
                         return Convert.ToByte(value);
                     }
@@ -50,7 +50,7 @@ namespace TauCode.Db.DbValueConverters
                     break;
 
                 case DbType.SByte:
-                    if (value is TEnum || DbTools.IsIntegerType(value.GetType()))
+                    if (value is TEnum || value.GetType().IsIntegerType())
                     {
                         return Convert.ToSByte(value);
                     }
@@ -58,7 +58,7 @@ namespace TauCode.Db.DbValueConverters
                     break;
 
                 case DbType.Int16:
-                    if (value is TEnum || DbTools.IsIntegerType(value.GetType()))
+                    if (value is TEnum || value.GetType().IsIntegerType())
                     {
                         return Convert.ToInt16(value);
                     }
@@ -66,7 +66,7 @@ namespace TauCode.Db.DbValueConverters
                     break;
 
                 case DbType.UInt16:
-                    if (value is TEnum || DbTools.IsIntegerType(value.GetType()))
+                    if (value is TEnum || value.GetType().IsIntegerType())
                     {
                         return Convert.ToUInt16(value);
                     }
@@ -74,7 +74,7 @@ namespace TauCode.Db.DbValueConverters
                     break;
 
                 case DbType.Int32:
-                    if (value is TEnum || DbTools.IsIntegerType(value.GetType()))
+                    if (value is TEnum || value.GetType().IsIntegerType())
                     {
                         return Convert.ToInt32(value);
                     }
@@ -82,7 +82,7 @@ namespace TauCode.Db.DbValueConverters
                     break;
 
                 case DbType.UInt32:
-                    if (value is TEnum || DbTools.IsIntegerType(value.GetType()))
+                    if (value is TEnum || value.GetType().IsIntegerType())
                     {
                         return Convert.ToUInt32(value);
                     }
@@ -90,7 +90,7 @@ namespace TauCode.Db.DbValueConverters
                     break;
 
                 case DbType.Int64:
-                    if (value is TEnum || DbTools.IsIntegerType(value.GetType()))
+                    if (value is TEnum || value.GetType().IsIntegerType())
                     {
                         return Convert.ToInt64(value);
                     }
@@ -98,7 +98,7 @@ namespace TauCode.Db.DbValueConverters
                     break;
 
                 case DbType.UInt64:
-                    if (value is TEnum || DbTools.IsIntegerType(value.GetType()))
+                    if (value is TEnum || value.GetType().IsIntegerType())
                     {
                         return Convert.ToUInt64(value);
                     }
@@ -139,7 +139,7 @@ namespace TauCode.Db.DbValueConverters
                 case DbType.UInt32:
                 case DbType.Int64:
                 case DbType.UInt64:
-                    if (DbTools.IsIntegerType(dbValue.GetType()))
+                    if (dbValue.GetType().IsIntegerType())
                     {
                         var @enum = Enum.ToObject(typeof(TEnum), dbValue);
                         return @enum;

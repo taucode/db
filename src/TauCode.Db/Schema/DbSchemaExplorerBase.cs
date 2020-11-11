@@ -9,8 +9,6 @@ using TauCode.Db.Model;
 
 namespace TauCode.Db.Schema
 {
-    // todo regions
-    // todo clean
     public abstract class DbSchemaExplorerBase : IDbSchemaExplorer
     {
         #region Constants
@@ -355,10 +353,6 @@ ORDER BY
             }
 
             return columns;
-
-            //return columnInfos
-            //    .Select(this.ColumnInfoToColumn)
-            //    .ToList();
         }
 
         public virtual PrimaryKeyMold GetTablePrimaryKey(string schemaName, string tableName, bool checkExistence)
@@ -519,9 +513,6 @@ ORDER BY
 ";
 
                 command.Parameters.Clear();
-
-                //var fkParam = command.Parameters.Add("p_fkName", SqlDbType.NVarChar, 100);
-                //var schemaParam = command.Parameters.Add("p_schemaName", SqlDbType.NVarChar, 100);
 
                 var fkParam = command.CreateParameter();
                 fkParam.ParameterName = "p_fkName";

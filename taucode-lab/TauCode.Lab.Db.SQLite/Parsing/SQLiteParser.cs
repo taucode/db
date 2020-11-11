@@ -216,25 +216,11 @@ namespace TauCode.Lab.Db.SQLite.Parsing
             {
                 var tableMold = accumulator.GetLastResult<TableMold>();
                 var primaryKey = tableMold.PrimaryKey;
-                //var indexColumn = new IndexColumnMold
-                //{
-                //    Name = ((TextToken)token).Text,
-                //};
                 primaryKey.Columns.Add(((TextToken)token).Text);
             };
 
             var pkColumnAscOrDesc = (ActionNode)allSqlNodes.Single(x =>
                 string.Equals(x.Name, "pk-asc-or-desc", StringComparison.InvariantCultureIgnoreCase));
-
-            //pkColumnAscOrDesc.Action = (node, token, accumulator) =>
-            //{
-            //    var tableInfo = accumulator.GetLastResult<TableMold>();
-            //    var primaryKey = tableInfo.PrimaryKey;
-            //    var indexColumn = primaryKey.Columns.Last();
-
-            //    var ascOrDesc = ((TextToken)token).Text.ToLowerInvariant();
-            //    indexColumn.SortDirection = SQLiteParsingHelper.SqlToSortDirection(ascOrDesc);
-            //};
 
             var fk = (ActionNode)allSqlNodes.Single(x =>
                string.Equals(x.Name, "do-foreign-key", StringComparison.InvariantCultureIgnoreCase));

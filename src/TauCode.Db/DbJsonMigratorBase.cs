@@ -54,10 +54,6 @@ namespace TauCode.Db
 
         #region Abstract & Virtual
 
-        protected abstract bool NeedCheckSchemaExistence { get; }
-
-        protected abstract bool SchemaExists(string schemaName);
-
         protected virtual IDbSerializer CreateSerializer()
         {
             var serializer = this.Factory.CreateSerializer(this.Connection, this.SchemaName);

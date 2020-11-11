@@ -3,7 +3,6 @@ using System.Data;
 using TauCode.Db;
 using TauCode.Db.Schema;
 
-// todo clean & regions.
 namespace TauCode.Lab.Db.SqlClient
 {
     public class SqlInspectorLab : DbInspectorBase

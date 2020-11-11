@@ -12,11 +12,9 @@ namespace TauCode.Lab.Db.SQLite
         {
         }
 
-        public SQLiteConnection SQLiteConnection => (SQLiteConnection)this.Connection;
-
         public override IDbUtilityFactory Factory => SQLiteUtilityFactoryLab.Instance;
 
         protected override IDbSchemaExplorer CreateSchemaExplorer(IDbConnection connection) =>
-            new SQLiteSchemaExplorer(this.SQLiteConnection);
+            new SQLiteSchemaExplorer((SQLiteConnection)connection);
     }
 }

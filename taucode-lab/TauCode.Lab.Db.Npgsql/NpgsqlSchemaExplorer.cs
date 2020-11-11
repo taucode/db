@@ -141,10 +141,6 @@ WHERE
                         columnInfo.Additional.GetValueOrDefault("identity_start");
                 }
             }
-
-            // todo0 resolve
-
-            //throw new NotImplementedException();
         }
 
         public override IReadOnlyList<string> GetSystemSchemata()

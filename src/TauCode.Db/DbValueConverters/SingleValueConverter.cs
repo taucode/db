@@ -1,16 +1,14 @@
-﻿namespace TauCode.Db.DbValueConverters
+﻿using System;
+
+namespace TauCode.Db.DbValueConverters
 {
     public class SingleValueConverter : DbValueConverterBase
     {
         protected override object ToDbValueImpl(object value)
         {
-            if (value is float floatValue)
+            if (value.GetType().IsNumericType())
             {
-                return floatValue;
-            }
-            else if (value is double doubleValue)
-            {
-                return doubleValue;
+                return Convert.ToSingle(value);
             }
 
             return null;

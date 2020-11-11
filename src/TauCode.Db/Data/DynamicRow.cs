@@ -4,10 +4,15 @@ using TauCode.Data;
 
 namespace TauCode.Db.Data
 {
-    // todo: regions
     public class DynamicRow : DynamicObject
     {
+        #region Fields
+
         private readonly IDictionary<string, object> _values;
+
+        #endregion
+
+        #region Constructor
 
         public DynamicRow(object original = null)
         {
@@ -25,7 +30,9 @@ namespace TauCode.Db.Data
             _values = values;
         }
 
-        public IDictionary<string, object> ToDictionary() => _values;
+        #endregion
+
+        #region Overridden
 
         public override bool TrySetMember(SetMemberBinder binder, object value)
         {
@@ -42,6 +49,12 @@ namespace TauCode.Db.Data
 
         public override IEnumerable<string> GetDynamicMemberNames() => _values.Keys;
 
+        #endregion
+
+        #region Public
+
+        public IDictionary<string, object> ToDictionary() => _values;
+
         public void SetValue(string name, object value)
         {
             _values[name] = value;
@@ -57,39 +70,6 @@ namespace TauCode.Db.Data
             return _values.Remove(name);
         }
 
-        public bool IsEquivalentTo(object other)
-        {
-            if (other == null)
-            {
-                return false; // no object is equiv. to null
-            }
-
-            var otherDynamic = new DynamicRow(other);
-
-            if (_values.Count != otherDynamic._values.Count)
-            {
-                return false;
-            }
-
-            foreach (var pair in _values)
-            {
-                var key = pair.Key;
-                var value = pair.Value;
-
-                var otherHas = otherDynamic._values.TryGetValue(key, out var otherValue);
-                if (!otherHas)
-                {
-                    return false;
-                }
-
-                var otherEq = Equals(value, otherValue);
-                if (!otherEq)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
+        #endregion
     }
 }

@@ -19,10 +19,7 @@ namespace TauCode.Lab.Db.SQLite
             return new SQLiteScriptBuilderLab();
         }
 
-        public IDbConnection CreateConnection()
-        {
-            throw new System.NotImplementedException();
-        }
+        public IDbConnection CreateConnection() => new SQLiteConnection();
 
         public IDbInspector CreateInspector(IDbConnection connection, string schemaName)
         {

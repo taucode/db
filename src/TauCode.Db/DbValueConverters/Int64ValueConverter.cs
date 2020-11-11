@@ -1,5 +1,4 @@
 ﻿using System;
-using TauCode.Extensions;
 
 namespace TauCode.Db.DbValueConverters
 {
@@ -7,18 +6,7 @@ namespace TauCode.Db.DbValueConverters
     {
         protected override object ToDbValueImpl(object value)
         {
-            if (value.GetType().IsIn(
-                
-                typeof(byte),
-                typeof(sbyte),
-                typeof(short),
-                typeof(ushort),
-                typeof(int),
-                typeof(uint),
-                typeof(long),
-                typeof(ulong),
-                
-                typeof(bool)))
+            if (value.GetType().IsIntegerType())
             {
                 return Convert.ToInt64(value);
             }

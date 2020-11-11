@@ -14,19 +14,40 @@ namespace TauCode.Db
 {
     public static class DbTools
     {
-        private static readonly HashSet<Type> IntegerTypes = new HashSet<Type>(new[]
-        {
-            typeof(byte),
-            typeof(sbyte),
-            typeof(short),
-            typeof(ushort),
-            typeof(int),
-            typeof(uint),
-            typeof(long),
-            typeof(ulong),
-        });
+        private static readonly HashSet<Type> IntegerTypes;
 
-        public static bool IsIntegerType(Type type) => IntegerTypes.Contains(type);
+        private static readonly HashSet<Type> NumericTypes;
+
+        static DbTools()
+        {
+            IntegerTypes = new HashSet<Type>(new[]
+            {
+                typeof(byte),
+                typeof(sbyte),
+                typeof(short),
+                typeof(ushort),
+                typeof(int),
+                typeof(uint),
+                typeof(long),
+                typeof(ulong),
+            });
+
+            var nonIntegerTypes = new[]
+            {
+                typeof(float),
+                typeof(double),
+                typeof(decimal),
+            };
+
+            var list = new List<Type>(IntegerTypes);
+            list.AddRange(nonIntegerTypes);
+
+            NumericTypes = list.ToHashSet();
+        }
+
+        public static bool IsIntegerType(this Type type) => IntegerTypes.Contains(type ?? throw new ArgumentNullException(nameof(type)));
+
+        public static bool IsNumericType(this Type type) => NumericTypes.Contains(type ?? throw new ArgumentNullException(nameof(type)));
 
         public static IList<string> SplitScriptByComments(string script)
         {

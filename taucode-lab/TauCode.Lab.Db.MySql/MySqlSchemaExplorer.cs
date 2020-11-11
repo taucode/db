@@ -263,8 +263,6 @@ ORDER BY
                 referencedTableNameParam.Size = 100;
                 command.Parameters.Add(referencedTableNameParam);
 
-                //var referencedTableNameParam = command.Parameters.Add("p_referencedTableName", MySqlDbType.VarChar, 100);
-
                 schemaParam.Value = schemaName;
 
                 command.Prepare();

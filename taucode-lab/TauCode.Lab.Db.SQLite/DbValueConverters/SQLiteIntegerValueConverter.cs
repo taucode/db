@@ -1,15 +1,15 @@
 ﻿using System;
 using TauCode.Db;
 
-namespace TauCode.Lab.Db.MySql.DbValueConverters
+namespace TauCode.Lab.Db.SQLite.DbValueConverters
 {
-    public class MySqlTinyIntValueConverter : DbValueConverterBase
+    public class SQLiteIntegerValueConverter : DbValueConverterBase
     {
         protected override object ToDbValueImpl(object value)
         {
             if (value.GetType().IsIntegerType() || value is bool)
             {
-                return Convert.ToSByte(value);
+                return Convert.ToInt64(value);
             }
 
             return null;
@@ -17,14 +17,9 @@ namespace TauCode.Lab.Db.MySql.DbValueConverters
 
         protected override object FromDbValueImpl(object dbValue)
         {
-            if (dbValue is sbyte sbyteValue)
+            if (dbValue is long longValue)
             {
-                return sbyteValue;
-            }
-
-            if (dbValue is bool boolValue)
-            {
-                return Convert.ToSByte(boolValue);
+                return longValue;
             }
 
             return null;

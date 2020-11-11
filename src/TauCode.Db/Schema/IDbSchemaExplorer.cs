@@ -26,8 +26,6 @@ namespace TauCode.Db.Schema
 
         PrimaryKeyMold GetTablePrimaryKey(string schemaName, string tableName, bool checkExistence);
 
-        //void ResolveIdentities(string schemaName, string tableName, IList<ColumnInfo2> columnInfos, bool checkExistence);
-
         IReadOnlyList<ForeignKeyMold> GetTableForeignKeys(string schemaName, string tableName, bool loadColumns, bool checkExistence);
 
         IReadOnlyList<IndexMold> GetTableIndexes(string schemaName, string tableName, bool checkExistence);

@@ -8,6 +8,7 @@ using TauCode.Db.Schema;
 using TauCode.Lab.Db.SQLite.Parsing;
 
 // todo: move to 'Schema' sub-namespace, here & anywhere
+// todo regions
 namespace TauCode.Lab.Db.SQLite
 {
     public class SQLiteSchemaExplorer : DbSchemaExplorerBase
@@ -210,49 +211,6 @@ ORDER BY
             bool checkExistence)
             => throw this.CreateNotSupportedException();
 
-        public override IReadOnlyList<IndexMold> GetTableIndexes(
-            string schemaName,
-            string tableName,
-            bool checkExistence)
-        {
-            if (schemaName != null)
-            {
-                throw new ArgumentException($"'{nameof(schemaName)}' must be null.", nameof(schemaName));
-            }
-
-            if (tableName == null)
-            {
-                throw new ArgumentNullException(nameof(tableName));
-            }
-
-            using var command = this.Connection.CreateCommand();
-            command.CommandText = @"
-SELECT
-    T.name    Name,
-    T.sql     Sql
-FROM
-    sqlite_master T
-WHERE
-    T.type = 'index' AND
-    T.tbl_name = @p_tableName AND
-    T.name NOT LIKE 'sqlite_%'
-ORDER BY
-    T.name
-";
-
-            command.AddParameterWithValue("p_tableName", tableName);
-            //command.Parameters.AddWithValue("p_antiPattern", "sqlite_autoindex_%");
-
-            var parser = SQLiteParser.Instance;
-
-            var indexes = command
-                .GetCommandRows()
-                .Select(x => (IndexMold)parser.Parse((string)x.Sql).Single())
-                .ToList();
-
-            return indexes;
-        }
-
         public override PrimaryKeyMold GetTablePrimaryKey(string schemaName, string tableName, bool checkExistence)
             => throw this.CreateNotSupportedException();
 
@@ -277,23 +235,96 @@ ORDER BY
 
         protected override ColumnMold ColumnInfoToColumn(ColumnInfo columnInfo)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         protected override IReadOnlyList<IndexMold> GetTableIndexesImpl(string schemaName, string tableName)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
+        }
+
+        public override bool TableExists(string schemaName, string tableName)
+        {
+            if (schemaName != null)
+            {
+                throw new ArgumentException($"'{nameof(schemaName)}' must be null.", nameof(schemaName));
+            }
+
+            using var command = this.Connection.CreateCommand();
+            command.CommandText = @"
+SELECT
+    T.name  Name,
+    T.sql   Sql
+FROM
+    sqlite_master T
+WHERE
+    T.type = 'table' AND
+    T.name NOT LIKE 'sqlite_%' AND
+    T.name = @p_tableName
+";
+
+            command.AddParameterWithValue("p_tableName", tableName);
+            using var reader = command.ExecuteReader();
+            var exists = reader.Read();
+
+            return exists;
+        }
+
+        public override bool SchemaExists(string schemaName) => false; // no schema support for SQLite
+
+        public override IReadOnlyList<IndexMold> GetTableIndexes(string schemaName, string tableName, bool checkExistence)
+        {
+            if (schemaName != null)
+            {
+                throw new ArgumentException($"'{nameof(schemaName)}' must be null.", nameof(schemaName));
+            }
+
+            if (tableName == null)
+            {
+                throw new ArgumentNullException(nameof(tableName));
+            }
+
+            if (checkExistence)
+            {
+                if (!this.TableExists(null, tableName))
+                {
+                    throw DbTools.CreateTableDoesNotExistException(null, tableName);
+                }
+            }
+
+            using var command = this.Connection.CreateCommand();
+            command.CommandText = @"
+SELECT
+    T.name    Name,
+    T.sql     Sql
+FROM
+    sqlite_master T
+WHERE
+    T.type = 'index' AND
+    T.tbl_name = @p_tableName AND
+    T.name NOT LIKE 'sqlite_%'
+ORDER BY
+    T.name
+";
+
+            command.AddParameterWithValue("p_tableName", tableName);
+
+            var parser = SQLiteParser.Instance;
+
+            var indexes = command
+                .GetCommandRows()
+                .Select(x => (IndexMold)parser.Parse((string)x.Sql).Single())
+                .ToList();
+
+            return indexes;
         }
 
         protected override void ResolveIdentities(string schemaName, string tableName, IList<ColumnInfo> columnInfos)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
-        public override IReadOnlyList<string> GetSystemSchemata()
-        {
-            throw new NotImplementedException();
-        }
+        public override IReadOnlyList<string> GetSystemSchemata() => new string[] { };
 
         public override string DefaultSchemaName => null;
     }

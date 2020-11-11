@@ -1,12 +1,14 @@
-﻿namespace TauCode.Db.DbValueConverters
+﻿using System;
+
+namespace TauCode.Db.DbValueConverters
 {
     public class DoubleValueConverter : DbValueConverterBase
     {
         protected override object ToDbValueImpl(object value)
         {
-            if (value is double doubleValue)
+            if (value.GetType().IsNumericType())
             {
-                return doubleValue;
+                return Convert.ToDouble(value);
             }
 
             return null;

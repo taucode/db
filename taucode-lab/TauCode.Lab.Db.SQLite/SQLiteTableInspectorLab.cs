@@ -3,7 +3,6 @@ using System.Data.SQLite;
 using TauCode.Db;
 using TauCode.Db.Schema;
 
-// todo: regions
 namespace TauCode.Lab.Db.SQLite
 {
     public class SQLiteTableInspectorLab : DbTableInspectorBase

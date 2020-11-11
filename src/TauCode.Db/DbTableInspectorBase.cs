@@ -42,9 +42,8 @@ namespace TauCode.Db
 
         public string TableName { get; }
 
-        public virtual IReadOnlyList<ColumnMold> GetColumns() =>             
-            this.SchemaExplorer
-            .GetTableColumns(this.SchemaName, this.TableName, true);
+        public virtual IReadOnlyList<ColumnMold> GetColumns() =>
+            this.SchemaExplorer.GetTableColumns(this.SchemaName, this.TableName, true);
 
         public virtual PrimaryKeyMold GetPrimaryKey() =>
             this.SchemaExplorer.GetTablePrimaryKey(this.SchemaName, this.TableName, true);
@@ -54,7 +53,7 @@ namespace TauCode.Db
 
         public virtual IReadOnlyList<IndexMold> GetIndexes()
             => this.SchemaExplorer.GetTableIndexes(this.SchemaName, this.TableName, true);
-        
+
         public virtual TableMold GetTable() => this.SchemaExplorer.GetTable(
             this.SchemaName,
             this.TableName,

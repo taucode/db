@@ -125,12 +125,5 @@ namespace TauCode.Lab.Db.Npgsql
                     throw new NotImplementedException();
             }
         }
-
-        protected override bool NeedCheckSchemaExistence => false; // Table inspector will do the job.
-
-        protected override bool SchemaExists(string schemaName)
-        {
-            throw new InvalidOperationException("Internal error: should not be called.");
-        }
     }
 }

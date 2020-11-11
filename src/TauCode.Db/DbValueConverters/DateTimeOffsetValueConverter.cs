@@ -8,7 +8,7 @@ namespace TauCode.Db.DbValueConverters
         {
             if (value is DateTimeOffset dateTimeOffset)
             {
-                return dateTimeOffset;
+                return dateTimeOffset.ToUniversalTime();
             }
 
             if (value is DateTime dateTime)

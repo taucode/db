@@ -38,12 +38,5 @@ namespace TauCode.Lab.Db.SQLite
         {
             return new SQLiteSchemaExplorer(this.SQLiteConnection);
         }
-
-        protected override bool NeedCheckSchemaExistence => false;
-
-        protected override bool SchemaExists(string schemaName)
-        {
-            throw new NotSupportedException();
-        }
     }
 }

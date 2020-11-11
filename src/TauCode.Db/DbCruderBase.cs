@@ -7,7 +7,6 @@ using TauCode.Db.Data;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
 
-// todo clean up; get rid of TableInspector creation (except of really necessary ones)
 namespace TauCode.Db
 {
     public abstract class DbCruderBase : DbUtilityBase, IDbCruder
@@ -263,17 +262,6 @@ namespace TauCode.Db
 
         private static bool PropertyTruer(string propertyName) => true;
 
-        private void CheckSchemaIfNeeded()
-        {
-            if (this.NeedCheckSchemaExistence)
-            {
-                if (!this.SchemaExists(this.SchemaName))
-                {
-                    throw DbTools.CreateSchemaDoesNotExistException(this.SchemaName);
-                }
-            }
-        }
-
         #endregion
 
         #region Abstract
@@ -281,10 +269,6 @@ namespace TauCode.Db
         protected abstract IDbValueConverter CreateDbValueConverter(ColumnMold column);
 
         protected abstract IDbDataParameter CreateParameter(string tableName, ColumnMold column);
-
-        protected abstract bool NeedCheckSchemaExistence { get; }
-
-        protected abstract bool SchemaExists(string schemaName);
 
         #endregion
 

@@ -16,12 +16,6 @@ namespace TauCode.Lab.Db.MySql
         {
         }
 
-        protected MySqlConnection MySqlConnection => (MySqlConnection)this.Connection;
-
-        protected override bool SchemaExists(string schemaName)
-            //=> this.MySqlConnection.SchemaExists(schemaName);
-            => throw new NotImplementedException();
-
         protected override string TransformTableName(string tableName) => tableName.ToLowerInvariant();
 
         public override IDbUtilityFactory Factory => MySqlUtilityFactoryLab.Instance;
@@ -239,7 +233,5 @@ namespace TauCode.Lab.Db.MySql
                     throw new NotImplementedException();
             }
         }
-
-        protected override bool NeedCheckSchemaExistence => true;
     }
 }
