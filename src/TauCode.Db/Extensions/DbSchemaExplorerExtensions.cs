@@ -1,11 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TauCode.Db.Schema;
 
 namespace TauCode.Db.Extensions
 {
     public static class DbSchemaExplorerExtensions
     {
+        public static void DropAllTables(this IDbSchemaExplorer schemaExplorer, string schemaName)
+        {
+            var tableNames = schemaExplorer.GetTableNames(null, false);
+
+            foreach (var tableName in tableNames)
+            {
+                schemaExplorer.DropTable(schemaName, tableName);
+            }
+        }
+
         public static void PurgeDatabase(this IDbSchemaExplorer schemaExplorer)
         {
             var schemata = schemaExplorer.GetSchemata();

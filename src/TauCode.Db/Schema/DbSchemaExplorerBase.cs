@@ -199,7 +199,7 @@ ORDER BY
 
         public abstract string DefaultSchemaName { get; }
 
-        public IReadOnlyList<string> GetSchemata()
+        public virtual IReadOnlyList<string> GetSchemata()
         {
             using var command = this.Connection.CreateCommand();
             command.CommandText = @"

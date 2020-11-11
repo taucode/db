@@ -126,13 +126,13 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbTableInspector
         public void GetColumns_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbTableInspector inspector = new SQLiteTableInspectorLab(this.Connection, "bad_table");
+            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "bad_table");
 
             // Act
-            var ex = Assert.Throws<TauDbException>(() => inspector.GetColumns());
+            var ex = Assert.Throws<NotSupportedException>(() => tableInspector.GetColumns());
 
             // Assert
-            Assert.That(ex.Message, Is.EqualTo("Table 'bad_table' does not exist."));
+            Assert.That(ex, Has.Message.EqualTo("Use method 'GetTable'."));
         }
 
         #endregion
@@ -159,10 +159,10 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbTableInspector
             IDbTableInspector inspector = new SQLiteTableInspectorLab(this.Connection, "bad_table");
 
             // Act
-            var ex = Assert.Throws<TauDbException>(() => inspector.GetPrimaryKey());
+            var ex = Assert.Throws<NotSupportedException>(() => inspector.GetPrimaryKey());
 
             // Assert
-            Assert.That(ex.Message, Is.EqualTo("Table 'bad_table' does not exist."));
+            Assert.That(ex, Has.Message.EqualTo("Use method 'GetTable'."));
         }
 
         #endregion
@@ -189,10 +189,10 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbTableInspector
             IDbTableInspector inspector = new SQLiteTableInspectorLab(this.Connection, "bad_table");
 
             // Act
-            var ex = Assert.Throws<TauDbException>(() => inspector.GetForeignKeys());
+            var ex = Assert.Throws<NotSupportedException>(() => inspector.GetForeignKeys());
 
             // Assert
-            Assert.That(ex.Message, Is.EqualTo("Table 'bad_table' does not exist."));
+            Assert.That(ex, Has.Message.EqualTo("Use method 'GetTable'."));
         }
 
         #endregion
@@ -257,10 +257,10 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbTableInspector
             IDbTableInspector inspector = new SQLiteTableInspectorLab(this.Connection, "bad_table");
 
             // Act
-            var ex = Assert.Throws<TauDbException>(() => inspector.GetForeignKeys());
+            var ex = Assert.Throws<NotSupportedException>(() => inspector.GetForeignKeys());
 
             // Assert
-            Assert.That(ex.Message, Is.EqualTo("Table 'bad_table' does not exist."));
+            Assert.That(ex.Message, Is.EqualTo("Use method 'GetTable'."));
         }
 
         #endregion

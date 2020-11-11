@@ -23,8 +23,10 @@ namespace TauCode.Lab.Db.SqlClient
         public override IDbUtilityFactory Factory => SqlUtilityFactoryLab.Instance;
 
         protected override IReadOnlyList<string> GetTableNamesImpl(string schemaName) =>
-            this.SchemaExplorer.GetTableNames(schemaName);
+            throw new NotImplementedException();
+            //this.SchemaExplorer.GetTableNames(schemaName);
         //this.SqlConnection.GetTableNames(this.SchemaName, null);
+        
 
         protected override HashSet<string> GetSystemSchemata()
             //=> SqlToolsLab.SystemSchemata;
