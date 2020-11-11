@@ -28,7 +28,12 @@ namespace TauCode.Lab.Db.MySql
         public override IReadOnlyList<string> GetTableNames()
             => this.SchemaExplorer.GetTableNames(this.SchemaName).ToList(); // todo
 
-        protected override HashSet<string> GetSystemSchemata() => MySqlToolsLab.SystemSchemata;
+        protected override HashSet<string> GetSystemSchemata() => new List<string>
+        {
+            "mysql",
+            "information_schema",
+            "performance_schema",
+        }.ToHashSet(); // todo
 
         protected override bool NeedCheckSchemaExistence => throw new NotImplementedException();
 

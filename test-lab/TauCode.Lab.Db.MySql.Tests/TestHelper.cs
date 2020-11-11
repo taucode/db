@@ -156,5 +156,25 @@ WHERE
                 return connection;
             }
         }
+
+        internal static void DropSchema(this MySqlConnection connection, string schemaName)
+        {
+            new MySqlSchemaExplorer(connection).DropSchema(schemaName);
+        }
+
+        internal static void CreateSchema(this MySqlConnection connection, string schemaName)
+        {
+            new MySqlSchemaExplorer(connection).CreateSchema(schemaName);
+        }
+
+        internal static bool SchemaExists(this MySqlConnection connection, string schemaName)
+        {
+            return new MySqlSchemaExplorer(connection).SchemaExists(schemaName);
+        }
+
+        internal static void DropTable(this MySqlConnection connection, string schemaName, string tableNme)
+        {
+            new MySqlSchemaExplorer(connection).DropTable(schemaName, tableNme);
+        }
     }
 }

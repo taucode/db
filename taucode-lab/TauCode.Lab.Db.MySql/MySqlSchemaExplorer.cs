@@ -165,7 +165,15 @@ WHERE
 
         public override IReadOnlyList<string> GetSystemSchemata()
         {
-            return MySqlToolsLab.SystemSchemata.ToList(); // todo!
+
+            return new List<string>
+            {
+                "mysql",
+                "information_schema",
+                "performance_schema",
+            }; // todo
+
+            //return MySqlToolsLab.SystemSchemata.ToList(); // todo!
         }
 
         public override IReadOnlyList<ForeignKeyMold> GetTableForeignKeys(string schemaName, string tableName, bool loadColumns, bool checkExistence)
