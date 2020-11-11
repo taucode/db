@@ -1,5 +1,4 @@
 ﻿using Microsoft.Data.SqlClient;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using TauCode.Db;
@@ -47,7 +46,7 @@ WHERE
             var objectId = (int)objectResult;
             return objectId;
         }
-        protected override ColumnMold ColumnInfoToColumn(ColumnInfo2 columnInfo)
+        protected override ColumnMold ColumnInfoToColumn(ColumnInfo columnInfo)
         {
             var column = new ColumnMold
             {
@@ -83,7 +82,7 @@ WHERE
             return column;
         }
 
-        protected override void ResolveIdentities(string schemaName, string tableName, IList<ColumnInfo2> columnInfos)
+        protected override void ResolveIdentities(string schemaName, string tableName, IList<ColumnInfo> columnInfos)
         {
             var objectId = this.GetTableObjectId(schemaName, tableName);
 
@@ -147,16 +146,6 @@ WHERE
 
         protected override IReadOnlyList<IndexMold> GetTableIndexesImpl(string schemaName, string tableName)
         {
-            if (schemaName == null)
-            {
-                throw new ArgumentNullException(nameof(schemaName));
-            }
-
-            if (tableName == null)
-            {
-                throw new ArgumentNullException(nameof(tableName));
-            }
-
             using var command = this.Connection.CreateCommand();
             command.CommandText = @"
 SELECT

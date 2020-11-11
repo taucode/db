@@ -2,8 +2,7 @@
 
 namespace TauCode.Db.Schema
 {
-    // todo: get rid of "2"
-    public class ColumnInfo2
+    public class ColumnInfo
     {
         public string Name { get; set; }
         public string TypeName { get; set; }

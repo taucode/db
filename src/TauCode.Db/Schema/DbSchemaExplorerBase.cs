@@ -108,7 +108,7 @@ namespace TauCode.Db.Schema
             return (int)longValue;
         }
 
-        protected virtual List<ColumnInfo2> GetColumnInfos(string schemaName, string tableName)
+        protected virtual List<ColumnInfo> GetColumnInfos(string schemaName, string tableName)
         {
             var sb = new StringBuilder();
             sb.AppendLine("SELECT");
@@ -148,11 +148,11 @@ ORDER BY
 
             var rows = command.GetCommandRows();
 
-            var columnInfos = new List<ColumnInfo2>();
+            var columnInfos = new List<ColumnInfo>();
 
             foreach (var row in rows)
             {
-                var columnInfo = new ColumnInfo2
+                var columnInfo = new ColumnInfo
                 {
                     Name = row.column_name,
                     TypeName = row.data_type,
@@ -180,14 +180,14 @@ ORDER BY
             return columnInfos;
         }
 
-        protected abstract ColumnMold ColumnInfoToColumn(ColumnInfo2 columnInfo);
+        protected abstract ColumnMold ColumnInfoToColumn(ColumnInfo columnInfo);
 
         protected abstract IReadOnlyList<IndexMold> GetTableIndexesImpl(string schemaName, string tableName);
 
         protected abstract void ResolveIdentities(
             string schemaName,
             string tableName,
-            IList<ColumnInfo2> columnInfos);
+            IList<ColumnInfo> columnInfos);
 
         #endregion
 

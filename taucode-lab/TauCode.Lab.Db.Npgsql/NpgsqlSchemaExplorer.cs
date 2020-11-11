@@ -16,7 +16,7 @@ namespace TauCode.Lab.Db.Npgsql
         {
         }
 
-        protected override ColumnMold ColumnInfoToColumn(ColumnInfo2 columnInfo)
+        protected override ColumnMold ColumnInfoToColumn(ColumnInfo columnInfo)
         {
             var column = new ColumnMold
             {
@@ -130,7 +130,7 @@ WHERE
             };
         }
 
-        protected override void ResolveIdentities(string schemaName, string tableName, IList<ColumnInfo2> columnInfos)
+        protected override void ResolveIdentities(string schemaName, string tableName, IList<ColumnInfo> columnInfos)
         {
             foreach (var columnInfo in columnInfos)
             {

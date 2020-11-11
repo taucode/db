@@ -19,7 +19,7 @@ namespace TauCode.Lab.Db.MySql
         {
         }
 
-        protected override ColumnMold ColumnInfoToColumn(ColumnInfo2 columnInfo)
+        protected override ColumnMold ColumnInfoToColumn(ColumnInfo columnInfo)
         {
             var column = new ColumnMold
             {
@@ -81,35 +81,12 @@ namespace TauCode.Lab.Db.MySql
             if (!string.IsNullOrEmpty(extra) && extra.StartsWith("auto_increment"))
             {
                 column.Identity = new ColumnIdentityMold("1", "1");
-
-                //throw new NotImplementedException();
             }
-
-            //if (columnInfo.Additional.ContainsKey("character_set_name"))
-            //{
-            //    column.Type.Properties["character_set_name"] = columnInfo.Additional["character_set_name"];
-            //}
-
-            //if (columnInfo.Additional.ContainsKey("collation_name"))
-            //{
-            //    column.Type.Properties["collation_name"] = columnInfo.Additional["collation_name"];
-            //}
-
-
-
-            //column.Properties = columnInfo.ColumnProperties;
-            //column.Type.Properties = columnInfo.TypeProperties;
 
             return column;
         }
 
         protected override IReadOnlyList<IndexMold> GetTableIndexesImpl(string schemaName, string tableName)
-            => throw new NotImplementedException();
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        public override IReadOnlyList<IndexMold> GetTableIndexes(string schemaName, string tableName, bool checkExistence)
         {
             using var command = this.Connection.CreateCommand();
 
@@ -152,15 +129,11 @@ WHERE
                     IsUnique = x.First().NonUnique.ToString() == "0",
                 })
                 .ToList();
-
-
-            //return base.GetTableIndexes(schemaName, tableName, checkExistence);
         }
 
-        protected override void ResolveIdentities(string schemaName, string tableName, IList<ColumnInfo2> columnInfos)
+        protected override void ResolveIdentities(string schemaName, string tableName, IList<ColumnInfo> columnInfos)
         {
-            // todo0 idle now
-            //throw new NotImplementedException();
+            // idle
         }
 
         public override IReadOnlyList<string> GetSystemSchemata()

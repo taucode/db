@@ -30,9 +30,9 @@ namespace TauCode.Db
 
         #region Protected
 
-        protected IDbSchemaExplorer SchemaExplorer2 => _schemaExplorer ??= this.CreateSchemaExplorer2(this.Connection);
+        protected IDbSchemaExplorer SchemaExplorer => _schemaExplorer ??= this.CreateSchemaExplorer(this.Connection);
 
-        protected abstract IDbSchemaExplorer CreateSchemaExplorer2(IDbConnection connection);
+        protected abstract IDbSchemaExplorer CreateSchemaExplorer(IDbConnection connection);
 
         #endregion
 
@@ -43,19 +43,19 @@ namespace TauCode.Db
         public string TableName { get; }
 
         public virtual IReadOnlyList<ColumnMold> GetColumns() =>             
-            this.SchemaExplorer2
+            this.SchemaExplorer
             .GetTableColumns(this.SchemaName, this.TableName, true);
 
         public virtual PrimaryKeyMold GetPrimaryKey() =>
-            this.SchemaExplorer2.GetTablePrimaryKey(this.SchemaName, this.TableName, true);
+            this.SchemaExplorer.GetTablePrimaryKey(this.SchemaName, this.TableName, true);
 
         public virtual IReadOnlyList<ForeignKeyMold> GetForeignKeys()
-            => this.SchemaExplorer2.GetTableForeignKeys(this.SchemaName, this.TableName, true, true);
+            => this.SchemaExplorer.GetTableForeignKeys(this.SchemaName, this.TableName, true, true);
 
         public virtual IReadOnlyList<IndexMold> GetIndexes()
-            => this.SchemaExplorer2.GetTableIndexes(this.SchemaName, this.TableName, true);
+            => this.SchemaExplorer.GetTableIndexes(this.SchemaName, this.TableName, true);
         
-        public virtual TableMold GetTable() => this.SchemaExplorer2.GetTable(
+        public virtual TableMold GetTable() => this.SchemaExplorer.GetTable(
             this.SchemaName,
             this.TableName,
             true,

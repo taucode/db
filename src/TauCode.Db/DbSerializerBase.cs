@@ -77,36 +77,6 @@ namespace TauCode.Db
             }
 
             this.Cruder.InsertRows(tableMold.Name, rows, propName => true);
-
-            //var rows = tableData
-            //    .Select((x, xIndex) => tableMold
-            //        .Columns
-            //        .Select(y => y.Name)
-            //        .ToDictionary(
-            //            z => z,
-            //            z =>
-            //            {
-            //                var jToken = x[z];
-
-            //                if (jToken == null)
-            //                {
-            //                    throw new TauDbException(
-            //                        $"Property '{z}' not found in JSON. Table '{tableMold.Name}', entry index '{xIndex}'.");
-            //                }
-
-            //                if (jToken is JValue jValue)
-            //                {
-            //                    return jValue.Value;
-            //                }
-            //                else
-            //                {
-            //                    throw new TauDbException(
-            //                        $"Property '{z}' is not a JValue. Table '{tableMold.Name}', entry index '{xIndex}'.");
-            //                }
-            //            }))
-            //    .ToList();
-
-            //this.Cruder.InsertRows(tableMold.Name, rows, propName => true);
         }
 
         #endregion
@@ -222,9 +192,6 @@ namespace TauCode.Db
                 var tableMold = tableInspector.GetTable();
 
                 this.DeserializeTableData(tableMold, tableData, rowTransformer);
-
-                //throw new NotImplementedException();
-                //this.DeserializeTableData(tableMold, tableData);
             }
         }
 
@@ -271,7 +238,6 @@ namespace TauCode.Db
             };
 
             var json = JsonConvert.SerializeObject(dbMold, this.JsonSerializerSettings);
-            //var json = DbTools.FineSerializeToJson(dbMold);
             return json;
         }
 

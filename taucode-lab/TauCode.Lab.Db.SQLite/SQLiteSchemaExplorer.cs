@@ -275,7 +275,7 @@ ORDER BY
             return objs.Single() as TableMold;
         }
 
-        protected override ColumnMold ColumnInfoToColumn(ColumnInfo2 columnInfo)
+        protected override ColumnMold ColumnInfoToColumn(ColumnInfo columnInfo)
         {
             throw new NotImplementedException();
         }
@@ -285,7 +285,7 @@ ORDER BY
             throw new NotImplementedException();
         }
 
-        protected override void ResolveIdentities(string schemaName, string tableName, IList<ColumnInfo2> columnInfos)
+        protected override void ResolveIdentities(string schemaName, string tableName, IList<ColumnInfo> columnInfos)
         {
             throw new NotImplementedException();
         }

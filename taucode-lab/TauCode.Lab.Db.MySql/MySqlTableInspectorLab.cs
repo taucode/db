@@ -14,7 +14,7 @@ namespace TauCode.Lab.Db.MySql
 
         public override IDbUtilityFactory Factory => MySqlUtilityFactoryLab.Instance;
 
-        protected override IDbSchemaExplorer CreateSchemaExplorer2(IDbConnection connection) =>
+        protected override IDbSchemaExplorer CreateSchemaExplorer(IDbConnection connection) =>
             new MySqlSchemaExplorer((MySqlConnection) this.Connection);
     }
 }

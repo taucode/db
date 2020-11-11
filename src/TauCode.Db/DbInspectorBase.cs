@@ -4,7 +4,6 @@ using TauCode.Db.Schema;
 
 namespace TauCode.Db
 {
-    // todo get rid of '2'
     public abstract class DbInspectorBase : DbUtilityBase, IDbInspector
     {
         #region Fields
@@ -25,9 +24,9 @@ namespace TauCode.Db
 
         #region Protected
 
-        protected IDbSchemaExplorer SchemaExplorer2 => _schemaExplorer ??= this.CreateSchemaExplorer2(this.Connection);
+        protected IDbSchemaExplorer SchemaExplorer => _schemaExplorer ??= this.CreateSchemaExplorer(this.Connection);
 
-        protected abstract IDbSchemaExplorer CreateSchemaExplorer2(IDbConnection connection);
+        protected abstract IDbSchemaExplorer CreateSchemaExplorer(IDbConnection connection);
 
         #endregion
 
@@ -35,9 +34,9 @@ namespace TauCode.Db
 
         public string SchemaName { get; }
 
-        public virtual IReadOnlyList<string> GetSchemaNames() => this.SchemaExplorer2.GetSchemata();
+        public virtual IReadOnlyList<string> GetSchemaNames() => this.SchemaExplorer.GetSchemata();
 
-        public virtual IReadOnlyList<string> GetTableNames() => this.SchemaExplorer2.GetTableNames(this.SchemaName);
+        public virtual IReadOnlyList<string> GetTableNames() => this.SchemaExplorer.GetTableNames(this.SchemaName);
 
         #endregion
     }
