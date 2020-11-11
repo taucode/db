@@ -126,13 +126,13 @@ CREATE TABLE [SmallTable](
             // Arrange
 
             // Act
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Assert
             Assert.That(cruder.Connection, Is.SameAs(this.Connection));
-            Assert.That(cruder.Factory, Is.SameAs(SQLiteUtilityFactoryLab.Instance));
+            Assert.That(cruder.Factory, Is.SameAs(SQLiteUtilityFactory.Instance));
             Assert.That(cruder.SchemaName, Is.EqualTo(null));
-            Assert.That(cruder.ScriptBuilder, Is.TypeOf<SQLiteScriptBuilderLab>());
+            Assert.That(cruder.ScriptBuilder, Is.TypeOf<SQLiteScriptBuilder>());
             Assert.That(cruder.RowInsertedCallback, Is.Null);
         }
 
@@ -142,7 +142,7 @@ CREATE TABLE [SmallTable](
             // Arrange
 
             // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => new SQLiteCruderLab(null));
+            var ex = Assert.Throws<ArgumentNullException>(() => new SQLiteCruder(null));
 
             // Assert
             Assert.That(ex.ParamName, Is.EqualTo("connection"));
@@ -155,7 +155,7 @@ CREATE TABLE [SmallTable](
             using var connection = TestHelper.CreateConnection(false, false);
 
             // Act
-            var ex = Assert.Throws<ArgumentException>(() => new SQLiteCruderLab(connection));
+            var ex = Assert.Throws<ArgumentException>(() => new SQLiteCruder(connection));
 
             // Assert
             Assert.That(ex.ParamName, Is.EqualTo("connection"));
@@ -170,7 +170,7 @@ CREATE TABLE [SmallTable](
         public void GetTableValuesConverter_ValidArgument_ReturnsProperConverter()
         {
             // Arrange
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var converter = cruder.GetTableValuesConverter("PersonData");
@@ -184,7 +184,7 @@ CREATE TABLE [SmallTable](
         public void GetTableValuesConverter_ArgumentIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => cruder.GetTableValuesConverter(null));
@@ -197,7 +197,7 @@ CREATE TABLE [SmallTable](
         public void GetTableValuesConverter_NotExistingTable_ThrowsTauDbException()
         {
             // Arrange
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => cruder.GetTableValuesConverter("bad_table"));
@@ -214,7 +214,7 @@ CREATE TABLE [SmallTable](
         public void ResetTables_NoArguments_RunsOk()
         {
             // Arrange
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
             cruder.GetTableValuesConverter("PersonData").SetColumnConverter("Id", new StringValueConverter());
             var oldDbValueConverter = cruder.GetTableValuesConverter("PersonData").GetColumnConverter("Id");
 
@@ -299,7 +299,7 @@ CREATE TABLE [SmallTable](
 
             IReadOnlyDictionary<string, object>[] loadedRows = new IReadOnlyDictionary<string, object>[rows.Length];
 
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             for (var i = 0; i < rows.Length; i++)
@@ -338,7 +338,7 @@ CREATE TABLE [SmallTable](
             // Arrange
             this.CreateSuperTable();
 
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             var superRow = this.CreateSuperTableRowDto();
             var dynamicRow = new DynamicRow(superRow);
@@ -398,7 +398,7 @@ CREATE TABLE [SmallTable](
 
             var insertedRows = new IReadOnlyDictionary<string, object>[rows.Length];
 
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             using var command = this.Connection.CreateCommand();
@@ -473,7 +473,7 @@ CREATE TABLE [MyTab](
             };
 
             IReadOnlyDictionary<string, object>[] insertedRows = new IReadOnlyDictionary<string, object>[rows.Length];
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             for (var i = 0; i < rows.Length; i++)
@@ -514,7 +514,7 @@ CREATE TABLE [MyTab](
                 NotExisting = 100,
             };
 
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => cruder.InsertRow("SmallTable", row));
@@ -527,7 +527,7 @@ CREATE TABLE [MyTab](
         public void InsertRow_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => cruder.InsertRow("bad_table", new object()));
@@ -540,7 +540,7 @@ CREATE TABLE [MyTab](
         public void InsertRow_TableNameIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => cruder.InsertRow(null, new object(), x => true));
@@ -553,7 +553,7 @@ CREATE TABLE [MyTab](
         public void InsertRow_RowIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => cruder.InsertRow("HealthInfo", null, x => true));
@@ -567,7 +567,7 @@ CREATE TABLE [MyTab](
         {
             // Arrange
             this.CreateSuperTable();
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
             var row = new
             {
                 TheGuid = DBNull.Value,
@@ -654,7 +654,7 @@ CREATE TABLE [MyTab](
 
             //this.Connection.ExecuteSingleSql("ALTER TABLE [HealthInfo] DROP CONSTRAINT [FK_healthInfo_Person]");
 
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             cruder.InsertRows("HealthInfo", rows, x => x != "NotExisting");
@@ -700,7 +700,7 @@ ORDER BY
                 row3,
             };
 
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             cruder.InsertRows("SmallTable", rows, x => false);
@@ -745,7 +745,7 @@ ORDER BY
 
             var rows = new[] { row1, row2 };
 
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             cruder.InsertRows("SmallTable", rows, x => false);
@@ -791,7 +791,7 @@ ORDER BY
 
             var rows = new[] { row1, row2 };
 
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             cruder.InsertRows("SmallTable", rows);
@@ -841,7 +841,7 @@ ORDER BY
 
             var rows = new[] { row1, row2 };
 
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => cruder.InsertRows("SmallTable", rows, x => true));
@@ -868,7 +868,7 @@ ORDER BY
 
             var rows = new object[] { row1, row2 };
 
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentException>(() => cruder.InsertRows("SmallTable", rows, x => true));
@@ -881,7 +881,7 @@ ORDER BY
         public void InsertRows_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => cruder.InsertRows("bad_table", new object[] { }));
@@ -894,7 +894,7 @@ ORDER BY
         public void InsertRows_TableNameIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => cruder.InsertRows(null, new object[] { }));
@@ -907,7 +907,7 @@ ORDER BY
         public void InsertRows_RowsIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => cruder.InsertRows("HealthInfo", null));
@@ -928,7 +928,7 @@ ORDER BY
                 null,
             };
 
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentException>(() => cruder.InsertRows("SmallTable", rows));
@@ -956,7 +956,7 @@ ORDER BY
                 },
             };
 
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => cruder.InsertRows("SmallTable", rows));
@@ -977,7 +977,7 @@ ORDER BY
             // Arrange
             this.CreateSmallTable();
 
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
             var sb1 = new StringBuilder();
 
             // Act
@@ -1008,7 +1008,7 @@ ORDER BY
             // Arrange
             this.CreateSmallTable();
 
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
             var sb1 = new StringBuilder();
 
             // Act
@@ -1030,7 +1030,7 @@ ORDER BY
             // Arrange
             this.CreateSmallTable();
 
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
             var sb1 = new StringBuilder();
 
             // Act
@@ -1070,7 +1070,7 @@ Table name: SmallTable; index: 1; int: 22
             // Arrange
             this.CreateSuperTable();
 
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             var superRow = this.CreateSuperTableRowDto();
             var dynamicRow = new DynamicRow(superRow);
@@ -1099,7 +1099,7 @@ Table name: SmallTable; index: 1; int: 22
             // Arrange
             this.CreateSuperTable();
 
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             var superRow = this.CreateSuperTableRowDto();
             var dynamicRow = new DynamicRow(superRow);
@@ -1147,7 +1147,7 @@ Table name: SmallTable; index: 1; int: 22
             // Arrange
             this.CreateSuperTable();
 
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
             var strongTypedRow = this.CreateSuperTableRowDto();
             var dynamicRow = new DynamicRow(strongTypedRow);
             dynamicRow.DeleteValue("NotExisting");
@@ -1192,7 +1192,7 @@ Table name: SmallTable; index: 1; int: 22
         public void GetRow_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => cruder.GetRow("bad_table", 1));
@@ -1205,7 +1205,7 @@ Table name: SmallTable; index: 1; int: 22
         public void GetRow_TableNameIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => cruder.GetRow(null, 1));
@@ -1218,7 +1218,7 @@ Table name: SmallTable; index: 1; int: 22
         public void GetRow_IdIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => cruder.GetRow("some_table", null));
@@ -1233,7 +1233,7 @@ Table name: SmallTable; index: 1; int: 22
         {
             // Arrange
             this.Connection.ExecuteSingleSql("CREATE TABLE [dummy](Foo int)"); // no PK
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentException>((() => cruder.GetRow("dummy", 1)));
@@ -1247,7 +1247,7 @@ Table name: SmallTable; index: 1; int: 22
         public void GetRow_TablePrimaryKeyIsMultiColumn_ThrowsArgumentException()
         {
             // Arrange
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentException>((() => cruder.GetRow("Person", "the_id")));
@@ -1262,7 +1262,7 @@ Table name: SmallTable; index: 1; int: 22
         public void GetRow_IdNotFound_ReturnsNull()
         {
             // Arrange
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
             const int nonExistingId = 133;
 
             // Act
@@ -1276,7 +1276,7 @@ Table name: SmallTable; index: 1; int: 22
         public void GetRow_SelectorIsFalser_ThrowsArgumentException()
         {
             // Arrange
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentException>(() => cruder.GetRow("NumericData", 111, x => false));
@@ -1297,7 +1297,7 @@ Table name: SmallTable; index: 1; int: 22
             var insertSql = this.GetType().Assembly.GetResourceText("InsertRows.sql", true);
             this.Connection.ExecuteCommentedScript(insertSql);
 
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var rows = cruder.GetAllRows("DateData", x => x == "Moment");
@@ -1319,7 +1319,7 @@ Table name: SmallTable; index: 1; int: 22
             var insertSql = this.GetType().Assembly.GetResourceText("InsertRows.sql", true);
             this.Connection.ExecuteCommentedScript(insertSql);
 
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var rows = cruder.GetAllRows("DateData", x => true);
@@ -1338,7 +1338,7 @@ Table name: SmallTable; index: 1; int: 22
         public void GetAllRows_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => cruder.GetAllRows("bad_table"));
@@ -1351,7 +1351,7 @@ Table name: SmallTable; index: 1; int: 22
         public void GetAllRows_TableNameIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => cruder.GetAllRows(null));
@@ -1364,7 +1364,7 @@ Table name: SmallTable; index: 1; int: 22
         public void GetAllRows_SelectorIsFalser_ThrowsArgumentException()
         {
             // Arrange
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentException>(() => cruder.GetAllRows("HealthInfo", x => false));
@@ -1424,7 +1424,7 @@ Table name: SmallTable; index: 1; int: 22
 
             var loadedRows = new IReadOnlyDictionary<string, object>[updates.Length];
 
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             for (var i = 0; i < updates.Length; i++)
@@ -1500,7 +1500,7 @@ Table name: SmallTable; index: 1; int: 22
             var updateDynamic = new DynamicRow(updateDto);
             updateDynamic.DeleteValue("NotExisting");
 
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var updated = cruder.UpdateRow("SuperTable", updateDynamic, x => x != "NotExisting");
@@ -1543,7 +1543,7 @@ Table name: SmallTable; index: 1; int: 22
         public void UpdateRow_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => cruder.UpdateRow("bad_table", new { Id = 1, Name = 2 }));
@@ -1556,7 +1556,7 @@ Table name: SmallTable; index: 1; int: 22
         public void UpdateRow_TableNameIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() =>
@@ -1570,7 +1570,7 @@ Table name: SmallTable; index: 1; int: 22
         public void UpdateRow_RowUpdateIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() =>
@@ -1604,7 +1604,7 @@ Table name: SmallTable; index: 1; int: 22
             var update = new DynamicRow(updateDto);
             update.DeleteValue("NotExisting");
 
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var updated = cruder.UpdateRow("SuperTable", update, null);
@@ -1655,7 +1655,7 @@ Table name: SmallTable; index: 1; int: 22
                 TheGuid = new Guid("22222222-2222-2222-2222-222222222222"),
             };
 
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentException>(() => cruder.UpdateRow("SuperTable", update));
@@ -1677,7 +1677,7 @@ Table name: SmallTable; index: 1; int: 22
                 Id = 1,
             };
 
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentException>(() => cruder.UpdateRow("SuperTable", update));
@@ -1700,7 +1700,7 @@ Table name: SmallTable; index: 1; int: 22
                 TheGuid = Guid.NewGuid(),
             };
 
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentException>(() => cruder.UpdateRow("SuperTable", update));
@@ -1723,7 +1723,7 @@ Table name: SmallTable; index: 1; int: 22
                 NotExisting = 7,
             };
 
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => cruder.UpdateRow("SuperTable", update));
@@ -1738,7 +1738,7 @@ Table name: SmallTable; index: 1; int: 22
         {
             // Arrange
             this.Connection.ExecuteSingleSql("CREATE TABLE [dummy](Foo int)"); // no PK
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentException>((() => cruder.UpdateRow("dummy", new { Foo = 1 })));
@@ -1752,7 +1752,7 @@ Table name: SmallTable; index: 1; int: 22
         public void UpdateRow_TablePrimaryKeyIsMultiColumn_ThrowsArgumentException()
         {
             // Arrange
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentException>((() => cruder.UpdateRow("Person", new { Key = 3 })));
@@ -1775,7 +1775,7 @@ Table name: SmallTable; index: 1; int: 22
             const int id = 1;
             this.Connection.ExecuteSingleSql($"INSERT INTO [MediumTable]([Id]) VALUES ({id})");
 
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var deleted = cruder.DeleteRow("MediumTable", id);
@@ -1792,7 +1792,7 @@ Table name: SmallTable; index: 1; int: 22
         {
             // Arrange
             this.CreateMediumTable();
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
             var notExistingId = 11;
 
             // Act
@@ -1806,7 +1806,7 @@ Table name: SmallTable; index: 1; int: 22
         public void DeleteRow_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => cruder.DeleteRow("bad_table", 17));
@@ -1819,7 +1819,7 @@ Table name: SmallTable; index: 1; int: 22
         public void DeleteRow_TableNameIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => cruder.DeleteRow(null, 11));
@@ -1832,7 +1832,7 @@ Table name: SmallTable; index: 1; int: 22
         public void DeleteRow_IdIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => cruder.DeleteRow("MediumTable", null));
@@ -1846,7 +1846,7 @@ Table name: SmallTable; index: 1; int: 22
         {
             // Arrange
             this.Connection.ExecuteSingleSql("CREATE TABLE [dummy](Foo int)"); // no PK
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentException>((() => cruder.DeleteRow("dummy", 1)));
@@ -1860,7 +1860,7 @@ Table name: SmallTable; index: 1; int: 22
         public void DeleteRow_PrimaryKeyIsMultiColumn_ThrowsArgumentException()
         {
             // Arrange
-            IDbCruder cruder = new SQLiteCruderLab(this.Connection);
+            IDbCruder cruder = new SQLiteCruder(this.Connection);
 
             // Act
 

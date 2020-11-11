@@ -27,7 +27,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbMigrator
             // Arrange
 
             // Act
-            var migrator = new SqlJsonMigratorLab(
+            var migrator = new SqlJsonMigrator(
                 this.Connection,
                 schemaName,
                 () => "{}",
@@ -35,7 +35,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbMigrator
 
             // Assert
             Assert.That(migrator.Connection, Is.SameAs(this.Connection));
-            Assert.That(migrator.Factory, Is.SameAs(SqlUtilityFactoryLab.Instance));
+            Assert.That(migrator.Factory, Is.SameAs(SqlUtilityFactory.Instance));
             Assert.That(migrator.SchemaName, Is.EqualTo("dbo"));
         }
 
@@ -45,7 +45,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbMigrator
             // Arrange
 
             // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => new SqlJsonMigratorLab(
+            var ex = Assert.Throws<ArgumentNullException>(() => new SqlJsonMigrator(
                 null,
                 "dbo",
                 () => "{}",
@@ -62,7 +62,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbMigrator
             using var connection = new SqlConnection(TestHelper.ConnectionString);
 
             // Act
-            var ex = Assert.Throws<ArgumentException>(() => new SqlJsonMigratorLab(
+            var ex = Assert.Throws<ArgumentException>(() => new SqlJsonMigrator(
                 connection,
                 "dbo",
                 () => "{}",
@@ -79,7 +79,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbMigrator
             // Arrange
 
             // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => new SqlJsonMigratorLab(
+            var ex = Assert.Throws<ArgumentNullException>(() => new SqlJsonMigrator(
                 this.Connection,
                 "dbo",
                 null,
@@ -95,7 +95,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbMigrator
             // Arrange
 
             // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => new SqlJsonMigratorLab(
+            var ex = Assert.Throws<ArgumentNullException>(() => new SqlJsonMigrator(
                 this.Connection,
                 "dbo",
                 () => "{}",
@@ -115,7 +115,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbMigrator
             // Arrange
             this.Connection.CreateSchema("zeta");
 
-            var migrator = new SqlJsonMigratorLab(
+            var migrator = new SqlJsonMigrator(
                 this.Connection,
                 "zeta",
                 () => this.GetType().Assembly.GetResourceText("MigrateMetadataInput.json", true),
@@ -144,7 +144,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbMigrator
 
             #region metadata
 
-            var scriptBuilder = new SqlScriptBuilderLab("zeta");
+            var scriptBuilder = new SqlScriptBuilder("zeta");
 
             //var tableMolds = this.Connection.GetTableMolds("zeta", true);
             var tableMolds = schemaExplorer.GetTables("zeta", true, true, true, true, true);
@@ -273,7 +273,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbMigrator
             // Arrange
             this.Connection.CreateSchema("zeta");
 
-            var migrator = new SqlJsonMigratorLab(
+            var migrator = new SqlJsonMigrator(
                 this.Connection,
                 "zeta",
                 () => this.GetType().Assembly.GetResourceText("MigrateMetadataInput.json", true),
@@ -287,7 +287,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbMigrator
 
             #region metadata
 
-            var scriptBuilder = new SqlScriptBuilderLab("zeta");
+            var scriptBuilder = new SqlScriptBuilder("zeta");
 
             //var tableMolds = this.Connection.GetTableMolds("zeta", true);
             var tableMolds = schemaExplorer.GetTables("zeta", true, true, true, true, true);
@@ -444,7 +444,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbMigrator
             // Arrange
             this.Connection.CreateSchema("zeta");
 
-            var migrator = new SqlJsonMigratorLab(
+            var migrator = new SqlJsonMigrator(
                 this.Connection,
                 "bad_schema",
                 () => this.GetType().Assembly.GetResourceText("MigrateMetadataInput.json", true),
@@ -461,7 +461,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbMigrator
         public void Migrate_MetadataJsonGetterReturnsNull_ThrowsTauDbException()
         {
             // Arrange
-            var migrator = new SqlJsonMigratorLab(
+            var migrator = new SqlJsonMigrator(
                 this.Connection,
                 "dbo",
                 () => null,
@@ -478,7 +478,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests.DbMigrator
         public void Migrate_DataJsonGetterReturnsNull_ThrowsTauDbException()
         {
             // Arrange
-            var migrator = new SqlJsonMigratorLab(
+            var migrator = new SqlJsonMigrator(
                 this.Connection,
                 "dbo",
                 () => "{}",

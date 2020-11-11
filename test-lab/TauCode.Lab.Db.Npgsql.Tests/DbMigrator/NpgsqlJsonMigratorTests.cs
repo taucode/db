@@ -27,7 +27,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbMigrator
             // Arrange
 
             // Act
-            var migrator = new NpgsqlJsonMigratorLab(
+            var migrator = new NpgsqlJsonMigrator(
                 this.Connection,
                 schemaName,
                 () => "{}",
@@ -35,7 +35,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbMigrator
 
             // Assert
             Assert.That(migrator.Connection, Is.SameAs(this.Connection));
-            Assert.That(migrator.Factory, Is.SameAs(NpgsqlUtilityFactoryLab.Instance));
+            Assert.That(migrator.Factory, Is.SameAs(NpgsqlUtilityFactory.Instance));
             Assert.That(migrator.SchemaName, Is.EqualTo("public"));
         }
 
@@ -45,7 +45,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbMigrator
             // Arrange
 
             // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => new NpgsqlJsonMigratorLab(
+            var ex = Assert.Throws<ArgumentNullException>(() => new NpgsqlJsonMigrator(
                 null,
                 "public",
                 () => "{}",
@@ -62,7 +62,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbMigrator
             using var connection = new NpgsqlConnection(TestHelper.ConnectionString);
 
             // Act
-            var ex = Assert.Throws<ArgumentException>(() => new NpgsqlJsonMigratorLab(
+            var ex = Assert.Throws<ArgumentException>(() => new NpgsqlJsonMigrator(
                 connection,
                 "public",
                 () => "{}",
@@ -79,7 +79,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbMigrator
             // Arrange
 
             // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => new NpgsqlJsonMigratorLab(
+            var ex = Assert.Throws<ArgumentNullException>(() => new NpgsqlJsonMigrator(
                 this.Connection,
                 "public",
                 null,
@@ -95,7 +95,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbMigrator
             // Arrange
 
             // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => new NpgsqlJsonMigratorLab(
+            var ex = Assert.Throws<ArgumentNullException>(() => new NpgsqlJsonMigrator(
                 this.Connection,
                 "public",
                 () => "{}",
@@ -115,7 +115,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbMigrator
             // Arrange
             this.Connection.CreateSchema("zeta");
 
-            var migrator = new NpgsqlJsonMigratorLab(
+            var migrator = new NpgsqlJsonMigrator(
                 this.Connection,
                 "zeta",
                 () => this.GetType().Assembly.GetResourceText("MigrateMetadataInput.json", true),
@@ -144,7 +144,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbMigrator
 
             #region metadata
 
-            var scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
+            var scriptBuilder = new NpgsqlScriptBuilder("zeta");
             //var tableMolds = this.Connection.GetTableMolds("zeta", true);
             var tableMolds = schemaExplorer.GetTables("zeta", true, true, true, true, true);
             var script = scriptBuilder.BuildCreateAllTablesScript(tableMolds);
@@ -287,7 +287,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbMigrator
             // Arrange
             this.Connection.CreateSchema("zeta");
 
-            var migrator = new NpgsqlJsonMigratorLab(
+            var migrator = new NpgsqlJsonMigrator(
                 this.Connection,
                 "zeta",
                 () => this.GetType().Assembly.GetResourceText("MigrateMetadataInput.json", true),
@@ -301,7 +301,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbMigrator
 
             #region metadata
 
-            var scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
+            var scriptBuilder = new NpgsqlScriptBuilder("zeta");
             //var tableMolds = this.Connection.GetTableMolds("zeta", true);
             var tableMolds = schemaExplorer.GetTables("zeta", true, true, true, true, true);
             var script = scriptBuilder.BuildCreateAllTablesScript(tableMolds);
@@ -472,7 +472,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbMigrator
             // Arrange
             this.Connection.CreateSchema("zeta");
 
-            var migrator = new NpgsqlJsonMigratorLab(
+            var migrator = new NpgsqlJsonMigrator(
                 this.Connection,
                 "bad_schema",
                 () => this.GetType().Assembly.GetResourceText("MigrateMetadataInput.json", true),
@@ -489,7 +489,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbMigrator
         public void Migrate_MetadataJsonGetterReturnsNull_ThrowsTauDbException()
         {
             // Arrange
-            var migrator = new NpgsqlJsonMigratorLab(
+            var migrator = new NpgsqlJsonMigrator(
                 this.Connection,
                 "public",
                 () => null,
@@ -506,7 +506,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbMigrator
         public void Migrate_DataJsonGetterReturnsNull_ThrowsTauDbException()
         {
             // Arrange
-            var migrator = new NpgsqlJsonMigratorLab(
+            var migrator = new NpgsqlJsonMigrator(
                 this.Connection,
                 "public",
                 () => "{}",

@@ -29,14 +29,14 @@ namespace TauCode.Lab.Db.MySql.Tests.DbMigrator
             this.Connection = TestHelper.CreateConnection("zeta");
 
             // Act
-            var migrator = new MySqlJsonMigratorLab(
+            var migrator = new MySqlJsonMigrator(
                 this.Connection,
                 () => "{}",
                 () => "{}");
 
             // Assert
             Assert.That(migrator.Connection, Is.SameAs(this.Connection));
-            Assert.That(migrator.Factory, Is.SameAs(MySqlUtilityFactoryLab.Instance));
+            Assert.That(migrator.Factory, Is.SameAs(MySqlUtilityFactory.Instance));
             Assert.That(migrator.SchemaName, Is.EqualTo("zeta"));
         }
 
@@ -46,7 +46,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbMigrator
             // Arrange
 
             // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => new MySqlJsonMigratorLab(
+            var ex = Assert.Throws<ArgumentNullException>(() => new MySqlJsonMigrator(
                 null,
                 () => "{}",
                 () => "{}"));
@@ -62,7 +62,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbMigrator
             using var connection = new MySqlConnection(TestHelper.ConnectionString);
 
             // Act
-            var ex = Assert.Throws<ArgumentException>(() => new MySqlJsonMigratorLab(
+            var ex = Assert.Throws<ArgumentException>(() => new MySqlJsonMigrator(
                 connection,
                 () => "{}",
                 () => "{}"));
@@ -78,7 +78,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbMigrator
             // Arrange
 
             // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => new MySqlJsonMigratorLab(
+            var ex = Assert.Throws<ArgumentNullException>(() => new MySqlJsonMigrator(
                 this.Connection,
                 null,
                 () => "{}"));
@@ -93,7 +93,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbMigrator
             // Arrange
 
             // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => new MySqlJsonMigratorLab(
+            var ex = Assert.Throws<ArgumentNullException>(() => new MySqlJsonMigrator(
                 this.Connection,
                 () => "{}",
                 null));
@@ -115,7 +115,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbMigrator
             this.Connection.Dispose();
             this.Connection = TestHelper.CreateConnection("zeta");
 
-            var migrator = new MySqlJsonMigratorLab(
+            var migrator = new MySqlJsonMigrator(
                 this.Connection,
                 () => this.GetType().Assembly.GetResourceText("MigrateMetadataInput.json", true),
                 () => this.GetType().Assembly.GetResourceText("MigrateDataCustomInput.json", true),
@@ -143,7 +143,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbMigrator
 
             #region metadata
 
-            var scriptBuilder = new MySqlScriptBuilderLab("zeta");
+            var scriptBuilder = new MySqlScriptBuilder("zeta");
             //var tableMolds = this.Connection.GetTableMolds("zeta", true);
             var tableMolds = schemaExplorer.GetTables("zeta", true, true, true, true, true);
             var script = scriptBuilder.BuildCreateAllTablesScript(tableMolds);
@@ -273,7 +273,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbMigrator
             this.Connection.Dispose();
             this.Connection = TestHelper.CreateConnection("zeta");
 
-            var migrator = new MySqlJsonMigratorLab(
+            var migrator = new MySqlJsonMigrator(
                 this.Connection,
                 () => this.GetType().Assembly.GetResourceText("MigrateMetadataInput.json", true),
                 () => this.GetType().Assembly.GetResourceText("MigrateDataInput.json", true));
@@ -286,7 +286,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbMigrator
 
             #region metadata
 
-            var scriptBuilder = new MySqlScriptBuilderLab("zeta");
+            var scriptBuilder = new MySqlScriptBuilder("zeta");
             //var tableMolds = this.Connection.GetTableMolds("zeta", true);
             var tableMolds = schemaExplorer.GetTables("zeta", true, true, true, true, true);
             var script = scriptBuilder.BuildCreateAllTablesScript(tableMolds);
@@ -445,7 +445,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbMigrator
             this.Connection = TestHelper.CreateConnection("bad_schema");
             this.Connection.ExecuteSingleSql("CREATE TABLE bad_schema.some_table(id int PRIMARY KEY)");
 
-            var migrator = new MySqlJsonMigratorLab(
+            var migrator = new MySqlJsonMigrator(
                 this.Connection,
                 () => this.GetType().Assembly.GetResourceText("MigrateMetadataInput.json", true),
                 () => this.GetType().Assembly.GetResourceText("MigrateDataInput.json", true));
@@ -464,7 +464,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbMigrator
         public void Migrate_MetadataJsonGetterReturnsNull_ThrowsTauDbException()
         {
             // Arrange
-            var migrator = new MySqlJsonMigratorLab(
+            var migrator = new MySqlJsonMigrator(
                 this.Connection,
                 () => null,
                 () => "{}");
@@ -480,7 +480,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbMigrator
         public void Migrate_DataJsonGetterReturnsNull_ThrowsTauDbException()
         {
             // Arrange
-            var migrator = new MySqlJsonMigratorLab(
+            var migrator = new MySqlJsonMigrator(
                 this.Connection,
                 () => "{}",
                 () => null);

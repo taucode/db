@@ -79,7 +79,7 @@ namespace TauCode.Lab.Db.MySql.Tests
             string tableName,
             object id)
         {
-            IDbTableInspector tableInspector = new MySqlTableInspectorLab(connection, tableName);
+            IDbTableInspector tableInspector = new MySqlTableInspector(connection, tableName);
             var table = tableInspector.GetTable();
             var pkColumnName = table.GetPrimaryKeySingleColumn().Name;
 

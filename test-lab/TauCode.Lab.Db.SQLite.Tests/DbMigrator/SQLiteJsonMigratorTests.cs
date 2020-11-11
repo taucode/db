@@ -24,14 +24,14 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbMigrator
             // Arrange
 
             // Act
-            var migrator = new SQLiteJsonMigratorLab(
+            var migrator = new SQLiteJsonMigrator(
                 this.Connection,
                 () => "{}",
                 () => "{}");
 
             // Assert
             Assert.That(migrator.Connection, Is.SameAs(this.Connection));
-            Assert.That(migrator.Factory, Is.SameAs(SQLiteUtilityFactoryLab.Instance));
+            Assert.That(migrator.Factory, Is.SameAs(SQLiteUtilityFactory.Instance));
             Assert.That(migrator.SchemaName, Is.EqualTo(null));
         }
 
@@ -41,7 +41,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbMigrator
             // Arrange
 
             // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => new SQLiteJsonMigratorLab(
+            var ex = Assert.Throws<ArgumentNullException>(() => new SQLiteJsonMigrator(
                 null,
                 () => "{}",
                 () => "{}"));
@@ -57,7 +57,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbMigrator
             using var connection = TestHelper.CreateConnection(false, false);
 
             // Act
-            var ex = Assert.Throws<ArgumentException>(() => new SQLiteJsonMigratorLab(
+            var ex = Assert.Throws<ArgumentException>(() => new SQLiteJsonMigrator(
                 connection,
                 () => "{}",
                 () => "{}"));
@@ -73,7 +73,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbMigrator
             // Arrange
 
             // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => new SQLiteJsonMigratorLab(
+            var ex = Assert.Throws<ArgumentNullException>(() => new SQLiteJsonMigrator(
                 this.Connection,
                 null,
                 () => "{}"));
@@ -88,7 +88,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbMigrator
             // Arrange
 
             // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => new SQLiteJsonMigratorLab(
+            var ex = Assert.Throws<ArgumentNullException>(() => new SQLiteJsonMigrator(
                 this.Connection,
                 () => "{}",
                 null));
@@ -105,7 +105,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbMigrator
         public void Migrate_ValidInput_RunsOk()
         {
             // Arrange
-            var migrator = new SQLiteJsonMigratorLab(
+            var migrator = new SQLiteJsonMigrator(
                 this.Connection,
                 () => this.GetType().Assembly.GetResourceText("MigrateMetadataInput.json", true),
                 () => this.GetType().Assembly.GetResourceText("MigrateDataCustomInput.json", true),
@@ -133,7 +133,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbMigrator
 
             #region metadata
 
-            var scriptBuilder = new SQLiteScriptBuilderLab();
+            var scriptBuilder = new SQLiteScriptBuilder();
             //var tableMolds = this.Connection.GetTableMolds(true, true);
             var tableMolds = schemaExplorer.GetTables(null, true, true, true, true, true);
             var script = scriptBuilder.BuildCreateAllTablesScript(tableMolds);
@@ -258,7 +258,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbMigrator
         public void Migrate_TablePredicateIsNull_MigratesAll()
         {
             // Arrange
-            var migrator = new SQLiteJsonMigratorLab(
+            var migrator = new SQLiteJsonMigrator(
                 this.Connection,
                 () => this.GetType().Assembly.GetResourceText("MigrateMetadataInput.json", true),
                 () => this.GetType().Assembly.GetResourceText("MigrateDataInput.json", true));
@@ -271,7 +271,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbMigrator
 
             #region metadata
 
-            var scriptBuilder = new SQLiteScriptBuilderLab();
+            var scriptBuilder = new SQLiteScriptBuilder();
             //var tableMolds = this.Connection.GetTableMolds(true, true);
             var tableMolds = schemaExplorer.GetTables(null, true, true, true, true, true);
             var script = scriptBuilder.BuildCreateAllTablesScript(tableMolds);
@@ -433,7 +433,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbMigrator
         public void Migrate_MetadataJsonGetterReturnsNull_ThrowsTauDbException()
         {
             // Arrange
-            var migrator = new SQLiteJsonMigratorLab(
+            var migrator = new SQLiteJsonMigrator(
                 this.Connection,
                 () => null,
                 () => "{}");
@@ -449,7 +449,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbMigrator
         public void Migrate_DataJsonGetterReturnsNull_ThrowsTauDbException()
         {
             // Arrange
-            var migrator = new SQLiteJsonMigratorLab(
+            var migrator = new SQLiteJsonMigrator(
                 this.Connection,
                 () => "{}",
                 () => null);

@@ -25,8 +25,8 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         private void AssertCorruptedTableAction(Action<TableMold> action)
         {
             // Arrange
-            IDbTableInspector tableInspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "HealthInfo");
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
+            IDbTableInspector tableInspector = new NpgsqlTableInspector(this.Connection, "zeta", "HealthInfo");
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta");
 
             var table = tableInspector.GetTable();
 
@@ -329,11 +329,11 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
             // Arrange
 
             // Act
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("public");
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("public");
 
             // Assert
             Assert.That(scriptBuilder.Connection, Is.Null);
-            Assert.That(scriptBuilder.Factory, Is.EqualTo(NpgsqlUtilityFactoryLab.Instance));
+            Assert.That(scriptBuilder.Factory, Is.EqualTo(NpgsqlUtilityFactory.Instance));
             Assert.That(scriptBuilder.SchemaName, Is.EqualTo("public"));
             Assert.That(scriptBuilder.CurrentOpeningIdentifierDelimiter, Is.EqualTo('"'));
         }
@@ -344,11 +344,11 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
             // Arrange
 
             // Act
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab(null);
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder(null);
 
             // Assert
             Assert.That(scriptBuilder.Connection, Is.Null);
-            Assert.That(scriptBuilder.Factory, Is.EqualTo(NpgsqlUtilityFactoryLab.Instance));
+            Assert.That(scriptBuilder.Factory, Is.EqualTo(NpgsqlUtilityFactory.Instance));
             Assert.That(scriptBuilder.SchemaName, Is.EqualTo("public"));
             Assert.That(scriptBuilder.CurrentOpeningIdentifierDelimiter, Is.EqualTo('"'));
         }
@@ -363,7 +363,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void CurrentOpeningIdentifierDelimiter_SetValidValue_ChangesValue(char? openingDelimiter)
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab(null);
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder(null);
 
             // Act
             scriptBuilder.CurrentOpeningIdentifierDelimiter = openingDelimiter;
@@ -376,7 +376,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void CurrentOpeningIdentifierDelimiter_SetInvalidValidValue_ThrowsTodo()
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab(null);
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder(null);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => scriptBuilder.CurrentOpeningIdentifierDelimiter = '`');
@@ -394,10 +394,10 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildCreateTableScript_IncludeConstraints_ReturnsValidScript(char delimiter)
         {
             // Arrange
-            IDbTableInspector tableInspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "TaxInfo");
+            IDbTableInspector tableInspector = new NpgsqlTableInspector(this.Connection, "zeta", "TaxInfo");
             var table = tableInspector.GetTable();
 
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta");
             scriptBuilder.CurrentOpeningIdentifierDelimiter = delimiter;
 
             var scriptName = "BuildCreateTableScript_DoubleQuotes.sql";
@@ -410,7 +410,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
             this.Connection.DropTable("zeta", "TaxInfo");
             this.Connection.ExecuteSingleSql(sql);
 
-            IDbTableInspector tableInspector2 = new NpgsqlTableInspectorLab(this.Connection, "zeta", "TaxInfo");
+            IDbTableInspector tableInspector2 = new NpgsqlTableInspector(this.Connection, "zeta", "TaxInfo");
             var table2 = tableInspector2.GetTable();
 
             var json = JsonConvert.SerializeObject(table);
@@ -428,10 +428,10 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildCreateTableScript_DoNotIncludeConstraints_ReturnsValidScript(char? delimiter)
         {
             // Arrange
-            IDbTableInspector tableInspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "TaxInfo");
+            IDbTableInspector tableInspector = new NpgsqlTableInspector(this.Connection, "zeta", "TaxInfo");
             var table = tableInspector.GetTable();
 
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta");
             scriptBuilder.CurrentOpeningIdentifierDelimiter = delimiter;
 
             var scriptName = "BuildCreateTableScript_NoConstraints_DoubleQuotes.sql";
@@ -454,7 +454,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildCreateTableScript_TableMoldIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta");
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => scriptBuilder.BuildCreateTableScript(null, true));
@@ -466,7 +466,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         [Test]
         public void BuildCreateTableScript_TableMoldIsCorrupted_ThrowsArgumentException()
         {
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta");
 
             this.AssertCorruptedTableAction(x => scriptBuilder.BuildCreateTableScript(x, true));
         }
@@ -480,11 +480,11 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildCreateIndexScript_UniqueIndex_ReturnsValidScript(char delimiter)
         {
             // Arrange
-            IDbTableInspector tableInspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "WorkInfo");
+            IDbTableInspector tableInspector = new NpgsqlTableInspector(this.Connection, "zeta", "WorkInfo");
             var table = tableInspector.GetTable();
             var index = table.Indexes.Single(x => x.Name == "UX_workInfo_Hash");
 
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta")
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta")
             {
                 CurrentOpeningIdentifierDelimiter = delimiter,
             };
@@ -505,11 +505,11 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildCreateIndexScript_NonUniqueIndex_ReturnsValidScript(char delimiter)
         {
             // Arrange
-            IDbTableInspector tableInspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "HealthInfo");
+            IDbTableInspector tableInspector = new NpgsqlTableInspector(this.Connection, "zeta", "HealthInfo");
             var table = tableInspector.GetTable();
             var index = table.Indexes.Single(x => x.Name == "IX_healthInfo_metricAmetricB");
 
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta")
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta")
             {
                 CurrentOpeningIdentifierDelimiter = delimiter,
             };
@@ -529,7 +529,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildCreateIndexScript_IndexIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta");
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => scriptBuilder.BuildCreateIndexScript(null));
@@ -542,11 +542,11 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildCreateIndexScript_IndexIsCorrupted_ThrowsArgumentException()
         {
             // Arrange
-            IDbTableInspector tableInspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "HealthInfo");
+            IDbTableInspector tableInspector = new NpgsqlTableInspector(this.Connection, "zeta", "HealthInfo");
             var table = tableInspector.GetTable();
             var index = table.Indexes.Single(x => x.Name == "IX_healthInfo_metricAmetricB");
 
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta");
 
             // Act
             // corrupted: index name is null
@@ -597,7 +597,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildDropTableScript_ValidArgument_ReturnsValidScript(char delimiter)
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta")
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta")
             {
                 CurrentOpeningIdentifierDelimiter = delimiter,
             };
@@ -615,7 +615,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildDropTableScript_TableNameIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta");
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => scriptBuilder.BuildDropTableScript(null));
@@ -633,12 +633,12 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildInsertScript_ValidArguments_ReturnsValidScript(char delimiter)
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta")
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta")
             {
                 CurrentOpeningIdentifierDelimiter = delimiter,
             };
 
-            IDbTableInspector tableInspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "Person");
+            IDbTableInspector tableInspector = new NpgsqlTableInspector(this.Connection, "zeta", "Person");
             var table = tableInspector.GetTable();
 
             var columnToParameterMappings = new Dictionary<string, string>
@@ -671,12 +671,12 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildInsertScript_ColumnToParameterMappingsIsEmpty_ReturnsValidScript(char delimiter)
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta")
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta")
             {
                 CurrentOpeningIdentifierDelimiter = delimiter,
             };
 
-            IDbTableInspector tableInspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "Person");
+            IDbTableInspector tableInspector = new NpgsqlTableInspector(this.Connection, "zeta", "Person");
             var table = tableInspector.GetTable();
 
             var columnToParameterMappings = new Dictionary<string, string>();
@@ -697,12 +697,12 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
             char delimiter)
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta")
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta")
             {
                 CurrentOpeningIdentifierDelimiter = delimiter,
             };
 
-            IDbTableInspector tableInspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "Person");
+            IDbTableInspector tableInspector = new NpgsqlTableInspector(this.Connection, "zeta", "Person");
             var table = tableInspector.GetTable();
 
             var columnToParameterMappings = new Dictionary<string, string>
@@ -731,7 +731,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildInsertScript_TableMoldIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta");
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() =>
@@ -744,7 +744,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         [Test]
         public void BuildInsertScript_TableMoldIsCorrupted_ThrowsArgumentException()
         {
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta");
 
             var columnToParameterMappings = new Dictionary<string, string>();
 
@@ -755,8 +755,8 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildInsertScript_ColumnToParameterMappingsIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
-            IDbTableInspector tableInspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "Person");
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta");
+            IDbTableInspector tableInspector = new NpgsqlTableInspector(this.Connection, "zeta", "Person");
             var table = tableInspector.GetTable();
 
             // Act
@@ -770,8 +770,8 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildInsertScript_ColumnToParameterMappingsIsCorrupted_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
-            IDbTableInspector tableInspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "Person");
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta");
+            IDbTableInspector tableInspector = new NpgsqlTableInspector(this.Connection, "zeta", "Person");
             var table = tableInspector.GetTable();
 
             var columnToParameterMappings = new Dictionary<string, string>
@@ -809,12 +809,12 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildUpdateScript_ValidArguments_ReturnsValidScript(char delimiter)
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta")
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta")
             {
                 CurrentOpeningIdentifierDelimiter = delimiter,
             };
 
-            IDbTableInspector tableInspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new NpgsqlTableInspector(this.Connection, "zeta", "PersonData");
             var table = tableInspector.GetTable();
 
             var columnToParameterMappings = new Dictionary<string, string>
@@ -846,9 +846,9 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildUpdateScript_MappingsIncomplete_ThrowsArgumentException()
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta");
 
-            IDbTableInspector tableInspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new NpgsqlTableInspector(this.Connection, "zeta", "PersonData");
             var table = tableInspector.GetTable();
 
             var columnToParameterMappings = new Dictionary<string, string>
@@ -903,10 +903,10 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildUpdateScript_TableDoesNotContainPrimaryKey_ThrowsArgumentException()
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta");
 
             this.Connection.ExecuteSingleSql(@"CREATE TABLE ""zeta"".""dummy""(Foo int)"); // no PK
-            IDbTableInspector tableInspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "dummy");
+            IDbTableInspector tableInspector = new NpgsqlTableInspector(this.Connection, "zeta", "dummy");
             var table = tableInspector.GetTable();
 
             var columnToParameterMappings = new Dictionary<string, string>
@@ -928,8 +928,8 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildUpdateScript_PrimaryKeyIsMultiColumn_ThrowsArgumentException()
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
-            IDbTableInspector tableInspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "Person");
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta");
+            IDbTableInspector tableInspector = new NpgsqlTableInspector(this.Connection, "zeta", "Person");
             var table = tableInspector.GetTable();
 
             var columnToParameterMappings = new Dictionary<string, string>
@@ -955,7 +955,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildUpdateScript_TableIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta");
 
             var columnToParameterMappings = new Dictionary<string, string>
             {
@@ -978,7 +978,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         [Test]
         public void BuildUpdateScript_TableIsCorrupted_ThrowsArgumentNullException()
         {
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta");
 
             var columnToParameterMappings = new Dictionary<string, string>
             {
@@ -994,9 +994,9 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildUpdateScript_ColumnToParameterMappingsIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta");
 
-            IDbTableInspector tableInspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new NpgsqlTableInspector(this.Connection, "zeta", "PersonData");
             var table = tableInspector.GetTable();
 
             // Act
@@ -1010,9 +1010,9 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildUpdateScript_ColumnToParameterMappingsIsCorrupted_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta");
 
-            IDbTableInspector tableInspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new NpgsqlTableInspector(this.Connection, "zeta", "PersonData");
             var table = tableInspector.GetTable();
 
             var columnToParameterMappings = new Dictionary<string, string>
@@ -1051,12 +1051,12 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildSelectByPrimaryKeyScript_ValidArguments_ReturnsValidScript(char delimiter)
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta")
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta")
             {
                 CurrentOpeningIdentifierDelimiter = delimiter,
             };
 
-            IDbTableInspector tableInspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new NpgsqlTableInspector(this.Connection, "zeta", "PersonData");
             var table = tableInspector.GetTable();
 
             var columns = new[]
@@ -1089,12 +1089,12 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildSelectByPrimaryKeyScript_ColumnSelectorIsNull_ReturnsValidScript(char delimiter)
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta")
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta")
             {
                 CurrentOpeningIdentifierDelimiter = delimiter,
             };
 
-            IDbTableInspector tableInspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new NpgsqlTableInspector(this.Connection, "zeta", "PersonData");
             var table = tableInspector.GetTable();
 
             // Act
@@ -1114,10 +1114,10 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildSelectByPrimaryKeyScript_TableDoesNotContainPrimaryKey_ThrowsArgumentException()
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta");
 
             this.Connection.ExecuteSingleSql(@"CREATE TABLE ""zeta"".""dummy""(Foo int)"); // no PK
-            IDbTableInspector tableInspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "dummy");
+            IDbTableInspector tableInspector = new NpgsqlTableInspector(this.Connection, "zeta", "dummy");
             var table = tableInspector.GetTable();
 
             // Act
@@ -1134,8 +1134,8 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildSelectByPrimaryKeyScript_PrimaryKeyIsMultiColumn_ThrowsArgumentException()
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
-            IDbTableInspector tableInspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "Person");
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta");
+            IDbTableInspector tableInspector = new NpgsqlTableInspector(this.Connection, "zeta", "Person");
             var table = tableInspector.GetTable();
 
             // Act
@@ -1152,9 +1152,9 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildSelectByPrimaryKeyScript_PrimaryKeyParameterNameIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta");
 
-            IDbTableInspector tableInspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new NpgsqlTableInspector(this.Connection, "zeta", "PersonData");
             var table = tableInspector.GetTable();
 
             var columns = new[]
@@ -1181,9 +1181,9 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildSelectByPrimaryKeyScript_NoColumnsSelected_ThrowsArgumentException()
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta");
 
-            IDbTableInspector tableInspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new NpgsqlTableInspector(this.Connection, "zeta", "PersonData");
             var table = tableInspector.GetTable();
 
             // Act
@@ -1199,7 +1199,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildSelectByPrimaryKeyScript_TableIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta");
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>((() =>
@@ -1212,7 +1212,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         [Test]
         public void BuildSelectByPrimaryKeyScript_TableIsCorrupted_ThrowsArgumentNullException()
         {
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta");
 
             this.AssertCorruptedTableAction(mold => scriptBuilder.BuildSelectByPrimaryKeyScript(mold, "p_id", null));
         }
@@ -1226,12 +1226,12 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildSelectAllScript_ValidArguments_ReturnsValidScript(char delimiter)
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta")
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta")
             {
                 CurrentOpeningIdentifierDelimiter = delimiter,
             };
 
-            IDbTableInspector tableInspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new NpgsqlTableInspector(this.Connection, "zeta", "PersonData");
             var table = tableInspector.GetTable();
 
             var columns = new[]
@@ -1264,12 +1264,12 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildSelectAllScript_ColumnSelectorIsNull_ReturnsValidScript(char delimiter)
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta")
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta")
             {
                 CurrentOpeningIdentifierDelimiter = delimiter,
             };
 
-            IDbTableInspector tableInspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new NpgsqlTableInspector(this.Connection, "zeta", "PersonData");
             var table = tableInspector.GetTable();
 
             // Act
@@ -1289,9 +1289,9 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildSelectAllScript_NoColumnsSelected_ThrowsArgumentException()
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta");
 
-            IDbTableInspector tableInspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new NpgsqlTableInspector(this.Connection, "zeta", "PersonData");
             var table = tableInspector.GetTable();
 
             // Act
@@ -1307,7 +1307,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildSelectAllScript_TableIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta");
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>((() =>
@@ -1320,7 +1320,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         [Test]
         public void BuildSelectAllScript_TableIsCorrupted_ThrowsArgumentNullException()
         {
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta");
 
             this.AssertCorruptedTableAction(mold => scriptBuilder.BuildSelectAllScript(mold, null));
         }
@@ -1334,12 +1334,12 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildDeleteByPrimaryKeyScript_ValidArguments_ReturnsValidScript(char delimiter)
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta")
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta")
             {
                 CurrentOpeningIdentifierDelimiter = delimiter,
             };
 
-            IDbTableInspector tableInspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new NpgsqlTableInspector(this.Connection, "zeta", "PersonData");
             var table = tableInspector.GetTable();
             
             // Act
@@ -1357,10 +1357,10 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildDeleteByPrimaryKeyScript_TableHasNoPrimaryKey_ThrowsArgumentException()
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta");
 
             this.Connection.ExecuteSingleSql(@"CREATE TABLE ""zeta"".""dummy""(Foo int)"); // no PK
-            IDbTableInspector tableInspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "dummy");
+            IDbTableInspector tableInspector = new NpgsqlTableInspector(this.Connection, "zeta", "dummy");
             var table = tableInspector.GetTable();
 
             // Act
@@ -1377,8 +1377,8 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildDeleteByPrimaryKeyScript_PrimaryKeyIsMultiColumn_ThrowsArgumentException()
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
-            IDbTableInspector tableInspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "Person");
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta");
+            IDbTableInspector tableInspector = new NpgsqlTableInspector(this.Connection, "zeta", "Person");
             var table = tableInspector.GetTable();
 
             // Act
@@ -1395,9 +1395,9 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildDeleteByPrimaryKeyScript_PrimaryKeyParameterNameIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta");
 
-            IDbTableInspector tableInspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector tableInspector = new NpgsqlTableInspector(this.Connection, "zeta", "PersonData");
             var table = tableInspector.GetTable();
 
             // Act
@@ -1412,7 +1412,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildDeleteByPrimaryKeyScript_TableIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta");
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>((() =>
@@ -1425,7 +1425,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         [Test]
         public void BuildDeleteByPrimaryKeyScript_TableIsCorrupted_ThrowsArgumentNullException()
         {
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta");
 
             this.AssertCorruptedTableAction(mold => scriptBuilder.BuildDeleteByPrimaryKeyScript(mold, "p_id"));
         }
@@ -1439,7 +1439,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildDeleteScript_ValidArgument_ReturnsValidScript(char delimiter)
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta")
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta")
             {
                 CurrentOpeningIdentifierDelimiter = delimiter,
             };
@@ -1461,7 +1461,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbScriptBuilder
         public void BuildDeleteScript_TableNameIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilderLab("zeta");
+            IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder("zeta");
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>((() =>

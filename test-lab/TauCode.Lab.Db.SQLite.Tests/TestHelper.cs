@@ -13,7 +13,7 @@ namespace TauCode.Lab.Db.SQLite.Tests
     {
         internal static SQLiteConnection CreateConnection(bool open = true, bool boost = true)
         {
-            var tuple = SQLiteToolsLab.CreateSQLiteDatabase();
+            var tuple = SQLiteTools.CreateSQLiteDatabase();
 
             var connectionString = tuple.Item2;
             var connection = new SQLiteConnection(connectionString);
@@ -60,7 +60,7 @@ namespace TauCode.Lab.Db.SQLite.Tests
             string tableName,
             object id)
         {
-            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(connection, tableName);
+            IDbTableInspector tableInspector = new SQLiteTableInspector(connection, tableName);
             var table = tableInspector.GetTable();
             var pkColumnName = table.GetPrimaryKeySingleColumn().Name;
 

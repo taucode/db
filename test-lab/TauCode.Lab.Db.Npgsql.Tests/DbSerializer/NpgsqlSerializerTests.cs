@@ -44,13 +44,13 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbSerializer
             // Arrange
 
             // Act
-            IDbSerializer serializer = new NpgsqlSerializerLab(this.Connection, schemaName);
+            IDbSerializer serializer = new NpgsqlSerializer(this.Connection, schemaName);
 
             // Assert
             Assert.That(serializer.Connection, Is.SameAs(this.Connection));
-            Assert.That(serializer.Factory, Is.SameAs(NpgsqlUtilityFactoryLab.Instance));
+            Assert.That(serializer.Factory, Is.SameAs(NpgsqlUtilityFactory.Instance));
             Assert.That(serializer.SchemaName, Is.EqualTo("public"));
-            Assert.That(serializer.Cruder, Is.TypeOf<NpgsqlCruderLab>());
+            Assert.That(serializer.Cruder, Is.TypeOf<NpgsqlCruder>());
         }
 
         [Test]
@@ -59,7 +59,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbSerializer
             // Arrange
 
             // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => new NpgsqlSerializerLab(null, "public"));
+            var ex = Assert.Throws<ArgumentNullException>(() => new NpgsqlSerializer(null, "public"));
 
             // Assert
             Assert.That(ex.ParamName, Is.EqualTo("connection"));
@@ -72,7 +72,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbSerializer
             using var connection = new NpgsqlConnection(TestHelper.ConnectionString);
 
             // Act
-            var ex = Assert.Throws<ArgumentException>(() => new NpgsqlSerializerLab(connection, "public"));
+            var ex = Assert.Throws<ArgumentException>(() => new NpgsqlSerializer(connection, "public"));
 
             // Assert
             Assert.That(ex.ParamName, Is.EqualTo("connection"));
@@ -87,7 +87,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbSerializer
         public void SerializeTableData_ValidArguments_RunsOk()
         {
             // Arrange
-            IDbSerializer serializer = new NpgsqlSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new NpgsqlSerializer(this.Connection, "zeta");
             serializer.JsonSerializerSettings.Formatting = Formatting.Indented;
 
             // Act
@@ -103,7 +103,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbSerializer
         public void SerializeTableData_TableNameIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbSerializer serializer = new NpgsqlSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new NpgsqlSerializer(this.Connection, "zeta");
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => serializer.SerializeTableData(null));
@@ -116,7 +116,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbSerializer
         public void SerializeTableData_SchemaDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbSerializer serializer = new NpgsqlSerializerLab(this.Connection, "bad_schema");
+            IDbSerializer serializer = new NpgsqlSerializer(this.Connection, "bad_schema");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => serializer.SerializeTableData("some_table"));
@@ -129,7 +129,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbSerializer
         public void SerializeTableData_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbSerializer serializer = new NpgsqlSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new NpgsqlSerializer(this.Connection, "zeta");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => serializer.SerializeTableData("bad_table"));
@@ -146,7 +146,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbSerializer
         public void SerializeDbData_ValidArguments_RunsOk()
         {
             // Arrange
-            IDbSerializer serializer = new NpgsqlSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new NpgsqlSerializer(this.Connection, "zeta");
             serializer.JsonSerializerSettings.Converters = new List<JsonConverter>
             {
                 new StringEnumConverter(namingStrategy:new DefaultNamingStrategy()),
@@ -171,7 +171,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbSerializer
         public void SerializeDbData_SchemaDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbSerializer serializer = new NpgsqlSerializerLab(this.Connection, "bad_schema");
+            IDbSerializer serializer = new NpgsqlSerializer(this.Connection, "bad_schema");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => serializer.SerializeDbData());
@@ -184,7 +184,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbSerializer
         public void SerializeDbData_TableNamePredicateIsNull_SerializesDbData()
         {
             // Arrange
-            IDbSerializer serializer = new NpgsqlSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new NpgsqlSerializer(this.Connection, "zeta");
             serializer.JsonSerializerSettings.Converters = new List<JsonConverter>
             {
                 new StringEnumConverter(namingStrategy:new DefaultNamingStrategy()),
@@ -206,7 +206,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbSerializer
         public void SerializeDbData_TableNamePredicateIsFalser_ReturnsEmptyArray()
         {
             // Arrange
-            IDbSerializer serializer = new NpgsqlSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new NpgsqlSerializer(this.Connection, "zeta");
 
             // Act
             var json = serializer.SerializeDbData(x => false);
@@ -223,7 +223,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbSerializer
         public void DeserializeTableData_ValidArguments_RunsOk()
         {
             // Arrange
-            IDbSerializer serializer = new NpgsqlSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new NpgsqlSerializer(this.Connection, "zeta");
             var json = this.GetType().Assembly.GetResourceText("DeserializeTableInput.json", true);
 
             this.Connection.ExecuteSingleSql(@"DELETE FROM ""zeta"".""Photo""");
@@ -248,7 +248,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbSerializer
                 });
 
             // Assert
-            IDbCruder cruder = new NpgsqlCruderLab(this.Connection, "zeta");
+            IDbCruder cruder = new NpgsqlCruder(this.Connection, "zeta");
             var persons = cruder.GetAllRows("Person");
 
             Assert.That(persons, Has.Count.EqualTo(2));
@@ -276,7 +276,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbSerializer
         public void DeserializeTableData_TableNameIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbSerializer serializer = new NpgsqlSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new NpgsqlSerializer(this.Connection, "zeta");
             var json = this.GetType().Assembly.GetResourceText("DeserializeTableInput.json", true);
 
             // Act
@@ -290,7 +290,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbSerializer
         public void DeserializeTableData_SchemaDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbSerializer serializer = new NpgsqlSerializerLab(this.Connection, "bad_schema");
+            IDbSerializer serializer = new NpgsqlSerializer(this.Connection, "bad_schema");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => serializer.DeserializeTableData("some_table", "[]"));
@@ -303,7 +303,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbSerializer
         public void DeserializeTableData_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbSerializer serializer = new NpgsqlSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new NpgsqlSerializer(this.Connection, "zeta");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => serializer.DeserializeTableData("bad_table", "[]"));
@@ -316,7 +316,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbSerializer
         public void DeserializeTableData_JsonIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbSerializer serializer = new NpgsqlSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new NpgsqlSerializer(this.Connection, "zeta");
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => serializer.DeserializeTableData("Person", null));
@@ -329,7 +329,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbSerializer
         public void DeserializeTableData_JsonContainsBadData_ThrowsTauDbException()
         {
             // Arrange
-            IDbSerializer serializer = new NpgsqlSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new NpgsqlSerializer(this.Connection, "zeta");
             var json = this.GetType().Assembly.GetResourceText("DeserializeTableBadInput.json", true);
 
             // Act
@@ -347,10 +347,10 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbSerializer
         public void DeserializeDbData_ValidArguments_RunsOk()
         {
             // Arrange
-            IDbInspector dbInspector = new NpgsqlInspectorLab(this.Connection, "zeta");
+            IDbInspector dbInspector = new NpgsqlInspector(this.Connection, "zeta");
             dbInspector.DeleteDataFromAllTables();
 
-            IDbSerializer serializer = new NpgsqlSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new NpgsqlSerializer(this.Connection, "zeta");
             var json = this.GetType().Assembly.GetResourceText("DeserializeDbInput.json", true);
 
             // Act
@@ -491,7 +491,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbSerializer
         public void DeserializeDbData_JsonIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbSerializer serializer = new NpgsqlSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new NpgsqlSerializer(this.Connection, "zeta");
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => serializer.DeserializeDbData(null));
@@ -504,10 +504,10 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbSerializer
         public void DeserializeDbData_TablePredicateIsNull_DeserializesAll()
         {
             // Arrange
-            IDbInspector dbInspector = new NpgsqlInspectorLab(this.Connection, "zeta");
+            IDbInspector dbInspector = new NpgsqlInspector(this.Connection, "zeta");
             dbInspector.DeleteDataFromAllTables();
 
-            IDbSerializer serializer = new NpgsqlSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new NpgsqlSerializer(this.Connection, "zeta");
             var json = this.GetType().Assembly.GetResourceText("DeserializeDbInput.json", true);
 
             // Act
@@ -673,10 +673,10 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbSerializer
         public void DeserializeDbData_TablePredicateReturnsUnknownTable_ThrowsTauDbException()
         {
             // Arrange
-            IDbInspector dbInspector = new NpgsqlInspectorLab(this.Connection, "zeta");
+            IDbInspector dbInspector = new NpgsqlInspector(this.Connection, "zeta");
             dbInspector.DeleteDataFromAllTables();
 
-            IDbSerializer serializer = new NpgsqlSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new NpgsqlSerializer(this.Connection, "zeta");
             var json = this.GetType().Assembly.GetResourceText("DeserializeDbBadInput.json", true);
 
             // Act
@@ -690,7 +690,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbSerializer
         public void DeserializeDbData_SchemaDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbSerializer serializer = new NpgsqlSerializerLab(this.Connection, "bad_schema");
+            IDbSerializer serializer = new NpgsqlSerializer(this.Connection, "bad_schema");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => serializer.DeserializeDbData("{\"SomeTable\" : []}"));
@@ -707,7 +707,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbSerializer
         public void SerializeTableMetadata_ValidArguments_RunsOk()
         {
             // Arrange
-            IDbSerializer serializer = new NpgsqlSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new NpgsqlSerializer(this.Connection, "zeta");
             serializer.JsonSerializerSettings.Formatting = Formatting.Indented;
             serializer.JsonSerializerSettings.Converters = new JsonConverter[]
             {
@@ -727,7 +727,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbSerializer
         public void SerializeTableMetadata_TableNameIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbSerializer serializer = new NpgsqlSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new NpgsqlSerializer(this.Connection, "zeta");
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => serializer.SerializeTableMetadata(null));
@@ -740,7 +740,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbSerializer
         public void SerializeTableMetadata_SchemaDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbSerializer serializer = new NpgsqlSerializerLab(this.Connection, "bad_schema");
+            IDbSerializer serializer = new NpgsqlSerializer(this.Connection, "bad_schema");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => serializer.SerializeTableMetadata("some_table"));
@@ -753,7 +753,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbSerializer
         public void SerializeTableMetadata_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbSerializer serializer = new NpgsqlSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new NpgsqlSerializer(this.Connection, "zeta");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => serializer.SerializeTableMetadata("bad_table"));
@@ -770,7 +770,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbSerializer
         public void SerializeDbMetadata_ValidArguments_RunsOk()
         {
             // Arrange
-            IDbSerializer serializer = new NpgsqlSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new NpgsqlSerializer(this.Connection, "zeta");
             serializer.JsonSerializerSettings.Formatting = Formatting.Indented;
             serializer.JsonSerializerSettings.Converters = new JsonConverter[]
             {
@@ -790,7 +790,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbSerializer
         public void SerializeDbMetadata_PredicateIsNull_SerializesAll()
         {
             // Arrange
-            IDbSerializer serializer = new NpgsqlSerializerLab(this.Connection, "zeta");
+            IDbSerializer serializer = new NpgsqlSerializer(this.Connection, "zeta");
             serializer.JsonSerializerSettings.Formatting = Formatting.Indented;
             serializer.JsonSerializerSettings.Converters = new JsonConverter[]
             {
@@ -810,7 +810,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbSerializer
         public void SerializeDbMetadata_SchemaDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbSerializer serializer = new NpgsqlSerializerLab(this.Connection, "bad_schema");
+            IDbSerializer serializer = new NpgsqlSerializer(this.Connection, "bad_schema");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => serializer.SerializeDbMetadata());

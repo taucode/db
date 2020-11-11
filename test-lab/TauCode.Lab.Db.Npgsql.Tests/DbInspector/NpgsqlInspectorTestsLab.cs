@@ -20,11 +20,11 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbInspector
             // Arrange
 
             // Act
-            IDbInspector inspector = new NpgsqlInspectorLab(this.Connection, "public");
+            IDbInspector inspector = new NpgsqlInspector(this.Connection, "public");
 
             // Assert
             Assert.That(inspector.Connection, Is.SameAs(this.Connection));
-            Assert.That(inspector.Factory, Is.SameAs(NpgsqlUtilityFactoryLab.Instance));
+            Assert.That(inspector.Factory, Is.SameAs(NpgsqlUtilityFactory.Instance));
 
             Assert.That(inspector.SchemaName, Is.EqualTo("public"));
         }
@@ -35,11 +35,11 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbInspector
             // Arrange
 
             // Act
-            IDbInspector inspector = new NpgsqlInspectorLab(this.Connection, null);
+            IDbInspector inspector = new NpgsqlInspector(this.Connection, null);
 
             // Assert
             Assert.That(inspector.Connection, Is.SameAs(this.Connection));
-            Assert.That(inspector.Factory, Is.SameAs(NpgsqlUtilityFactoryLab.Instance));
+            Assert.That(inspector.Factory, Is.SameAs(NpgsqlUtilityFactory.Instance));
 
             Assert.That(inspector.SchemaName, Is.EqualTo("public"));
         }
@@ -50,7 +50,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbInspector
             // Arrange
 
             // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => new NpgsqlInspectorLab(null, "public"));
+            var ex = Assert.Throws<ArgumentNullException>(() => new NpgsqlInspector(null, "public"));
             
             // Assert
             Assert.That(ex.ParamName, Is.EqualTo("connection"));
@@ -63,7 +63,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbInspector
             using var connection = new NpgsqlConnection(TestHelper.ConnectionString);
 
             // Act
-            var ex = Assert.Throws<ArgumentException>(() => new NpgsqlInspectorLab(connection, "public"));
+            var ex = Assert.Throws<ArgumentException>(() => new NpgsqlInspector(connection, "public"));
 
             // Assert
             Assert.That(ex, Has.Message.StartsWith("Connection should be opened."));
@@ -82,7 +82,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbInspector
             this.Connection.CreateSchema("hello");
             this.Connection.CreateSchema("HangFire");
 
-            IDbInspector inspector = new NpgsqlInspectorLab(this.Connection, "public");
+            IDbInspector inspector = new NpgsqlInspector(this.Connection, "public");
 
             // Act
             var schemaNames = inspector.GetSchemaNames();
@@ -122,7 +122,7 @@ CREATE TABLE ""public"".""tab3""(""id"" int PRIMARY KEY)
 ");
 
 
-            IDbInspector inspector = new NpgsqlInspectorLab(this.Connection, "zeta");
+            IDbInspector inspector = new NpgsqlInspector(this.Connection, "zeta");
 
             // Act
             var tableNames = inspector.GetTableNames();
@@ -155,7 +155,7 @@ CREATE TABLE ""zeta"".""tab1""(""id"" int PRIMARY KEY)
 CREATE TABLE ""public"".""tab3""(""id"" int PRIMARY KEY)
 ");
 
-            IDbInspector inspector = new NpgsqlInspectorLab(this.Connection, "kappa");
+            IDbInspector inspector = new NpgsqlInspector(this.Connection, "kappa");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => inspector.GetTableNames());

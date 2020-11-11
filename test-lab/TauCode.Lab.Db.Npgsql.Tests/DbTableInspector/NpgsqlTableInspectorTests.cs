@@ -61,11 +61,11 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbTableInspector
             // Arrange
 
             // Act
-            IDbTableInspector inspector = new NpgsqlTableInspectorLab(this.Connection, "public", "tab1");
+            IDbTableInspector inspector = new NpgsqlTableInspector(this.Connection, "public", "tab1");
 
             // Assert
             Assert.That(inspector.Connection, Is.SameAs(this.Connection));
-            Assert.That(inspector.Factory, Is.SameAs(NpgsqlUtilityFactoryLab.Instance));
+            Assert.That(inspector.Factory, Is.SameAs(NpgsqlUtilityFactory.Instance));
 
             Assert.That(inspector.SchemaName, Is.EqualTo("public"));
             Assert.That(inspector.TableName, Is.EqualTo("tab1"));
@@ -77,7 +77,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbTableInspector
             // Arrange
 
             // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => new NpgsqlTableInspectorLab(null, "public", "tab1"));
+            var ex = Assert.Throws<ArgumentNullException>(() => new NpgsqlTableInspector(null, "public", "tab1"));
 
             // Assert
             Assert.That(ex.ParamName, Is.EqualTo("connection"));
@@ -90,7 +90,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbTableInspector
             using var connection = new NpgsqlConnection(TestHelper.ConnectionString);
 
             // Act
-            var ex = Assert.Throws<ArgumentException>(() => new NpgsqlTableInspectorLab(connection, "public", "tab1"));
+            var ex = Assert.Throws<ArgumentException>(() => new NpgsqlTableInspector(connection, "public", "tab1"));
 
             // Assert
             Assert.That(ex, Has.Message.StartsWith("Connection should be opened."));
@@ -103,11 +103,11 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbTableInspector
             // Arrange
 
             // Act
-            IDbTableInspector inspector = new NpgsqlTableInspectorLab(this.Connection, null, "tab1");
+            IDbTableInspector inspector = new NpgsqlTableInspector(this.Connection, null, "tab1");
 
             // Assert
             Assert.That(inspector.Connection, Is.SameAs(this.Connection));
-            Assert.That(inspector.Factory, Is.SameAs(NpgsqlUtilityFactoryLab.Instance));
+            Assert.That(inspector.Factory, Is.SameAs(NpgsqlUtilityFactory.Instance));
 
             Assert.That(inspector.SchemaName, Is.EqualTo("public"));
             Assert.That(inspector.TableName, Is.EqualTo("tab1"));
@@ -119,7 +119,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbTableInspector
             // Arrange
 
             // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => new NpgsqlTableInspectorLab(this.Connection, "public", null));
+            var ex = Assert.Throws<ArgumentNullException>(() => new NpgsqlTableInspector(this.Connection, "public", null));
 
             // Assert
             Assert.That(ex.ParamName, Is.EqualTo("tableName"));
@@ -147,7 +147,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbTableInspector
 
             // Act
             var dictionary = tableNames
-                .Select(x => new NpgsqlTableInspectorLab(this.Connection, "zeta", x))
+                .Select(x => new NpgsqlTableInspector(this.Connection, "zeta", x))
                 .ToDictionary(x => x.TableName, x => x.GetColumns());
 
             // Assert
@@ -289,7 +289,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbTableInspector
         public void GetColumns_SchemaDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbTableInspector inspector = new NpgsqlTableInspectorLab(this.Connection, "bad_schema", "tab1");
+            IDbTableInspector inspector = new NpgsqlTableInspector(this.Connection, "bad_schema", "tab1");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => inspector.GetColumns());
@@ -302,7 +302,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbTableInspector
         public void GetColumns_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbTableInspector inspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "bad_table");
+            IDbTableInspector inspector = new NpgsqlTableInspector(this.Connection, "zeta", "bad_table");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => inspector.GetColumns());
@@ -324,7 +324,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbTableInspector
 
             // Act
             var dictionary = tableNames
-                .Select(x => new NpgsqlTableInspectorLab(this.Connection, "zeta", x))
+                .Select(x => new NpgsqlTableInspector(this.Connection, "zeta", x))
                 .ToDictionary(x => x.TableName, x => x.GetPrimaryKey());
 
             // Assert
@@ -369,7 +369,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbTableInspector
         public void GetPrimaryKey_SchemaDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbTableInspector inspector = new NpgsqlTableInspectorLab(this.Connection, "bad_schema", "tab1");
+            IDbTableInspector inspector = new NpgsqlTableInspector(this.Connection, "bad_schema", "tab1");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => inspector.GetPrimaryKey());
@@ -382,7 +382,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbTableInspector
         public void GetPrimaryKey_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbTableInspector inspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "bad_table");
+            IDbTableInspector inspector = new NpgsqlTableInspector(this.Connection, "zeta", "bad_table");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => inspector.GetPrimaryKey());
@@ -399,7 +399,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbTableInspector
         public void GetForeignKeys_ValidInput_ReturnsForeignKeys()
         {
             // Arrange
-            IDbTableInspector inspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "PersonData");
+            IDbTableInspector inspector = new NpgsqlTableInspector(this.Connection, "zeta", "PersonData");
 
             // Act
             var foreignKeys = inspector.GetForeignKeys();
@@ -422,7 +422,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbTableInspector
         public void GetForeignKeys_SchemaDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbTableInspector inspector = new NpgsqlTableInspectorLab(this.Connection, "bad_schema", "tab1");
+            IDbTableInspector inspector = new NpgsqlTableInspector(this.Connection, "bad_schema", "tab1");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => inspector.GetForeignKeys());
@@ -435,7 +435,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbTableInspector
         public void GetForeignKeys_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbTableInspector inspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "bad_table");
+            IDbTableInspector inspector = new NpgsqlTableInspector(this.Connection, "zeta", "bad_table");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => inspector.GetForeignKeys());
@@ -452,9 +452,9 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbTableInspector
         public void GetIndexes_ValidInput_ReturnsIndexes()
         {
             // Arrange
-            IDbTableInspector inspector1 = new NpgsqlTableInspectorLab(this.Connection, "zeta", "Person");
-            IDbTableInspector inspector2 = new NpgsqlTableInspectorLab(this.Connection, "zeta", "WorkInfo");
-            IDbTableInspector inspector3 = new NpgsqlTableInspectorLab(this.Connection, "zeta", "HealthInfo");
+            IDbTableInspector inspector1 = new NpgsqlTableInspector(this.Connection, "zeta", "Person");
+            IDbTableInspector inspector2 = new NpgsqlTableInspector(this.Connection, "zeta", "WorkInfo");
+            IDbTableInspector inspector3 = new NpgsqlTableInspector(this.Connection, "zeta", "HealthInfo");
 
             // Act
             var indexes1 = inspector1.GetIndexes();
@@ -541,7 +541,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbTableInspector
         public void GetIndexes_SchemaDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbTableInspector inspector = new NpgsqlTableInspectorLab(this.Connection, "bad_schema", "tab1");
+            IDbTableInspector inspector = new NpgsqlTableInspector(this.Connection, "bad_schema", "tab1");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => inspector.GetForeignKeys());
@@ -554,7 +554,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbTableInspector
         public void GetIndexes_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbTableInspector inspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "bad_table");
+            IDbTableInspector inspector = new NpgsqlTableInspector(this.Connection, "zeta", "bad_table");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => inspector.GetForeignKeys());
@@ -571,7 +571,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbTableInspector
         public void GetTable_ValidInput_ReturnsTable()
         {
             // Arrange
-            IDbTableInspector inspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "HealthInfo");
+            IDbTableInspector inspector = new NpgsqlTableInspector(this.Connection, "zeta", "HealthInfo");
 
             // Act
             var table = inspector.GetTable();
@@ -684,7 +684,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbTableInspector
         public void GetTable_SchemaDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbTableInspector inspector = new NpgsqlTableInspectorLab(this.Connection, "bad_schema", "tab1");
+            IDbTableInspector inspector = new NpgsqlTableInspector(this.Connection, "bad_schema", "tab1");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => inspector.GetTable());
@@ -697,7 +697,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests.DbTableInspector
         public void GetTable_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbTableInspector inspector = new NpgsqlTableInspectorLab(this.Connection, "zeta", "bad_table");
+            IDbTableInspector inspector = new NpgsqlTableInspector(this.Connection, "zeta", "bad_table");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => inspector.GetTable());

@@ -68,7 +68,7 @@ namespace TauCode.Lab.Db.Npgsql.Tests
             string tableName,
             object id)
         {
-            IDbTableInspector tableInspector = new NpgsqlTableInspectorLab(connection, schemaName, tableName);
+            IDbTableInspector tableInspector = new NpgsqlTableInspector(connection, schemaName, tableName);
             var table = tableInspector.GetTable();
             var pkColumnName = table.GetPrimaryKeySingleColumn().Name;
 

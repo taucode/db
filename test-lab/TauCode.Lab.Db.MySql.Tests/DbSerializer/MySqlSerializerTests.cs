@@ -45,13 +45,13 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
             this.Connection = TestHelper.CreateConnection("zeta");
 
             // Act
-            IDbSerializer serializer = new MySqlSerializerLab(this.Connection);
+            IDbSerializer serializer = new MySqlSerializer(this.Connection);
 
             // Assert
             Assert.That(serializer.Connection, Is.SameAs(this.Connection));
-            Assert.That(serializer.Factory, Is.SameAs(MySqlUtilityFactoryLab.Instance));
+            Assert.That(serializer.Factory, Is.SameAs(MySqlUtilityFactory.Instance));
             Assert.That(serializer.SchemaName, Is.EqualTo("zeta"));
-            Assert.That(serializer.Cruder, Is.TypeOf<MySqlCruderLab>());
+            Assert.That(serializer.Cruder, Is.TypeOf<MySqlCruder>());
         }
 
         [Test]
@@ -60,7 +60,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
             // Arrange
 
             // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => new MySqlSerializerLab(null));
+            var ex = Assert.Throws<ArgumentNullException>(() => new MySqlSerializer(null));
 
             // Assert
             Assert.That(ex.ParamName, Is.EqualTo("connection"));
@@ -73,7 +73,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
             using var connection = new MySqlConnection(TestHelper.ConnectionString);
 
             // Act
-            var ex = Assert.Throws<ArgumentException>(() => new MySqlSerializerLab(connection));
+            var ex = Assert.Throws<ArgumentException>(() => new MySqlSerializer(connection));
 
             // Assert
             Assert.That(ex.ParamName, Is.EqualTo("connection"));
@@ -91,7 +91,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
             this.Connection.Dispose();
             this.Connection = TestHelper.CreateConnection("zeta");
 
-            IDbSerializer serializer = new MySqlSerializerLab(this.Connection);
+            IDbSerializer serializer = new MySqlSerializer(this.Connection);
             serializer.Cruder.GetTableValuesConverter("Person").SetColumnConverter("Tag", new MySqlGuidValueConverter(MySqlGuidBehaviour.Char36));
 
             serializer.JsonSerializerSettings.Formatting = Formatting.Indented;
@@ -111,7 +111,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
         public void SerializeTableData_TableNameIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbSerializer serializer = new MySqlSerializerLab(this.Connection);
+            IDbSerializer serializer = new MySqlSerializer(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => serializer.SerializeTableData(null));
@@ -130,7 +130,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
             this.Connection = TestHelper.CreateConnection("bad_schema");
             this.Connection.ExecuteSingleSql("CREATE TABLE bad_schema.some_table(id int PRIMARY KEY)");
 
-            IDbSerializer serializer = new MySqlSerializerLab(this.Connection);
+            IDbSerializer serializer = new MySqlSerializer(this.Connection);
 
             this.Connection.DropSchema("bad_schema");
 
@@ -148,7 +148,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
             this.Connection.Dispose();
             this.Connection = TestHelper.CreateConnection("zeta");
 
-            IDbSerializer serializer = new MySqlSerializerLab(this.Connection);
+            IDbSerializer serializer = new MySqlSerializer(this.Connection);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => serializer.SerializeTableData("bad_table"));
@@ -168,7 +168,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
             this.Connection.Dispose();
             this.Connection = TestHelper.CreateConnection("zeta");
 
-            IDbSerializer serializer = new MySqlSerializerLab(this.Connection);
+            IDbSerializer serializer = new MySqlSerializer(this.Connection);
             serializer.JsonSerializerSettings.Converters = new List<JsonConverter>
             {
                 new StringEnumConverter(namingStrategy:new DefaultNamingStrategy()),
@@ -200,7 +200,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
             this.Connection = TestHelper.CreateConnection("bad_schema");
             this.Connection.ExecuteSingleSql("CREATE TABLE bad_schema.some_table(id int PRIMARY KEY)");
 
-            IDbSerializer serializer = new MySqlSerializerLab(this.Connection);
+            IDbSerializer serializer = new MySqlSerializer(this.Connection);
             var dummy = serializer.Cruder.GetTableValuesConverter("some_table");
             var dummyJson = serializer.SerializeDbMetadata();
 
@@ -220,7 +220,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
             this.Connection.Dispose();
             this.Connection = TestHelper.CreateConnection("zeta");
 
-            IDbSerializer serializer = new MySqlSerializerLab(this.Connection);
+            IDbSerializer serializer = new MySqlSerializer(this.Connection);
             serializer.Cruder.GetTableValuesConverter("Person").SetColumnConverter("Tag", new MySqlGuidValueConverter(MySqlGuidBehaviour.Char36));
 
             serializer.JsonSerializerSettings.Converters = new List<JsonConverter>
@@ -244,7 +244,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
         public void SerializeDbData_TableNamePredicateIsFalser_ReturnsEmptyArray()
         {
             // Arrange
-            IDbSerializer serializer = new MySqlSerializerLab(this.Connection);
+            IDbSerializer serializer = new MySqlSerializer(this.Connection);
 
             // Act
             var json = serializer.SerializeDbData(x => false);
@@ -264,7 +264,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
             this.Connection.Dispose();
             this.Connection = TestHelper.CreateConnection("zeta");
 
-            IDbSerializer serializer = new MySqlSerializerLab(this.Connection);
+            IDbSerializer serializer = new MySqlSerializer(this.Connection);
             serializer.Cruder.GetTableValuesConverter("person").SetColumnConverter("Tag", new MySqlGuidValueConverter(MySqlGuidBehaviour.Char36));
 
             var json = this.GetType().Assembly.GetResourceText("DeserializeTableInput.json", true);
@@ -291,7 +291,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
                 });
 
             // Assert
-            IDbCruder cruder = new MySqlCruderLab(this.Connection);
+            IDbCruder cruder = new MySqlCruder(this.Connection);
             cruder.GetTableValuesConverter("person").SetColumnConverter("Tag", new MySqlGuidValueConverter(MySqlGuidBehaviour.Char36));
 
             var persons = cruder.GetAllRows("Person");
@@ -321,7 +321,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
         public void DeserializeTableData_TableNameIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbSerializer serializer = new MySqlSerializerLab(this.Connection);
+            IDbSerializer serializer = new MySqlSerializer(this.Connection);
             var json = this.GetType().Assembly.GetResourceText("DeserializeTableInput.json", true);
 
             // Act
@@ -341,7 +341,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
             this.Connection = TestHelper.CreateConnection("bad_schema");
             this.Connection.ExecuteSingleSql("CREATE TABLE bad_schema.some_table(id int PRIMARY KEY)");
 
-            IDbSerializer serializer = new MySqlSerializerLab(this.Connection);
+            IDbSerializer serializer = new MySqlSerializer(this.Connection);
 
             this.Connection.DropSchema("bad_schema");
 
@@ -359,7 +359,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
             this.Connection.Dispose();
             this.Connection = TestHelper.CreateConnection("zeta");
 
-            IDbSerializer serializer = new MySqlSerializerLab(this.Connection);
+            IDbSerializer serializer = new MySqlSerializer(this.Connection);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => serializer.DeserializeTableData("bad_table", "[]"));
@@ -372,7 +372,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
         public void DeserializeTableData_JsonIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbSerializer serializer = new MySqlSerializerLab(this.Connection);
+            IDbSerializer serializer = new MySqlSerializer(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => serializer.DeserializeTableData("Person", null));
@@ -388,7 +388,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
             this.Connection.Dispose();
             this.Connection = TestHelper.CreateConnection("zeta");
 
-            IDbSerializer serializer = new MySqlSerializerLab(this.Connection);
+            IDbSerializer serializer = new MySqlSerializer(this.Connection);
             var json = this.GetType().Assembly.GetResourceText("DeserializeTableBadInput.json", true);
 
             // Act
@@ -409,10 +409,10 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
             this.Connection.Dispose();
             this.Connection = TestHelper.CreateConnection("zeta");
 
-            IDbInspector dbInspector = new MySqlInspectorLab(this.Connection);
+            IDbInspector dbInspector = new MySqlInspector(this.Connection);
             dbInspector.DeleteDataFromAllTables();
 
-            IDbSerializer serializer = new MySqlSerializerLab(this.Connection);
+            IDbSerializer serializer = new MySqlSerializer(this.Connection);
             var json = this.GetType().Assembly.GetResourceText("DeserializeDbInput.json", true);
 
             // Act
@@ -534,7 +534,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
         public void DeserializeDbData_JsonIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbSerializer serializer = new MySqlSerializerLab(this.Connection);
+            IDbSerializer serializer = new MySqlSerializer(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => serializer.DeserializeDbData(null));
@@ -550,10 +550,10 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
             this.Connection.Dispose();
             this.Connection = TestHelper.CreateConnection("zeta");
 
-            IDbInspector dbInspector = new MySqlInspectorLab(this.Connection);
+            IDbInspector dbInspector = new MySqlInspector(this.Connection);
             dbInspector.DeleteDataFromAllTables();
 
-            IDbSerializer serializer = new MySqlSerializerLab(this.Connection);
+            IDbSerializer serializer = new MySqlSerializer(this.Connection);
             var json = this.GetType().Assembly.GetResourceText("DeserializeDbInput.json", true);
 
             // Act
@@ -703,13 +703,13 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
         public void DeserializeDbData_TablePredicateReturnsUnknownTable_ThrowsTauDbException()
         {
             // Arrange
-            IDbInspector dbInspector = new MySqlInspectorLab(this.Connection);
+            IDbInspector dbInspector = new MySqlInspector(this.Connection);
             dbInspector.DeleteDataFromAllTables();
 
             this.Connection.Dispose();
             this.Connection = TestHelper.CreateConnection("zeta");
 
-            IDbSerializer serializer = new MySqlSerializerLab(this.Connection);
+            IDbSerializer serializer = new MySqlSerializer(this.Connection);
             var json = this.GetType().Assembly.GetResourceText("DeserializeDbBadInput.json", true);
 
             // Act
@@ -729,7 +729,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
             this.Connection = TestHelper.CreateConnection("bad_schema");
             this.Connection.ExecuteSingleSql("CREATE TABLE bad_schema.some_table(id int PRIMARY KEY)");
 
-            IDbSerializer serializer = new MySqlSerializerLab(this.Connection);
+            IDbSerializer serializer = new MySqlSerializer(this.Connection);
 
             this.Connection.DropSchema("bad_schema");
 
@@ -751,7 +751,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
             this.Connection.Dispose();
             this.Connection = TestHelper.CreateConnection("zeta");
 
-            IDbSerializer serializer = new MySqlSerializerLab(this.Connection);
+            IDbSerializer serializer = new MySqlSerializer(this.Connection);
             serializer.JsonSerializerSettings.Formatting = Formatting.Indented;
             serializer.JsonSerializerSettings.Converters = new JsonConverter[]
             {
@@ -771,7 +771,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
         public void SerializeTableMetadata_TableNameIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            IDbSerializer serializer = new MySqlSerializerLab(this.Connection);
+            IDbSerializer serializer = new MySqlSerializer(this.Connection);
 
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => serializer.SerializeTableMetadata(null));
@@ -790,7 +790,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
             this.Connection = TestHelper.CreateConnection("bad_schema");
             this.Connection.ExecuteSingleSql("CREATE TABLE bad_schema.some_table(id int PRIMARY KEY)");
 
-            IDbSerializer serializer = new MySqlSerializerLab(this.Connection);
+            IDbSerializer serializer = new MySqlSerializer(this.Connection);
 
             this.Connection.DropSchema("bad_schema");
 
@@ -808,7 +808,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
             this.Connection.Dispose();
             this.Connection = TestHelper.CreateConnection("zeta");
 
-            IDbSerializer serializer = new MySqlSerializerLab(this.Connection);
+            IDbSerializer serializer = new MySqlSerializer(this.Connection);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => serializer.SerializeTableMetadata("bad_table"));
@@ -828,7 +828,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
             this.Connection.Dispose();
             this.Connection = TestHelper.CreateConnection("zeta");
 
-            IDbSerializer serializer = new MySqlSerializerLab(this.Connection);
+            IDbSerializer serializer = new MySqlSerializer(this.Connection);
             serializer.JsonSerializerSettings.Formatting = Formatting.Indented;
             serializer.JsonSerializerSettings.Converters = new JsonConverter[]
             {
@@ -851,7 +851,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
             this.Connection.Dispose();
             this.Connection = TestHelper.CreateConnection("zeta");
 
-            IDbSerializer serializer = new MySqlSerializerLab(this.Connection);
+            IDbSerializer serializer = new MySqlSerializer(this.Connection);
             serializer.JsonSerializerSettings.Formatting = Formatting.Indented;
             serializer.JsonSerializerSettings.Converters = new JsonConverter[]
             {
@@ -877,7 +877,7 @@ namespace TauCode.Lab.Db.MySql.Tests.DbSerializer
             this.Connection = TestHelper.CreateConnection("bad_schema");
             this.Connection.ExecuteSingleSql("CREATE TABLE bad_schema.some_table(id int PRIMARY KEY)");
 
-            IDbSerializer serializer = new MySqlSerializerLab(this.Connection);
+            IDbSerializer serializer = new MySqlSerializer(this.Connection);
 
             this.Connection.DropSchema("bad_schema");
 

@@ -57,11 +57,11 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbTableInspector
             // Arrange
 
             // Act
-            IDbTableInspector inspector = new SQLiteTableInspectorLab(this.Connection, "tab1");
+            IDbTableInspector inspector = new SQLiteTableInspector(this.Connection, "tab1");
 
             // Assert
             Assert.That(inspector.Connection, Is.SameAs(this.Connection));
-            Assert.That(inspector.Factory, Is.SameAs(SQLiteUtilityFactoryLab.Instance));
+            Assert.That(inspector.Factory, Is.SameAs(SQLiteUtilityFactory.Instance));
 
             Assert.That(inspector.SchemaName, Is.EqualTo(null));
             Assert.That(inspector.TableName, Is.EqualTo("tab1"));
@@ -73,7 +73,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbTableInspector
             // Arrange
 
             // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => new SQLiteTableInspectorLab(null, "tab1"));
+            var ex = Assert.Throws<ArgumentNullException>(() => new SQLiteTableInspector(null, "tab1"));
 
             // Assert
             Assert.That(ex.ParamName, Is.EqualTo("connection"));
@@ -86,7 +86,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbTableInspector
             using var connection = TestHelper.CreateConnection(false, false);
 
             // Act
-            var ex = Assert.Throws<ArgumentException>(() => new SQLiteTableInspectorLab(connection, "tab1"));
+            var ex = Assert.Throws<ArgumentException>(() => new SQLiteTableInspector(connection, "tab1"));
 
             // Assert
             Assert.That(ex, Has.Message.StartsWith("Connection should be opened."));
@@ -99,7 +99,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbTableInspector
             // Arrange
 
             // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => new SQLiteTableInspectorLab(this.Connection, null));
+            var ex = Assert.Throws<ArgumentNullException>(() => new SQLiteTableInspector(this.Connection, null));
 
             // Assert
             Assert.That(ex.ParamName, Is.EqualTo("tableName"));
@@ -113,7 +113,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbTableInspector
         public void GetColumns_ValidInput_ThrowsNotSupportedException()
         {
             // Arrange
-            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "Person");
+            IDbTableInspector tableInspector = new SQLiteTableInspector(this.Connection, "Person");
 
             // Act
             var ex = Assert.Throws<NotSupportedException>(() => tableInspector.GetColumns());
@@ -126,7 +126,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbTableInspector
         public void GetColumns_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "bad_table");
+            IDbTableInspector tableInspector = new SQLiteTableInspector(this.Connection, "bad_table");
 
             // Act
             var ex = Assert.Throws<NotSupportedException>(() => tableInspector.GetColumns());
@@ -143,7 +143,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbTableInspector
         public void GetPrimaryKey_ValidInput_ThrowsNotSupportedException()
         {
             // Arrange
-            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "Person");
+            IDbTableInspector tableInspector = new SQLiteTableInspector(this.Connection, "Person");
 
             // Act
             var ex = Assert.Throws<NotSupportedException>(() => tableInspector.GetPrimaryKey());
@@ -156,7 +156,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbTableInspector
         public void GetPrimaryKey_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbTableInspector inspector = new SQLiteTableInspectorLab(this.Connection, "bad_table");
+            IDbTableInspector inspector = new SQLiteTableInspector(this.Connection, "bad_table");
 
             // Act
             var ex = Assert.Throws<NotSupportedException>(() => inspector.GetPrimaryKey());
@@ -173,7 +173,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbTableInspector
         public void GetForeignKeys_ValidInput_ThrowsNotSupportedException()
         {
             // Arrange
-            IDbTableInspector tableInspector = new SQLiteTableInspectorLab(this.Connection, "PersonData");
+            IDbTableInspector tableInspector = new SQLiteTableInspector(this.Connection, "PersonData");
 
             // Act
             var ex = Assert.Throws<NotSupportedException>(() => tableInspector.GetForeignKeys());
@@ -186,7 +186,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbTableInspector
         public void GetForeignKeys_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbTableInspector inspector = new SQLiteTableInspectorLab(this.Connection, "bad_table");
+            IDbTableInspector inspector = new SQLiteTableInspector(this.Connection, "bad_table");
 
             // Act
             var ex = Assert.Throws<NotSupportedException>(() => inspector.GetForeignKeys());
@@ -203,9 +203,9 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbTableInspector
         public void GetIndexes_ValidInput_ReturnsIndexes()
         {
             // Arrange
-            IDbTableInspector inspector1 = new SQLiteTableInspectorLab(this.Connection, "Person");
-            IDbTableInspector inspector2 = new SQLiteTableInspectorLab(this.Connection, "WorkInfo");
-            IDbTableInspector inspector3 = new SQLiteTableInspectorLab(this.Connection, "HealthInfo");
+            IDbTableInspector inspector1 = new SQLiteTableInspector(this.Connection, "Person");
+            IDbTableInspector inspector2 = new SQLiteTableInspector(this.Connection, "WorkInfo");
+            IDbTableInspector inspector3 = new SQLiteTableInspector(this.Connection, "HealthInfo");
 
             // Act
             var indexes1 = inspector1.GetIndexes();
@@ -254,7 +254,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbTableInspector
         public void GetIndexes_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbTableInspector inspector = new SQLiteTableInspectorLab(this.Connection, "bad_table");
+            IDbTableInspector inspector = new SQLiteTableInspector(this.Connection, "bad_table");
 
             // Act
             var ex = Assert.Throws<NotSupportedException>(() => inspector.GetForeignKeys());
@@ -271,7 +271,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbTableInspector
         public void GetTable_ValidInput_ReturnsTable()
         {
             // Arrange
-            IDbTableInspector inspector = new SQLiteTableInspectorLab(this.Connection, "HealthInfo");
+            IDbTableInspector inspector = new SQLiteTableInspector(this.Connection, "HealthInfo");
 
             // Act
             var table = inspector.GetTable();
@@ -373,7 +373,7 @@ namespace TauCode.Lab.Db.SQLite.Tests.DbTableInspector
         public void GetTable_TableDoesNotExist_ThrowsTauDbException()
         {
             // Arrange
-            IDbTableInspector inspector = new SQLiteTableInspectorLab(this.Connection, "bad_table");
+            IDbTableInspector inspector = new SQLiteTableInspector(this.Connection, "bad_table");
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => inspector.GetTable());

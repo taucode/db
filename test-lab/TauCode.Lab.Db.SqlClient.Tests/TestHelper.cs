@@ -49,7 +49,7 @@ namespace TauCode.Lab.Db.SqlClient.Tests
             string tableName,
             object id)
         {
-            IDbTableInspector tableInspector = new SqlTableInspectorLab(connection, schemaName, tableName);
+            IDbTableInspector tableInspector = new SqlTableInspector(connection, schemaName, tableName);
             var table = tableInspector.GetTable();
             var pkColumnName = table.GetPrimaryKeySingleColumn().Name;
 
