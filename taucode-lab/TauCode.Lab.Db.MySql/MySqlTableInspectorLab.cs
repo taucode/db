@@ -5,6 +5,7 @@ using System.Linq;
 using TauCode.Db;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
+using TauCode.Db.Schema;
 using TauCode.Extensions;
 
 namespace TauCode.Lab.Db.MySql
@@ -14,13 +15,16 @@ namespace TauCode.Lab.Db.MySql
     public class MySqlTableInspectorLab : DbTableInspectorBase
     {
         public MySqlTableInspectorLab(MySqlConnection connection, string tableName)
-            : base(connection, connection.GetSchemaName(), tableName)
+            : base(connection, connection?.Database, tableName)
         {
+            this.SchemaExplorer = new MySqlSchemaExplorer(this.MySqlConnection);
         }
 
         protected MySqlConnection MySqlConnection => (MySqlConnection)this.Connection;
 
         public override IDbUtilityFactory Factory => MySqlUtilityFactoryLab.Instance;
+
+        protected IDbSchemaExplorer SchemaExplorer { get; }
 
         protected override List<ColumnInfo> GetColumnInfos()
         {
@@ -222,11 +226,26 @@ WHERE
             }
         }
 
-        protected override bool NeedCheckSchemaExistence => true;
+        protected override bool NeedCheckSchemaExistence => false;
 
-        protected override bool SchemaExists(string schemaName) => this.MySqlConnection.SchemaExists(schemaName);
+        public override PrimaryKeyMold GetPrimaryKey()
+        {
+            return this.SchemaExplorer
+                .GetTablePrimaryKey(this.SchemaName, this.TableName, true);
+        }
 
-        protected override bool TableExists(string tableName) => this.MySqlConnection.TableExists(tableName);
+        public override IReadOnlyList<ColumnMold> GetColumns()
+        {
+            return this
+                .SchemaExplorer
+                .GetTableColumns(this.SchemaName, this.TableName, true);
+        }
+
+        protected override bool SchemaExists(string schemaName) => throw new NotImplementedException();
+
+        protected override bool TableExists(string tableName) => throw new NotImplementedException();
+
+        //protected override bool TableExists(string tableName) => this.MySqlConnection.TableExists(tableName);
 
         protected override PrimaryKeyMold GetPrimaryKeyImpl()
         {
@@ -278,53 +297,69 @@ ORDER BY
             return pk;
         }
 
+        public override TableMold GetTable() => this.SchemaExplorer.GetTable(
+            this.SchemaName,
+            this.TableName,
+            true,
+            true,
+            true,
+            true);
+
         protected override IReadOnlyList<ForeignKeyMold> GetForeignKeysImpl()
-            => this.MySqlConnection.GetTableForeignKeys(this.SchemaName, this.TableName, true).ToList();
+            //=> this.MySqlConnection.GetTableForeignKeys(this.SchemaName, this.TableName, true).ToList();
+            => throw new NotImplementedException();
+
+        public override IReadOnlyList<ForeignKeyMold> GetForeignKeys()
+            => this.SchemaExplorer.GetTableForeignKeys(this.SchemaName, this.TableName, true, true);
+
+        public override IReadOnlyList<IndexMold> GetIndexes()
+            => this.SchemaExplorer.GetTableIndexes(this.SchemaName, this.TableName, true);
 
         protected override IReadOnlyList<IndexMold> GetIndexesImpl()
-        {
-            using var command = this.Connection.CreateCommand();
+            => throw new NotImplementedException();
+//        {
+//            using var command = this.Connection.CreateCommand();
 
-            command.CommandText = @"
-SELECT
-    S.index_name    IndexName,
-    S.table_name    TableName,
-    S.non_unique    NonUnique,
-    S.column_name   ColumnName,
-    S.seq_in_index  SeqInIndex,
-    S.collation     Collation
-FROM
-    information_schema.statistics S
-WHERE
-    S.table_schema = @p_schemaName
-    AND
-    S.index_schema = @p_schemaName
-    AND
-    S.table_name = @p_tableName
-";
-            command.AddParameterWithValue("p_schemaName", this.SchemaName);
-            command.AddParameterWithValue("p_tableName", this.TableName);
+//            command.CommandText = @"
+//SELECT
+//    S.index_name    IndexName,
+//    S.table_name    TableName,
+//    S.non_unique    NonUnique,
+//    S.column_name   ColumnName,
+//    S.seq_in_index  SeqInIndex,
+//    S.collation     Collation
+//FROM
+//    information_schema.statistics S
+//WHERE
+//    S.table_schema = @p_schemaName
+//    AND
+//    S.index_schema = @p_schemaName
+//    AND
+//    S.table_name = @p_tableName
+//";
+//            command.AddParameterWithValue("p_schemaName", this.SchemaName);
+//            command.AddParameterWithValue("p_tableName", this.TableName);
 
-            var rows = command.GetCommandRows();
+//            var rows = command.GetCommandRows();
 
-            return rows
-                .GroupBy(x => (string)x.IndexName)
-                .Select(x => new IndexMold
-                {
-                    Name = x.Key,
-                    TableName = (string)x.First().TableName,
-                    Columns = x
-                        .OrderBy(y => (int)y.SeqInIndex)
-                        .Select(y => new IndexColumnMold
-                        {
-                            Name = (string)y.ColumnName,
-                            SortDirection = CollationToSortDirection(y.Collation),
-                        })
-                        .ToList(),
-                    IsUnique = x.First().NonUnique.ToString() == "0",
-                })
-                .ToList();
-        }
+//            return rows
+//                .GroupBy(x => (string)x.IndexName)
+//                .Select(x => new IndexMold
+//                {
+//                    Name = x.Key,
+//                    TableName = (string)x.First().TableName,
+//                    Columns = x
+//                        .OrderBy(y => (int)y.SeqInIndex)
+//                        .Select(y => new IndexColumnMold
+//                        {
+//                            Name = (string)y.ColumnName,
+//                            SortDirection = CollationToSortDirection(y.Collation),
+//                        })
+//                        .ToList(),
+//                    IsUnique = x.First().NonUnique.ToString() == "0",
+//                })
+//                .ToList();
+//        }
 
         private SortDirection CollationToSortDirection(string collation)
         {

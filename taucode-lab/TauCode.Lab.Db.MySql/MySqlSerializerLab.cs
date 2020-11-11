@@ -6,7 +6,7 @@ namespace TauCode.Lab.Db.MySql
     public class MySqlSerializerLab : DbSerializerBase
     {
         public MySqlSerializerLab(MySqlConnection connection)
-            : base(connection, connection.GetSchemaName())
+            : base(connection, connection?.Database)
         {
         }
 

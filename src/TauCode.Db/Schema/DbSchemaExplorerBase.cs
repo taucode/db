@@ -391,13 +391,13 @@ INNER JOIN
 ON
     KCU.constraint_name = TC.constraint_name
 WHERE
-    TC.CONSTRAINT_SCHEMA = @p_schemaName AND
-    TC.TABLE_SCHEMA = @p_schemaName AND
-    TC.CONSTRAINT_TYPE = 'PRIMARY KEY' AND
-    TC.TABLE_NAME = @p_tableName AND
+    TC.constraint_schema = @p_schemaName AND
+    TC.table_schema = @p_schemaName AND
+    TC.constraint_type = 'PRIMARY KEY' AND
+    TC.table_name = @p_tableName AND
 
-    KCU.CONSTRAINT_SCHEMA = @p_schemaName AND
-    KCU.TABLE_SCHEMA = @p_schemaName
+    KCU.constraint_schema = @p_schemaName AND
+    KCU.table_schema = @p_schemaName
 ORDER BY
     KCU.ordinal_position
 ";

@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using TauCode.Db;
+using TauCode.Db.Extensions;
 
 namespace TauCode.Lab.Db.MySql.Tests
 {
@@ -20,30 +20,39 @@ namespace TauCode.Lab.Db.MySql.Tests
             return connection;
         }
 
-        internal static void Purge(this MySqlConnection connection)
+        //internal static void Purge(this MySqlConnection connection)
+        //{
+        //    var schemata = connection.GetSchemata();
+
+        //    foreach (var schema in schemata)
+        //    {
+        //        var tableNames = connection.GetTableNames(schema, false);
+
+        //        foreach (var tableName in tableNames)
+        //        {
+        //            connection.DropTable(schema, tableName);
+        //        }
+
+        //        if (schema == "foo")
+        //        {
+        //            continue;
+        //        }
+
+        //        connection.DropSchema(schema);
+        //    }
+
+        //    if (!schemata.Contains("foo"))
+        //    {
+        //        connection.CreateSchema("foo");
+        //    }
+        //}
+
+        internal static void PurgeDatabase(this MySqlConnection connection)
         {
-            var schemata = connection.GetSchemata();
+            new MySqlSchemaExplorer(connection).PurgeDatabase();
 
-            foreach (var schema in schemata)
-            {
-                var tableNames = connection.GetTableNames(schema, false);
-                foreach (var tableName in tableNames)
-                {
-                    connection.DropTable(schema, tableName);
-                }
+            connection.CreateSchema("foo");
 
-                if (schema == "foo")
-                {
-                    continue;
-                }
-
-                connection.DropSchema(schema);
-            }
-
-            if (!schemata.Contains("foo"))
-            {
-                connection.CreateSchema("foo");
-            }
         }
 
         internal static void WriteDiff(string actual, string expected, string directory, string fileExtension, string reminder)
@@ -74,7 +83,7 @@ namespace TauCode.Lab.Db.MySql.Tests
             var table = tableInspector.GetTable();
             var pkColumnName = table.GetPrimaryKeySingleColumn().Name;
 
-            var schemaName = connection.GetSchemaName();
+            var schemaName = connection.Database;
 
             using var command = connection.CreateCommand();
             command.CommandText = $@"
@@ -119,6 +128,9 @@ WHERE
             return (ulong)command.ExecuteScalar();
         }
 
+        internal static IReadOnlyList<string> GetTableNames(this MySqlConnection connection, string schemaName, bool independentFirst)
+            => new MySqlSchemaExplorer(connection).GetTableNames(schemaName, independentFirst);
+
         internal static long GetTableRowCount(MySqlConnection connection, string schemaName, string tableName)
         {
             using var command = connection.CreateCommand();
@@ -129,10 +141,20 @@ WHERE
 
         internal static MySqlConnection CreateConnection(string schemaName)
         {
-            var connectionString = $@"Server=localhost;Database={schemaName};Uid=root;Pwd=1234;";
-            var connection = new MySqlConnection(connectionString);
-            connection.Open();
-            return connection;
+            if (schemaName == null)
+            {
+                var connectionString = $@"Server=localhost;Uid=root;Pwd=1234;";
+                var connection = new MySqlConnection(connectionString);
+                connection.Open();
+                return connection;
+            }
+            else
+            {
+                var connectionString = $@"Server=localhost;Database={schemaName};Uid=root;Pwd=1234;";
+                var connection = new MySqlConnection(connectionString);
+                connection.Open();
+                return connection;
+            }
         }
     }
 }

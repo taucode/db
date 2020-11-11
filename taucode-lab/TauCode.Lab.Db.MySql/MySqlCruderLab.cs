@@ -12,7 +12,7 @@ namespace TauCode.Lab.Db.MySql
     public class MySqlCruderLab : DbCruderBase
     {
         public MySqlCruderLab(MySqlConnection connection)
-            : base(connection, connection.GetSchemaName())
+            : base(connection, connection?.Database)
         {
         }
 

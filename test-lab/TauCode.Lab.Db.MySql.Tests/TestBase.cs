@@ -13,8 +13,14 @@ namespace TauCode.Lab.Db.MySql.Tests
         [SetUp]
         public void SetUpBase()
         {
+            using var connection = TestHelper.CreateConnection(null);
+            if (!connection.SchemaExists("foo"))
+            {
+                connection.CreateSchema("foo");
+            }
+
             this.Connection = TestHelper.CreateConnection(TestHelper.ConnectionString);
-            this.Connection.Purge();
+            this.Connection.PurgeDatabase();
         }
 
         [TearDown]

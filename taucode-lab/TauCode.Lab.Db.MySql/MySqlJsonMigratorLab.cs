@@ -19,7 +19,7 @@ namespace TauCode.Lab.Db.MySql
             Func<TableMold, DynamicRow, DynamicRow> rowTransformer = null)
             : base(
                 connection,
-                connection.GetSchemaName(),
+                connection?.Database,
                 metadataJsonGetter,
                 dataJsonGetter,
                 tableNamePredicate,
