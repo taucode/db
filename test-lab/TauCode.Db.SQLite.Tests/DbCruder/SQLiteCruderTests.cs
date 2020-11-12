@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Newtonsoft.Json;
-using NUnit.Framework;
 using TauCode.Db.Data;
 using TauCode.Db.DbValueConverters;
 using TauCode.Db.Exceptions;
@@ -19,11 +19,6 @@ namespace TauCode.Db.SQLite.Tests.DbCruder
         {
             var sql = this.GetType().Assembly.GetResourceText("crebase.sql", true);
             this.Connection.ExecuteCommentedScript(sql);
-        }
-
-        private void TodoCompare(string actual, string expected, string extension = "sql")
-        {
-            TestHelper.WriteDiff(actual, expected, @"c:\temp\0-sql\", extension, "todo");
         }
 
         private void CreateSuperTable()
@@ -324,8 +319,6 @@ CREATE TABLE [SmallTable](
 
                 var originalRowJson = JsonConvert.SerializeObject(cleanOriginalRow);
                 var loadedJson = JsonConvert.SerializeObject(loadedRows[i]);
-
-                TodoCompare(loadedJson, originalRowJson, "json");
 
                 Assert.That(loadedJson, Is.EqualTo(originalRowJson));
             }

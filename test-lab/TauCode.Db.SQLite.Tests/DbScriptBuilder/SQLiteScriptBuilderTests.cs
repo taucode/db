@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
-using NUnit.Framework;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
 using TauCode.Extensions;
@@ -313,11 +313,6 @@ namespace TauCode.Db.SQLite.Tests.DbScriptBuilder
             #endregion
         }
 
-        private void TodoCompare(string actual, string expected, string extension = "sql")
-        {
-            TestHelper.WriteDiff(actual, expected, @"c:\temp\0-sql\", extension, "todo");
-        }
-
         #region Constructor
 
         [Test]
@@ -406,8 +401,6 @@ namespace TauCode.Db.SQLite.Tests.DbScriptBuilder
             var json2 = JsonConvert.SerializeObject(table2);
 
             // Assert
-            TodoCompare(sql, expectedSql);
-
             Assert.That(sql, Is.EqualTo(expectedSql));
             Assert.That(json, Is.EqualTo(json2));
         }
@@ -440,8 +433,6 @@ namespace TauCode.Db.SQLite.Tests.DbScriptBuilder
             this.Connection.ExecuteSingleSql(sql);
 
             // Assert
-            TodoCompare(sql, expectedSql);
-
             Assert.That(sql, Is.EqualTo(expectedSql));
         }
 
@@ -687,8 +678,6 @@ namespace TauCode.Db.SQLite.Tests.DbScriptBuilder
                     .GetResourceText("BuildInsertScript_AllColumns_DoubleQuotes.sql", true);
             }
 
-            TodoCompare(sql, expectedSql);
-
             Assert.That(sql, Is.EqualTo(expectedSql));
         }
 
@@ -719,8 +708,6 @@ namespace TauCode.Db.SQLite.Tests.DbScriptBuilder
                     .Replace('[', '"')
                     .Replace(']', '"');
             }
-
-            TodoCompare(sql, expectedSql);
 
             Assert.That(sql, Is.EqualTo(expectedSql));
         }
@@ -877,8 +864,6 @@ namespace TauCode.Db.SQLite.Tests.DbScriptBuilder
                 expectedSql = this.GetType().Assembly
                     .GetResourceText("BuildUpdateScript_AllColumns_DoubleQuotes.sql", true);
             }
-
-            TodoCompare(sql, expectedSql);
 
             Assert.That(sql, Is.EqualTo(expectedSql));
         }
@@ -1128,8 +1113,6 @@ namespace TauCode.Db.SQLite.Tests.DbScriptBuilder
                     .GetResourceText("BuildSelectByPrimaryKeyScript_DoubleQuotes.sql", true);
             }
 
-            TodoCompare(sql, expectedSql);
-
             Assert.That(sql, Is.EqualTo(expectedSql));
         }
 
@@ -1161,8 +1144,6 @@ namespace TauCode.Db.SQLite.Tests.DbScriptBuilder
                     .Assembly
                     .GetResourceText("BuildSelectByPrimaryKeyScript_AllColumns_DoubleQuotes.sql", true);
             }
-
-            TodoCompare(sql, expectedSql);
 
             Assert.That(sql, Is.EqualTo(expectedSql));
         }
@@ -1319,8 +1300,6 @@ namespace TauCode.Db.SQLite.Tests.DbScriptBuilder
                     .GetResourceText("BuildSelectAllScript_DoubleQuotes.sql", true);
             }
 
-            TodoCompare(sql, expectedSql);
-
             Assert.That(sql, Is.EqualTo(expectedSql));
         }
 
@@ -1352,8 +1331,6 @@ namespace TauCode.Db.SQLite.Tests.DbScriptBuilder
                     .Assembly
                     .GetResourceText("BuildSelectAllScript_AllColumns_DoubleQuotes.sql", true);
             }
-
-            TodoCompare(sql, expectedSql);
 
             Assert.That(sql, Is.EqualTo(expectedSql));
         }
@@ -1428,8 +1405,6 @@ namespace TauCode.Db.SQLite.Tests.DbScriptBuilder
                     .Replace('[', '"')
                     .Replace(']', '"');
             }
-
-            TodoCompare(sql, expectedSql);
 
             Assert.That(sql, Is.EqualTo(expectedSql));
         }
@@ -1540,8 +1515,6 @@ namespace TauCode.Db.SQLite.Tests.DbScriptBuilder
                     .Replace('[', '"')
                     .Replace(']', '"');
             }
-
-            TodoCompare(sql, expectedSql);
 
             Assert.That(sql, Is.EqualTo(expectedSql));
         }

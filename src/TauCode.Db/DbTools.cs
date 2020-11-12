@@ -296,6 +296,11 @@ namespace TauCode.Db
             command.Parameters.Add(parameter);
         }
 
+        public static TauDbException CreateUnknownDbTypeException(string type)
+        {
+            throw new TauDbException($"Unknown DB type exception: '{type}'.");
+        }
+
         public static TauDbException CreateSchemaDoesNotExistException(string schemaName)
         {
             return new TauDbException($"Schema '{schemaName}' does not exist.");
