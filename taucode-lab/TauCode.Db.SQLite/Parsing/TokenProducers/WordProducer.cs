@@ -6,7 +6,7 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Db.SQLite.Parsing.TokenProducers
 {
-    public class WordTokenProducer : ITokenProducer
+    public class WordProducer : ITokenProducer
     {
         public LexingContext Context { get; set; }
 

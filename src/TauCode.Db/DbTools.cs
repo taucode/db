@@ -9,7 +9,6 @@ using TauCode.Db.Data;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
 
-// todo clean
 namespace TauCode.Db
 {
     public static class DbTools
@@ -175,8 +174,6 @@ namespace TauCode.Db
                 command.ExecuteNonQuery();
             }
         }
-
-
 
         public static void DeleteDataFromAllTables(this IDbInspector dbInspector)
         {

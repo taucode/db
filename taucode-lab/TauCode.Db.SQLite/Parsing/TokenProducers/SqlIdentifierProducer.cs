@@ -9,14 +9,14 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Db.SQLite.Parsing.TokenProducers
 {
-    public class SqlIdentifierTokenProducer : ITokenProducer
+    public class SqlIdentifierProducer : ITokenProducer
     {
         private static Dictionary<char, char> Delimiters { get; }
         private static HashSet<char> OpeningDelimiters { get; }
         private static HashSet<char> ClosingDelimiters { get; }
         private static Dictionary<char, char> ReverseDelimiters { get; }
 
-        static SqlIdentifierTokenProducer()
+        static SqlIdentifierProducer()
         {
             Delimiters = new[]
             {

@@ -7,7 +7,7 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Db.SQLite.Parsing.TokenProducers
 {
-    public class SqlStringTokenProducer : ITokenProducer
+    public class SqlStringProducer : ITokenProducer
     {
         public IToken Produce()
         {

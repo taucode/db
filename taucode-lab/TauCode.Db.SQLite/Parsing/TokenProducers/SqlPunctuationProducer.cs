@@ -5,7 +5,7 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Db.SQLite.Parsing.TokenProducers
 {
-    public class SqlPunctuationTokenProducer : ITokenProducer
+    public class SqlPunctuationProducer : ITokenProducer
     {
         public LexingContext Context { get; set; }
 
