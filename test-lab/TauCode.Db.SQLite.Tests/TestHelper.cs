@@ -4,7 +4,6 @@ using System.Data.SQLite;
 using System.IO;
 using System.Text;
 using TauCode.Db.Extensions;
-using TauCode.Db.SQLite.Schema;
 
 namespace TauCode.Db.SQLite.Tests
 {

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using TauCode.Db.Model;
-using TauCode.Db.Schema;
 
 namespace TauCode.Db.Extensions
 {

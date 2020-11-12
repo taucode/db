@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
 using TauCode.Db.Model;
-using TauCode.Db.Schema;
 using TauCode.Db.SQLite.Parsing;
 
 // todo regions
-namespace TauCode.Db.SQLite.Schema
+namespace TauCode.Db.SQLite
 {
     public class SQLiteSchemaExplorer : DbSchemaExplorerBase
     {

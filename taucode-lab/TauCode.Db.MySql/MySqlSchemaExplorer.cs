@@ -1,15 +1,14 @@
-﻿using MySql.Data.MySqlClient;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using MySql.Data.MySqlClient;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Extensions;
 using TauCode.Db.Model;
-using TauCode.Db.Schema;
 using TauCode.Extensions;
 
-namespace TauCode.Db.MySql.Schema
+namespace TauCode.Db.MySql
 {
     public class MySqlSchemaExplorer : DbSchemaExplorerBase
     {

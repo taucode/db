@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using TauCode.Db.Schema;
 
 namespace TauCode.Db
 {

@@ -1,7 +1,5 @@
 ﻿using Npgsql;
 using System.Data;
-using TauCode.Db.Npgsql.Schema;
-using TauCode.Db.Schema;
 
 namespace TauCode.Db.Npgsql
 {

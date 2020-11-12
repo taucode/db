@@ -1,7 +1,5 @@
 ﻿using System.Data;
 using Microsoft.Data.SqlClient;
-using TauCode.Db.Schema;
-using TauCode.Db.SqlClient.Schema;
 
 namespace TauCode.Db.SqlClient
 {

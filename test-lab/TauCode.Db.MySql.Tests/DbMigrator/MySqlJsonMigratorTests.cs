@@ -2,8 +2,6 @@
 using MySql.Data.MySqlClient;
 using NUnit.Framework;
 using TauCode.Db.Exceptions;
-using TauCode.Db.MySql.Schema;
-using TauCode.Db.Schema;
 using TauCode.Extensions;
 
 namespace TauCode.Db.MySql.Tests.DbMigrator

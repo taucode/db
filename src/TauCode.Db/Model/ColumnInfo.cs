@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
 
-namespace TauCode.Db.Schema
+namespace TauCode.Db.Model
 {
+    /// <summary>
+    /// Raw column info that the INFORMATION_SCHEMA usually contains.
+    /// </summary>
     public class ColumnInfo
     {
         public string Name { get; set; }

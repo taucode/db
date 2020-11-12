@@ -3,8 +3,6 @@ using System;
 using System.Data;
 using TauCode.Db.Data;
 using TauCode.Db.Model;
-using TauCode.Db.MySql.Schema;
-using TauCode.Db.Schema;
 
 namespace TauCode.Db.MySql
 {

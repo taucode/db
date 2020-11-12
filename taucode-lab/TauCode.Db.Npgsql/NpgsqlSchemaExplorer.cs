@@ -1,12 +1,11 @@
-﻿using Npgsql;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Npgsql;
 using TauCode.Db.Model;
-using TauCode.Db.Schema;
 using TauCode.Extensions;
 
-namespace TauCode.Db.Npgsql.Schema
+namespace TauCode.Db.Npgsql
 {
     public class NpgsqlSchemaExplorer : DbSchemaExplorerBase
     {

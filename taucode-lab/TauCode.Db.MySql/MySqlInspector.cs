@@ -1,7 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
 using System.Data;
-using TauCode.Db.MySql.Schema;
-using TauCode.Db.Schema;
 
 namespace TauCode.Db.MySql
 {

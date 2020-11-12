@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using TauCode.Db.Extensions;
-using TauCode.Db.Npgsql.Schema;
 
 namespace TauCode.Db.Npgsql.Tests
 {

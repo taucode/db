@@ -2,10 +2,9 @@
 using System.Linq;
 using Microsoft.Data.SqlClient;
 using TauCode.Db.Model;
-using TauCode.Db.Schema;
 using TauCode.Extensions;
 
-namespace TauCode.Db.SqlClient.Schema
+namespace TauCode.Db.SqlClient
 {
     public class SqlSchemaExplorer : DbSchemaExplorerBase
     {

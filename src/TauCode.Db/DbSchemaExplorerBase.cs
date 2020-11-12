@@ -7,7 +7,7 @@ using TauCode.Db.Data;
 using TauCode.Db.Extensions;
 using TauCode.Db.Model;
 
-namespace TauCode.Db.Schema
+namespace TauCode.Db
 {
     public abstract class DbSchemaExplorerBase : IDbSchemaExplorer
     {

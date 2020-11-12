@@ -2,8 +2,6 @@
 using Microsoft.Data.SqlClient;
 using NUnit.Framework;
 using TauCode.Db.Exceptions;
-using TauCode.Db.Schema;
-using TauCode.Db.SqlClient.Schema;
 using TauCode.Extensions;
 
 namespace TauCode.Db.SqlClient.Tests.DbMigrator

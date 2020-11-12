@@ -2,8 +2,6 @@
 using NUnit.Framework;
 using System;
 using TauCode.Db.Exceptions;
-using TauCode.Db.Npgsql.Schema;
-using TauCode.Db.Schema;
 using TauCode.Extensions;
 
 namespace TauCode.Db.Npgsql.Tests.DbMigrator

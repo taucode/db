@@ -1,8 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
 using TauCode.Db.Exceptions;
-using TauCode.Db.Schema;
-using TauCode.Db.SQLite.Schema;
 using TauCode.Extensions;
 
 namespace TauCode.Db.SQLite.Tests.DbMigrator
