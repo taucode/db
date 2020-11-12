@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Data;
 using System.Data.SQLite;
+using TauCode.Db.Schema;
+using TauCode.Db.SQLite.Schema;
 
 namespace TauCode.Db.SQLite
 {
@@ -22,6 +24,11 @@ namespace TauCode.Db.SQLite
         }
 
         public IDbConnection CreateConnection() => new SQLiteConnection();
+
+        public IDbSchemaExplorer CreateSchemaExplorer(IDbConnection connection)
+        {
+            return new SQLiteSchemaExplorer((SQLiteConnection)connection);
+        }
 
         public IDbInspector CreateInspector(IDbConnection connection, string schemaName)
         {

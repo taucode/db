@@ -26,6 +26,11 @@ namespace TauCode.Db.SQLite
         {
         }
 
+        protected override void CheckSchema()
+        {
+            // idle
+        }
+
         public SQLiteConnection SQLiteConnection => (SQLiteConnection)this.Connection;
 
         public override IDbUtilityFactory Factory => SQLiteUtilityFactory.Instance;

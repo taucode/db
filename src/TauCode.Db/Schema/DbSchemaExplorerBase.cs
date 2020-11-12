@@ -274,7 +274,7 @@ WHERE
                 throw new ArgumentNullException(nameof(schemaName));
             }
 
-            this.CheckSchema(schemaName);
+            this.CheckSchemaExistence(schemaName);
 
             using var command = this.Connection.CreateCommand();
             command.CommandText = @"
@@ -329,7 +329,7 @@ ORDER BY
 
             if (checkExistence)
             {
-                this.CheckSchemaAndTable(schemaName, tableName);
+                this.CheckSchemaAndTableExistence(schemaName, tableName);
             }
 
             var columnInfos = this.GetColumnInfos(schemaName, tableName);
@@ -369,7 +369,7 @@ ORDER BY
 
             if (checkExistence)
             {
-                this.CheckSchemaAndTable(schemaName, tableName);
+                this.CheckSchemaAndTableExistence(schemaName, tableName);
             }
 
             using var command = this.Connection.CreateCommand();
@@ -438,7 +438,7 @@ ORDER BY
 
             if (checkExistence)
             {
-                this.CheckSchemaAndTable(schemaName, tableName);
+                this.CheckSchemaAndTableExistence(schemaName, tableName);
             }
 
             using var command = this.Connection.CreateCommand();
@@ -566,7 +566,7 @@ ORDER BY
 
             if (checkExistence)
             {
-                this.CheckSchemaAndTable(schemaName, tableName);
+                this.CheckSchemaAndTableExistence(schemaName, tableName);
             }
 
             return this.GetTableIndexesImpl(schemaName, tableName);
@@ -582,7 +582,7 @@ ORDER BY
         {
             // todo checks
 
-            this.CheckSchemaAndTable(schemaName, tableName);
+            this.CheckSchemaAndTableExistence(schemaName, tableName);
 
             var tableMold = new TableMold
             {

@@ -44,14 +44,16 @@ namespace TauCode.Db
 
         protected IDbSchemaExplorer SchemaExplorer => _schemaExplorer ??= this.CreateSchemaExplorer(this.Connection);
 
-        #endregion
-
-        #region Abstract & Virtual
-
         protected virtual IDbSerializer CreateSerializer()
         {
             var serializer = this.Factory.CreateSerializer(this.Connection, this.SchemaName);
             return serializer;
+        }
+
+        protected virtual void CheckSchema()
+        {
+            this.SchemaExplorer.CheckSchemaExistence(this.SchemaName);
+
         }
 
         #endregion
@@ -72,7 +74,7 @@ namespace TauCode.Db
 
         public virtual void Migrate()
         {
-            this.SchemaExplorer.CheckSchema(this.SchemaName);
+            this.CheckSchema();
 
             // migrate metadata
             var metadataJson = this.MetadataJsonGetter();

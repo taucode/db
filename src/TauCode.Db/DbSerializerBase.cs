@@ -6,7 +6,9 @@ using System.Data;
 using System.Linq;
 using TauCode.Db.Data;
 using TauCode.Db.Exceptions;
+using TauCode.Db.Extensions;
 using TauCode.Db.Model;
+using TauCode.Db.Schema;
 
 namespace TauCode.Db
 {
@@ -14,6 +16,7 @@ namespace TauCode.Db
     {
         #region Fields
 
+        private IDbSchemaExplorer _schemaExplorer;
         private IDbInspector _dbInspector;
         private IDbCruder _cruder;
 
@@ -85,6 +88,9 @@ namespace TauCode.Db
         protected virtual IDbInspector DbInspector =>
             _dbInspector ??= this.Factory.CreateInspector(this.Connection, this.SchemaName);
 
+        protected virtual IDbSchemaExplorer SchemaExplorer =>
+            _schemaExplorer ??= this.Factory.CreateSchemaExplorer(this.Connection);
+
         #endregion
 
         #region IDbSerializer Members
@@ -104,8 +110,8 @@ namespace TauCode.Db
 
         public virtual string SerializeDbData(Func<string, bool> tableNamePredicate = null)
         {
-            var tables = this.DbInspector.GetTables(true, tableNamePredicate);
-            
+            var tables = this.SchemaExplorer.FilterTables(this.SchemaName, true, tableNamePredicate);
+
             var dbData =
                 new DynamicRow(); // it is strange to store entire data in 'dynamic' 'row', but why to invent new dynamic ancestor?
 
@@ -215,8 +221,7 @@ namespace TauCode.Db
         {
             tableNamePredicate ??= (x => true);
 
-            var tables = this.DbInspector
-                .GetTables(true, tableNamePredicate);
+            var tables = this.SchemaExplorer.FilterTables(this.SchemaName, true, tableNamePredicate);
 
             foreach (var table in tables)
             {

@@ -1,5 +1,7 @@
 ﻿using System.Data;
 using Microsoft.Data.SqlClient;
+using TauCode.Db.Schema;
+using TauCode.Db.SqlClient.Schema;
 
 namespace TauCode.Db.SqlClient
 {
@@ -16,6 +18,11 @@ namespace TauCode.Db.SqlClient
         public IDbScriptBuilder CreateScriptBuilder(string schema) => new SqlScriptBuilder(schema);
 
         public IDbConnection CreateConnection() => new SqlConnection();
+
+        public IDbSchemaExplorer CreateSchemaExplorer(IDbConnection connection)
+        {
+            return new SqlSchemaExplorer((SqlConnection)connection);
+        }
 
         public IDbInspector CreateInspector(IDbConnection connection, string schema) =>
             new SqlInspector((SqlConnection)connection, schema);

@@ -9,6 +9,7 @@ using TauCode.Db.Data;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
 
+// todo clean
 namespace TauCode.Db
 {
     public static class DbTools
@@ -157,21 +158,11 @@ namespace TauCode.Db
             catch (Exception ex)
             {
                 throw new ArgumentException(
-                    $"Failed to retrieve single primary key column name for table '{table.Name}'.",
+                    $"Failed to retrieve single primary key column name for the table '{table.Name}'.",
                     tableParameterName,
                     ex);
             }
         }
-
-        public static IReadOnlyList<string> GetOrderedTableNames(
-            this IDbInspector dbInspector,
-            bool independentFirst,
-            Func<string, bool> tableNamePredicate = null) =>
-            dbInspector.GetTables(
-                    independentFirst,
-                    tableNamePredicate)
-                .Select(x => x.Name)
-                .ToList();
 
         public static void ExecuteCommentedScript(this IDbConnection connection, string script)
         {
@@ -185,96 +176,15 @@ namespace TauCode.Db
             }
         }
 
-        public static IReadOnlyList<TableMold> GetTables(
-            this IDbInspector dbInspector,
-            bool? independentFirst = null,
-            Func<string, bool> tableNamePredicate = null)
-        {
-            if (dbInspector == null)
-            {
-                throw new ArgumentNullException(nameof(dbInspector));
-            }
 
-            tableNamePredicate ??= x => true;
-
-            var tableNames = dbInspector.GetTableNames();
-
-            var tableMolds = tableNames
-                .Where(tableNamePredicate)
-                .Select(x => dbInspector.Factory.CreateTableInspector(
-                    dbInspector.Connection,
-                    dbInspector.SchemaName,
-                    x))
-                .Select(x => x.GetTable())
-                .ToList();
-
-            if (independentFirst.HasValue)
-            {
-                var graph = new Graph<TableMold>();
-
-                foreach (var tableMold in tableMolds)
-                {
-                    graph.AddNode(tableMold);
-                }
-
-                foreach (var node in graph.Nodes)
-                {
-                    var table = node.Value;
-                    foreach (var foreignKey in table.ForeignKeys)
-                    {
-                        var referencedNode =
-                            graph.Nodes.SingleOrDefault(x => x.Value.Name == foreignKey.ReferencedTableName);
-
-                        if (referencedNode == null)
-                        {
-                            throw new NotImplementedException();
-                        }
-
-                        node.DrawEdgeTo(referencedNode);
-                    }
-                }
-
-                var algorithm = new GraphSlicingAlgorithm<TableMold>(graph);
-                var slices = algorithm.Slice();
-                if (!independentFirst.Value)
-                {
-                    slices = slices.Reverse().ToArray();
-                }
-
-                var list = new List<TableMold>();
-
-                foreach (var slice in slices)
-                {
-                    var sliceTables = slice.Nodes
-                        .Select(x => x.Value)
-                        .OrderBy(x => x.Name);
-
-                    list.AddRange(sliceTables);
-                }
-
-                return list;
-            }
-
-            return tableMolds;
-        }
-
-        public static void DropAllTables(this IDbInspector dbInspector)
-        {
-            var tableNames = dbInspector.GetOrderedTableNames(false);
-            var scriptBuilder = dbInspector.Factory.CreateScriptBuilder(dbInspector.SchemaName);
-
-            foreach (var tableName in tableNames)
-            {
-                var sql = scriptBuilder.BuildDropTableScript(tableName);
-                dbInspector.Connection.ExecuteSingleSql(sql);
-            }
-        }
 
         public static void DeleteDataFromAllTables(this IDbInspector dbInspector)
         {
             // todo: check arg, here & anywhere in this class.
 
-            var tableNames = dbInspector.GetOrderedTableNames(false);
+            var schemaExplorer = dbInspector.Factory.CreateSchemaExplorer(dbInspector.Connection);
+            var tableNames = schemaExplorer.GetTableNames(dbInspector.SchemaName, false);
+
             var scriptBuilder = dbInspector.Factory.CreateScriptBuilder(dbInspector.SchemaName);
 
             foreach (var tableName in tableNames)
@@ -609,7 +519,7 @@ namespace TauCode.Db
 
                     if (referencedNode == null)
                     {
-                        throw new NotImplementedException();
+                        throw CreateTableDoesNotExistException(null, foreignKey.ReferencedTableName);
                     }
 
                     node.DrawEdgeTo(referencedNode);

@@ -973,7 +973,7 @@ namespace TauCode.Db.SQLite.Tests.DbScriptBuilder
                 scriptBuilder.BuildUpdateScript(table, columnToParameterMappings)));
 
             // Assert
-            Assert.That(ex, Has.Message.StartsWith("Failed to retrieve single primary key column name for table 'Person'."));
+            Assert.That(ex, Has.Message.StartsWith("Failed to retrieve single primary key column name for the table 'Person'."));
             Assert.That(ex.ParamName, Is.EqualTo("table"));
         }
 
@@ -1182,7 +1182,7 @@ namespace TauCode.Db.SQLite.Tests.DbScriptBuilder
                 scriptBuilder.BuildSelectByPrimaryKeyScript(table, "p_id", x => true)));
 
             // Assert
-            Assert.That(ex, Has.Message.StartsWith("Failed to retrieve single primary key column name for table 'Person'."));
+            Assert.That(ex, Has.Message.StartsWith("Failed to retrieve single primary key column name for the table 'Person'."));
             Assert.That(ex.ParamName, Is.EqualTo("table"));
         }
 
@@ -1443,7 +1443,7 @@ namespace TauCode.Db.SQLite.Tests.DbScriptBuilder
                 scriptBuilder.BuildDeleteByPrimaryKeyScript(table, "p_id")));
 
             // Assert
-            Assert.That(ex, Has.Message.StartsWith("Failed to retrieve single primary key column name for table 'Person'."));
+            Assert.That(ex, Has.Message.StartsWith("Failed to retrieve single primary key column name for the table 'Person'."));
             Assert.That(ex.ParamName, Is.EqualTo("table"));
         }
 

@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Microsoft.Data.SqlClient;
+using Newtonsoft.Json;
+using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Data.SqlClient;
-using Newtonsoft.Json;
-using NUnit.Framework;
 using TauCode.Db.Data;
 using TauCode.Db.DbValueConverters;
 using TauCode.Db.Exceptions;
@@ -1568,7 +1568,7 @@ Table name: SmallTable; index: 1; int: 22
 
             // Assert
             Assert.That(ex,
-                Has.Message.StartsWith("Failed to retrieve single primary key column name for table 'Person'."));
+                Has.Message.StartsWith("Failed to retrieve single primary key column name for the table 'Person'."));
             Assert.That(ex.ParamName, Is.EqualTo("tableName"));
         }
 
@@ -2095,7 +2095,7 @@ Table name: SmallTable; index: 1; int: 22
             var ex = Assert.Throws<ArgumentException>(() => cruder.UpdateRow("SuperTable", update));
 
             // Assert
-            Assert.That(ex, Has.Message.StartsWith("Row update object does not contain primary key value."));
+            Assert.That(ex, Has.Message.StartsWith("'rowUpdate' does not contain primary key value."));
             Assert.That(ex.ParamName, Is.EqualTo("rowUpdate"));
         }
 
@@ -2193,7 +2193,7 @@ Table name: SmallTable; index: 1; int: 22
 
             // Assert
             Assert.That(ex,
-                Has.Message.StartsWith("Failed to retrieve single primary key column name for table 'Person'."));
+                Has.Message.StartsWith("Failed to retrieve single primary key column name for the table 'Person'."));
             Assert.That(ex.ParamName, Is.EqualTo("tableName"));
         }
 
@@ -2316,7 +2316,7 @@ Table name: SmallTable; index: 1; int: 22
             // Assert
             Assert.That(
                 ex,
-                Has.Message.StartsWith("Failed to retrieve single primary key column name for table 'Person'."));
+                Has.Message.StartsWith("Failed to retrieve single primary key column name for the table 'Person'."));
             Assert.That(ex.ParamName, Is.EqualTo("tableName"));
         }
 

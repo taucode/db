@@ -160,7 +160,7 @@ WHERE
 
             if (checkExistence)
             {
-                this.CheckSchemaAndTable(schemaName, tableName);
+                this.CheckSchemaAndTableExistence(schemaName, tableName);
             }
 
             using var command = this.Connection.CreateCommand();
@@ -309,7 +309,7 @@ ORDER BY
 
             if (checkExistence)
             {
-                this.CheckSchemaAndTable(schemaName, tableName);
+                this.CheckSchemaAndTableExistence(schemaName, tableName);
             }
 
             using var command = this.Connection.CreateCommand();
