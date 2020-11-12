@@ -1,6 +1,5 @@
-﻿using System.Data;
-using MySql.Data.MySqlClient;
-using TauCode.Db.Schema;
+﻿using MySql.Data.MySqlClient;
+using System.Data;
 
 namespace TauCode.Db.MySql
 {
@@ -9,6 +8,7 @@ namespace TauCode.Db.MySql
         public MySqlInspector(MySqlConnection connection)
             : base(connection, connection?.Database)
         {
+            MySqlTools.CheckConnectionArgument(connection);
         }
 
         protected MySqlConnection MySqlConnection => (MySqlConnection)this.Connection;

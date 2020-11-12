@@ -9,8 +9,6 @@ using TauCode.Parsing.Nodes;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.Tokens;
 
-// todo clean
-
 namespace TauCode.Db.SQLite.Parsing
 {
     public class SQLiteParser

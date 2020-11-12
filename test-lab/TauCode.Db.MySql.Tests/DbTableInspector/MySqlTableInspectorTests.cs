@@ -1,17 +1,14 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using MySql.Data.MySqlClient;
-using NUnit.Framework;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
 using TauCode.Extensions;
 
 namespace TauCode.Db.MySql.Tests.DbTableInspector
 {
-    // todo: all types (supertable), check returned column types
-    // todo: MySqlGuidDbValueConverter
-
     [TestFixture]
     public class MySqlTableInspectorTests : TestBase
     {
@@ -103,7 +100,7 @@ namespace TauCode.Db.MySql.Tests.DbTableInspector
         }
 
         [Test]
-        public void Constructor_SchemaIsNull_RunsOkAndSchemaIsDbo()
+        public void Constructor_SchemaIsNull_RunsOkAndSchemaIsTakenFromConnection()
         {
             // Arrange
 
@@ -539,7 +536,6 @@ namespace TauCode.Db.MySql.Tests.DbTableInspector
         public void GetPrimaryKey_ValidInput_ReturnsPrimaryKey()
         {
             // Arrange
-            //var tableNames = this.Connection.GetTableNames("zeta", null);
             var tableNames = this.Connection.GetTableNames("zeta", true);
 
             // Act
@@ -582,7 +578,6 @@ namespace TauCode.Db.MySql.Tests.DbTableInspector
                     "Id",
                 },
                 pk.Columns);
-
         }
 
         [Test]

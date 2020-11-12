@@ -4,7 +4,6 @@ using System.Linq;
 
 namespace TauCode.Db
 {
-    // todo regions
     public class DbTableValuesConverter : IDbTableValuesConverter
     {
         private readonly Dictionary<string, IDbValueConverter> _dbValueConverters;
@@ -33,8 +32,6 @@ namespace TauCode.Db
 
         public void SetColumnConverter(string columnName, IDbValueConverter dbValueConverter)
         {
-            // todo: checks, ut-s.
-
             if (columnName == null)
             {
                 throw new ArgumentNullException(nameof(columnName));

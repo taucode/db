@@ -7,6 +7,7 @@ namespace TauCode.Db.MySql
         public MySqlSerializer(MySqlConnection connection)
             : base(connection, connection?.Database)
         {
+            MySqlTools.CheckConnectionArgument(connection);
         }
 
         public override IDbUtilityFactory Factory => MySqlUtilityFactory.Instance;

@@ -1,10 +1,10 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
+using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using MySql.Data.MySqlClient;
-using Newtonsoft.Json;
-using NUnit.Framework;
 using TauCode.Db.Data;
 using TauCode.Db.DbValueConverters;
 using TauCode.Db.Exceptions;
@@ -13,7 +13,6 @@ using TauCode.Extensions;
 
 namespace TauCode.Db.MySql.Tests.DbCruder
 {
-    // todo clean up
     [TestFixture]
     public class MySqlCruderTests : TestBase
     {
@@ -24,11 +23,6 @@ namespace TauCode.Db.MySql.Tests.DbCruder
 
             var sql = this.GetType().Assembly.GetResourceText("crebase.sql", true);
             this.Connection.ExecuteCommentedScript(sql);
-        }
-
-        private void TodoCompare(string actual, string expected, string extension = "sql")
-        {
-            TestHelper.WriteDiff(actual, expected, @"c:\temp\0-sql\", extension, "todo");
         }
 
         private void CreateSuperTable()
@@ -1263,7 +1257,6 @@ ORDER BY
             this.Connection.ExecuteSingleSql("CREATE TABLE bad_schema.some_table(id int PRIMARY KEY)");
 
             IDbCruder cruder = new MySqlCruder(this.Connection);
-            //var du-mmy = cruder.GetTableValuesConverter("some_table");
 
             this.Connection.DropSchema("bad_schema");
 
@@ -1777,7 +1770,6 @@ Table name: SmallTable; index: 1; int: 22
             this.Connection.ExecuteSingleSql("CREATE TABLE bad_schema.some_table(id int PRIMARY KEY)");
 
             IDbCruder cruder = new MySqlCruder(this.Connection);
-            //var du-mmy = cruder.GetTableValuesConverter("some_table");
 
             this.Connection.DropSchema("bad_schema");
 
@@ -1868,8 +1860,9 @@ Table name: SmallTable; index: 1; int: 22
             var ex = Assert.Throws<ArgumentException>((() => cruder.GetRow("Person", "the_id")));
 
             // Assert
-            Assert.That(ex,
-                Has.Message.StartsWith("Failed to retrieve single primary key column name for table 'person'."));
+            Assert.That(
+                ex,
+                Has.Message.StartsWith("Failed to retrieve single primary key column name for the table 'person'."));
             Assert.That(ex.ParamName, Is.EqualTo("tableName"));
         }
 
@@ -2555,7 +2548,6 @@ Table name: SmallTable; index: 1; int: 22
             // Assert
             var loadedRow = TestHelper.LoadRow(this.Connection, "SuperTable", -13);
 
-
             Assert.That(loadedRow["TheInt"], Is.EqualTo(-13));
             Assert.That(loadedRow["TheInt"], Is.TypeOf<int>());
 
@@ -2690,7 +2682,7 @@ Table name: SmallTable; index: 1; int: 22
             var ex = Assert.Throws<ArgumentException>(() => cruder.UpdateRow("SuperTable", update));
 
             // Assert
-            Assert.That(ex, Has.Message.StartsWith("Row update object does not contain primary key value."));
+            Assert.That(ex, Has.Message.StartsWith("'rowUpdate' does not contain primary key value."));
             Assert.That(ex.ParamName, Is.EqualTo("rowUpdate"));
         }
 
@@ -2716,8 +2708,7 @@ Table name: SmallTable; index: 1; int: 22
             var ex = Assert.Throws<ArgumentException>(() => cruder.UpdateRow("SuperTable", update));
 
             // Assert
-            Assert.That(ex, Has.Message.StartsWith("'rowUpdate' has no columns to update.")); // todo: exception starting with 'rowUpdate' vs exception starting with 'Row update object'. find it and fix it.
-
+            Assert.That(ex, Has.Message.StartsWith("'rowUpdate' has no columns to update."));
             Assert.That(ex.ParamName, Is.EqualTo("rowUpdate"));
         }
 
@@ -2744,7 +2735,7 @@ Table name: SmallTable; index: 1; int: 22
             var ex = Assert.Throws<ArgumentException>(() => cruder.UpdateRow("SuperTable", update));
 
             // Assert
-            Assert.That(ex, Has.Message.StartsWith("Primary key column value must not be null.")); // todo: tell which column is PK in exception.
+            Assert.That(ex, Has.Message.StartsWith("Primary key column value must not be null."));
             Assert.That(ex.ParamName, Is.EqualTo("rowUpdate"));
         }
 
@@ -2806,7 +2797,7 @@ Table name: SmallTable; index: 1; int: 22
 
             // Assert
             Assert.That(ex,
-                Has.Message.StartsWith("Failed to retrieve single primary key column name for table 'person'."));
+                Has.Message.StartsWith("Failed to retrieve single primary key column name for the table 'person'."));
             Assert.That(ex.ParamName, Is.EqualTo("tableName"));
         }
 
@@ -2925,7 +2916,6 @@ Table name: SmallTable; index: 1; int: 22
             // Arrange
             this.Connection.ExecuteSingleSql("CREATE TABLE `zeta`.`dummy`(Foo int)"); // no PK
 
-
             this.Connection.Dispose();
             this.Connection = TestHelper.CreateConnection("zeta");
 
@@ -2955,7 +2945,7 @@ Table name: SmallTable; index: 1; int: 22
             // Assert
             Assert.That(
                 ex,
-                Has.Message.StartsWith("Failed to retrieve single primary key column name for table 'person'.")); // todo: for _the_ table 'person'
+                Has.Message.StartsWith("Failed to retrieve single primary key column name for the table 'person'."));
             Assert.That(ex.ParamName, Is.EqualTo("tableName"));
         }
 

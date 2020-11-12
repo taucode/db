@@ -1,12 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using MySql.Data.MySqlClient;
+using System;
 
 namespace TauCode.Db.MySql
 {
     public static class MySqlTools
     {
-        internal static string SafeGetValue(this IDictionary<string, string> dictionary, string key)
+        internal static void CheckConnectionArgument(
+            MySqlConnection connection,
+            string connectionArgumentName = "connection")
         {
-            return ((Dictionary<string, string>)dictionary).GetValueOrDefault(key);
+            if (connection.Database == null)
+            {
+                throw new ArgumentException($"'{nameof(MySqlConnection.Database)}' property of connection is null.", connectionArgumentName);
+            }
         }
     }
 }

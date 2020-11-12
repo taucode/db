@@ -508,14 +508,14 @@ namespace TauCode.Db
             if (!columnToParameterMappings.ContainsKey(pkColumnName))
             {
                 throw new ArgumentException(
-                    $"'{nameof(columnToParameterMappings)}' must contain primary key column mapping.", // todo ut
+                    $"'{nameof(columnToParameterMappings)}' must contain primary key column mapping.",
                     nameof(columnToParameterMappings));
             }
 
             if (columnToParameterMappings.Count <= 1)
             {
                 throw new ArgumentException(
-                    $"'{nameof(columnToParameterMappings)}' must contain at least one column mapping besides primary key column.", // todo ut
+                    $"'{nameof(columnToParameterMappings)}' must contain at least one column mapping besides primary key column.",
                     nameof(columnToParameterMappings));
             }
 
@@ -529,7 +529,7 @@ namespace TauCode.Db
             var badColumn = columnToParameterMappings.Keys.FirstOrDefault(x => !validColumnNames.Contains(x));
             if (badColumn != null)
             {
-                throw new ArgumentException($"Invalid column: '{badColumn}'.", nameof(columnToParameterMappings)); // todo ut
+                throw new ArgumentException($"Invalid column: '{badColumn}'.", nameof(columnToParameterMappings));
             }
 
             var sb = new StringBuilder();

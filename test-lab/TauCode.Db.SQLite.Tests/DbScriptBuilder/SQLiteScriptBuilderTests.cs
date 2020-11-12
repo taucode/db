@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
-using NUnit.Framework;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
 using TauCode.Extensions;
@@ -313,11 +313,6 @@ namespace TauCode.Db.SQLite.Tests.DbScriptBuilder
             #endregion
         }
 
-        private void TodoCompare(string actual, string expected, string extension = "sql")
-        {
-            TestHelper.WriteDiff(actual, expected, @"c:\temp\0-sql\", extension, "todo");
-        }
-
         #region Constructor
 
         [Test]
@@ -356,7 +351,7 @@ namespace TauCode.Db.SQLite.Tests.DbScriptBuilder
         }
 
         [Test]
-        public void CurrentOpeningIdentifierDelimiter_SetInvalidValidValue_ThrowsTodo()
+        public void CurrentOpeningIdentifierDelimiter_SetInvalidValidValue_ThrowsTauDbException()
         {
             // Arrange
             IDbScriptBuilder scriptBuilder = new SQLiteScriptBuilder();
@@ -406,8 +401,6 @@ namespace TauCode.Db.SQLite.Tests.DbScriptBuilder
             var json2 = JsonConvert.SerializeObject(table2);
 
             // Assert
-            TodoCompare(sql, expectedSql);
-
             Assert.That(sql, Is.EqualTo(expectedSql));
             Assert.That(json, Is.EqualTo(json2));
         }
@@ -440,8 +433,6 @@ namespace TauCode.Db.SQLite.Tests.DbScriptBuilder
             this.Connection.ExecuteSingleSql(sql);
 
             // Assert
-            TodoCompare(sql, expectedSql);
-
             Assert.That(sql, Is.EqualTo(expectedSql));
         }
 
@@ -687,8 +678,6 @@ namespace TauCode.Db.SQLite.Tests.DbScriptBuilder
                     .GetResourceText("BuildInsertScript_AllColumns_DoubleQuotes.sql", true);
             }
 
-            TodoCompare(sql, expectedSql);
-
             Assert.That(sql, Is.EqualTo(expectedSql));
         }
 
@@ -719,8 +708,6 @@ namespace TauCode.Db.SQLite.Tests.DbScriptBuilder
                     .Replace('[', '"')
                     .Replace(']', '"');
             }
-
-            TodoCompare(sql, expectedSql);
 
             Assert.That(sql, Is.EqualTo(expectedSql));
         }
@@ -878,8 +865,6 @@ namespace TauCode.Db.SQLite.Tests.DbScriptBuilder
                     .GetResourceText("BuildUpdateScript_AllColumns_DoubleQuotes.sql", true);
             }
 
-            TodoCompare(sql, expectedSql);
-
             Assert.That(sql, Is.EqualTo(expectedSql));
         }
 
@@ -988,7 +973,7 @@ namespace TauCode.Db.SQLite.Tests.DbScriptBuilder
                 scriptBuilder.BuildUpdateScript(table, columnToParameterMappings)));
 
             // Assert
-            Assert.That(ex, Has.Message.StartsWith("Failed to retrieve single primary key column name for table 'Person'."));
+            Assert.That(ex, Has.Message.StartsWith("Failed to retrieve single primary key column name for the table 'Person'."));
             Assert.That(ex.ParamName, Is.EqualTo("table"));
         }
 
@@ -1128,8 +1113,6 @@ namespace TauCode.Db.SQLite.Tests.DbScriptBuilder
                     .GetResourceText("BuildSelectByPrimaryKeyScript_DoubleQuotes.sql", true);
             }
 
-            TodoCompare(sql, expectedSql);
-
             Assert.That(sql, Is.EqualTo(expectedSql));
         }
 
@@ -1161,8 +1144,6 @@ namespace TauCode.Db.SQLite.Tests.DbScriptBuilder
                     .Assembly
                     .GetResourceText("BuildSelectByPrimaryKeyScript_AllColumns_DoubleQuotes.sql", true);
             }
-
-            TodoCompare(sql, expectedSql);
 
             Assert.That(sql, Is.EqualTo(expectedSql));
         }
@@ -1201,7 +1182,7 @@ namespace TauCode.Db.SQLite.Tests.DbScriptBuilder
                 scriptBuilder.BuildSelectByPrimaryKeyScript(table, "p_id", x => true)));
 
             // Assert
-            Assert.That(ex, Has.Message.StartsWith("Failed to retrieve single primary key column name for table 'Person'."));
+            Assert.That(ex, Has.Message.StartsWith("Failed to retrieve single primary key column name for the table 'Person'."));
             Assert.That(ex.ParamName, Is.EqualTo("table"));
         }
 
@@ -1319,8 +1300,6 @@ namespace TauCode.Db.SQLite.Tests.DbScriptBuilder
                     .GetResourceText("BuildSelectAllScript_DoubleQuotes.sql", true);
             }
 
-            TodoCompare(sql, expectedSql);
-
             Assert.That(sql, Is.EqualTo(expectedSql));
         }
 
@@ -1352,8 +1331,6 @@ namespace TauCode.Db.SQLite.Tests.DbScriptBuilder
                     .Assembly
                     .GetResourceText("BuildSelectAllScript_AllColumns_DoubleQuotes.sql", true);
             }
-
-            TodoCompare(sql, expectedSql);
 
             Assert.That(sql, Is.EqualTo(expectedSql));
         }
@@ -1429,8 +1406,6 @@ namespace TauCode.Db.SQLite.Tests.DbScriptBuilder
                     .Replace(']', '"');
             }
 
-            TodoCompare(sql, expectedSql);
-
             Assert.That(sql, Is.EqualTo(expectedSql));
         }
 
@@ -1468,7 +1443,7 @@ namespace TauCode.Db.SQLite.Tests.DbScriptBuilder
                 scriptBuilder.BuildDeleteByPrimaryKeyScript(table, "p_id")));
 
             // Assert
-            Assert.That(ex, Has.Message.StartsWith("Failed to retrieve single primary key column name for table 'Person'."));
+            Assert.That(ex, Has.Message.StartsWith("Failed to retrieve single primary key column name for the table 'Person'."));
             Assert.That(ex.ParamName, Is.EqualTo("table"));
         }
 
@@ -1540,8 +1515,6 @@ namespace TauCode.Db.SQLite.Tests.DbScriptBuilder
                     .Replace('[', '"')
                     .Replace(']', '"');
             }
-
-            TodoCompare(sql, expectedSql);
 
             Assert.That(sql, Is.EqualTo(expectedSql));
         }

@@ -11,7 +11,7 @@ namespace TauCode.Db.MySql
         {
             if (schemaName == null)
             {
-                throw new ArgumentNullException(nameof(schemaName)); // todo: ut this
+                throw new ArgumentNullException(nameof(schemaName));
             }
         }
 

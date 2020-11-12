@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Newtonsoft.Json;
-using NUnit.Framework;
 using TauCode.Db.Data;
 using TauCode.Db.DbValueConverters;
 using TauCode.Db.Exceptions;
@@ -19,11 +19,6 @@ namespace TauCode.Db.SQLite.Tests.DbCruder
         {
             var sql = this.GetType().Assembly.GetResourceText("crebase.sql", true);
             this.Connection.ExecuteCommentedScript(sql);
-        }
-
-        private void TodoCompare(string actual, string expected, string extension = "sql")
-        {
-            TestHelper.WriteDiff(actual, expected, @"c:\temp\0-sql\", extension, "todo");
         }
 
         private void CreateSuperTable()
@@ -324,8 +319,6 @@ CREATE TABLE [SmallTable](
 
                 var originalRowJson = JsonConvert.SerializeObject(cleanOriginalRow);
                 var loadedJson = JsonConvert.SerializeObject(loadedRows[i]);
-
-                TodoCompare(loadedJson, originalRowJson, "json");
 
                 Assert.That(loadedJson, Is.EqualTo(originalRowJson));
             }
@@ -1253,7 +1246,7 @@ Table name: SmallTable; index: 1; int: 22
 
             // Assert
             Assert.That(ex,
-                Has.Message.StartsWith("Failed to retrieve single primary key column name for table 'Person'."));
+                Has.Message.StartsWith("Failed to retrieve single primary key column name for the table 'Person'."));
             Assert.That(ex.ParamName, Is.EqualTo("tableName"));
         }
 
@@ -1609,7 +1602,7 @@ Table name: SmallTable; index: 1; int: 22
             var updated = cruder.UpdateRow("SuperTable", update, null);
 
             // Assert
-            Assert.That(updated, Is.True); // todo: same for other DB-s
+            Assert.That(updated, Is.True);
 
             var loadedRow = TestHelper.LoadRow(this.Connection, "SuperTable", 17);
 
@@ -1660,7 +1653,7 @@ Table name: SmallTable; index: 1; int: 22
             var ex = Assert.Throws<ArgumentException>(() => cruder.UpdateRow("SuperTable", update));
 
             // Assert
-            Assert.That(ex, Has.Message.StartsWith("Row update object does not contain primary key value."));
+            Assert.That(ex, Has.Message.StartsWith("'rowUpdate' does not contain primary key value."));
             Assert.That(ex.ParamName, Is.EqualTo("rowUpdate"));
         }
 
@@ -1758,7 +1751,7 @@ Table name: SmallTable; index: 1; int: 22
 
             // Assert
             Assert.That(ex,
-                Has.Message.StartsWith("Failed to retrieve single primary key column name for table 'Person'."));
+                Has.Message.StartsWith("Failed to retrieve single primary key column name for the table 'Person'."));
             Assert.That(ex.ParamName, Is.EqualTo("tableName"));
         }
 
@@ -1868,7 +1861,7 @@ Table name: SmallTable; index: 1; int: 22
             // Assert
             Assert.That(
                 ex,
-                Has.Message.StartsWith("Failed to retrieve single primary key column name for table 'Person'."));
+                Has.Message.StartsWith("Failed to retrieve single primary key column name for the table 'Person'."));
             Assert.That(ex.ParamName, Is.EqualTo("tableName"));
         }
 

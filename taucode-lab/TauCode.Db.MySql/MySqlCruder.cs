@@ -1,11 +1,11 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Data;
-using MySql.Data.MySqlClient;
 using TauCode.Db.DbValueConverters;
 using TauCode.Db.Model;
 using TauCode.Db.MySql.DbValueConverters;
+using TauCode.Extensions;
 
-// todo regions
 namespace TauCode.Db.MySql
 {
     public class MySqlCruder : DbCruderBase
@@ -13,6 +13,7 @@ namespace TauCode.Db.MySql
         public MySqlCruder(MySqlConnection connection)
             : base(connection, connection?.Database)
         {
+            MySqlTools.CheckConnectionArgument(connection);
         }
 
         protected override string TransformTableName(string tableName) => tableName.ToLowerInvariant();
@@ -27,7 +28,7 @@ namespace TauCode.Db.MySql
                     return new MySqlBitValueConverter();
 
                 case "tinyint":
-                    if (column.Type.Properties.SafeGetValue("unsigned") == "true")
+                    if (column.Type.Properties.GetDictionaryValueOrDefault("unsigned") == "true")
                     {
                         return new ByteValueConverter();
                     }
@@ -37,7 +38,7 @@ namespace TauCode.Db.MySql
                     }
 
                 case "smallint":
-                    if (column.Type.Properties.SafeGetValue("unsigned") == "true")
+                    if (column.Type.Properties.GetDictionaryValueOrDefault("unsigned") == "true")
                     {
                         return new UInt16ValueConverter();
                     }
@@ -48,7 +49,7 @@ namespace TauCode.Db.MySql
 
                 case "int":
                 case "mediumint":
-                    if (column.Type.Properties.SafeGetValue("unsigned") == "true")
+                    if (column.Type.Properties.GetDictionaryValueOrDefault("unsigned") == "true")
                     {
                         return new UInt32ValueConverter();
                     }
@@ -59,7 +60,7 @@ namespace TauCode.Db.MySql
 
 
                 case "bigint":
-                    if (column.Type.Properties.SafeGetValue("unsigned") == "true")
+                    if (column.Type.Properties.GetDictionaryValueOrDefault("unsigned") == "true")
                     {
                         return new UInt64ValueConverter();
                     }
@@ -119,7 +120,7 @@ namespace TauCode.Db.MySql
                     return new MySqlParameter(parameterName, MySqlDbType.Bit);
 
                 case "tinyint":
-                    if (column.Type.Properties.SafeGetValue("unsigned") == "true")
+                    if (column.Type.Properties.GetDictionaryValueOrDefault("unsigned") == "true")
                     {
                         return new MySqlParameter(parameterName, MySqlDbType.UByte);
                     }
@@ -129,7 +130,7 @@ namespace TauCode.Db.MySql
                     }
 
                 case "smallint":
-                    if (column.Type.Properties.SafeGetValue("unsigned") == "true")
+                    if (column.Type.Properties.GetDictionaryValueOrDefault("unsigned") == "true")
                     {
                         return new MySqlParameter(parameterName, MySqlDbType.UInt16);
                     }
@@ -139,7 +140,7 @@ namespace TauCode.Db.MySql
                     }
 
                 case "mediumint":
-                    if (column.Type.Properties.SafeGetValue("unsigned") == "true")
+                    if (column.Type.Properties.GetDictionaryValueOrDefault("unsigned") == "true")
                     {
                         return new MySqlParameter(parameterName, MySqlDbType.UInt24);
                     }
@@ -149,7 +150,7 @@ namespace TauCode.Db.MySql
                     }
 
                 case "int":
-                    if (column.Type.Properties.SafeGetValue("unsigned") == "true")
+                    if (column.Type.Properties.GetDictionaryValueOrDefault("unsigned") == "true")
                     {
                         return new MySqlParameter(parameterName, MySqlDbType.UInt32);
                     }
@@ -159,7 +160,7 @@ namespace TauCode.Db.MySql
                     }
 
                 case "bigint":
-                    if (column.Type.Properties.SafeGetValue("unsigned") == "true")
+                    if (column.Type.Properties.GetDictionaryValueOrDefault("unsigned") == "true")
                     {
                         return new MySqlParameter(parameterName, MySqlDbType.UInt64);
                     }

@@ -3,8 +3,6 @@ using System.Data;
 
 namespace TauCode.Db.DbValueConverters
 {
-    // todo clean up
-    // todo rearrange and make look nice
     public class EnumValueConverter<TEnum> : DbValueConverterBase
         where TEnum : struct
     {
@@ -12,7 +10,7 @@ namespace TauCode.Db.DbValueConverters
         {
             CheckGenericArg();
 
-            this.DbType = dbType; // todo: check.
+            this.DbType = dbType;
         }
 
         private static void CheckGenericArg()
@@ -106,7 +104,7 @@ namespace TauCode.Db.DbValueConverters
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException(); // todo
+                    throw new ArgumentException($"Unsupported type: '{this.DbType}'.", nameof(this.DbType));
             }
 
             return null;
@@ -147,7 +145,7 @@ namespace TauCode.Db.DbValueConverters
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException(); // todo
+                    throw new ArgumentException($"Unsupported type: '{this.DbType}'.", nameof(this.DbType));
             }
 
             return null;

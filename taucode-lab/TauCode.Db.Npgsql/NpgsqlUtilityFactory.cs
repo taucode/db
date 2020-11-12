@@ -1,5 +1,5 @@
-﻿using System.Data;
-using Npgsql;
+﻿using Npgsql;
+using System.Data;
 
 namespace TauCode.Db.Npgsql
 {
@@ -16,6 +16,11 @@ namespace TauCode.Db.Npgsql
         public IDbScriptBuilder CreateScriptBuilder(string schemaName) => new NpgsqlScriptBuilder(schemaName);
 
         public IDbConnection CreateConnection() => new NpgsqlConnection();
+
+        public IDbSchemaExplorer CreateSchemaExplorer(IDbConnection connection)
+        {
+            return new NpgsqlSchemaExplorer((NpgsqlConnection)connection);
+        }
 
         public IDbInspector CreateInspector(IDbConnection connection, string schemaName) =>
             new NpgsqlInspector((NpgsqlConnection)connection, schemaName);

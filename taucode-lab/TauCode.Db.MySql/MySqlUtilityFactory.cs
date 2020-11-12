@@ -1,5 +1,5 @@
-﻿using System.Data;
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
+using System.Data;
 
 namespace TauCode.Db.MySql
 {
@@ -16,6 +16,10 @@ namespace TauCode.Db.MySql
         public IDbScriptBuilder CreateScriptBuilder(string schemaName) => new MySqlScriptBuilder(schemaName);
 
         public IDbConnection CreateConnection() => new MySqlConnection();
+        public IDbSchemaExplorer CreateSchemaExplorer(IDbConnection connection)
+        {
+            return new MySqlSchemaExplorer((MySqlConnection)connection);
+        }
 
         public IDbInspector CreateInspector(IDbConnection connection, string schemaName)
         {

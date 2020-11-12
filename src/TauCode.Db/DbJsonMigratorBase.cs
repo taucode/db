@@ -5,9 +5,7 @@ using TauCode.Db.Data;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Extensions;
 using TauCode.Db.Model;
-using TauCode.Db.Schema;
 
-// todo clean up
 namespace TauCode.Db
 {
     public abstract class DbJsonMigratorBase : DbUtilityBase, IDbMigrator
@@ -45,19 +43,16 @@ namespace TauCode.Db
 
         protected IDbSchemaExplorer SchemaExplorer => _schemaExplorer ??= this.CreateSchemaExplorer(this.Connection);
 
-        protected virtual void CheckSchemaIfNeeded()
-        {
-            this.SchemaExplorer.CheckSchema(this.SchemaName);
-        }
-
-        #endregion
-
-        #region Abstract & Virtual
-
         protected virtual IDbSerializer CreateSerializer()
         {
             var serializer = this.Factory.CreateSerializer(this.Connection, this.SchemaName);
             return serializer;
+        }
+
+        protected virtual void CheckSchema()
+        {
+            this.SchemaExplorer.CheckSchemaExistence(this.SchemaName);
+
         }
 
         #endregion
@@ -78,7 +73,7 @@ namespace TauCode.Db
 
         public virtual void Migrate()
         {
-            this.CheckSchemaIfNeeded();
+            this.CheckSchema();
 
             // migrate metadata
             var metadataJson = this.MetadataJsonGetter();

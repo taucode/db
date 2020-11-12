@@ -3,7 +3,6 @@ using System.Data;
 using Microsoft.Data.SqlClient;
 using TauCode.Db.Data;
 using TauCode.Db.Model;
-using TauCode.Db.Schema;
 
 namespace TauCode.Db.SqlClient
 {

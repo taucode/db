@@ -7,7 +7,7 @@ using TauCode.Db.Data;
 using TauCode.Db.Extensions;
 using TauCode.Db.Model;
 
-namespace TauCode.Db.Schema
+namespace TauCode.Db
 {
     public abstract class DbSchemaExplorerBase : IDbSchemaExplorer
     {
@@ -274,7 +274,7 @@ WHERE
                 throw new ArgumentNullException(nameof(schemaName));
             }
 
-            this.CheckSchema(schemaName);
+            this.CheckSchemaExistence(schemaName);
 
             using var command = this.Connection.CreateCommand();
             command.CommandText = @"
@@ -329,7 +329,7 @@ ORDER BY
 
             if (checkExistence)
             {
-                this.CheckSchemaAndTable(schemaName, tableName);
+                this.CheckSchemaAndTableExistence(schemaName, tableName);
             }
 
             var columnInfos = this.GetColumnInfos(schemaName, tableName);
@@ -369,7 +369,7 @@ ORDER BY
 
             if (checkExistence)
             {
-                this.CheckSchemaAndTable(schemaName, tableName);
+                this.CheckSchemaAndTableExistence(schemaName, tableName);
             }
 
             using var command = this.Connection.CreateCommand();
@@ -438,7 +438,7 @@ ORDER BY
 
             if (checkExistence)
             {
-                this.CheckSchemaAndTable(schemaName, tableName);
+                this.CheckSchemaAndTableExistence(schemaName, tableName);
             }
 
             using var command = this.Connection.CreateCommand();
@@ -566,7 +566,7 @@ ORDER BY
 
             if (checkExistence)
             {
-                this.CheckSchemaAndTable(schemaName, tableName);
+                this.CheckSchemaAndTableExistence(schemaName, tableName);
             }
 
             return this.GetTableIndexesImpl(schemaName, tableName);
@@ -582,7 +582,7 @@ ORDER BY
         {
             // todo checks
 
-            this.CheckSchemaAndTable(schemaName, tableName);
+            this.CheckSchemaAndTableExistence(schemaName, tableName);
 
             var tableMold = new TableMold
             {
@@ -630,7 +630,7 @@ ORDER BY
 
             if (independentFirst.HasValue && !includeForeignKeys)
             {
-                throw new NotImplementedException(); // todo
+                throw new ArgumentException($"If '{nameof(independentFirst)}' value is provided, '{nameof(includeForeignKeys)}' must be true.");
             }
 
             var tableNames = this.GetTableNames(schemaName);

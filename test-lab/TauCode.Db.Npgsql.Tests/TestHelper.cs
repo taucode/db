@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Npgsql;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Npgsql;
 using TauCode.Db.Extensions;
 
 namespace TauCode.Db.Npgsql.Tests
@@ -22,25 +22,6 @@ namespace TauCode.Db.Npgsql.Tests
         {
             new NpgsqlSchemaExplorer(connection).PurgeDatabase();
         }
-
-        //internal static void Purge(this NpgsqlConnection connection)
-        //{
-        //    var schemata = connection.GetSchemata();
-
-        //    foreach (var schema in schemata)
-        //    {
-        //        var tableNames = connection.GetTableNames(schema, false);
-        //        foreach (var tableName in tableNames)
-        //        {
-        //            connection.DropTable(schema, tableName);
-        //        }
-
-        //        if (schema != NpgsqlToolsLab.DefaultSchemaName)
-        //        {
-        //            connection.DropSchema(schema);
-        //        }
-        //    }
-        //}
 
         internal static void WriteDiff(string actual, string expected, string directory, string fileExtension, string reminder)
         {

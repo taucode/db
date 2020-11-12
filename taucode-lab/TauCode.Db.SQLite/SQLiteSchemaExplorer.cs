@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
 using TauCode.Db.Model;
-using TauCode.Db.Schema;
 using TauCode.Db.SQLite.Parsing;
 
-// todo: move to 'Schema' sub-namespace, here & anywhere
-// todo regions
 namespace TauCode.Db.SQLite
 {
     public class SQLiteSchemaExplorer : DbSchemaExplorerBase
@@ -119,7 +116,7 @@ ORDER BY
                 if (includeIndexes)
                 {
                     var indexes = this.GetTableIndexes(null, tableName, false);
-                    tableMold.Indexes = indexes.ToList(); // todo consider get rid of IReadOnlyList at all?
+                    tableMold.Indexes = indexes.ToList();
                 }
 
                 tableMolds.Add(tableMold);
@@ -186,7 +183,7 @@ ORDER BY
             if (includeIndexes)
             {
                 var indexes = this.GetTableIndexes(null, tableName, false);
-                tableMold.Indexes = indexes.ToList(); // todo consider get rid of IReadOnlyList at all?
+                tableMold.Indexes = indexes.ToList();
             }
 
             return tableMold;

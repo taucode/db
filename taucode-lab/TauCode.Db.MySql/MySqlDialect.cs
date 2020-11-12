@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using TauCode.Db.Model;
 
@@ -24,7 +25,10 @@ namespace TauCode.Db.MySql
 
         public override IList<IndexMold> GetCreatableIndexes(TableMold tableMold)
         {
-            // todo: null arg ex possible
+            if (tableMold == null)
+            {
+                throw new ArgumentNullException(nameof(tableMold));
+            }
 
             var pk = tableMold.PrimaryKey;
             var fkNames = tableMold.ForeignKeys.Select(x => x.Name).ToHashSet();

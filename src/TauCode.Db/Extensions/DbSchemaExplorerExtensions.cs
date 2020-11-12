@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
-using TauCode.Db.Schema;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using TauCode.Db.Model;
 
 namespace TauCode.Db.Extensions
 {
@@ -43,26 +45,64 @@ namespace TauCode.Db.Extensions
             }
         }
 
-        public static void CheckSchema(this IDbSchemaExplorer schemaExplorer, string schemaName)
+        public static void CheckSchemaExistence(this IDbSchemaExplorer schemaExplorer, string schemaName)
         {
-            // todo check args
-
             if (!schemaExplorer.SchemaExists(schemaName))
             {
                 throw DbTools.CreateSchemaDoesNotExistException(schemaName);
             }
         }
 
-        public static void CheckSchemaAndTable(this IDbSchemaExplorer schemaExplorer, string schemaName, string tableName)
+        public static void CheckSchemaAndTableExistence(
+            this IDbSchemaExplorer schemaExplorer,
+            string schemaName,
+            string tableName)
         {
             // todo check args
 
-            schemaExplorer.CheckSchema(schemaName);
+            schemaExplorer.CheckSchemaExistence(schemaName);
 
             if (!schemaExplorer.TableExists(schemaName, tableName))
             {
                 throw DbTools.CreateTableDoesNotExistException(schemaName, tableName);
             }
+        }
+
+        public static IList<TableMold> FilterTables(
+            this IDbSchemaExplorer schemaExplorer,
+            string schemaName,
+            bool? independentFirst = null,
+            Func<string, bool> tableNamePredicate = null)
+        {
+            if (schemaExplorer == null)
+            {
+                throw new ArgumentNullException(nameof(schemaExplorer));
+            }
+
+            tableNamePredicate ??= x => true;
+            IEnumerable<string> tableNames;
+
+            if (independentFirst.HasValue)
+            {
+                tableNames = schemaExplorer.GetTableNames(schemaName, independentFirst.Value);
+            }
+            else
+            {
+                tableNames = schemaExplorer.GetTableNames(schemaName);
+            }
+
+            var tables = tableNames
+                .Where(x => tableNamePredicate(x))
+                .Select(x => schemaExplorer.GetTable(
+                    schemaName,
+                    x,
+                    true,
+                    true,
+                    true,
+                    true))
+                .ToList();
+
+            return tables;
         }
 
         public static void CreateSchema(this IDbSchemaExplorer schemaExplorer, string schemaName)

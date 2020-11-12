@@ -17,6 +17,11 @@ namespace TauCode.Db.SqlClient
 
         public IDbConnection CreateConnection() => new SqlConnection();
 
+        public IDbSchemaExplorer CreateSchemaExplorer(IDbConnection connection)
+        {
+            return new SqlSchemaExplorer((SqlConnection)connection);
+        }
+
         public IDbInspector CreateInspector(IDbConnection connection, string schema) =>
             new SqlInspector((SqlConnection)connection, schema);
 

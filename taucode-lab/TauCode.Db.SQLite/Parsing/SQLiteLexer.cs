@@ -9,15 +9,14 @@ namespace TauCode.Db.SQLite.Parsing
     {
         protected override ITokenProducer[] CreateProducers()
         {
-            // todo: support sql comments: /* some comment */, --some comment
             return new ITokenProducer[]
             {
                 new WhiteSpaceProducer(),
-                new WordTokenProducer(),
-                new SqlPunctuationTokenProducer(),
-                new IntegerProducer(IsAcceptableIntegerTerminator), // todo: ...TokenProducer, here & anywhere?
-                new SqlStringTokenProducer(),
-                new SqlIdentifierTokenProducer(),
+                new WordProducer(),
+                new SqlPunctuationProducer(),
+                new IntegerProducer(IsAcceptableIntegerTerminator),
+                new SqlStringProducer(),
+                new SqlIdentifierProducer(),
             };
         }
 

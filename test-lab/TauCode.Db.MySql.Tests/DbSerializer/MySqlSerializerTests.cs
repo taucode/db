@@ -29,11 +29,6 @@ namespace TauCode.Db.MySql.Tests.DbSerializer
             this.Connection.ExecuteCommentedScript(sql);
         }
 
-        private void TodoCompare(string actual, string expected, string extension = "sql")
-        {
-            TestHelper.WriteDiff(actual, expected, @"c:\temp\0-sql\", extension, "todo");
-        }
-
         #region Constructor
 
         [Test]
@@ -100,8 +95,6 @@ namespace TauCode.Db.MySql.Tests.DbSerializer
 
             // Assert
             var expectedJson = this.GetType().Assembly.GetResourceText("SerializeTableResult.json", true);
-
-            TodoCompare(json, expectedJson, "json");
 
             Assert.That(json, Is.EqualTo(expectedJson));
         }
@@ -184,8 +177,6 @@ namespace TauCode.Db.MySql.Tests.DbSerializer
             // Assert
             var expectedJson = this.GetType().Assembly.GetResourceText("SerializeDbCustomResult.json", true);
 
-            TodoCompare(json, expectedJson, "json");
-
             Assert.That(json, Is.EqualTo(expectedJson));
         }
 
@@ -233,8 +224,6 @@ namespace TauCode.Db.MySql.Tests.DbSerializer
 
             // Assert
             var expectedJson = this.GetType().Assembly.GetResourceText("SerializeDbResult.json", true);
-
-            TodoCompare(json, expectedJson, "json");
 
             Assert.That(json, Is.EqualTo(expectedJson));
         }
@@ -762,7 +751,6 @@ namespace TauCode.Db.MySql.Tests.DbSerializer
 
             // Assert
             var expectedJson = this.GetType().Assembly.GetResourceText("SerializeTableMetadataResult.json", true);
-            TodoCompare(json, expectedJson, "json");
             Assert.That(json, Is.EqualTo(expectedJson));
         }
 
@@ -839,7 +827,6 @@ namespace TauCode.Db.MySql.Tests.DbSerializer
 
             // Assert
             var expectedJson = this.GetType().Assembly.GetResourceText("SerializeDbMetadataCustomResult.json", true);
-            TodoCompare(json, expectedJson, "json");
             Assert.That(json, Is.EqualTo(expectedJson));
         }
 
@@ -862,7 +849,6 @@ namespace TauCode.Db.MySql.Tests.DbSerializer
 
             // Assert
             var expectedJson = this.GetType().Assembly.GetResourceText("SerializeDbMetadataResult.json", true);
-            TodoCompare(json, expectedJson, "json");
             Assert.That(json, Is.EqualTo(expectedJson));
         }
 

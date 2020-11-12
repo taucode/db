@@ -1,6 +1,5 @@
 ﻿using System.Data;
 using System.Data.SQLite;
-using TauCode.Db.Schema;
 
 namespace TauCode.Db.SQLite
 {

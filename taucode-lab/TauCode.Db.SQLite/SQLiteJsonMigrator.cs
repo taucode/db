@@ -3,7 +3,6 @@ using System.Data;
 using System.Data.SQLite;
 using TauCode.Db.Data;
 using TauCode.Db.Model;
-using TauCode.Db.Schema;
 
 namespace TauCode.Db.SQLite
 {
@@ -25,8 +24,9 @@ namespace TauCode.Db.SQLite
         {
         }
 
-        protected override void CheckSchemaIfNeeded() // todo get rid of this?
+        protected override void CheckSchema()
         {
+            // idle
         }
 
         public SQLiteConnection SQLiteConnection => (SQLiteConnection)this.Connection;

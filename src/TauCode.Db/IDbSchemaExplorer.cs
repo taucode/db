@@ -2,7 +2,7 @@
 using System.Data;
 using TauCode.Db.Model;
 
-namespace TauCode.Db.Schema
+namespace TauCode.Db
 {
     public interface IDbSchemaExplorer
     {

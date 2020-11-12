@@ -5,7 +5,6 @@ using System.IO;
 using System.Text;
 using TauCode.Db.Extensions;
 
-// todo clean
 namespace TauCode.Db.SQLite.Tests
 {
     internal static class TestHelper
