@@ -19,15 +19,15 @@ namespace TauCode.Db.Extensions
 
         public static void PurgeDatabase(this IDbSchemaExplorer schemaExplorer)
         {
-            var schemata = schemaExplorer.GetSchemata();
+            var schemaNames = schemaExplorer.GetSchemaNames();
 
-            var forbiddenSchemata = new List<string>(schemaExplorer.GetSystemSchemata());
+            var forbiddenSchemaNames = new List<string>(schemaExplorer.GetSystemSchemaNames());
             if (schemaExplorer.DefaultSchemaName != null)
             {
-                forbiddenSchemata.Add(schemaExplorer.DefaultSchemaName);
+                forbiddenSchemaNames.Add(schemaExplorer.DefaultSchemaName);
             }
 
-            foreach (var schema in schemata)
+            foreach (var schema in schemaNames)
             {
                 var tableNames = schemaExplorer.GetTableNames(schema, false);
 
@@ -36,7 +36,7 @@ namespace TauCode.Db.Extensions
                     schemaExplorer.DropTable(schema, tableName);
                 }
 
-                if (forbiddenSchemata.Contains(schema))
+                if (forbiddenSchemaNames.Contains(schema))
                 {
                     continue;
                 }

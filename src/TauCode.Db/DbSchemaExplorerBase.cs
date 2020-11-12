@@ -193,11 +193,11 @@ ORDER BY
 
         public IDbConnection Connection { get; }
 
-        public abstract IReadOnlyList<string> GetSystemSchemata();
+        public abstract IReadOnlyList<string> GetSystemSchemaNames();
 
         public abstract string DefaultSchemaName { get; }
 
-        public virtual IReadOnlyList<string> GetSchemata()
+        public virtual IReadOnlyList<string> GetSchemaNames()
         {
             using var command = this.Connection.CreateCommand();
             command.CommandText = @"
@@ -207,13 +207,13 @@ FROM
     information_schema.schemata S
 ";
 
-            var schemata = command
+            var schemaNames = command
                 .GetCommandRows()
                 .Select(x => (string)x.SchemaName)
-                .Except(this.GetSystemSchemata())
+                .Except(this.GetSystemSchemaNames())
                 .ToList();
 
-            return schemata;
+            return schemaNames;
         }
 
         public virtual bool SchemaExists(string schemaName)
@@ -229,13 +229,13 @@ WHERE
 ";
             command.AddParameterWithValue("p_schemaName", schemaName);
 
-            var schemata = command
+            var schemaNames = command
                 .GetCommandRows()
                 .Select(x => (string)x.SchemaName)
-                .Except(this.GetSystemSchemata())
+                .Except(this.GetSystemSchemaNames())
                 .ToList();
 
-            return schemata.Count == 1;
+            return schemaNames.Count == 1;
         }
 
         public virtual bool TableExists(string schemaName, string tableName)

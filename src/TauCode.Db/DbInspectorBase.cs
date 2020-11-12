@@ -33,7 +33,7 @@ namespace TauCode.Db
 
         public string SchemaName { get; }
 
-        public virtual IReadOnlyList<string> GetSchemaNames() => this.SchemaExplorer.GetSchemata();
+        public virtual IReadOnlyList<string> GetSchemaNames() => this.SchemaExplorer.GetSchemaNames();
 
         public virtual IReadOnlyList<string> GetTableNames() => this.SchemaExplorer.GetTableNames(this.SchemaName);
 

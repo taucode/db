@@ -8,11 +8,11 @@ namespace TauCode.Db
     {
         IDbConnection Connection { get; }
 
-        IReadOnlyList<string> GetSystemSchemata();
+        IReadOnlyList<string> GetSystemSchemaNames();
 
         string DefaultSchemaName { get; }
 
-        IReadOnlyList<string> GetSchemata();
+        IReadOnlyList<string> GetSchemaNames();
 
         bool SchemaExists(string schemaName);
 
