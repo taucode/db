@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using Microsoft.Data.SqlClient;
 using TauCode.Db.Extensions;
+using TauCode.Db.SqlClient.Schema;
 
 namespace TauCode.Db.SqlClient.Tests
 {

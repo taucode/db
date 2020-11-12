@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Data.SQLite;
 
 namespace TauCode.Db.SQLite
@@ -15,6 +16,8 @@ namespace TauCode.Db.SQLite
 
         public IDbScriptBuilder CreateScriptBuilder(string schemaName)
         {
+            CheckSchemaNameIsNull(schemaName);
+
             return new SQLiteScriptBuilder();
         }
 
@@ -22,23 +25,38 @@ namespace TauCode.Db.SQLite
 
         public IDbInspector CreateInspector(IDbConnection connection, string schemaName)
         {
+            CheckSchemaNameIsNull(schemaName);
+
             return new SQLiteInspector((SQLiteConnection)connection);
         }
 
         public IDbTableInspector CreateTableInspector(IDbConnection connection, string schemaName, string tableName)
         {
-            // todo: check schema is null, here & anywhere.
+            CheckSchemaNameIsNull(schemaName);
+
             return new SQLiteTableInspector((SQLiteConnection)connection, tableName);
         }
 
         public IDbCruder CreateCruder(IDbConnection connection, string schemaName)
         {
+            CheckSchemaNameIsNull(schemaName);
+
             return new SQLiteCruder((SQLiteConnection)connection);
         }
 
         public IDbSerializer CreateSerializer(IDbConnection connection, string schemaName)
         {
+            CheckSchemaNameIsNull(schemaName);
+
             return new SQLiteSerializer((SQLiteConnection)connection);
+        }
+
+        private static void CheckSchemaNameIsNull(string schemaName, string schemaArgumentName = "schemaName")
+        {
+            if (schemaName != null)
+            {
+                throw new ArgumentException($"'{schemaArgumentName}' must be null.");
+            }
         }
     }
 }

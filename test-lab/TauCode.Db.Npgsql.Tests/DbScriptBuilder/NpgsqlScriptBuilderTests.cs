@@ -367,7 +367,7 @@ namespace TauCode.Db.Npgsql.Tests.DbScriptBuilder
         }
 
         [Test]
-        public void CurrentOpeningIdentifierDelimiter_SetInvalidValidValue_ThrowsTodo()
+        public void CurrentOpeningIdentifierDelimiter_SetInvalidValidValue_ThrowsTauDbException()
         {
             // Arrange
             IDbScriptBuilder scriptBuilder = new NpgsqlScriptBuilder(null);

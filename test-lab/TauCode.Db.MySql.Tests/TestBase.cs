@@ -1,8 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
 using NUnit.Framework;
 
-// todo: get rid of 'dbo' in this project
-
 namespace TauCode.Db.MySql.Tests
 {
     [TestFixture]

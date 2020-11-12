@@ -1,15 +1,15 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using MySql.Data.MySqlClient;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Extensions;
 using TauCode.Db.Model;
 using TauCode.Db.Schema;
 using TauCode.Extensions;
 
-namespace TauCode.Db.MySql
+namespace TauCode.Db.MySql.Schema
 {
     public class MySqlSchemaExplorer : DbSchemaExplorerBase
     {
@@ -143,9 +143,7 @@ WHERE
                 "mysql",
                 "information_schema",
                 "performance_schema",
-            }; // todo
-
-            //return MySqlToolsLab.SystemSchemata.ToList(); // todo!
+            };
         }
 
         public override IReadOnlyList<ForeignKeyMold> GetTableForeignKeys(string schemaName, string tableName, bool loadColumns, bool checkExistence)
@@ -294,7 +292,7 @@ ORDER BY
                 "collation_name",
                 "column_type",
                 "extra",
-            }; // todo const
+            };
         }
 
         public override PrimaryKeyMold GetTablePrimaryKey(string schemaName, string tableName, bool checkExistence)

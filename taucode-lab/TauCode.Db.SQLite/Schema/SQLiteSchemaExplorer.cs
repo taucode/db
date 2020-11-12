@@ -6,9 +6,8 @@ using TauCode.Db.Model;
 using TauCode.Db.Schema;
 using TauCode.Db.SQLite.Parsing;
 
-// todo: move to 'Schema' sub-namespace, here & anywhere
 // todo regions
-namespace TauCode.Db.SQLite
+namespace TauCode.Db.SQLite.Schema
 {
     public class SQLiteSchemaExplorer : DbSchemaExplorerBase
     {

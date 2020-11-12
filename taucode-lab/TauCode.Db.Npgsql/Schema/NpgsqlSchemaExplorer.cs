@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Npgsql;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Npgsql;
 using TauCode.Db.Model;
 using TauCode.Db.Schema;
 using TauCode.Extensions;
 
-namespace TauCode.Db.Npgsql
+namespace TauCode.Db.Npgsql.Schema
 {
     public class NpgsqlSchemaExplorer : DbSchemaExplorerBase
     {
@@ -121,7 +121,6 @@ WHERE
 
         protected override IList<string> GetAdditionalColumnTableColumnNames()
         {
-            // todo use 'static constant', here & anywhere
             return new List<string>()
             {
                 "identity_start",
@@ -144,12 +143,12 @@ WHERE
 
         public override IReadOnlyList<string> GetSystemSchemata()
         {
-            return new HashSet<string>(new[]
+            return new List<string>
             {
                 "information_schema",
                 "pg_catalog",
                 "pg_toast",
-            }).ToList(); // todo
+            };
         }
 
         public override string DefaultSchemaName => "public";

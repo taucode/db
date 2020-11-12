@@ -1,11 +1,10 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Data;
-using MySql.Data.MySqlClient;
 using TauCode.Db.DbValueConverters;
 using TauCode.Db.Model;
 using TauCode.Db.MySql.DbValueConverters;
 
-// todo regions
 namespace TauCode.Db.MySql
 {
     public class MySqlCruder : DbCruderBase
@@ -13,6 +12,7 @@ namespace TauCode.Db.MySql
         public MySqlCruder(MySqlConnection connection)
             : base(connection, connection?.Database)
         {
+            MySqlTools.CheckConnectionArgument(connection);
         }
 
         protected override string TransformTableName(string tableName) => tableName.ToLowerInvariant();

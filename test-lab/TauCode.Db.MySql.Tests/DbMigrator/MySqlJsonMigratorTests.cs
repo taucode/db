@@ -2,20 +2,15 @@
 using MySql.Data.MySqlClient;
 using NUnit.Framework;
 using TauCode.Db.Exceptions;
+using TauCode.Db.MySql.Schema;
 using TauCode.Db.Schema;
 using TauCode.Extensions;
 
-// todo clean up
 namespace TauCode.Db.MySql.Tests.DbMigrator
 {
     [TestFixture]
     public class MySqlJsonMigratorTests : TestBase
     {
-        private void TodoCompare(string actual, string expected, string extension = "sql")
-        {
-            TestHelper.WriteDiff(actual, expected, @"c:\temp\0-sql\", extension, "todo");
-        }
-
         #region Constructor
 
         [Test]
@@ -143,12 +138,9 @@ namespace TauCode.Db.MySql.Tests.DbMigrator
             #region metadata
 
             var scriptBuilder = new MySqlScriptBuilder("zeta");
-            //var tableMolds = this.Connection.GetTableMolds("zeta", true);
             var tableMolds = schemaExplorer.GetTables("zeta", true, true, true, true, true);
             var script = scriptBuilder.BuildCreateAllTablesScript(tableMolds);
             var expectedScript = this.GetType().Assembly.GetResourceText("MigratedDbCustomOutput.sql", true);
-
-            TodoCompare(script, expectedScript);
 
             Assert.That(script, Is.EqualTo(expectedScript));
             
@@ -286,12 +278,9 @@ namespace TauCode.Db.MySql.Tests.DbMigrator
             #region metadata
 
             var scriptBuilder = new MySqlScriptBuilder("zeta");
-            //var tableMolds = this.Connection.GetTableMolds("zeta", true);
             var tableMolds = schemaExplorer.GetTables("zeta", true, true, true, true, true);
             var script = scriptBuilder.BuildCreateAllTablesScript(tableMolds);
             var expectedScript = this.GetType().Assembly.GetResourceText("MigratedDbOutput.sql", true);
-
-            TodoCompare(script, expectedScript);
 
             Assert.That(script, Is.EqualTo(expectedScript));
 

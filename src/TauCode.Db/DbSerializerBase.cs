@@ -8,7 +8,6 @@ using TauCode.Db.Data;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
 
-// todo clean
 namespace TauCode.Db
 {
     public abstract class DbSerializerBase : DbUtilityBase, IDbSerializer

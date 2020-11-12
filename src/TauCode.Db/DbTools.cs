@@ -9,7 +9,6 @@ using TauCode.Db.Data;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
 
-// todo: clean up, review. some methods might be not needed.
 namespace TauCode.Db
 {
     public static class DbTools
@@ -122,7 +121,7 @@ namespace TauCode.Db
                         if (convertedValue == null && value != DBNull.Value)
                         {
                             throw new TauDbException(
-                                $"Method '{dbValueConverter.GetType().FullName}.{nameof(IDbValueConverter.FromDbValue)}' returned null for field '{name}' while original DB value was not <NULL>."); // todo: table name, column name, here & everywhere.
+                                $"Method '{dbValueConverter.GetType().FullName}.{nameof(IDbValueConverter.FromDbValue)}' returned null for field '{name}' while original DB value was not <NULL>.");
                         }
 
                         value = convertedValue;

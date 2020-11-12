@@ -630,7 +630,7 @@ ORDER BY
 
             if (independentFirst.HasValue && !includeForeignKeys)
             {
-                throw new NotImplementedException(); // todo
+                throw new ArgumentException($"If '{nameof(independentFirst)}' value is provided, '{nameof(includeForeignKeys)}' must be true.");
             }
 
             var tableNames = this.GetTableNames(schemaName);

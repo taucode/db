@@ -1,13 +1,13 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using MySql.Data.MySqlClient;
 using TauCode.Db.Extensions;
+using TauCode.Db.MySql.Schema;
 
 namespace TauCode.Db.MySql.Tests
 {
-    // todo clean up
     internal static class TestHelper
     {
         internal const string ConnectionString = @"Server=localhost;Database=foo;Uid=root;Pwd=1234;";
@@ -18,33 +18,6 @@ namespace TauCode.Db.MySql.Tests
             connection.Open();
             return connection;
         }
-
-        //internal static void Purge(this MySqlConnection connection)
-        //{
-        //    var schemata = connection.GetSchemata();
-
-        //    foreach (var schema in schemata)
-        //    {
-        //        var tableNames = connection.GetTableNames(schema, false);
-
-        //        foreach (var tableName in tableNames)
-        //        {
-        //            connection.DropTable(schema, tableName);
-        //        }
-
-        //        if (schema == "foo")
-        //        {
-        //            continue;
-        //        }
-
-        //        connection.DropSchema(schema);
-        //    }
-
-        //    if (!schemata.Contains("foo"))
-        //    {
-        //        connection.CreateSchema("foo");
-        //    }
-        //}
 
         internal static void PurgeDatabase(this MySqlConnection connection)
         {

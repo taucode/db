@@ -1,8 +1,7 @@
-﻿using System;
-using NUnit.Framework;
+﻿using NUnit.Framework;
+using System;
 
 
-// todo clean
 namespace TauCode.Db.SQLite.Tests.DbInspector
 {
     [TestFixture]
@@ -120,15 +119,6 @@ CREATE TABLE [tab3]([id] int PRIMARY KEY)
                     "tab2",
                     "tab3",
                 }));
-
-            //CollectionAssert.AreEqual(
-            //    new[]
-            //    {
-            //        "tab1",
-            //        "tab2",
-            //        "tab3",
-            //    },
-            //    tableNames);
         }
 
         #endregion

@@ -24,11 +24,6 @@ namespace TauCode.Db.SqlClient.Tests.DbCruder
             this.Connection.ExecuteCommentedScript(sql);
         }
 
-        private void TodoCompare(string actual, string expected, string extension = "sql")
-        {
-            TestHelper.WriteDiff(actual, expected, @"c:\temp\0-sql\", extension, "todo");
-        }
-
         private void CreateSuperTable()
         {
             var sql = this.GetType().Assembly.GetResourceText("SuperTable.sql", true);

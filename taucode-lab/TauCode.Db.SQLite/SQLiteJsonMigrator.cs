@@ -4,6 +4,7 @@ using System.Data.SQLite;
 using TauCode.Db.Data;
 using TauCode.Db.Model;
 using TauCode.Db.Schema;
+using TauCode.Db.SQLite.Schema;
 
 namespace TauCode.Db.SQLite
 {
@@ -22,10 +23,6 @@ namespace TauCode.Db.SQLite
                 dataJsonGetter,
                 tableNamePredicate,
                 rowTransformer)
-        {
-        }
-
-        protected override void CheckSchemaIfNeeded() // todo get rid of this?
         {
         }
 

@@ -3,19 +3,14 @@ using Microsoft.Data.SqlClient;
 using NUnit.Framework;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Schema;
+using TauCode.Db.SqlClient.Schema;
 using TauCode.Extensions;
 
-// todo clean up
 namespace TauCode.Db.SqlClient.Tests.DbMigrator
 {
     [TestFixture]
     public class SqlJsonMigratorTests : TestBase
     {
-        private void TodoCompare(string actual, string expected, string extension = "sql")
-        {
-            TestHelper.WriteDiff(actual, expected, @"c:\temp\0-sql\", extension, "todo");
-        }
-
         #region Constructor
 
         [Test]
@@ -145,13 +140,10 @@ namespace TauCode.Db.SqlClient.Tests.DbMigrator
 
             var scriptBuilder = new SqlScriptBuilder("zeta");
 
-            //var tableMolds = this.Connection.GetTableMolds("zeta", true);
             var tableMolds = schemaExplorer.GetTables("zeta", true, true, true, true, true);
 
             var script = scriptBuilder.BuildCreateAllTablesScript(tableMolds);
             var expectedScript = this.GetType().Assembly.GetResourceText("MigratedDbCustomOutput.sql", true);
-
-            TodoCompare(script, expectedScript);
 
             Assert.That(script, Is.EqualTo(expectedScript));
             
@@ -288,13 +280,10 @@ namespace TauCode.Db.SqlClient.Tests.DbMigrator
 
             var scriptBuilder = new SqlScriptBuilder("zeta");
 
-            //var tableMolds = this.Connection.GetTableMolds("zeta", true);
             var tableMolds = schemaExplorer.GetTables("zeta", true, true, true, true, true);
 
             var script = scriptBuilder.BuildCreateAllTablesScript(tableMolds);
             var expectedScript = this.GetType().Assembly.GetResourceText("MigratedDbOutput.sql", true);
-
-            TodoCompare(script, expectedScript);
 
             Assert.That(script, Is.EqualTo(expectedScript));
 

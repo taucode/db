@@ -5,7 +5,7 @@ using TauCode.Db.Model;
 using TauCode.Db.Schema;
 using TauCode.Extensions;
 
-namespace TauCode.Db.SqlClient
+namespace TauCode.Db.SqlClient.Schema
 {
     public class SqlSchemaExplorer : DbSchemaExplorerBase
     {

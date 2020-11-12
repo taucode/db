@@ -45,8 +45,6 @@ namespace TauCode.Db.Extensions
 
         public static void CheckSchema(this IDbSchemaExplorer schemaExplorer, string schemaName)
         {
-            // todo check args
-
             if (!schemaExplorer.SchemaExists(schemaName))
             {
                 throw DbTools.CreateSchemaDoesNotExistException(schemaName);

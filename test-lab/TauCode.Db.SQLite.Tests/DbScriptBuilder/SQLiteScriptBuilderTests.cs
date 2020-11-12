@@ -351,7 +351,7 @@ namespace TauCode.Db.SQLite.Tests.DbScriptBuilder
         }
 
         [Test]
-        public void CurrentOpeningIdentifierDelimiter_SetInvalidValidValue_ThrowsTodo()
+        public void CurrentOpeningIdentifierDelimiter_SetInvalidValidValue_ThrowsTauDbException()
         {
             // Arrange
             IDbScriptBuilder scriptBuilder = new SQLiteScriptBuilder();

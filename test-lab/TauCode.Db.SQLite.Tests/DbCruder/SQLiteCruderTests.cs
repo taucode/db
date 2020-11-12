@@ -1602,7 +1602,7 @@ Table name: SmallTable; index: 1; int: 22
             var updated = cruder.UpdateRow("SuperTable", update, null);
 
             // Assert
-            Assert.That(updated, Is.True); // todo: same for other DB-s
+            Assert.That(updated, Is.True);
 
             var loadedRow = TestHelper.LoadRow(this.Connection, "SuperTable", 17);
 

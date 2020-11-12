@@ -1,17 +1,17 @@
-﻿using System;
-using Npgsql;
+﻿using MySql.Data.MySqlClient;
 using NUnit.Framework;
+using System;
 using TauCode.Db.Exceptions;
 
-namespace TauCode.Db.Npgsql.Tests.DbInspector
+namespace TauCode.Db.MySql.Tests.DbInspector
 {
     [TestFixture]
-    public class NpgsqlInspectorTestsLab : TestBase
+    public class MySqlInspectorTests : TestBase
     {
         #region Constructor
 
         /// <summary>
-        /// Creates SqlInspector with valid connection and existing schema
+        /// Creates MySqlInspector with valid connection and existing schema
         /// </summary>
         [Test]
         public void Constructor_ValidArguments_RunsOk()
@@ -19,28 +19,28 @@ namespace TauCode.Db.Npgsql.Tests.DbInspector
             // Arrange
 
             // Act
-            IDbInspector inspector = new NpgsqlInspector(this.Connection, "public");
+            IDbInspector inspector = new MySqlInspector(this.Connection);
 
             // Assert
             Assert.That(inspector.Connection, Is.SameAs(this.Connection));
-            Assert.That(inspector.Factory, Is.SameAs(NpgsqlUtilityFactory.Instance));
+            Assert.That(inspector.Factory, Is.SameAs(MySqlUtilityFactory.Instance));
 
-            Assert.That(inspector.SchemaName, Is.EqualTo("public"));
+            Assert.That(inspector.SchemaName, Is.EqualTo("foo"));
         }
 
         [Test]
-        public void Constructor_SchemaIsNull_RunsOkAndSchemaIsPublic()
+        public void Constructor_SchemaIsNull_RunsOkAndSchemaIsFoo()
         {
             // Arrange
 
             // Act
-            IDbInspector inspector = new NpgsqlInspector(this.Connection, null);
+            IDbInspector inspector = new MySqlInspector(this.Connection);
 
             // Assert
             Assert.That(inspector.Connection, Is.SameAs(this.Connection));
-            Assert.That(inspector.Factory, Is.SameAs(NpgsqlUtilityFactory.Instance));
+            Assert.That(inspector.Factory, Is.SameAs(MySqlUtilityFactory.Instance));
 
-            Assert.That(inspector.SchemaName, Is.EqualTo("public"));
+            Assert.That(inspector.SchemaName, Is.EqualTo("foo"));
         }
 
         [Test]
@@ -49,7 +49,7 @@ namespace TauCode.Db.Npgsql.Tests.DbInspector
             // Arrange
 
             // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => new NpgsqlInspector(null, "public"));
+            var ex = Assert.Throws<ArgumentNullException>(() => new MySqlInspector(null));
             
             // Assert
             Assert.That(ex.ParamName, Is.EqualTo("connection"));
@@ -59,10 +59,10 @@ namespace TauCode.Db.Npgsql.Tests.DbInspector
         public void Constructor_ConnectionIsNotOpen_ThrowsArgumentException()
         {
             // Arrange
-            using var connection = new NpgsqlConnection(TestHelper.ConnectionString);
+            using var connection = new MySqlConnection(TestHelper.ConnectionString);
 
             // Act
-            var ex = Assert.Throws<ArgumentException>(() => new NpgsqlInspector(connection, "public"));
+            var ex = Assert.Throws<ArgumentException>(() => new MySqlInspector(connection));
 
             // Assert
             Assert.That(ex, Has.Message.StartsWith("Connection should be opened."));
@@ -81,7 +81,7 @@ namespace TauCode.Db.Npgsql.Tests.DbInspector
             this.Connection.CreateSchema("hello");
             this.Connection.CreateSchema("HangFire");
 
-            IDbInspector inspector = new NpgsqlInspector(this.Connection, "public");
+            IDbInspector inspector = new MySqlInspector(this.Connection);
 
             // Act
             var schemaNames = inspector.GetSchemaNames();
@@ -90,8 +90,8 @@ namespace TauCode.Db.Npgsql.Tests.DbInspector
             CollectionAssert.AreEquivalent(
                 new []
                 {
-                    "public",
-                    "HangFire",
+                    "foo",
+                    "hangfire",
                     "hello",
                     "zeta",
                 },
@@ -109,19 +109,19 @@ namespace TauCode.Db.Npgsql.Tests.DbInspector
             this.Connection.CreateSchema("zeta");
 
             this.Connection.ExecuteSingleSql(@"
-CREATE TABLE ""zeta"".""tab2""(""id"" int PRIMARY KEY)
+CREATE TABLE `zeta`.`Tab2`(`id` int PRIMARY KEY)
 ");
 
             this.Connection.ExecuteSingleSql(@"
-CREATE TABLE ""zeta"".""tab1""(""id"" int PRIMARY KEY)
+CREATE TABLE `zeta`.`Tab1`(`id` int PRIMARY KEY)
 ");
 
             this.Connection.ExecuteSingleSql(@"
-CREATE TABLE ""public"".""tab3""(""id"" int PRIMARY KEY)
+CREATE TABLE `foo`.`Tab3`(`id` int PRIMARY KEY)
 ");
+            using var connection = TestHelper.CreateConnection("zeta");
 
-
-            IDbInspector inspector = new NpgsqlInspector(this.Connection, "zeta");
+            IDbInspector inspector = new MySqlInspector(connection);
 
             // Act
             var tableNames = inspector.GetTableNames();
@@ -141,20 +141,24 @@ CREATE TABLE ""public"".""tab3""(""id"" int PRIMARY KEY)
         {
             // Arrange
             this.Connection.CreateSchema("zeta");
+            this.Connection.CreateSchema("kappa");
 
             this.Connection.ExecuteSingleSql(@"
-CREATE TABLE ""zeta"".""tab2""(""id"" int PRIMARY KEY)
+CREATE TABLE `zeta`.`tab2`(`id` int PRIMARY KEY)
 ");
 
             this.Connection.ExecuteSingleSql(@"
-CREATE TABLE ""zeta"".""tab1""(""id"" int PRIMARY KEY)
+CREATE TABLE `zeta`.`tab1`(`id` int PRIMARY KEY)
 ");
 
             this.Connection.ExecuteSingleSql(@"
-CREATE TABLE ""public"".""tab3""(""id"" int PRIMARY KEY)
+CREATE TABLE `foo`.`tab3`(`id` int PRIMARY KEY)
 ");
 
-            IDbInspector inspector = new NpgsqlInspector(this.Connection, "kappa");
+            using var connection = TestHelper.CreateConnection("kappa");
+            this.Connection.DropSchema("kappa");
+
+            IDbInspector inspector = new MySqlInspector(connection);
 
             // Act
             var ex = Assert.Throws<TauDbException>(() => inspector.GetTableNames());

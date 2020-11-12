@@ -3,6 +3,7 @@ using System.Data;
 using Npgsql;
 using TauCode.Db.Data;
 using TauCode.Db.Model;
+using TauCode.Db.Npgsql.Schema;
 using TauCode.Db.Schema;
 
 namespace TauCode.Db.Npgsql

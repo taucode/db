@@ -488,7 +488,7 @@ namespace TauCode.Db
             var idColumnName = table.GetPrimaryKeySingleColumn(nameof(tableName)).Name;
             if (!columnNames.Contains(idColumnName))
             {
-                throw new ArgumentException("Row update object does not contain primary key value.", nameof(rowUpdate));
+                throw new ArgumentException($"'{nameof(rowUpdate)}' does not contain primary key value.", nameof(rowUpdate));
             }
 
             if (columnNames.Count == 1)
