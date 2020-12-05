@@ -17,6 +17,7 @@ namespace TauCode.Db.Extensions
             }
         }
 
+        // todo: rename to "DropAllSchemas"
         public static void PurgeDatabase(this IDbSchemaExplorer schemaExplorer)
         {
             var schemaNames = schemaExplorer.GetSchemaNames();
