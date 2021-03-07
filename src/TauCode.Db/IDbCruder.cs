@@ -11,7 +11,7 @@ namespace TauCode.Db
         void ResetTables();
         void InsertRow(string tableName, object row, Func<string, bool> propertySelector = null);
         void InsertRows(string tableName, IReadOnlyList<object> rows, Func<string, bool> propertySelector = null);
-        Action<string, object, int> RowInsertedCallback { get; set; }
+        Action<string, object, int> RowInsertedCallback { get; set; } // todo: OnBeforeRowInserted, OnAfterRowInserted
         dynamic GetRow(string tableName, object id, Func<string, bool> columnSelector = null);
         IList<dynamic> GetAllRows(string tableName, Func<string, bool> columnSelector = null);
         bool UpdateRow(string tableName, object rowUpdate, Func<string, bool> propertySelector = null);

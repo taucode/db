@@ -55,3 +55,7 @@ x   1. Get rid of 'own' DbException.
     5. MySql: float -> float (C# Single), real -> double (C# Double), double -> double (C# double)
     6. reserved words - review for all DB-s.
     7. SQL: support comments like /* some comment */ and -- some comment
+
+2021-03-07
+==========
+    1. Get rid of todos
