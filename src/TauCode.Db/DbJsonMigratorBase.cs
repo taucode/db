@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Data;
-using TauCode.Db.Data;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Extensions;
 using TauCode.Db.Model;
@@ -24,15 +23,13 @@ namespace TauCode.Db
             string schemaName,
             Func<string> metadataJsonGetter,
             Func<string> dataJsonGetter,
-            Func<string, bool> tableNamePredicate = null,
-            Func<TableMold, DynamicRow, DynamicRow> rowTransformer = null)
+            Func<string, bool> tableNamePredicate = null)
             : base(connection, true, false)
         {
             this.SchemaName = schemaName;
             this.MetadataJsonGetter = metadataJsonGetter ?? throw new ArgumentNullException(nameof(metadataJsonGetter));
             this.DataJsonGetter = dataJsonGetter ?? throw new ArgumentNullException(nameof(dataJsonGetter));
             this.TableNamePredicate = tableNamePredicate;
-            this.RowTransformer = rowTransformer;
         }
 
         #endregion
@@ -60,7 +57,6 @@ namespace TauCode.Db
         #region Public
 
         public Func<string, bool> TableNamePredicate { get; }
-        public Func<TableMold, DynamicRow, DynamicRow> RowTransformer { get; }
         public IDbSerializer Serializer => _serializer ??= this.CreateSerializer();
         public Func<string> MetadataJsonGetter { get; }
         public Func<string> DataJsonGetter { get; }
@@ -122,7 +118,7 @@ namespace TauCode.Db
                 throw new TauDbException($"'{nameof(DataJsonGetter)}' returned null.");
             }
 
-            this.Serializer.DeserializeDbData(dataJson, this.TableNamePredicate, this.RowTransformer);
+            this.Serializer.DeserializeDbData(dataJson, this.TableNamePredicate);
         }
 
         #endregion

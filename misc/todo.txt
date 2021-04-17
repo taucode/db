@@ -1,4 +1,4 @@
-2019-07-30
+﻿2019-07-30
 ==========
 x   1. Fix issue with SqlCommand.Prepare for all DB types
 +   2. Remove TauCode.Db.XenoTest project when done.
@@ -44,7 +44,7 @@ x   1. Get rid of 'own' DbException.
 
 2020-10-24
 ==========
-    1. GetRow<T>, GetAllRows<T>? or better use NHibernate?
+X   1. GetRow<T>, GetAllRows<T>? or better use NHibernate?
 
 2020-11-02
 ==========
@@ -58,4 +58,20 @@ x   1. Get rid of 'own' DbException.
 
 2021-03-07
 ==========
-    1. Get rid of todos
+X   1. Get rid of to-dos
+
+2021-04-17
+==========
++   1. IDbSerializer fails if some table doesn't have PK.
+    2. Get rid of all NotImplementedExceptions-s and to-do-s in code.
++   3. More flexible Cruder creation in DbSerializer (for tau-lab'ing in real projects)
+    4. UT schema explorer and its extensions
+    5. Make sure IDbxxx objects are not created in other IDbxxx objects endlessly (_obj ??= this.CreateObj() pattern)
++   6. UT new smart DateTimeOffsetConverter with "2019-02-09Z", "2019-02-09"
++   7. UT IDbCruder before/after row serialization callbacks, including identity_insert
++   8. UT IDbSerializer before/after table serialization callbacks, including identity_insert
+↓   9. IDbCruder.UpdateByClause(string tableName, string clause, IDictionary<string, object> parameterValues)
+    9. [extension] IDbCruder.UpdateByColumn(string tableName, string columnName, object columnValue)
+    10. IDbCruder.Update implementation is very bad. Should be 
+        * IDbCruder.UpdateRowById(string tableName, object id, object update)
+    11. Write a todo in every TauCode.Db.Some_Provider_Sql project: copy "EconeraTesting" ut-s. Try to invoke a "value will be truncated" exception (SQLite seems to not show such behavior)

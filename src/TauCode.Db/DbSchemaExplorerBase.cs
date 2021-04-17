@@ -163,7 +163,7 @@ ORDER BY
                 var dynamicRow = (DynamicRow)row;
                 foreach (var additionalColumnName in additionalColumnNames)
                 {
-                    var additionalValue = dynamicRow.GetValue(additionalColumnName);
+                    var additionalValue = dynamicRow.GetProperty(additionalColumnName);
                     if (additionalValue == null)
                     {
                         continue;
@@ -580,7 +580,7 @@ ORDER BY
             bool includeForeignKeys,
             bool includeIndexes)
         {
-            // todo checks
+            // justified_todo checks
 
             this.CheckSchemaAndTableExistence(schemaName, tableName);
 

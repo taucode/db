@@ -18,6 +18,17 @@ namespace TauCode.Db.DbValueConverters
                 return dateTimeOffset2;
             }
 
+            if (value is string s)
+            {
+                var parsed = DateTime.TryParse(s, out var dateTimeFromString);
+
+                if (parsed)
+                {
+                    DateTimeOffset dateTimeOffset3 = dateTimeFromString;
+                    return dateTimeOffset3;
+                }
+            }
+
             return null;
         }
 

@@ -16,7 +16,6 @@ namespace TauCode.Db
         #region Fields
 
         private IDbSchemaExplorer _schemaExplorer;
-        private IDbInspector _dbInspector;
         private IDbCruder _cruder;
 
         #endregion
@@ -35,12 +34,9 @@ namespace TauCode.Db
 
         protected virtual void DeserializeTableData(
             TableMold tableMold,
-            JArray tableData,
-            Func<TableMold, DynamicRow, DynamicRow> rowTransformer)
+            JArray tableData)
         {
             var rows = new List<object>();
-
-            rowTransformer ??= (tableMoldArg, rowArg) => rowArg;
 
             var index = 0;
 
@@ -65,30 +61,67 @@ namespace TauCode.Db
                     }
                     else
                     {
-                        throw new TauDbException($"Object representing row #{index} is invalid. Property '{columnName}' is not a JValue.");
+                        throw new TauDbException(
+                            $"Object representing row #{index} is invalid. Property '{columnName}' is not a JValue.");
                     }
 
-                    row.SetValue(columnName, columnValue);
+                    row.SetProperty(columnName, columnValue);
                 }
 
-                var finalRow = rowTransformer(tableMold, row);
-                rows.Add(finalRow);
+                foreach (var jChildToken in jToken)
+                {
+                    if (jChildToken is JProperty jProperty)
+                    {
+                        if (row.ContainsProperty(jProperty.Name))
+                        {
+                            // ignore.
+                        }
+                        else
+                        {
+                            var jValue = jProperty.Value as JValue;
+                            if (jValue == null)
+                            {
+                                throw new NotSupportedException($"JSON value of type '{jProperty.Value.GetType().FullName}' not supported.");
+                            }
+
+                            row.SetProperty(jProperty.Name, jValue.Value);
+                        }
+                    }
+                    else
+                    {
+                        throw new NotSupportedException($"JSON token of type '{jChildToken.GetType().FullName}' not supported.");
+                    }
+                }
+
+                rows.Add(row);
 
                 index++;
             }
 
-            this.Cruder.InsertRows(tableMold.Name, rows, propName => true);
+            IReadOnlyList<object> transformedRows = rows;
+
+            if (this.BeforeDeserializeTableData != null)
+            {
+                transformedRows = this.BeforeDeserializeTableData(tableMold, rows);
+            }
+
+            var columnNames = tableMold
+                .Columns
+                .Select(x => x.Name)
+                .ToHashSet();
+
+            this.Cruder.InsertRows(tableMold.Name, transformedRows, propName => columnNames.Contains(propName));
+
+            this.AfterDeserializeTableData?.Invoke(tableMold, transformedRows);
         }
 
         #endregion
 
         #region Protected
 
-        protected virtual IDbInspector DbInspector =>
-            _dbInspector ??= this.Factory.CreateInspector(this.Connection, this.SchemaName);
-
-        protected virtual IDbSchemaExplorer SchemaExplorer =>
-            _schemaExplorer ??= this.Factory.CreateSchemaExplorer(this.Connection);
+        protected virtual IDbSchemaExplorer CreateSchemaExplorer() => this.Factory.CreateSchemaExplorer(this.Connection);
+        protected IDbSchemaExplorer SchemaExplorer => _schemaExplorer ??= this.CreateSchemaExplorer();
+        protected virtual IDbCruder CreateCruder() => this.Factory.CreateCruder(this.Connection, this.SchemaName);
 
         #endregion
 
@@ -96,7 +129,7 @@ namespace TauCode.Db
 
         public string SchemaName { get; }
 
-        public virtual IDbCruder Cruder => _cruder ??= this.Factory.CreateCruder(this.Connection, this.SchemaName);
+        public IDbCruder Cruder => _cruder ??= this.CreateCruder();
 
         public JsonSerializerSettings JsonSerializerSettings { get; set; } = new JsonSerializerSettings();
 
@@ -125,7 +158,7 @@ namespace TauCode.Db
 
                     var rows = command.GetCommandRows(tableValuesConverter);
 
-                    dbData.SetValue(table.Name, rows);
+                    dbData.SetProperty(table.Name, rows);
                 }
             }
 
@@ -133,10 +166,13 @@ namespace TauCode.Db
             return json;
         }
 
+        public Func<TableMold, IReadOnlyList<object>, IReadOnlyList<object>> BeforeDeserializeTableData { get; set; }
+
+        public Action<TableMold, IReadOnlyList<object>> AfterDeserializeTableData { get; set; }
+
         public virtual void DeserializeTableData(
             string tableName,
-            string json,
-            Func<TableMold, DynamicRow, DynamicRow> rowTransformer = null)
+            string json)
         {
             if (tableName == null)
             {
@@ -156,13 +192,12 @@ namespace TauCode.Db
             }
 
             var table = this.Factory.CreateTableInspector(this.Connection, this.SchemaName, tableName).GetTable();
-            this.DeserializeTableData(table, tableData, rowTransformer);
+            this.DeserializeTableData(table, tableData);
         }
 
         public virtual void DeserializeDbData(
             string json,
-            Func<string, bool> tableNamePredicate = null,
-            Func<TableMold, DynamicRow, DynamicRow> rowTransformer = null)
+            Func<string, bool> tableNamePredicate = null)
         {
             if (json == null)
             {
@@ -195,7 +230,7 @@ namespace TauCode.Db
                 var tableInspector = this.Factory.CreateTableInspector(this.Connection, this.SchemaName, name);
                 var tableMold = tableInspector.GetTable();
 
-                this.DeserializeTableData(tableMold, tableData, rowTransformer);
+                this.DeserializeTableData(tableMold, tableData);
             }
         }
 
