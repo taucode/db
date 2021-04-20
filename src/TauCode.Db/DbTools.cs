@@ -127,7 +127,7 @@ namespace TauCode.Db
                         value = convertedValue;
                     }
 
-                    row.SetValue(name, value);
+                    row.SetProperty(name, value);
                 }
 
                 rows.Add(row);
@@ -163,6 +163,33 @@ namespace TauCode.Db
             }
         }
 
+        public static ColumnMold TryGetPrimaryKeySingleColumn(this TableMold table, string tableParameterName = null)
+        {
+            if (table == null)
+            {
+                throw new ArgumentNullException(nameof(table));
+            }
+
+            tableParameterName ??= nameof(table);
+
+            if (table.PrimaryKey == null)
+            {
+                return null; // table has no PK
+            }
+
+            try
+            {
+                return table.Columns.Single(x => x.Name == table.PrimaryKey.Columns.Single());
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException(
+                    $"Failed to retrieve single primary key column name for the table '{table.Name}'.",
+                    tableParameterName,
+                    ex);
+            }
+        }
+
         public static void ExecuteCommentedScript(this IDbConnection connection, string script)
         {
             var sqls = SplitScriptByComments(script);
@@ -177,7 +204,7 @@ namespace TauCode.Db
 
         public static void DeleteDataFromAllTables(this IDbInspector dbInspector)
         {
-            // todo: check arg, here & anywhere in this class.
+            // justified_todo: check arg, here & anywhere in this class.
 
             var schemaExplorer = dbInspector.Factory.CreateSchemaExplorer(dbInspector.Connection);
             var tableNames = schemaExplorer.GetTableNames(dbInspector.SchemaName, false);

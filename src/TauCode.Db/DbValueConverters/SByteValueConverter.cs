@@ -2,9 +2,9 @@
 
 namespace TauCode.Db.DbValueConverters
 {
-    public class SByteValueConverter : IDbValueConverter
+    public class SByteValueConverter : DbValueConverterBase
     {
-        public object ToDbValue(object value)
+        protected override object ToDbValueImpl(object value)
         {
             if (value.GetType().IsIntegerType())
             {
@@ -14,7 +14,7 @@ namespace TauCode.Db.DbValueConverters
             return null;
         }
 
-        public object FromDbValue(object dbValue)
+        protected override object FromDbValueImpl(object dbValue)
         {
             if (dbValue is sbyte sbyteValue)
             {

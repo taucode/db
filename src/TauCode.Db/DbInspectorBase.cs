@@ -23,9 +23,10 @@ namespace TauCode.Db
 
         #region Protected
 
-        protected IDbSchemaExplorer SchemaExplorer => _schemaExplorer ??= this.CreateSchemaExplorer(this.Connection);
+        protected virtual IDbSchemaExplorer CreateSchemaExplorer() =>
+            this.Factory.CreateSchemaExplorer(this.Connection);
 
-        protected abstract IDbSchemaExplorer CreateSchemaExplorer(IDbConnection connection);
+        protected IDbSchemaExplorer SchemaExplorer => _schemaExplorer ??= this.CreateSchemaExplorer();
 
         #endregion
 

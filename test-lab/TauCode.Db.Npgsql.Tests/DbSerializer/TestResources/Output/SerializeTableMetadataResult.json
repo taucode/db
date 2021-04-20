@@ -1,0 +1,154 @@
+﻿{
+  "Name": "Person",
+  "Columns": [
+    {
+      "Name": "Id",
+      "Type": {
+        "Name": "integer",
+        "Size": null,
+        "Precision": null,
+        "Scale": null,
+        "Properties": {}
+      },
+      "IsNullable": false,
+      "Identity": null,
+      "Default": null,
+      "Properties": {}
+    },
+    {
+      "Name": "Tag",
+      "Type": {
+        "Name": "uuid",
+        "Size": null,
+        "Precision": null,
+        "Scale": null,
+        "Properties": {}
+      },
+      "IsNullable": true,
+      "Identity": null,
+      "Default": null,
+      "Properties": {}
+    },
+    {
+      "Name": "IsChecked",
+      "Type": {
+        "Name": "boolean",
+        "Size": null,
+        "Precision": null,
+        "Scale": null,
+        "Properties": {}
+      },
+      "IsNullable": true,
+      "Identity": null,
+      "Default": null,
+      "Properties": {}
+    },
+    {
+      "Name": "Birthday",
+      "Type": {
+        "Name": "timestamp without time zone",
+        "Size": null,
+        "Precision": null,
+        "Scale": null,
+        "Properties": {}
+      },
+      "IsNullable": true,
+      "Identity": null,
+      "Default": null,
+      "Properties": {}
+    },
+    {
+      "Name": "FirstName",
+      "Type": {
+        "Name": "character varying",
+        "Size": 100,
+        "Precision": null,
+        "Scale": null,
+        "Properties": {}
+      },
+      "IsNullable": true,
+      "Identity": null,
+      "Default": null,
+      "Properties": {}
+    },
+    {
+      "Name": "LastName",
+      "Type": {
+        "Name": "character varying",
+        "Size": 100,
+        "Precision": null,
+        "Scale": null,
+        "Properties": {}
+      },
+      "IsNullable": true,
+      "Identity": null,
+      "Default": null,
+      "Properties": {}
+    },
+    {
+      "Name": "Initials",
+      "Type": {
+        "Name": "character",
+        "Size": 2,
+        "Precision": null,
+        "Scale": null,
+        "Properties": {}
+      },
+      "IsNullable": true,
+      "Identity": null,
+      "Default": null,
+      "Properties": {}
+    },
+    {
+      "Name": "Gender",
+      "Type": {
+        "Name": "smallint",
+        "Size": null,
+        "Precision": null,
+        "Scale": null,
+        "Properties": {}
+      },
+      "IsNullable": true,
+      "Identity": null,
+      "Default": null,
+      "Properties": {}
+    }
+  ],
+  "PrimaryKey": {
+    "Name": "PK_person",
+    "Columns": [
+      "Id"
+    ],
+    "Properties": {}
+  },
+  "ForeignKeys": [],
+  "Indexes": [
+    {
+      "Name": "PK_person",
+      "TableName": "Person",
+      "Columns": [
+        {
+          "Name": "Id",
+          "SortDirection": "Ascending",
+          "Properties": {}
+        }
+      ],
+      "IsUnique": true,
+      "Properties": {}
+    },
+    {
+      "Name": "UX_person_tag",
+      "TableName": "Person",
+      "Columns": [
+        {
+          "Name": "Tag",
+          "SortDirection": "Ascending",
+          "Properties": {}
+        }
+      ],
+      "IsUnique": true,
+      "Properties": {}
+    }
+  ],
+  "Properties": {}
+}

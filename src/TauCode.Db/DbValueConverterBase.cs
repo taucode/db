@@ -17,7 +17,7 @@ namespace TauCode.Db
             if (value == DBNull.Value)
             {
                 throw new ArgumentException(
-                    "Cannot convert 'DBNull.Value'. For row column values, use CLR null instead of DBNull.Value.");
+                    $"Cannot convert instance of '{typeof(DBNull).FullName}'. For row column values, use CLR null instead of '{typeof(DBNull).FullName}'.");
             }
 
             var dbValue = this.ToDbValueImpl(value);

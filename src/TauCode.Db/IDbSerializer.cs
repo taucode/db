@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
-using TauCode.Db.Data;
+using System.Collections.Generic;
 using TauCode.Db.Model;
 
 namespace TauCode.Db
@@ -17,15 +17,17 @@ namespace TauCode.Db
 
         string SerializeDbData(Func<string, bool> tableNamePredicate = null);
 
+        Func<TableMold, IReadOnlyList<object>, IReadOnlyList<object>> BeforeDeserializeTableData { get; set; }
+
+        Action<TableMold, IReadOnlyList<object>> AfterDeserializeTableData { get; set; }
+
         void DeserializeTableData(
             string tableName,
-            string json,
-            Func<TableMold, DynamicRow, DynamicRow> rowTransformer = null);
+            string json);
 
         void DeserializeDbData(
             string json,
-            Func<string, bool> tableNamePredicate = null,
-            Func<TableMold, DynamicRow, DynamicRow> rowTransformer = null);
+            Func<string, bool> tableNamePredicate = null);
 
         string SerializeTableMetadata(string tableName);
 

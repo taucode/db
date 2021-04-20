@@ -55,20 +55,15 @@ namespace TauCode.Db.Data
 
         public IDictionary<string, object> ToDictionary() => _values;
 
-        public void SetValue(string name, object value)
-        {
-            _values[name] = value;
-        }
+        public void SetProperty(string propertyName, object propertyValue) => _values[propertyName] = propertyValue;
 
-        public object GetValue(string name)
-        {
-            return _values[name];
-        }
+        public object GetProperty(string propertyName) => _values[propertyName];
 
-        public bool DeleteValue(string name)
-        {
-            return _values.Remove(name);
-        }
+        public bool RemoveProperty(string propertyName) => _values.Remove(propertyName);
+
+        public bool ContainsProperty(string propertyName) => _values.ContainsKey(propertyName);
+
+        public void Clear() => _values.Clear();
 
         #endregion
     }

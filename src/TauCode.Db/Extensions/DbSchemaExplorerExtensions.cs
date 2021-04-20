@@ -9,16 +9,14 @@ namespace TauCode.Db.Extensions
     {
         public static void DropAllTables(this IDbSchemaExplorer schemaExplorer, string schemaName)
         {
-            var tableNames = schemaExplorer.GetTableNames(null, false);
-
+            var tableNames = schemaExplorer.GetTableNames(schemaName, false);
             foreach (var tableName in tableNames)
             {
                 schemaExplorer.DropTable(schemaName, tableName);
             }
         }
 
-        // todo: rename to "DropAllSchemas"
-        public static void PurgeDatabase(this IDbSchemaExplorer schemaExplorer)
+        public static void DropAllSchemas(this IDbSchemaExplorer schemaExplorer)
         {
             var schemaNames = schemaExplorer.GetSchemaNames();
 
@@ -59,8 +57,7 @@ namespace TauCode.Db.Extensions
             string schemaName,
             string tableName)
         {
-            // todo check args
-
+            // justified_todo check args
             schemaExplorer.CheckSchemaExistence(schemaName);
 
             if (!schemaExplorer.TableExists(schemaName, tableName))

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using TauCode.Db.Model;
 
-namespace TauCode.Db
+namespace TauCode.Db.Extensions
 {
     public static class DbScriptBuilderExtensions
     {
