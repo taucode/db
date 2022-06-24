@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using TauCode.Algorithms.Graphs;
+using TauCode.Data.Graphs;
 using TauCode.Db.Data;
 using TauCode.Db.Exceptions;
 using TauCode.Db.Model;
@@ -44,8 +45,10 @@ namespace TauCode.Db
             NumericTypes = list.ToHashSet();
         }
 
+        // todo: move to extensions
         public static bool IsIntegerType(this Type type) => IntegerTypes.Contains(type ?? throw new ArgumentNullException(nameof(type)));
 
+        // todo: move to extensionsw
         public static bool IsNumericType(this Type type) => NumericTypes.Contains(type ?? throw new ArgumentNullException(nameof(type)));
 
         public static IList<string> SplitScriptByComments(string script)
@@ -526,32 +529,43 @@ namespace TauCode.Db
 
         public static List<TableMold> ArrangeTables(List<TableMold> tables, bool independentFirst)
         {
-            var graph = new Graph<TableMold>();
+            var graph = new Graph();
 
             foreach (var tableMold in tables)
             {
-                graph.AddNode(tableMold);
+                graph.Add(new Vertex<TableMold>(tableMold.Name, tableMold));
             }
 
-            foreach (var node in graph.Nodes)
+            foreach (var node in graph.Cast<Vertex<TableMold>>())
             {
-                var table = node.Value;
+                var table = node.Data;
                 foreach (var foreignKey in table.ForeignKeys)
                 {
                     var referencedNode =
-                        graph.Nodes.SingleOrDefault(x => x.Value.Name == foreignKey.ReferencedTableName);
+                        graph
+                            .Cast<Vertex<TableMold>>()
+                            .SingleOrDefault(x => x.Data.Name == foreignKey.ReferencedTableName);
 
                     if (referencedNode == null)
                     {
                         throw CreateTableDoesNotExistException(null, foreignKey.ReferencedTableName);
                     }
 
-                    node.DrawEdgeTo(referencedNode);
+
+                    //node.DrawEdgeTo(referencedNode); // todo implement this extension in Data.Graphs
+                    var arc = new Arc();
+                    arc.Connect(node, referencedNode);
                 }
             }
 
-            var algorithm = new GraphSlicingAlgorithm<TableMold>(graph);
-            var slices = algorithm.Slice();
+            var algorithm = new GraphSlicingAlgorithm
+            {
+                Input = graph,
+            };
+
+            algorithm.Run();
+
+            var slices = algorithm.Output;
             if (!independentFirst)
             {
                 slices = slices.Reverse().ToArray();
@@ -561,8 +575,9 @@ namespace TauCode.Db
 
             foreach (var slice in slices)
             {
-                var sliceTables = slice.Nodes
-                    .Select(x => x.Value)
+                var sliceTables = slice
+                    .Cast<Vertex<TableMold>>()
+                    .Select(x => x.Data)
                     .OrderBy(x => x.Name);
 
                 list.AddRange(sliceTables);
