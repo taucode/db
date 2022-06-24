@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29009.5
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{89412E0C-9F93-4FB0-ACB6-DC95174759A0}"
 EndProject
@@ -23,10 +23,18 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{A6E95C07-55C0-451D-9F85-444F66E0E85D}"
 	ProjectSection(SolutionItems) = preProject
 		build\azure-pipelines-dev.yml = build\azure-pipelines-dev.yml
-		build\azure-pipelines.yml = build\azure-pipelines.yml
+		build\azure-pipelines-main.yml = build\azure-pipelines-main.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.Db.Tests", "test\TauCode.Db.Tests\TauCode.Db.Tests.csproj", "{CF45169C-5D87-4708-8DD2-C95BDCF13768}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tau-zeta", "tau-zeta", "{0274225D-8E52-4F56-91BF-194380809F68}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test-zeta", "test-zeta", "{668682E2-8909-443D-8707-60CE2A5A1593}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TauCode.Db.SqlClient", "tau-zeta\TauCode.Db.SqlClient\TauCode.Db.SqlClient.csproj", "{2772CB89-C54F-458A-8A54-BA37162EEE55}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TauCode.Db.SqlClient.Tests", "test-zeta\TauCode.Db.SqlClient.Tests\TauCode.Db.SqlClient.Tests.csproj", "{5751E27E-702C-4328-A96E-553465E9302E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,6 +50,14 @@ Global
 		{CF45169C-5D87-4708-8DD2-C95BDCF13768}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF45169C-5D87-4708-8DD2-C95BDCF13768}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CF45169C-5D87-4708-8DD2-C95BDCF13768}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2772CB89-C54F-458A-8A54-BA37162EEE55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2772CB89-C54F-458A-8A54-BA37162EEE55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2772CB89-C54F-458A-8A54-BA37162EEE55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2772CB89-C54F-458A-8A54-BA37162EEE55}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5751E27E-702C-4328-A96E-553465E9302E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5751E27E-702C-4328-A96E-553465E9302E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5751E27E-702C-4328-A96E-553465E9302E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5751E27E-702C-4328-A96E-553465E9302E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -49,6 +65,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{202DC44E-5880-4A3E-A265-CA5CEFD5E085} = {89412E0C-9F93-4FB0-ACB6-DC95174759A0}
 		{CF45169C-5D87-4708-8DD2-C95BDCF13768} = {EE8B33C7-90A5-4CCF-99D9-BC9CF029F312}
+		{2772CB89-C54F-458A-8A54-BA37162EEE55} = {0274225D-8E52-4F56-91BF-194380809F68}
+		{5751E27E-702C-4328-A96E-553465E9302E} = {668682E2-8909-443D-8707-60CE2A5A1593}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E033216E-1151-4D66-A416-3EBD14511CA8}

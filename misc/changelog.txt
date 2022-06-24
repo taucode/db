@@ -45,3 +45,7 @@
 2021-04-19
 ==========
     1. Refactored, fixed bugs.
+
+2022-06-25
+==========
+    1. Resurrection.
