@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29009.5
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{89412E0C-9F93-4FB0-ACB6-DC95174759A0}"
 EndProject
@@ -23,16 +23,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{A6E95C07-55C0-451D-9F85-444F66E0E85D}"
 	ProjectSection(SolutionItems) = preProject
 		build\azure-pipelines-dev.yml = build\azure-pipelines-dev.yml
-		build\azure-pipelines.yml = build\azure-pipelines.yml
+		build\azure-pipelines-main.yml = build\azure-pipelines-main.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.Db.Tests", "test\TauCode.Db.Tests\TauCode.Db.Tests.csproj", "{CF45169C-5D87-4708-8DD2-C95BDCF13768}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.Db.Tests.Common", "test\TauCode.Db.Tests.Common\TauCode.Db.Tests.Common.csproj", "{952786F9-0817-42B8-AB03-124E23B6C963}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.Db.Tests.SQLite", "test\TauCode.Db.Tests.SQLite\TauCode.Db.Tests.SQLite.csproj", "{67C8EF3B-5976-4E3B-AD50-8778BB488A5D}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.Db.Tests.SqlServer", "test\TauCode.Db.Tests.SqlServer\TauCode.Db.Tests.SqlServer.csproj", "{94732F76-4A68-411F-A3A4-A03C9B83C5CF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,18 +42,6 @@ Global
 		{CF45169C-5D87-4708-8DD2-C95BDCF13768}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF45169C-5D87-4708-8DD2-C95BDCF13768}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CF45169C-5D87-4708-8DD2-C95BDCF13768}.Release|Any CPU.Build.0 = Release|Any CPU
-		{952786F9-0817-42B8-AB03-124E23B6C963}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{952786F9-0817-42B8-AB03-124E23B6C963}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{952786F9-0817-42B8-AB03-124E23B6C963}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{952786F9-0817-42B8-AB03-124E23B6C963}.Release|Any CPU.Build.0 = Release|Any CPU
-		{67C8EF3B-5976-4E3B-AD50-8778BB488A5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{67C8EF3B-5976-4E3B-AD50-8778BB488A5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{67C8EF3B-5976-4E3B-AD50-8778BB488A5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{67C8EF3B-5976-4E3B-AD50-8778BB488A5D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{94732F76-4A68-411F-A3A4-A03C9B83C5CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{94732F76-4A68-411F-A3A4-A03C9B83C5CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{94732F76-4A68-411F-A3A4-A03C9B83C5CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{94732F76-4A68-411F-A3A4-A03C9B83C5CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,9 +49,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{202DC44E-5880-4A3E-A265-CA5CEFD5E085} = {89412E0C-9F93-4FB0-ACB6-DC95174759A0}
 		{CF45169C-5D87-4708-8DD2-C95BDCF13768} = {EE8B33C7-90A5-4CCF-99D9-BC9CF029F312}
-		{952786F9-0817-42B8-AB03-124E23B6C963} = {EE8B33C7-90A5-4CCF-99D9-BC9CF029F312}
-		{67C8EF3B-5976-4E3B-AD50-8778BB488A5D} = {EE8B33C7-90A5-4CCF-99D9-BC9CF029F312}
-		{94732F76-4A68-411F-A3A4-A03C9B83C5CF} = {EE8B33C7-90A5-4CCF-99D9-BC9CF029F312}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E033216E-1151-4D66-A416-3EBD14511CA8}

@@ -1,38 +1,51 @@
-2019-07-06
+﻿2019-07-06
 ==========
     1. Ported to .NET Standard.
 
 2019-07-08
 ==========
-    Version: 2.19.1
     1. Updated NuGet refs.
 
 2019-07-30
 ==========
-    Version: 2.19.2-dev-0730-1345
     1. Fixed issue with SqlCommand.Prepare for main DB types (uniqueidentifier, varchar, nvarchar).
 
 2019-08-15
 ==========
-    Version: 2.19.2-dev-0815-1101
     1. Added supported SQL parameter types.
 
 2019-08-17
 ==========
-    Version: 2.19.2-dev-0817-1400
     1. Added SQL parameter type: 'date'.
 
 2019-09-17
 ==========
-    Version: 2.19.2-dev-0917-1305
     1. Added SQL parameter type: 'int'.
-
-2019-10-20
-==========
-    Version: v3.0
-    1. Release v3.0
 
 2019-11-25
 ==========
-    Version: 3.1
     1. Took advantage of TauCode.Parsing for SQLite.
+
+2020-10-17
+==========
+    1. Added schema concept.
+
+2020-11-01
+==========
+    1. SQL Server Lab ut-s are green.
+
+2020-11-08
+==========
+    1. MySQL Lab ut-s are green.
+
+2021-03-07
+==========
+    1. Resurrection.
+
+2021-04-19
+==========
+    1. Refactored, fixed bugs.
+
+2022-06-25
+==========
+    1. Resurrection.

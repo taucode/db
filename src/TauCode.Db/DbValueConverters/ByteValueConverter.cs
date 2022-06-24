@@ -1,16 +1,14 @@
-﻿namespace TauCode.Db.DbValueConverters
+﻿using System;
+
+namespace TauCode.Db.DbValueConverters
 {
     public class ByteValueConverter : DbValueConverterBase
     {
         protected override object ToDbValueImpl(object value)
         {
-            if (value is byte byteValue)
+            if (value.GetType().IsIntegerType())
             {
-                return byteValue;
-            }
-            else if (value is long longValue)
-            {
-                return longValue;
+                return Convert.ToByte(value);
             }
 
             return null;

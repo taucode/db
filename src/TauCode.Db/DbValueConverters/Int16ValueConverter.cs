@@ -1,16 +1,14 @@
-﻿namespace TauCode.Db.DbValueConverters
+﻿using System;
+
+namespace TauCode.Db.DbValueConverters
 {
     public class Int16ValueConverter : DbValueConverterBase
     {
         protected override object ToDbValueImpl(object value)
         {
-            if (value is short shortValue)
+            if (value.GetType().IsIntegerType())
             {
-                return shortValue;
-            }
-            else if (value is long longValue)
-            {
-                return longValue;
+                return Convert.ToInt16(value);
             }
 
             return null;

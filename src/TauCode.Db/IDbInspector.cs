@@ -2,8 +2,12 @@
 
 namespace TauCode.Db
 {
-    public interface IDbInspector : IUtility
+    public interface IDbInspector : IDbUtility
     {
-        IReadOnlyList<string> GetTableNames(bool? independentFirst = null);
+        string SchemaName { get; }
+
+        IReadOnlyList<string> GetSchemaNames();
+
+        IReadOnlyList<string> GetTableNames();
     }
 }

@@ -1,88 +1,148 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using TauCode.Db.Data;
 using TauCode.Db.Exceptions;
+using TauCode.Db.Extensions;
 using TauCode.Db.Model;
 
 namespace TauCode.Db
 {
-    public abstract class DbSerializerBase : UtilityBase, IDbSerializer
+    public abstract class DbSerializerBase : DbUtilityBase, IDbSerializer
     {
         #region Fields
 
-        private IDbInspector _dbInspector;
-        private ICruder _cruder;
+        private IDbSchemaExplorer _schemaExplorer;
+        private IDbCruder _cruder;
 
         #endregion
 
         #region Constructor
 
-        protected DbSerializerBase(IDbConnection connection)
+        protected DbSerializerBase(IDbConnection connection, string schemaName)
             : base(connection, true, false)
         {
+            this.SchemaName = schemaName;
         }
 
         #endregion
 
         #region Polymorph
 
-        protected virtual void DeserializeTableData(TableMold tableMold, JArray tableData)
+        protected virtual void DeserializeTableData(
+            TableMold tableMold,
+            JArray tableData)
         {
-            var rows = tableData
-                .Select((x, xIndex) => tableMold
-                    .Columns
-                    .Select(y => y.Name)
-                    .ToDictionary(
-                        z => z,
-                        z =>
+            var rows = new List<object>();
+
+            var index = 0;
+
+            foreach (var jToken in tableData)
+            {
+                var row = new DynamicRow();
+
+                foreach (var columnMold in tableMold.Columns)
+                {
+                    object columnValue = null;
+
+                    var columnName = columnMold.Name;
+                    var jProp = jToken[columnName];
+
+                    if (jProp == null)
+                    {
+                        // remains null
+                    }
+                    else if (jProp is JValue jValue)
+                    {
+                        columnValue = jValue.Value;
+                    }
+                    else
+                    {
+                        throw new TauDbException(
+                            $"Object representing row #{index} is invalid. Property '{columnName}' is not a JValue.");
+                    }
+
+                    row.SetProperty(columnName, columnValue);
+                }
+
+                foreach (var jChildToken in jToken)
+                {
+                    if (jChildToken is JProperty jProperty)
+                    {
+                        if (row.ContainsProperty(jProperty.Name))
                         {
-                            var jToken = x[z];
-
-                            if (jToken == null)
+                            // ignore.
+                        }
+                        else
+                        {
+                            var jValue = jProperty.Value as JValue;
+                            if (jValue == null)
                             {
-                                throw new DbException($"Property '{z}' not found in JSON. Table '{tableMold.Name}', entry index '{xIndex}'.");
+                                throw new NotSupportedException($"JSON value of type '{jProperty.Value.GetType().FullName}' not supported.");
                             }
 
-                            if (jToken is JValue jValue)
-                            {
-                                return jValue.Value;
-                            }
-                            else
-                            {
-                                throw new DbException($"Property '{z}' is not a JValue. Table '{tableMold.Name}', entry index '{xIndex}'.");
-                            }
-                        }))
-                .ToList();
+                            row.SetProperty(jProperty.Name, jValue.Value);
+                        }
+                    }
+                    else
+                    {
+                        throw new NotSupportedException($"JSON token of type '{jChildToken.GetType().FullName}' not supported.");
+                    }
+                }
 
-            this.Cruder.InsertRows(tableMold.Name, rows);
+                rows.Add(row);
+
+                index++;
+            }
+
+            IReadOnlyList<object> transformedRows = rows;
+
+            if (this.BeforeDeserializeTableData != null)
+            {
+                transformedRows = this.BeforeDeserializeTableData(tableMold, rows);
+            }
+
+            var columnNames = tableMold
+                .Columns
+                .Select(x => x.Name)
+                .ToHashSet();
+
+            this.Cruder.InsertRows(tableMold.Name, transformedRows, propName => columnNames.Contains(propName));
+
+            this.AfterDeserializeTableData?.Invoke(tableMold, transformedRows);
         }
 
         #endregion
 
         #region Protected
 
-        protected virtual IDbInspector DbInspector => _dbInspector ??= this.Factory.CreateDbInspector(this.Connection);
+        protected virtual IDbSchemaExplorer CreateSchemaExplorer() => this.Factory.CreateSchemaExplorer(this.Connection);
+        protected IDbSchemaExplorer SchemaExplorer => _schemaExplorer ??= this.CreateSchemaExplorer();
+        protected virtual IDbCruder CreateCruder() => this.Factory.CreateCruder(this.Connection, this.SchemaName);
 
         #endregion
 
         #region IDbSerializer Members
 
-        public virtual ICruder Cruder => _cruder ??= this.Factory.CreateCruder(this.Connection);
+        public string SchemaName { get; }
+
+        public IDbCruder Cruder => _cruder ??= this.CreateCruder();
+
+        public JsonSerializerSettings JsonSerializerSettings { get; set; } = new JsonSerializerSettings();
 
         public virtual string SerializeTableData(string tableName)
         {
             var rows = this.Cruder.GetAllRows(tableName);
-            var json = JsonConvert.SerializeObject(rows, Formatting.Indented);
+            var json = JsonConvert.SerializeObject(rows, this.JsonSerializerSettings);
             return json;
         }
 
         public virtual string SerializeDbData(Func<string, bool> tableNamePredicate = null)
         {
-            var tables = this.DbInspector.GetTables(true, tableNamePredicate);
-
+            var tables = this.SchemaExplorer.FilterTables(this.SchemaName, true, tableNamePredicate);
 
             var dbData =
                 new DynamicRow(); // it is strange to store entire data in 'dynamic' 'row', but why to invent new dynamic ancestor?
@@ -94,18 +154,25 @@ namespace TauCode.Db
                     var sql = this.Cruder.ScriptBuilder.BuildSelectAllScript(table);
                     command.CommandText = sql;
 
-                    var rows = DbUtils
-                        .GetCommandRows(command);
+                    var tableValuesConverter = this.Cruder.GetTableValuesConverter(table.Name);
 
-                    dbData.SetValue(table.Name, rows);
+                    var rows = command.GetCommandRows(tableValuesConverter);
+
+                    dbData.SetProperty(table.Name, rows);
                 }
             }
 
-            var json = JsonConvert.SerializeObject(dbData, Formatting.Indented);
+            var json = JsonConvert.SerializeObject(dbData, this.JsonSerializerSettings);
             return json;
         }
 
-        public virtual void DeserializeTableData(string tableName, string json)
+        public Func<TableMold, IReadOnlyList<object>, IReadOnlyList<object>> BeforeDeserializeTableData { get; set; }
+
+        public Action<TableMold, IReadOnlyList<object>> AfterDeserializeTableData { get; set; }
+
+        public virtual void DeserializeTableData(
+            string tableName,
+            string json)
         {
             if (tableName == null)
             {
@@ -124,11 +191,13 @@ namespace TauCode.Db
                 throw new ArgumentException("Could not deserialize table data as array.", nameof(json));
             }
 
-            var table = this.Factory.CreateTableInspector(this.Connection, tableName).GetTable();
+            var table = this.Factory.CreateTableInspector(this.Connection, this.SchemaName, tableName).GetTable();
             this.DeserializeTableData(table, tableData);
         }
 
-        public virtual void DeserializeDbData(string json, Func<string, bool> tableNamePredicate = null)
+        public virtual void DeserializeDbData(
+            string json,
+            Func<string, bool> tableNamePredicate = null)
         {
             if (json == null)
             {
@@ -158,7 +227,7 @@ namespace TauCode.Db
                     throw new ArgumentException("Invalid data.", nameof(json));
                 }
 
-                var tableInspector = this.Factory.CreateTableInspector(this.Connection, name);
+                var tableInspector = this.Factory.CreateTableInspector(this.Connection, this.SchemaName, name);
                 var tableMold = tableInspector.GetTable();
 
                 this.DeserializeTableData(tableMold, tableData);
@@ -167,51 +236,46 @@ namespace TauCode.Db
 
         public virtual string SerializeTableMetadata(string tableName)
         {
-            var tableInspector = this.Factory.CreateTableInspector(this.Connection, tableName);
-            var table = tableInspector.GetTable().CloneTable(false);
+            var tableInspector = this.Factory.CreateTableInspector(this.Connection, this.SchemaName, tableName);
+            var table = tableInspector.GetTable().CloneTable(true);
 
             table.ForeignKeys = table.ForeignKeys
-                .OrderBy(x => x.Name, StringComparer.InvariantCultureIgnoreCase)
+                .OrderBy(x => x.Name)
                 .ToList();
 
             table.Indexes = table.Indexes
-                .OrderBy(x => x.Name, StringComparer.InvariantCultureIgnoreCase)
+                .OrderBy(x => x.Name)
                 .ToList();
 
-            var json = DbUtils.FineSerializeToJson(table);
+            var json = JsonConvert.SerializeObject(table, this.JsonSerializerSettings);
             return json;
         }
 
         public virtual string SerializeDbMetadata(Func<string, bool> tableNamePredicate = null)
         {
-            tableNamePredicate = tableNamePredicate ?? (x => true);
+            tableNamePredicate ??= (x => true);
 
-            var tables = this.DbInspector
-                .GetTableNames(true)
-                .Select(x => this.Factory.CreateTableInspector(this.Connection, x).GetTable())
-                .Where(x => tableNamePredicate(x.Name))
-                .ToList();
+            var tables = this.SchemaExplorer.FilterTables(this.SchemaName, true, tableNamePredicate);
 
             foreach (var table in tables)
             {
                 table.ForeignKeys = table.ForeignKeys
-                    .OrderBy(x => x.Name, StringComparer.InvariantCultureIgnoreCase)
+                    .OrderBy(x => x.Name)
                     .ToList();
 
                 table.Indexes = table.Indexes
-                    .OrderBy(x => x.Name, StringComparer.InvariantCultureIgnoreCase)
+                    .OrderBy(x => x.Name)
                     .ToList();
             }
 
             var dbMold = new DbMold
             {
-                DbProviderName = this.Factory.DbProviderName,
                 Tables = tables
-                    .Select(x => x.CloneTable(false))
+                    .Select(x => x.CloneTable(true))
                     .ToList(),
             };
 
-            var json = DbUtils.FineSerializeToJson(dbMold);
+            var json = JsonConvert.SerializeObject(dbMold, this.JsonSerializerSettings);
             return json;
         }
 

@@ -5,18 +5,16 @@ namespace TauCode.Db
 {
     public static class DbProviderNames
     {
-        public const string Ansi = "ANSI";
         public const string SQLite = "SQLite";
-        public const string SqlServer = "SqlServer";
-        public const string MySql = "MySql";
+        public const string SQLServer = "SQLServer";
+        public const string MySQL = "MySQL";
         public const string PostgreSQL = "PostgreSQL";
 
         public static string[] GetAll() => new[]
         {
-            Ansi,
             SQLite,
-            SqlServer,
-            MySql,
+            SQLServer,
+            MySQL,
             PostgreSQL,
         };
 

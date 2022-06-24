@@ -14,6 +14,10 @@ namespace TauCode.Db.DbValueConverters
             {
                 return new Guid(stringValue);
             }
+            else if (value is byte[] bytes)
+            {
+                return new Guid(bytes);
+            }
 
             return null;
         }

@@ -5,36 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\Ansi\sql-ansi-data-type-names.txt" />
-    <None Remove="Resources\Ansi\sql-ansi-reserved-words.txt" />
-    <None Remove="Resources\MySql\sql-mysql-data-type-names.txt" />
-    <None Remove="Resources\MySql\sql-mysql-reserved-words.txt" />
-    <None Remove="Resources\SQLite\sql-sqlite-data-type-names.txt" />
-    <None Remove="Resources\SQLite\sql-sqlite-grammar.lisp" />
-    <None Remove="Resources\SQLite\sql-sqlite-reserved-words.txt" />
-    <None Remove="Resources\SqlServer\sql-sqlserver-data-type-names.txt" />
-    <None Remove="Resources\SqlServer\sql-sqlserver-reserved-words.txt" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\Ansi\sql-ansi-data-type-names.txt" />
-    <EmbeddedResource Include="Resources\Ansi\sql-ansi-reserved-words.txt" />
-    <EmbeddedResource Include="Resources\MySql\sql-mysql-data-type-names.txt" />
-    <EmbeddedResource Include="Resources\MySql\sql-mysql-reserved-words.txt" />
-    <EmbeddedResource Include="Resources\SQLite\sql-sqlite-data-type-names.txt" />
-    <EmbeddedResource Include="Resources\SQLite\sql-sqlite-grammar.lisp" />
-    <EmbeddedResource Include="Resources\SQLite\sql-sqlite-reserved-words.txt" />
-    <EmbeddedResource Include="Resources\SqlServer\sql-sqlserver-data-type-names.txt" />
-    <EmbeddedResource Include="Resources\SqlServer\sql-sqlserver-reserved-words.txt" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.1" />
-    <PackageReference Include="TauCode.Algorithms" Version="1.3.1" />
-    <PackageReference Include="TauCode.Data" Version="1.3.0" />
-    <PackageReference Include="TauCode.Parsing" Version="1.3.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="TauCode.Algorithms.Graphs" Version="1.3.7-alpha.1.2022-06-24.21-25" />
+    <PackageReference Include="TauCode.Data" Version="1.3.7-alpha.1.2022-06-24.19-19" />
+    <PackageReference Include="TauCode.Extensions" Version="1.3.7" />
   </ItemGroup>
 
 </Project>

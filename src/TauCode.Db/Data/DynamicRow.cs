@@ -1,13 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Dynamic;
-using System.Linq;
 using TauCode.Data;
 
 namespace TauCode.Db.Data
 {
     public class DynamicRow : DynamicObject
     {
+        #region Fields
+
         private readonly IDictionary<string, object> _values;
+
+        #endregion
+
+        #region Constructor
 
         public DynamicRow(object original = null)
         {
@@ -25,7 +30,9 @@ namespace TauCode.Db.Data
             _values = values;
         }
 
-        public IDictionary<string, object> ToDictionary() => _values;
+        #endregion
+
+        #region Overridden
 
         public override bool TrySetMember(SetMemberBinder binder, object value)
         {
@@ -42,56 +49,22 @@ namespace TauCode.Db.Data
 
         public override IEnumerable<string> GetDynamicMemberNames() => _values.Keys;
 
-        public string[] GetNames() => this.GetDynamicMemberNames().ToArray();
+        #endregion
 
-        public void SetValue(string name, object value)
-        {
-            _values[name] = value;
-        }
+        #region Public
 
-        public object GetValue(string name)
-        {
-            return _values[name];
-        }
+        public IDictionary<string, object> ToDictionary() => _values;
 
-        public bool DeleteValue(string name)
-        {
-            return _values.Remove(name);
-        }
+        public void SetProperty(string propertyName, object propertyValue) => _values[propertyName] = propertyValue;
 
-        public bool IsEquivalentTo(object other)
-        {
-            if (other == null)
-            {
-                return false; // no object is equiv. to null
-            }
+        public object GetProperty(string propertyName) => _values[propertyName];
 
-            var otherDynamic = new DynamicRow(other);
+        public bool RemoveProperty(string propertyName) => _values.Remove(propertyName);
 
-            if (_values.Count != otherDynamic._values.Count)
-            {
-                return false;
-            }
+        public bool ContainsProperty(string propertyName) => _values.ContainsKey(propertyName);
 
-            foreach (var pair in _values)
-            {
-                var key = pair.Key;
-                var value = pair.Value;
+        public void Clear() => _values.Clear();
 
-                var otherHas = otherDynamic._values.TryGetValue(key, out var otherValue);
-                if (!otherHas)
-                {
-                    return false;
-                }
-
-                var otherEq = Equals(value, otherValue);
-                if (!otherEq)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
+        #endregion
     }
 }

@@ -1,6 +1,6 @@
-2019-07-30
+﻿2019-07-30
 ==========
-    1. Fix issue with SqlCommand.Prepare for all DB types
+x   1. Fix issue with SqlCommand.Prepare for all DB types
 +   2. Remove TauCode.Db.XenoTest project when done.
 
 2019-11-20
@@ -11,17 +11,67 @@
 2019-11-27
 ==========
 +   1. ICruder, IDbSerializer - get rid of IDbConnection parameters, they should have own IDbConnection
-    2. IParameterInfo.
-    3. DB schema serialization/deserialization.
++   2. IParameterInfo.
++   3. DB schema serialization/deserialization.
 +   4. Get rid of SqlServer...Base classes. No more SQL Server CE :(
-    5. IDbInspector should check type (actually, type full name) of IDbConnection, not ICruder or whoever else.
-    6. TauCode.Db.SQLite.
+x   5. IDbInspector should check type (actually, type full name) of IDbConnection, not ICruder or whoever else.
++   6. TauCode.Db.SQLite.
 
 2019-12-17
 ==========
-    1. Check if all resources are needed in test projects.
-    2. Remove dummy tests one day.
++   1. Check if all resources are needed in test projects.
++   2. Remove dummy tests one day.
 
 2020-01-07
 ==========
     1. parsing of NVARCHAR(100) will produce Precision = 100, Scale = null, Size = null, while it should produce Precision = null, Scale = null, Size = 100
+
+2020-09-24
+==========
+x   1. Incorporate changes from TX.
++   2. Support schemas.
++   3. Get rid of type-names.txt. data-type-names.txt
+
+2020-09-27
+==========
+x   1. Get rid of 'own' DbException.
+
+2020-10-22
+==========
+    1. MySQL DateTimeOffset: https://stackoverflow.com/questions/32103607/will-does-mysql-support-datetimeoffset
+    2. MySQL bulk insert: https://stackoverflow.com/questions/30615443/bulk-copy-a-datatable-into-mysql-similar-to-system-data-sqlclient-sqlbulkcopy
+    3. SQLite bulk insert: https://stackoverflow.com/questions/47190192/connecting-to-a-sqllite-db-with-sqlbulkcopy
+
+2020-10-24
+==========
+X   1. GetRow<T>, GetAllRows<T>? or better use NHibernate?
+
+2020-11-02
+==========
+    1. Support PostgreSQL's serial types (migration included).
+    2. UT all factories.
+    3. Get rid of 'dbo' in MySql tests.
+    4. MySql: <binary> and <varbinary>; <bit> also etc.
+    5. MySql: float -> float (C# Single), real -> double (C# Double), double -> double (C# double)
+    6. reserved words - review for all DB-s.
+    7. SQL: support comments like /* some comment */ and -- some comment
+
+2021-03-07
+==========
+X   1. Get rid of to-dos
+
+2021-04-17
+==========
++   1. IDbSerializer fails if some table doesn't have PK.
+    2. Get rid of all NotImplementedExceptions-s and to-do-s in code.
++   3. More flexible Cruder creation in DbSerializer (for tau-lab'ing in real projects)
+    4. UT schema explorer and its extensions
+    5. Make sure IDbxxx objects are not created in other IDbxxx objects endlessly (_obj ??= this.CreateObj() pattern)
++   6. UT new smart DateTimeOffsetConverter with "2019-02-09Z", "2019-02-09"
++   7. UT IDbCruder before/after row serialization callbacks, including identity_insert
++   8. UT IDbSerializer before/after table serialization callbacks, including identity_insert
+↓   9. IDbCruder.UpdateByClause(string tableName, string clause, IDictionary<string, object> parameterValues)
+    9. [extension] IDbCruder.UpdateByColumn(string tableName, string columnName, object columnValue)
+    10. IDbCruder.Update implementation is very bad. Should be 
+        * IDbCruder.UpdateRowById(string tableName, object id, object update)
+    11. Write a todo in every TauCode.Db.Some_Provider_Sql project: copy "EconeraTesting" ut-s. Try to invoke a "value will be truncated" exception (SQLite seems to not show such behavior)
