@@ -75,3 +75,7 @@ X   1. Get rid of to-dos
     10. IDbCruder.Update implementation is very bad. Should be 
         * IDbCruder.UpdateRowById(string tableName, object id, object update)
     11. Write a todo in every TauCode.Db.Some_Provider_Sql project: copy "EconeraTesting" ut-s. Try to invoke a "value will be truncated" exception (SQLite seems to not show such behavior)
+
+2022-08-06
+==========
+    1. Resolve nullable issues and all other warnings.
