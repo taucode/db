@@ -9,9 +9,9 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="TauCode.Algorithms.Graphs" Version="1.5.0" />
-    <PackageReference Include="TauCode.Data" Version="1.5.0" />
-    <PackageReference Include="TauCode.Extensions" Version="1.5.0" />
+    <PackageReference Include="TauCode.Algorithms.Graphs" Version="1.5.5-alpha.1.2022-08-11.23-27" />
+    <PackageReference Include="TauCode.Data" Version="1.5.5-alpha.1.2022-08-11.23-47" />
+    <PackageReference Include="TauCode.Extensions" Version="1.5.5-alpha.1.2022-08-11.23-27" />
   </ItemGroup>
 
 </Project>
