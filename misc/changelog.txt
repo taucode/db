@@ -58,3 +58,10 @@
 2023-01-23
 ==========
     1. Winter resurrection - 2023.
+
+2023-02-10
+==========
+    1. Started refactoring.
+        Objectives:
+            * Introduce Schema to molds
+            * Multi-schema serialization/deserialization
