@@ -1,9 +1,19 @@
 ﻿namespace TauCode.Extensions;
 
-public static class CollectionExtensions
+public static class CollectionExtensionsLab
 {
     public static void AddRangeToCollection<T>(this IEnumerable<T> target, IEnumerable<T> source)
     {
+        if (target == null!)
+        {
+            throw new ArgumentNullException(nameof(target));
+        }
+
+        if (source == null!)
+        {
+            throw new ArgumentNullException(nameof(source));
+        }
+
         switch (target)
         {
             case List<T> list:
