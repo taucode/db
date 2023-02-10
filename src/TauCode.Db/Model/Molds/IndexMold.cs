@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using TauCode.Db.Model.Interfaces;
+using TauCode.Extensions;
 
 namespace TauCode.Db.Model.Molds;
 
@@ -27,8 +28,7 @@ public class IndexMold : NamedMold, IIndexMold
             IsUnique = this.IsUnique,
         };
 
-        var clonedColumns = (List<IIndexColumnMold>)clonedIndex.Columns;
-        clonedColumns.AddRange(this.Columns.Select(x => (IIndexColumnMold)x.Clone(includeProperties)));
+        clonedIndex.Columns.AddMany(this.Columns.Select(x => x.Clone())); // todo: why no compiler error here? ut this.
 
         if (includeProperties)
         {

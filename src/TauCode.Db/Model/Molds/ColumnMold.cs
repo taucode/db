@@ -21,7 +21,7 @@ public class ColumnMold : NamedMold, IColumnMold
             Name = this.Name,
             Type = (IDbTypeMold)this.Type.Clone(includeProperties),
             IsNullable = this.IsNullable,
-            Identity = (IColumnIdentityMold?)(this.Identity?.Clone(includeProperties)),
+            Identity = (IColumnIdentityMold?)this.Identity?.Clone(includeProperties),
         };
 
         clonedColumnMold.CopyPropertiesFrom(this);
