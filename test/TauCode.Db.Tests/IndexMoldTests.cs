@@ -21,7 +21,7 @@ public class IndexMoldTests
             IsUnique = true,
         };
 
-        indexMold.Columns.AddRangeToCollection(new List<IIndexColumnMold>
+        indexMold.Columns.AddMany(new List<IIndexColumnMold>
         {
             new IndexColumnMold
             {

@@ -1,10 +1,8 @@
-﻿using System.Diagnostics;
-using TauCode.Db.Model.Enums;
+﻿using TauCode.Db.Model.Enums;
 using TauCode.Db.Model.Interfaces;
 
 namespace TauCode.Db.Model.Molds;
 
-[DebuggerDisplay($"{{{nameof(Name)}}} {{{nameof(SortDirection)}}}")]
 public class IndexColumnMold : NamedMold, IIndexColumnMold
 {
     #region IIndexColumnMold Members

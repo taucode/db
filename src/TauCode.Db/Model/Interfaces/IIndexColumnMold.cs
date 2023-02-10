@@ -2,8 +2,7 @@
 
 namespace TauCode.Db.Model.Interfaces;
 
-public interface IIndexColumnMold : IMold
+public interface IIndexColumnMold : INamedMold
 {
-    public string Name { get; set; }
     public SortDirection SortDirection { get; set; }
 }

@@ -2,7 +2,7 @@
 
 public static class CollectionExtensionsLab
 {
-    public static void AddRangeToCollection<T>(this IEnumerable<T> target, IEnumerable<T> source)
+    public static void AddMany<T>(this IEnumerable<T> target, IEnumerable<T> source)
     {
         if (target == null!)
         {

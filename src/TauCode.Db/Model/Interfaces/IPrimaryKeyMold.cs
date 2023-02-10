@@ -2,5 +2,5 @@
 
 public interface IPrimaryKeyMold : IConstraintMold
 {
-    IList<IIndexColumnMold> Columns { get; set; }
+    IList<IIndexColumnMold> Columns { get; }
 }

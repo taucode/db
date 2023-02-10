@@ -14,4 +14,8 @@
     <PackageReference Include="TauCode.Extensions" Version="1.7.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TauCode.Extensions.Lab\TauCode.Extensions.Lab.csproj" />
+  </ItemGroup>
+
 </Project>
