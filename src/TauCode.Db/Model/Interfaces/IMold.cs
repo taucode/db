@@ -2,6 +2,6 @@
 
 public interface IMold
 {
-    IDictionary<string, string> Properties { get; set; }
+    IDictionary<string, string> Properties { get; }
     IMold Clone(bool includeProperties = false);
 }

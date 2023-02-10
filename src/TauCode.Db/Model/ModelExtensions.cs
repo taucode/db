@@ -4,20 +4,11 @@ namespace TauCode.Db.Model;
 
 internal static class ModelExtensions
 {
-    internal static IDictionary<string, string> ClonePropertiesIfNeeded(this IMold mold, bool needed)
+    internal static void CopyPropertiesFrom(this IMold target, IMold source)
     {
-        if (!needed)
+        foreach (var pair in source.Properties)
         {
-            return new Dictionary<string, string>();
+            target.Properties.Add(pair.Key, pair.Value);
         }
-
-        var clonedProperties = mold
-            .Properties
-            .Where(x => !x.Key.StartsWith("#"))
-            .ToDictionary(
-                x => x.Key,
-                x => x.Value);
-
-        return clonedProperties;
     }
 }

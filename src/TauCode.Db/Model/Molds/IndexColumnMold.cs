@@ -2,30 +2,33 @@
 using TauCode.Db.Model.Enums;
 using TauCode.Db.Model.Interfaces;
 
-namespace TauCode.Db.Model;
+namespace TauCode.Db.Model.Molds;
 
 [DebuggerDisplay($"{{{nameof(Name)}}} {{{nameof(SortDirection)}}}")]
-public class IndexColumnMold : IIndexColumnMold
+public class IndexColumnMold : NamedMold, IIndexColumnMold
 {
     #region IIndexColumnMold Members
-
-    public string Name { get; set; } = null!;
 
     public SortDirection SortDirection { get; set; } = SortDirection.Ascending;
 
     #endregion
 
-    #region Imold Members
+    #region Overridden
 
-    public IDictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
-    public IMold Clone(bool includeProperties = false)
+    public override IMold Clone(bool includeProperties = false)
     {
-        return new IndexColumnMold
+        var clonedColumn = new IndexColumnMold
         {
             Name = this.Name,
             SortDirection = this.SortDirection,
-            Properties = this.ClonePropertiesIfNeeded(includeProperties),
         };
+
+        if (includeProperties)
+        {
+            clonedColumn.CopyPropertiesFrom(this);
+        }
+
+        return clonedColumn;
     }
 
     #endregion
