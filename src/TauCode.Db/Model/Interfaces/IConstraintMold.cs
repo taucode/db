@@ -2,8 +2,7 @@
 
 namespace TauCode.Db.Model.Interfaces;
 
-public interface IConstraintMold
+public interface IConstraintMold : INamedMold
 {
-    string Name { get; set; }
     ConstraintType Type { get; }
 }
