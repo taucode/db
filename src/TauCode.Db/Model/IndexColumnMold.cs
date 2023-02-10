@@ -1,8 +1,10 @@
-﻿using TauCode.Db.Model.Enums;
+﻿using System.Diagnostics;
+using TauCode.Db.Model.Enums;
 using TauCode.Db.Model.Interfaces;
 
 namespace TauCode.Db.Model;
 
+[DebuggerDisplay($"{{{nameof(Name)}}} {{{nameof(SortDirection)}}}")]
 public class IndexColumnMold : IIndexColumnMold
 {
     #region IIndexColumnMold Members
@@ -14,7 +16,6 @@ public class IndexColumnMold : IIndexColumnMold
     #endregion
 
     #region Imold Members
-
 
     public IDictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
     public IMold Clone(bool includeProperties = false)
