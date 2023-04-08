@@ -2,7 +2,8 @@
 
 public interface ITableMold : INamedMold
 {
-    IList<IColumnMold> Columns { get; }
+    string? SchemaName { get; set; }
+    IList<IColumnMold> Columns { get; set; }
     IList<IConstraintMold> Constraints { get; }
     IList<IIndexMold> Indexes { get; }
 }

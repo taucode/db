@@ -6,6 +6,7 @@ public class ColumnIdentityMold : Mold, IColumnIdentityMold
 {
     #region IColumnIdentityMold Members
 
+    public string? ColumnName { get; set; }
     public string? Seed { get; set; }
     public string Increment { get; set; } = null!;
 
@@ -17,6 +18,7 @@ public class ColumnIdentityMold : Mold, IColumnIdentityMold
     {
         var clonedColumnIdentityMold = new ColumnIdentityMold
         {
+            ColumnName = ColumnName,
             Seed = this.Seed,
             Increment = this.Increment,
         };

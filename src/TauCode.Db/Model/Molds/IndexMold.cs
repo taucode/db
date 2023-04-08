@@ -28,7 +28,7 @@ public class IndexMold : NamedMold, IIndexMold
             IsUnique = this.IsUnique,
         };
 
-        clonedIndex.Columns.AddMany(this.Columns.Select(x => x.Clone())); // todo: why no compiler error here? ut this.
+        clonedIndex.Columns.AddMany(this.Columns.Select(x => (IIndexColumnMold)x.Clone())); // todo: why no compiler error here? ut this.
 
         if (includeProperties)
         {

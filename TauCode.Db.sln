@@ -28,14 +28,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{A6E95C07
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.Db.Tests", "test\TauCode.Db.Tests\TauCode.Db.Tests.csproj", "{CF45169C-5D87-4708-8DD2-C95BDCF13768}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.Db.SqlClient", "src\TauCode.Db.SqlClient\TauCode.Db.SqlClient.csproj", "{3CEBBCC7-8151-4461-B5B3-E4CB3AFF9AA2}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.Db.SqlClient.Tests", "test\TauCode.Db.SqlClient.Tests\TauCode.Db.SqlClient.Tests.csproj", "{BB10E5D8-36DD-461B-9FF5-255F3215C52F}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.Db.SqlClient.LocalTests", "test\TauCode.Db.SqlClient.LocalTests\TauCode.Db.SqlClient.LocalTests.csproj", "{1EF32847-F4FE-4FD0-8808-BE6E462BFE70}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.Extensions.Lab", "src\TauCode.Extensions.Lab\TauCode.Extensions.Lab.csproj", "{C9B66F12-F8B0-4DA5-A8F1-1809BA8192AA}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,22 +42,6 @@ Global
 		{CF45169C-5D87-4708-8DD2-C95BDCF13768}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF45169C-5D87-4708-8DD2-C95BDCF13768}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CF45169C-5D87-4708-8DD2-C95BDCF13768}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3CEBBCC7-8151-4461-B5B3-E4CB3AFF9AA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3CEBBCC7-8151-4461-B5B3-E4CB3AFF9AA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3CEBBCC7-8151-4461-B5B3-E4CB3AFF9AA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3CEBBCC7-8151-4461-B5B3-E4CB3AFF9AA2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BB10E5D8-36DD-461B-9FF5-255F3215C52F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BB10E5D8-36DD-461B-9FF5-255F3215C52F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BB10E5D8-36DD-461B-9FF5-255F3215C52F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BB10E5D8-36DD-461B-9FF5-255F3215C52F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1EF32847-F4FE-4FD0-8808-BE6E462BFE70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1EF32847-F4FE-4FD0-8808-BE6E462BFE70}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1EF32847-F4FE-4FD0-8808-BE6E462BFE70}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1EF32847-F4FE-4FD0-8808-BE6E462BFE70}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C9B66F12-F8B0-4DA5-A8F1-1809BA8192AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C9B66F12-F8B0-4DA5-A8F1-1809BA8192AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C9B66F12-F8B0-4DA5-A8F1-1809BA8192AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C9B66F12-F8B0-4DA5-A8F1-1809BA8192AA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -73,10 +49,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{202DC44E-5880-4A3E-A265-CA5CEFD5E085} = {89412E0C-9F93-4FB0-ACB6-DC95174759A0}
 		{CF45169C-5D87-4708-8DD2-C95BDCF13768} = {EE8B33C7-90A5-4CCF-99D9-BC9CF029F312}
-		{3CEBBCC7-8151-4461-B5B3-E4CB3AFF9AA2} = {89412E0C-9F93-4FB0-ACB6-DC95174759A0}
-		{BB10E5D8-36DD-461B-9FF5-255F3215C52F} = {EE8B33C7-90A5-4CCF-99D9-BC9CF029F312}
-		{1EF32847-F4FE-4FD0-8808-BE6E462BFE70} = {EE8B33C7-90A5-4CCF-99D9-BC9CF029F312}
-		{C9B66F12-F8B0-4DA5-A8F1-1809BA8192AA} = {89412E0C-9F93-4FB0-ACB6-DC95174759A0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E033216E-1151-4D66-A416-3EBD14511CA8}
