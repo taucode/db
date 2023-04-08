@@ -2,25 +2,23 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>TauCode.Db</id>
-    <version>1.7.1-alpha.1.2023-01-25.15-09</version>
+    <version>1.8.1-alpha.1.2023-04-08.16-21</version>
     <authors>TauCode</authors>
     <owners>TauCode</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <license type="file">LICENSE</license>
-    <projectUrl>https://github.com/taucode/taucode.db</projectUrl>
-    <repository type="git" url="https://github.com/taucode/taucode.db"/>
+    <projectUrl>https://github.com/taucode/db</projectUrl>
+    <repository type="git" url="https://github.com/taucode/db"/>
     <description>Basic functionality for database support</description>
     <releaseNotes>
-      Developing release 1.7.1.
+      Developing release 1.8.1.
     </releaseNotes>
     <tags>taucode db database</tags>
     <dependencies>
       <group targetFramework=".NETCoreApp6.0">
-        <dependency id="Microsoft.CSharp" version="4.7.0" />
-        <dependency id="Newtonsoft.Json" version="13.0.2" />
-        <dependency id="TauCode.Algorithms.Graphs" version="1.7.0" />
-        <dependency id="TauCode.Data" version="1.7.0" />
-        <dependency id="TauCode.Extensions" version="1.7.0" />
+        <dependency id="Newtonsoft.Json" version="13.0.3" />
+        <dependency id="TauCode.Algorithms.Graphs" version="1.8.1-alpha.1.2023-04-08.16-21" />
+        <dependency id="TauCode.Extensions" version="1.8.1-alpha.1.2023-04-06.11-19" />
       </group>
     </dependencies>
   </metadata>
