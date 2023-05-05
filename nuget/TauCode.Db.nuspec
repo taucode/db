@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>TauCode.Db</id>
-    <version>1.8.1-alpha.1.2023-04-08.16-21</version>
+    <version>1.9.1-alpha.1.2023-05-05.12-00</version>
     <authors>TauCode</authors>
     <owners>TauCode</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -11,7 +11,7 @@
     <repository type="git" url="https://github.com/taucode/db"/>
     <description>Basic functionality for database support</description>
     <releaseNotes>
-      Developing release 1.8.1.
+      Developing release 1.9.1.
     </releaseNotes>
     <tags>taucode db database</tags>
     <dependencies>
